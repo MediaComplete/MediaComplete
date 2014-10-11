@@ -1,14 +1,18 @@
 ﻿<Window x:Class="MSOE.MediaComplete.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Media Complete" Height="350" Width="525">
+        Title="Media Complete" Height="459" Width="711">
     <Grid Margin="0,0,0,0">
-        <StackPanel Height="320" Width="515">
-            <StackPanel Height="234" Orientation="Horizontal">
-                <TreeView Width="178"/>
-                <TreeView Width="174"/>
-                <TreeView Width="164"/>
-            </StackPanel>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="208*"/>
+            <ColumnDefinition Width="27*"/>
+        </Grid.ColumnDefinitions>
+        <DockPanel Grid.ColumnSpan="2">
+            <DockPanel Height="Auto" HorizontalAlignment="Stretch">
+                <TreeView  Width="75"/>
+                <TreeView Width="75"/>
+                <TreeView Width="75" />
+            </DockPanel>
             <StackPanel Height="86">
                 <Slider/>
                 <StackPanel Height="64" Orientation="Horizontal" HorizontalAlignment="Center">
@@ -17,7 +21,6 @@
                     <Button Content="Skip" Width="75"/>
                 </StackPanel>
             </StackPanel>
-        </StackPanel>
-
+        </DockPanel>
     </Grid>
 </Window>
