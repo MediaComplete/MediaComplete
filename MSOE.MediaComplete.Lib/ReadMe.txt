@@ -1,0 +1,1 @@
+﻿This project contains the business logic of the application. This should comprise the bulk of our code.
