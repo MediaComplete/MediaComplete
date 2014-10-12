@@ -14,7 +14,12 @@
         </Grid.RowDefinitions>
 
         <Menu Grid.Row="0" Grid.Column="0" Margin="0,0,0,0" Grid.ColumnSpan="1" >
-            <MenuItem Header="_File"></MenuItem>
+            <MenuItem Header="_File">
+                <MenuItem Header="_Exit"/>
+            </MenuItem>
+            <MenuItem Header="_Edit" Click="MenuItem_Click">
+                <MenuItem Header="_Settings"/>
+            </MenuItem>
             <MenuItem Header="_Playlists"></MenuItem>
             <MenuItem Header="_MetaDataFinderThing"></MenuItem>
         </Menu>

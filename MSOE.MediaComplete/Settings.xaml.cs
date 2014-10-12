@@ -10,29 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace MSOE.MediaComplete
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for Settings.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class Settings : Window
     {
-        public MainWindow()
+        public Settings()
         {
-            InitializeComponent();
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            new Settings().Show();
         }
     }
 }
