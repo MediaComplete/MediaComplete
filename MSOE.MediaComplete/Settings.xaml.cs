@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Forms;
 
 namespace MSOE.MediaComplete
 {
@@ -21,6 +22,21 @@ namespace MSOE.MediaComplete
     {
         public Settings()
         {
+            InitializeComponent();
+        }
+
+        private void btnSelectFolder_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog folderBrowserDialog1 = new FolderBrowserDialog();
+            if (folderBrowserDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                txtboxSelectedFolder.Text = folderBrowserDialog1.SelectedPath;
+            }
+        }
+
+        private void btnSelectFolder_Click_1(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
