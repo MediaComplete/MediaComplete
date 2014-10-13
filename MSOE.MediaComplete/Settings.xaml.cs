@@ -23,6 +23,7 @@ namespace MSOE.MediaComplete
         public Settings()
         {
             InitializeComponent();
+            txtboxSelectedFolder.Text = (string) Properties.Settings.Default["HomeDir"];
         }
 
         private void btnSelectFolder_Click(object sender, EventArgs e)
@@ -34,9 +35,11 @@ namespace MSOE.MediaComplete
             }
         }
 
-        private void btnSelectFolder_Click_1(object sender, RoutedEventArgs e)
+        private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-
+            // add settings here as they are added to the UI
+            Properties.Settings.Default["HomeDir"] = txtboxSelectedFolder.Text;
+            Properties.Settings.Default.Save();
         }
     }
 }
