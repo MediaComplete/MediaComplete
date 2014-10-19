@@ -26,10 +26,22 @@ namespace MSOE.MediaComplete
         public MainWindow()
         {
             InitializeComponent();
-            homeDir =  (string)Properties.Settings.Default["HomeDir"] + "library\\";
+            homeDir = (string)Properties.Settings.Default["HomeDir"];
+            Console.WriteLine(homeDir);
+            if (homeDir.EndsWith("\\"))
+            {
+                homeDir += "library\\";
+            }
+            else
+            {
+                homeDir += "\\library\\";
+            }
+
             Console.WriteLine(homeDir);
             Directory.CreateDirectory(homeDir);
         }
+
+        public string SelectedImagePath { get; set; }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -55,7 +67,7 @@ namespace MSOE.MediaComplete
                 {
                     try
                     {
-                        System.IO.File.Copy(file.ToString(),  homeDir + System.IO.Path.GetFileName(file));
+                        System.IO.File.Copy(file.ToString(), homeDir + System.IO.Path.GetFileName(file));
                         Console.WriteLine(homeDir + System.IO.Path.GetFileName(file));
                     }
                     catch (Exception exception)
@@ -81,7 +93,7 @@ namespace MSOE.MediaComplete
                     try
                     {
                         System.IO.File.Copy(file.ToString(),
-                            homeDir +  System.IO.Path.GetFileName(file));
+                            homeDir + System.IO.Path.GetFileName(file));
 
                         Console.WriteLine(homeDir + System.IO.Path.GetFileName(file));
                     }
