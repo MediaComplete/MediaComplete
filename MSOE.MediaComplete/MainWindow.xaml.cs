@@ -27,7 +27,6 @@ namespace MSOE.MediaComplete
         {
             InitializeComponent();
             homeDir = (string)Properties.Settings.Default["HomeDir"];
-            Console.WriteLine(homeDir);
             if (homeDir.EndsWith("\\"))
             {
                 homeDir += "library\\";
@@ -37,11 +36,8 @@ namespace MSOE.MediaComplete
                 homeDir += "\\library\\";
             }
 
-            Console.WriteLine(homeDir);
             Directory.CreateDirectory(homeDir);
         }
-
-        public string SelectedImagePath { get; set; }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
