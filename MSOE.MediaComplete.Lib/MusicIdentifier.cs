@@ -23,14 +23,14 @@ namespace MSOE.MediaComplete.Lib
         private static readonly string API_KEY = "MUIGA58IV1VQUOEJ5";
 
         public static async Task<string> IdentifySong(string filename) {
-            float[] audioData = SampleAudio(filename);
+            // We have to force "SampleAudio" onto a new thread, otherwise the main thread 
+            // will lock while doing the expensive file reading and audio manipulation.
+            float[] audioData = await Task.Run(() => SampleAudio(filename));
             var codegen = new FingerprintGenerator(audioData, 0);
             var code = codegen.GetFingerprintCode().Code;
 
             var client = new HttpClient();
             client.BaseAddress = new Uri(URL);
-
-            // List data response.
             // TODO lookup and add any metadata fields already on the file
             var response = await client.GetAsync(PATH + "?api_key=" + API_KEY + "&code=" + code); 
 
