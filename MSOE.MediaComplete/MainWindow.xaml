@@ -39,7 +39,7 @@
             <Slider/>
             <StackPanel Height="64" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Content="Previous" MinWidth="75" Click="Button_Click"/>
-                <Button Content="Play" MinWidth="75"/>
+                <Button Content="Play" MinWidth="75" Click="Button_Click_1"/>
                 <Button Content="Skip" MinWidth="75"/>
             </StackPanel>
         </StackPanel>

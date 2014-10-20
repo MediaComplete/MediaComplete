@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MSOE.MediaComplete.Lib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,6 +34,15 @@ namespace MSOE.MediaComplete
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             new Settings().Show();
+        }
+
+        private async void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            // TODO - this is temporary code; will be replaced when we can trigger this from context menus on the treeviews
+            ((Button)sender).SetValue(Button.ContentProperty, "Loading...");
+            string name = await MusicIdentifier.IdentifySong(@"C:\Users\Foxgang\Downloads\03 - Schmerzen.mp3");
+            MessageBox.Show(name);
+            ((Button)sender).SetValue(Button.ContentProperty, "Done");
         }
     }
 }
