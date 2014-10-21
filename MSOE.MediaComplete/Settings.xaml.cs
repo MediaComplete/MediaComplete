@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Forms;
 
 namespace MSOE.MediaComplete
 {
@@ -21,6 +22,24 @@ namespace MSOE.MediaComplete
     {
         public Settings()
         {
+            InitializeComponent();
+            txtboxSelectedFolder.Text = (string) Properties.Settings.Default["HomeDir"];
+        }
+
+        private void btnSelectFolder_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog folderBrowserDialog1 = new FolderBrowserDialog();
+            if (folderBrowserDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                txtboxSelectedFolder.Text = folderBrowserDialog1.SelectedPath;
+            }
+        }
+
+        private void btnSave_Click(object sender, RoutedEventArgs e)
+        {
+            // add settings here as they are added to the UI
+            Properties.Settings.Default["HomeDir"] = txtboxSelectedFolder.Text;
+            Properties.Settings.Default.Save();
         }
     }
 }
