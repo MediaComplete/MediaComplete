@@ -2,6 +2,14 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Media Complete" Height="339" Width="787">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="MainWindowResources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
     <Grid Margin="0,0,0,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -27,10 +35,13 @@
         <ToolBarTray Grid.Row="1">
             <ToolBar Grid.Row="1" Margin="0,0,0,161" Grid.ColumnSpan="2">
                 <Button Name="addFile" ToolTip="Add File" VerticalAlignment="Center" Click="AddFile_Click">
-                    <Image Source="Resources/add_file.png" Name="add_file"></Image>
+                    <Image Source="{StaticResource Toolbar_AddMusicFile_Icon}"></Image>
                 </Button>
                 <Button Name="addFolder" ToolTip="Add Folder" VerticalAlignment="Center" Click="AddFolder_Click">
-                    <Image Source="Resources/add_folder.png" Name="add_folder"></Image>
+                    <Image Source="{StaticResource Toolbar_AddMusicFolder_Icon}"></Image>
+                </Button>
+                <Button Name="autoIdentifyMusic" ToolTip="{StaticResource Toolbar_AutoIDMusic_Tooltip}" VerticalAlignment="Center" Click="Toolbar_AutoIDMusic_Click">
+                    <Image Source="{StaticResource Toolbar_AutoIDMusic_Icon}"></Image>
                 </Button>
             </ToolBar>
         </ToolBarTray>
@@ -42,7 +53,15 @@
                 <ColumnDefinition Width="125*"/>
                 <ColumnDefinition Width="134*"/>
             </Grid.ColumnDefinitions>
-            <TreeView Name="LibraryTree" Grid.Column="0" Margin="-5,33,5,0" Grid.ColumnSpan="2"/>
+            <TreeView Name="LibraryTree" Grid.Column="0" Margin="-5,33,5,0" Grid.ColumnSpan="2">
+                <TreeView.Resources>
+                    <ContextMenu x:Key="SongContextMenu" StaysOpen="True">
+                        <MenuItem Header="{StaticResource ContextMenu_AutoIDMusic_Header}" Click="ContextMenu_AutoIDMusic_Click"/>
+                    </ContextMenu>
+                    <ContextMenu x:Key="FolderContextMenu" StaysOpen="True">
+                    </ContextMenu>
+                </TreeView.Resources>
+            </TreeView>
             <TreeView Grid.Column="2" Margin="0,33,0,0"/>
             <TreeView Grid.Column="3" Grid.ColumnSpan="2" Margin="0,33,0,0"/>
         </Grid>
