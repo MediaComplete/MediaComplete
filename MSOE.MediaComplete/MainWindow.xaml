@@ -13,7 +13,7 @@
             <RowDefinition Height="100"/>
         </Grid.RowDefinitions>
 
-        <Menu Grid.Row="0" Grid.Column="0" Margin="0,0,0,0" Grid.ColumnSpan="1" >
+        <Menu Grid.Row="0" Grid.Column="0" Margin="0,0,0,0" Grid.ColumnSpan="1">
             <MenuItem Header="_File">
                 <MenuItem Header="_Exit"/>
             </MenuItem>
@@ -24,22 +24,35 @@
             <MenuItem Header="_MetaDataFinderThing"></MenuItem>
         </Menu>
         <TextBox Grid.Column="1" Height="23" Text="Search" Width="189" HorizontalAlignment="Right"/>
-        <Grid Margin="0,0,0,0" Grid.Row="1" Grid.ColumnSpan="2">
+        <ToolBarTray Grid.Row="1">
+            <ToolBar Grid.Row="1" Margin="0,0,0,161" Grid.ColumnSpan="2">
+                <Button Name="addFile" ToolTip="Add File" VerticalAlignment="Center" Click="AddFile_Click">
+                    <Image Source="Resources/add_file.png" Name="add_file"></Image>
+                </Button>
+                <Button Name="addFolder" ToolTip="Add Folder" VerticalAlignment="Center" Click="AddFolder_Click">
+                    <Image Source="Resources/add_folder.png" Name="add_folder"></Image>
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
+        <Grid Margin="0,0,0,1" Grid.Row="1" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="150*"/>
+                <ColumnDefinition Width="110*"/>
+                <ColumnDefinition Width="260*"/>
+                <ColumnDefinition Width="125*"/>
+                <ColumnDefinition Width="134*"/>
             </Grid.ColumnDefinitions>
-            <TreeView Grid.Column="0"/>
-            <TreeView Grid.Column="1"/>
-            <TreeView Grid.Column="2"/>
+            <TreeView Name="LibraryTree" Grid.Column="0" Margin="-5,33,5,0" Grid.ColumnSpan="2"/>
+            <TreeView Grid.Column="2" Margin="0,33,0,0"/>
+            <TreeView Grid.Column="3" Grid.ColumnSpan="2" Margin="0,33,0,0"/>
         </Grid>
+        
 
         <StackPanel Grid.Row="2" Grid.ColumnSpan="2">
             <Slider/>
             <StackPanel Height="64" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Content="Previous" MinWidth="75" Click="Button_Click"/>
-                <Button Content="Play" MinWidth="75" Click="Button_Click_1"/>
+                <Button Content="Play" MinWidth="75"/>
                 <Button Content="Skip" MinWidth="75"/>
             </StackPanel>
         </StackPanel>
