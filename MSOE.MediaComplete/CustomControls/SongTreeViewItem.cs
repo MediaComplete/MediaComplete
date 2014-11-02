@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace MSOE.MediaComplete.CustomControls
 {
-    class SongTreeViewItem : TreeViewItem
+    internal class SongTreeViewItem : TreeViewItem
     {
         protected override void OnPreviewMouseRightButtonDown(MouseButtonEventArgs e)
         {
-            this.IsSelected = true;
+            IsSelected = true;
             base.OnPreviewMouseRightButtonDown(e);
         }
     }

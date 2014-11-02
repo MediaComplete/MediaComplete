@@ -6,7 +6,10 @@
     <System:String x:Key="Toolbar_AutoIDMusic_Tooltip">Restore Metadata</System:String>
     <System:String x:Key="ContextMenu_AutoIDMusic_Header">Restore Metadata</System:String>
 
-    <BitmapImage x:Key="Toolbar_AddMusicFile_Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource=".\Resources\page_white_add.png"/>
-    <BitmapImage x:Key="Toolbar_AddMusicFolder_Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource=".\Resources\folder_add.png"/>
-    <BitmapImage x:Key="Toolbar_AutoIDMusic_Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource=".\Resources\wand.png"/>
+    <BitmapImage x:Key="Toolbar_AddMusicFile_Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
+                 UriSource=".\Resources\page_white_add.png" />
+    <BitmapImage x:Key="Toolbar_AddMusicFolder_Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
+                 UriSource=".\Resources\folder_add.png" />
+    <BitmapImage x:Key="Toolbar_AutoIDMusic_Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
+                 UriSource=".\Resources\wand.png" />
 </ResourceDictionary>

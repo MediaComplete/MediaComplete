@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace MSOE.MediaComplete
 {
-    static class Utils
+    internal static class Utils
     {
         public static string FilePath(this TreeViewItem leaf)
         {
@@ -17,7 +11,7 @@ namespace MSOE.MediaComplete
             {
                 parentPath = (leaf.Parent as TreeViewItem).FilePath();
             }
-            return parentPath + leaf.Header.ToString();
+            return parentPath + leaf.Header;
         }
     }
 }
