@@ -30,6 +30,12 @@ namespace MSOE.MediaComplete
             CheckBoxChanged(checkboxPolling, null);
         }
 
+        /// <summary>
+        /// The handler for the folder selection buttons of the setting screen.
+        /// Handles where the path from the dialog will appear.
+        /// </summary>
+        /// <param name="sender">The sender of the action(the folder selection button)</param>
+        /// <param name="e">Type of event</param>
         private void btnSelectFolder_Click(object sender, EventArgs e)
         {
             var folderBrowserDialog1 = new FolderBrowserDialog();
@@ -48,6 +54,12 @@ namespace MSOE.MediaComplete
             }
         }
 
+        /// <summary>
+        /// The handler of the checkbox change event for the setting screen.
+        /// Will enable or disable the polling related fields.
+        /// </summary>
+        /// <param name="sender">The sender of the action(the checkbox for polling)</param>
+        /// <param name="e">Type of event</param>
         private void CheckBoxChanged(object sender, RoutedEventArgs e)
         {
 
@@ -65,6 +77,13 @@ namespace MSOE.MediaComplete
                 btnInboxFolder.IsEnabled = false;
             }
         }
+
+        /// <summary>
+        /// The handler for a save button click.
+        /// Will save the values to the properties file.
+        /// </summary>
+        /// <param name="sender">The sender of the action</param>
+        /// <param name="e">Type of event</param>
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             // add settings here as they are added to the UI
