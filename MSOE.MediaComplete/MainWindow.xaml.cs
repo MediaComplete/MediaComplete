@@ -38,22 +38,6 @@ namespace MSOE.MediaComplete
 			
             Directory.CreateDirectory(homeDir);
             initTreeView(); 
-            
-            FileSystemWatcher watcher = new FileSystemWatcher();
-            watcher.Path = Properties.Settings.Default["InboxDir"].ToString();
-
-            watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
-               | NotifyFilters.FileName | NotifyFilters.DirectoryName;
-            watcher.Filter = "*.mp3";
-
-            watcher.Created += new FileSystemEventHandler(OnChangedInbox);
-
-            watcher.EnableRaisingEvents = true;
-        }
-
-        private static void OnChangedInbox(object source, FileSystemEventArgs e)
-        {
-            Console.WriteLine("File: " + e.FullPath + " " + e.ChangeType);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
