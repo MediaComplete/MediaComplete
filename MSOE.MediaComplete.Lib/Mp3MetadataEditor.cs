@@ -14,14 +14,17 @@ namespace MSOE.MediaComplete.Lib
         }
 
         //TODO this is just an example getter/setter - add in more as needed
-        public uint GetYear()
+        public uint Year
         {
-            return mp3File.Tag.Year;
-        }
-        public void SetYear(uint year)
-        {
-            mp3File.Tag.Year = year;
-            mp3File.Save();
+            get
+            {
+                return mp3File.Tag.Year;
+            }
+            set
+            {
+                mp3File.Tag.Year = value;
+                mp3File.Save();
+            }
         }
 
     }
