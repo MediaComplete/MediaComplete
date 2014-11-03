@@ -1,16 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Forms;
 
 namespace MSOE.MediaComplete
@@ -39,9 +28,9 @@ namespace MSOE.MediaComplete
         private void btnSelectFolder_Click(object sender, EventArgs e)
         {
             var folderBrowserDialog1 = new FolderBrowserDialog();
-            System.Windows.Controls.Button button = sender as System.Windows.Controls.Button;
-            if (folderBrowserDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
+            var button = sender as System.Windows.Controls.Button;
+            if (folderBrowserDialog1.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+            if (button != null)
                 switch (button.Name)
                 {
                     case "btnSelectFolder":
@@ -51,7 +40,6 @@ namespace MSOE.MediaComplete
                         txtboxInboxFolder.Text = folderBrowserDialog1.SelectedPath;
                         break;
                 }
-            }
         }
 
         /// <summary>
@@ -63,18 +51,24 @@ namespace MSOE.MediaComplete
         private void CheckBoxChanged(object sender, RoutedEventArgs e)
         {
 
-            System.Windows.Controls.CheckBox button = sender as System.Windows.Controls.CheckBox;
-            if (button.IsChecked == true)
+            var button = sender as System.Windows.Controls.CheckBox;
+            if (button != null && button.IsChecked == true)
             {
                 txtboxInboxFolder.IsEnabled = true;
                 txtboxPollTime.IsEnabled = true;
                 btnInboxFolder.IsEnabled = true;
+                lblPollTime.IsEnabled = true;
+                lblMin.IsEnabled = true;
+                lblSelectInboxLocation.IsEnabled = true;
             }
             else
             {
                 txtboxInboxFolder.IsEnabled = false;
                 txtboxPollTime.IsEnabled = false;
                 btnInboxFolder.IsEnabled = false;
+                lblPollTime.IsEnabled = false;
+                lblMin.IsEnabled = false;
+                lblSelectInboxLocation.IsEnabled = false;
             }
         }
 
