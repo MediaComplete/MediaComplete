@@ -23,22 +23,55 @@ namespace MSOE.MediaComplete
         public Settings()
         {
             InitializeComponent();
-            txtboxSelectedFolder.Text = (string) Properties.Settings.Default["HomeDir"];
+            txtboxSelectedFolder.Text = (string)Properties.Settings.Default["HomeDir"];
+            txtboxInboxFolder.Text = (string)Properties.Settings.Default["InboxDir"];
+            txtboxPollTime.Text = (string)Properties.Settings.Default["PollingTime"];
+            checkboxPolling.IsChecked = ((bool)Properties.Settings.Default["isPolling"]);
+            CheckBoxChanged(checkboxPolling, null);
         }
 
         private void btnSelectFolder_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog folderBrowserDialog1 = new FolderBrowserDialog();
+            var folderBrowserDialog1 = new FolderBrowserDialog();
+            System.Windows.Controls.Button button = sender as System.Windows.Controls.Button;
             if (folderBrowserDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                txtboxSelectedFolder.Text = folderBrowserDialog1.SelectedPath;
+                switch (button.Name)
+                {
+                    case "btnSelectFolder":
+                        txtboxSelectedFolder.Text = folderBrowserDialog1.SelectedPath;
+                        break;
+                    case "btnInboxFolder":
+                        txtboxInboxFolder.Text = folderBrowserDialog1.SelectedPath;
+                        break;
+                }
             }
         }
 
+        private void CheckBoxChanged(object sender, RoutedEventArgs e)
+        {
+
+            System.Windows.Controls.CheckBox button = sender as System.Windows.Controls.CheckBox;
+            if (button.IsChecked == true)
+            {
+                txtboxInboxFolder.IsEnabled = true;
+                txtboxPollTime.IsEnabled = true;
+                btnInboxFolder.IsEnabled = true;
+            }
+            else
+            {
+                txtboxInboxFolder.IsEnabled = false;
+                txtboxPollTime.IsEnabled = false;
+                btnInboxFolder.IsEnabled = false;
+            }
+        }
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             // add settings here as they are added to the UI
             Properties.Settings.Default["HomeDir"] = txtboxSelectedFolder.Text;
+            Properties.Settings.Default["InboxDir"] = txtboxInboxFolder.Text;
+            Properties.Settings.Default["PollingTime"] = txtboxPollTime.Text;
+            Properties.Settings.Default["isPolling"] = checkboxPolling.IsChecked;
             Properties.Settings.Default.Save();
         }
     }
