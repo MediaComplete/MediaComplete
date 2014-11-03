@@ -50,7 +50,7 @@ namespace MSOE.MediaComplete
             new Settings().Show();
         }
 
-        private void AddFile_Click(object sender, RoutedEventArgs e)
+        private async void AddFile_Click(object sender, RoutedEventArgs e)
         {
 
             OpenFileDialog fileDialog = new OpenFileDialog();
@@ -60,24 +60,21 @@ namespace MSOE.MediaComplete
             fileDialog.Multiselect = true;
             if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                foreach (String file in fileDialog.FileNames)
+                foreach (string filename in fileDialog.FileNames)
                 {
-                    try
+                    using (FileStream SourceStream = File.Open(filename, FileMode.Open))
                     {
-                        System.IO.File.Copy(file.ToString(), homeDir + System.IO.Path.GetFileName(file));
-                        //Console.WriteLine(homeDir + System.IO.Path.GetFileName(file));
+                        using (FileStream DestinationStream = File.Create(homeDir + System.IO.Path.GetFileName(filename)))
+                        {
+                            await SourceStream.CopyToAsync(DestinationStream);
+                        }
                     }
-                    catch (Exception exception)
-                    {
-                        System.Console.WriteLine(exception);
-                    }
-
                 }
             }
 
         }
 
-        private void AddFolder_Click(object sender, RoutedEventArgs e)
+        private async void AddFolder_Click(object sender, RoutedEventArgs e)
         {
             FolderBrowserDialog folderDialog = new FolderBrowserDialog();
             if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -87,16 +84,12 @@ namespace MSOE.MediaComplete
                                          SearchOption.AllDirectories);
                 foreach (String file in files)
                 {
-                    try
+                    using (FileStream SourceStream = File.Open(file, FileMode.Open))
                     {
-                        System.IO.File.Copy(file.ToString(),
-                            homeDir + System.IO.Path.GetFileName(file));
-
-                        //Console.WriteLine(homeDir + System.IO.Path.GetFileName(file));
-                    }
-                    catch (Exception exception)
-                    {
-                        System.Console.WriteLine(exception);
+                        using (FileStream DestinationStream = File.Create(homeDir + System.IO.Path.GetFileName(file)))
+                        {
+                            await SourceStream.CopyToAsync(DestinationStream);
+                        }
                     }
                 }
             }
