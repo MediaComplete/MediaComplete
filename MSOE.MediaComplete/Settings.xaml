@@ -10,7 +10,7 @@
                     <StackPanel DockPanel.Dock="Top">
                         <Label Content="Select Location of Home Directory:"/>
                         <StackPanel Orientation="Horizontal">
-                            <TextBox x:Name="txtboxSelectedFolder" Width="390" AcceptsReturn="True"/>
+                            <TextBox x:Name="txtboxSelectedFolder" Width="390"/>
                             <Button x:Name="btnSelectFolder" Margin="8, 0, 0, 0" Content="Select File" Click="btnSelectFolder_Click"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
@@ -24,7 +24,7 @@
                         </StackPanel>
                         <Label Content="Select Location of Inbox Directory:" />
                         <StackPanel Orientation="Horizontal">
-                            <TextBox x:Name="txtboxInboxFolder" Width="390" AcceptsReturn="True" />
+                            <TextBox x:Name="txtboxInboxFolder" Width="390"/>
                             <Button x:Name="btnInboxFolder" Margin="8, 0, 0, 0" Content="Select File"
                                     Click="btnSelectFolder_Click" />
                         </StackPanel>
