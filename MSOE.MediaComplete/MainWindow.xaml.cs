@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.IO;
+using MSOE.MediaComplete.Lib;
 
 namespace MSOE.MediaComplete
 {
