@@ -160,8 +160,15 @@ namespace MSOE.MediaComplete
         {
             // TODO support multi-select
             var selection = LibraryTree.SelectedItem as TreeViewItem;
-            string result = await MusicIdentifier.IdentifySong(selection.FilePath());
-            MessageBox.Show(result);
+            if (selection == null || !(selection is SongTreeViewItem))
+            {
+                return;
+            }
+            else
+            {
+                string result = await MusicIdentifier.IdentifySong(selection.FilePath());
+                MessageBox.Show(result);   
+            }
         }
 
         private async void ContextMenu_AutoIDMusic_Click(object sender, RoutedEventArgs e)
