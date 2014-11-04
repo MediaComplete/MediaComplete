@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Forms;
 using System.IO;
+using MSOE.MediaComplete.Lib;
 
 namespace MSOE.MediaComplete
 {
@@ -54,7 +55,7 @@ namespace MSOE.MediaComplete
         {
 
             OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.Filter = "MP3 Files (*.mp3)|*.mp3";
+            fileDialog.Filter = "MP3 Files (*.mp3)|" + Constants.MusicFilePattern;
             fileDialog.InitialDirectory = "C:";
             fileDialog.Title = "Select Music File(s)";
             fileDialog.Multiselect = true;
