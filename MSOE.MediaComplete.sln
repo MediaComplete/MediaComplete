@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSOE.MediaComplete", "MSOE.MediaComplete\MSOE.MediaComplete.csproj", "{A0884657-5FDE-459B-BACC-94B19AF58401}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSOE.MediaComplete.Lib", "MSOE.MediaComplete.Lib\MSOE.MediaComplete.Lib.csproj", "{9FC3A1A0-F81A-45BA-A8EB-1F4A10F0D3F1}"

@@ -183,6 +183,12 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MSOE.MediaComplete.Lib\MSOE.MediaComplete.Lib.csproj">
+      <Project>{9fc3a1a0-f81a-45ba-a8eb-1f4a10f0d3f1}</Project>
+      <Name>MSOE.MediaComplete.Lib</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
