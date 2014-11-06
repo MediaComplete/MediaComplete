@@ -23,16 +23,16 @@ namespace MSOE.MediaComplete.Test
         public void GetYear_ValidMp3_ShouldReturnYear()
         {
             _mp3 = new Mp3MetadataEditor(ValidMp3FileName);
-            Assert.AreEqual((uint)2012, _mp3.GetYear());
+            Assert.AreEqual((uint)2012, _mp3.Year);
         }
 
         [TestMethod]
         public void SetYear_ValidMp3_ShouldChangeYear()
         {
             _mp3 = new Mp3MetadataEditor(ValidMp3FileName);
-            Assert.AreEqual((uint)2012, _mp3.GetYear());
-            _mp3.SetYear(1985);
-            Assert.AreEqual((uint)1985, _mp3.GetYear());
+            Assert.AreEqual((uint)2012, _mp3.Year);
+            _mp3.Year = 1985;
+            Assert.AreEqual((uint)1985, _mp3.Year);
         }
     }
 

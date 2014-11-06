@@ -1,17 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Forms;
 using System.IO;
 using MSOE.MediaComplete.Lib;
@@ -21,29 +11,29 @@ namespace MSOE.MediaComplete
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
-        private String homeDir;
+        private readonly String _homeDir;
+
         public MainWindow()
         {
             InitializeComponent();
-            homeDir = (string)Properties.Settings.Default["HomeDir"];
-            if (homeDir.EndsWith("\\"))
+            _homeDir = (string) Properties.Settings.Default["HomeDir"];
+            if (_homeDir.EndsWith("\\"))
             {
-                homeDir += "library\\";
+                _homeDir += "library\\";
             }
             else
             {
-                homeDir += "\\library\\";
+                _homeDir += "\\library\\";
             }
-			
-            Directory.CreateDirectory(homeDir);
+
+            Directory.CreateDirectory(_homeDir);
             initTreeView();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
@@ -53,29 +43,29 @@ namespace MSOE.MediaComplete
 
         private void AddFile_Click(object sender, RoutedEventArgs e)
         {
+            var fileDialog = new OpenFileDialog
+            {
+                Filter = "MP3 Files (*.mp3)|" + Constants.MusicFilePattern,
+                InitialDirectory = Path.GetPathRoot(Environment.SystemDirectory),
+                Title = "Select Music File(s)",
+                Multiselect = true
+            };
 
-            OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.Filter = "MP3 Files (*.mp3)|" + Constants.MusicFilePattern;
-            fileDialog.InitialDirectory = "C:";
-            fileDialog.Title = "Select Music File(s)";
-            fileDialog.Multiselect = true;
             if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 foreach (String file in fileDialog.FileNames)
                 {
                     try
                     {
-                        System.IO.File.Copy(file.ToString(), homeDir + System.IO.Path.GetFileName(file));
+                        System.IO.File.Copy(file.ToString(), _homeDir + System.IO.Path.GetFileName(file));
                         //Console.WriteLine(homeDir + System.IO.Path.GetFileName(file));
                     }
                     catch (Exception exception)
                     {
                         System.Console.WriteLine(exception);
                     }
-
                 }
             }
-
         }
 
         private void AddFolder_Click(object sender, RoutedEventArgs e)
@@ -85,13 +75,13 @@ namespace MSOE.MediaComplete
             {
                 String selectedDir = folderDialog.SelectedPath;
                 String[] files = Directory.GetFiles(selectedDir, "*.mp3",
-                                         SearchOption.AllDirectories);
+                    SearchOption.AllDirectories);
                 foreach (String file in files)
                 {
                     try
                     {
                         System.IO.File.Copy(file.ToString(),
-                            homeDir + System.IO.Path.GetFileName(file));
+                            _homeDir + System.IO.Path.GetFileName(file));
 
                         //Console.WriteLine(homeDir + System.IO.Path.GetFileName(file));
                     }
@@ -107,7 +97,7 @@ namespace MSOE.MediaComplete
         {
             LibraryTree.Items.Clear();
 
-            var rootDirInfo = new DirectoryInfo(homeDir);
+            var rootDirInfo = new DirectoryInfo(_homeDir);
 
             LibraryTree.Items.Add(CreateDirectoryItem(rootDirInfo));
         }
@@ -116,7 +106,7 @@ namespace MSOE.MediaComplete
         {
             LibraryTree.Items.Clear();
 
-            var rootDirInfo = new DirectoryInfo(homeDir);
+            var rootDirInfo = new DirectoryInfo(_homeDir);
 
             LibraryTree.Items.Add(CreateDirectoryItem(rootDirInfo));
         }
@@ -124,8 +114,8 @@ namespace MSOE.MediaComplete
         private void initTreeView()
         {
             refreshTreeView();
-            
-            var watcher = new FileSystemWatcher(homeDir);
+
+            var watcher = new FileSystemWatcher(_homeDir);
             watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
 
             watcher.Changed += new FileSystemEventHandler(OnChanged);
@@ -138,7 +128,7 @@ namespace MSOE.MediaComplete
 
         private static TreeViewItem CreateDirectoryItem(DirectoryInfo dirInfo)
         {
-            var dirItem = new TreeViewItem { Header = dirInfo.Name };
+            var dirItem = new TreeViewItem {Header = dirInfo.Name};
             foreach (var dir in dirInfo.GetDirectories())
             {
                 dirItem.Items.Add(CreateDirectoryItem(dir));
@@ -146,7 +136,7 @@ namespace MSOE.MediaComplete
 
             foreach (var file in dirInfo.GetFiles())
             {
-                dirItem.Items.Add(new TreeViewItem { Header = file.Name });
+                dirItem.Items.Add(new TreeViewItem {Header = file.Name});
             }
 
             return dirItem;
@@ -154,14 +144,11 @@ namespace MSOE.MediaComplete
 
         private static void OnChanged(object source, FileSystemEventArgs e)
         {
-
-            App.Current.Dispatcher.Invoke(new Action(() => {
-
+            App.Current.Dispatcher.Invoke(new Action(() =>
+            {
                 var win = App.Current.Windows.OfType<MainWindow>().FirstOrDefault();
                 win.refreshTreeView();
-            
             }));
-            
         }
 
         //private static bool CtrlPressed()

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using TagLib;
 
-namespace MSOE.MediaComplete.Lib
+namespace MSOE.MediaComplete.Lib.Sorting
 {
     class Sorter
     {
@@ -15,10 +14,21 @@ namespace MSOE.MediaComplete.Lib
         public Sorter(DirectoryInfo rootDir, SortSettings settings)
         {
             MoveActions = new List<MoveAction>();
-            calculateActions(rootDir, settings);
+            CalculateActions(rootDir, settings);
         }
 
-        private void calculateActions(DirectoryInfo rootDir, SortSettings settings)
+        public async void PerformSort ()
+        {
+            await Task.Run(() =>
+            {
+                foreach (var action in MoveActions)
+                {
+                    File.Move(action.Source.FullName, action.Dest.FullName);
+                }
+            });
+        }
+
+        private void CalculateActions(DirectoryInfo rootDir, SortSettings settings)
         {
 
             foreach (FileInfo file in rootDir.EnumerateFiles(Constants.MusicFilePattern, SearchOption.AllDirectories))
@@ -26,7 +36,7 @@ namespace MSOE.MediaComplete.Lib
                 var path = rootDir.PathSegment(file.Directory);
 
                 if (path.Count != settings.SortOrder.Count) {
-                    MoveActions.Add(new MoveAction(){Source = file, Dest = getNewLocation(file, settings.SortOrder)});
+                    MoveActions.Add(new MoveAction { Source = file, Dest = GetNewLocation(rootDir, file, settings.SortOrder) });
                     continue;
                 }
 
@@ -34,22 +44,25 @@ namespace MSOE.MediaComplete.Lib
                 {
                     if (path[i] != file.Parent(i - path.Count))
                     {
-                        MoveActions.Add(new MoveAction() { Source = file, Dest = getNewLocation(file, settings.SortOrder) });
-                        continue;
+                        MoveActions.Add(new MoveAction { Source = file, Dest = GetNewLocation(rootDir, file, settings.SortOrder) });
+                        break;
                     }
                 }
             }
         }
 
-        private FileInfo getNewLocation(FileInfo file, List<MetaAttribute> list)
+        private DirectoryInfo GetNewLocation(DirectoryInfo root, FileInfo file, IEnumerable<MetaAttribute> list)
         {
-            throw new NotImplementedException();
+            var metadata = TagLib.File.Create(file.FullName).Tag;
+            var metadataPath = String.Join(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture),
+                list.Select(metadata.StringForMetaAttribute));
+            return new DirectoryInfo(root.FullName + Path.DirectorySeparatorChar + metadataPath);
         }
 
         private class MoveAction
         {
             public FileInfo Source { get; set; }
-            public FileInfo Dest { get; set; }
+            public DirectoryInfo Dest { get; set; }
         }
     }
 }

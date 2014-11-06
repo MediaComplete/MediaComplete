@@ -58,9 +58,8 @@ namespace MSOE.MediaComplete.Lib
         /// <param name="tag">The Tag object derived from a MP3 file</param>
         /// <param name="attr">The MetaAttribute for the specific ID3 value to be returned</param>
         /// <returns>The ID3 value from the Tag</returns>
-        // TODO this is readonly. 
         // TODO add support for more fields?
-        public static IComparable GetComparableForMetaAttribute(this Tag tag, MetaAttribute attr)
+        public static string StringForMetaAttribute(this Tag tag, MetaAttribute attr)
         {
             switch (attr)
             {
@@ -74,23 +73,22 @@ namespace MSOE.MediaComplete.Lib
                     if (tag is TagLib.Id3v2.Tag)
                         return
                             RatingFromByte(
-                                TagLib.Id3v2.PopularimeterFrame.Get(tag as TagLib.Id3v2.Tag, "WindowsUser", true).Rating);
+                                TagLib.Id3v2.PopularimeterFrame.Get(tag as TagLib.Id3v2.Tag, "WindowsUser", true).Rating).ToString();
                     else
-                        return RatingFromByte(0);
+                        return RatingFromByte(0).ToString();
                 case MetaAttribute.SongTitle:
                     return tag.Title;
                 case MetaAttribute.SupportingArtist:
                     return String.Join(",", tag.AlbumArtists.Skip(1));
                 case MetaAttribute.TrackNumber:
-                    return tag.Track;
+                    return tag.Track.ToString();
                 case MetaAttribute.Year:
-                    return tag.Year;
+                    return tag.Year.ToString();
                 default:
                     return null;
             }
         }
 
-        // TODO localize
         /// <summary>
         /// Translates a byte, representing a song rating from the POPM frame. 
         /// Returns an integer value representing the number of stars. -1 corresponds
@@ -111,7 +109,7 @@ namespace MSOE.MediaComplete.Lib
             else if (raw > 0)
                 return 1;
             else
-                return -1;
+                return -1; // unrated
         }
     }
 }

@@ -3,17 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Media Complete" Height="339" Width="787">
     <Grid Margin="0,0,0,0">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="189"/>
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="24"/>
             <RowDefinition/>
             <RowDefinition Height="100"/>
         </Grid.RowDefinitions>
 
-        <Menu Grid.Row="0" Grid.Column="0" Margin="0,0,0,0" Grid.ColumnSpan="1">
+        <Menu Grid.Row="0" Margin="0,0,0,0">
             <MenuItem Header="_File">
                 <MenuItem Header="_Exit"/>
             </MenuItem>
@@ -23,14 +19,17 @@
             <MenuItem Header="_Playlists"></MenuItem>
             <MenuItem Header="_MetaDataFinderThing"></MenuItem>
         </Menu>
-        <TextBox Grid.Column="1" Height="23" Text="Search" Width="189" HorizontalAlignment="Right"/>
+        <TextBox Grid.Row="0" Height="23" Text="Search" Width="189" HorizontalAlignment="Right"/>
         <ToolBarTray Grid.Row="1">
-            <ToolBar Grid.Row="1" Margin="0,0,0,161" Grid.ColumnSpan="2">
-                <Button Name="addFile" ToolTip="Add File" VerticalAlignment="Center" Click="AddFile_Click">
-                    <Image Source="Resources/add_file.png" Name="add_file"></Image>
+            <ToolBar Margin="0,0,0,161">
+                <Button Name="AddFile" ToolTip="Add File" VerticalAlignment="Center" Click="AddFile_Click">
+                    <Image Source="Resources/add_file.png"></Image>
                 </Button>
-                <Button Name="addFolder" ToolTip="Add Folder" VerticalAlignment="Center" Click="AddFolder_Click">
-                    <Image Source="Resources/add_folder.png" Name="add_folder"></Image>
+                <Button Name="AddFolder" ToolTip="Add Folder" VerticalAlignment="Center" Click="AddFolder_Click">
+                    <Image Source="Resources/add_folder.png"></Image>
+                </Button>
+                <Button Name="SortFolder" ToolTip="Add Folder" VerticalAlignment="Center" Click="AddFolder_Click">
+                    <Image Source="Resources/add_folder.png"></Image>
                 </Button>
             </ToolBar>
         </ToolBarTray>
@@ -46,9 +45,8 @@
             <TreeView Grid.Column="2" Margin="0,33,0,0"/>
             <TreeView Grid.Column="3" Grid.ColumnSpan="2" Margin="0,33,0,0"/>
         </Grid>
-        
 
-        <StackPanel Grid.Row="2" Grid.ColumnSpan="2">
+        <StackPanel Grid.Row="2">
             <Slider/>
             <StackPanel Height="64" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Content="Previous" MinWidth="75" Click="Button_Click"/>
