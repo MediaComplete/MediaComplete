@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.Security.Principal;
 using TagLib;
 
 namespace MSOE.MediaComplete.Lib
@@ -23,6 +22,11 @@ namespace MSOE.MediaComplete.Lib
         public static DirectoryInfo Parent(this FileInfo file, int n)
         {
             var dir = file.Directory;
+            if (dir == null)
+            {
+                return null;
+            }
+
             var i = 0;
             while (i < n && dir.Parent != null)
             {
@@ -40,16 +44,31 @@ namespace MSOE.MediaComplete.Lib
         /// <returns>A list of directories between top and bottom</returns>
         public static List<DirectoryInfo> PathSegment(this DirectoryInfo top, DirectoryInfo bottom)
         {
-            if (top == bottom)
+            List<DirectoryInfo> ret;
+            if (top.DirectoryEquals(bottom))
             {
-                return new List<DirectoryInfo>() {top};
+                ret = new List<DirectoryInfo> {bottom};
             }
             else
             {
-                var list = top.PathSegment(bottom.Parent);
-                list.Add(bottom);
-                return list;
+                ret = top.PathSegment(bottom.Parent);
+                ret.Add(bottom);
             }
+            return ret;
+        }
+
+        /// <summary>
+        /// Performs an equality test using Windows conventions for directory equality. 
+        /// Case insensitive, trailing slashes ignored
+        /// </summary>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
+        /// <returns></returns>
+        public static bool DirectoryEquals(this DirectoryInfo first, DirectoryInfo second)
+        {
+            var firstName = first.FullName.TrimEnd(new[] { Path.DirectorySeparatorChar });
+            var secondName = second.FullName.TrimEnd(new[] { Path.DirectorySeparatorChar });
+            return firstName.Equals(secondName, StringComparison.CurrentCultureIgnoreCase);
         }
 
         /// <summary>
@@ -71,19 +90,24 @@ namespace MSOE.MediaComplete.Lib
                     return tag.FirstGenre;
                 case MetaAttribute.Rating:
                     if (tag is TagLib.Id3v2.Tag)
+                    {
+                        var winId = WindowsIdentity.GetCurrent() ?? WindowsIdentity.GetAnonymous();
                         return
                             RatingFromByte(
-                                TagLib.Id3v2.PopularimeterFrame.Get(tag as TagLib.Id3v2.Tag, "WindowsUser", true).Rating).ToString();
-                    else
-                        return RatingFromByte(0).ToString();
+                                TagLib.Id3v2.PopularimeterFrame.Get(
+                                    tag as TagLib.Id3v2.Tag, winId.Name, true
+                                    ).Rating
+                                ).ToString(CultureInfo.InvariantCulture);
+                    }
+                    return RatingFromByte(0).ToString(CultureInfo.InvariantCulture);
                 case MetaAttribute.SongTitle:
                     return tag.Title;
                 case MetaAttribute.SupportingArtist:
                     return String.Join(",", tag.AlbumArtists.Skip(1));
                 case MetaAttribute.TrackNumber:
-                    return tag.Track.ToString();
+                    return tag.Track.ToString(CultureInfo.InvariantCulture);
                 case MetaAttribute.Year:
-                    return tag.Year.ToString();
+                    return tag.Year.ToString(CultureInfo.InvariantCulture);
                 default:
                     return null;
             }
@@ -100,16 +124,15 @@ namespace MSOE.MediaComplete.Lib
         {
             if (raw > 254)
                 return 5;
-            else if (raw > 191)
+            if (raw > 191)
                 return 4;
-            else if (raw > 127)
+            if (raw > 127)
                 return 3;
-            else if (raw > 63)
+            if (raw > 63)
                 return 2;
-            else if (raw > 0)
+            if (raw > 0)
                 return 1;
-            else
-                return -1; // unrated
+            return -1; // unrated
         }
     }
 }

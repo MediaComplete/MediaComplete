@@ -96,6 +96,10 @@ publish/
 *.Publish.xml
 
 # NuGet Packages Directory
+<<<<<<< HEAD
+=======
+## TODO: If you have NuGet Package Restore enabled, uncomment the next line
+>>>>>>> MC-44
 packages/
 
 # Windows Azure Build Output

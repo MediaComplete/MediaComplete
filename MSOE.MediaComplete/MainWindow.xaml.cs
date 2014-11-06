@@ -1,35 +1,39 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
+using MSOE.MediaComplete.Lib;
+using WinForms = System.Windows.Forms;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
-using System.IO;
-using MSOE.MediaComplete.Lib;
+using MSOE.MediaComplete.CustomControls;
+using MSOE.MediaComplete.Lib.Sorting;
 
 namespace MSOE.MediaComplete
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    ///     Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow
     {
-        private readonly String _homeDir;
+        private readonly string _homeDir;
 
         public MainWindow()
         {
             InitializeComponent();
-            _homeDir = (string) Properties.Settings.Default["HomeDir"];
-            if (_homeDir.EndsWith("\\"))
-            {
-                _homeDir += "library\\";
-            }
-            else
-            {
-                _homeDir += "\\library\\";
-            }
 
-            Directory.CreateDirectory(_homeDir);
-            initTreeView();
+            var homeDir = Properties.Settings.Default["HomeDir"] as string ??
+                          Path.GetPathRoot(Environment.SystemDirectory);
+            if (!homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
+            {
+                homeDir += Path.DirectorySeparatorChar;
+            }
+            homeDir += Constants.LibraryDirName + Path.DirectorySeparatorChar;
+
+            Directory.CreateDirectory(homeDir);
+            _homeDir = homeDir;
+            InitTreeView();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -43,26 +47,28 @@ namespace MSOE.MediaComplete
 
         private void AddFile_Click(object sender, RoutedEventArgs e)
         {
-            var fileDialog = new OpenFileDialog
+            var fileDialog = new WinForms.OpenFileDialog
             {
-                Filter = "MP3 Files (*.mp3)|" + Constants.MusicFilePattern,
+                Filter =
+                    Resources["Dialog-AddFile-FileFilter"] + "" + Constants.FileDialogFilterStringSeparator +
+                    Constants.MusicFilePattern,
                 InitialDirectory = Path.GetPathRoot(Environment.SystemDirectory),
-                Title = "Select Music File(s)",
+                Title = Resources["Dialog-AddFile-Title"].ToString(),
                 Multiselect = true
             };
 
-            if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (fileDialog.ShowDialog() == WinForms.DialogResult.OK)
             {
-                foreach (String file in fileDialog.FileNames)
+                foreach (var file in fileDialog.FileNames)
                 {
                     try
                     {
-                        System.IO.File.Copy(file.ToString(), _homeDir + System.IO.Path.GetFileName(file));
+                        File.Copy(file, _homeDir + Path.GetFileName(file));
                         //Console.WriteLine(homeDir + System.IO.Path.GetFileName(file));
                     }
                     catch (Exception exception)
                     {
-                        System.Console.WriteLine(exception);
+                        Console.WriteLine(exception);
                     }
                 }
             }
@@ -70,65 +76,58 @@ namespace MSOE.MediaComplete
 
         private void AddFolder_Click(object sender, RoutedEventArgs e)
         {
-            FolderBrowserDialog folderDialog = new FolderBrowserDialog();
-            if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            var folderDialog = new WinForms.FolderBrowserDialog();
+            if (folderDialog.ShowDialog() == WinForms.DialogResult.OK)
             {
-                String selectedDir = folderDialog.SelectedPath;
-                String[] files = Directory.GetFiles(selectedDir, "*.mp3",
+                var selectedDir = folderDialog.SelectedPath;
+                var files = Directory.GetFiles(selectedDir, "*.mp3",
                     SearchOption.AllDirectories);
-                foreach (String file in files)
+                foreach (var file in files)
                 {
                     try
                     {
-                        System.IO.File.Copy(file.ToString(),
-                            _homeDir + System.IO.Path.GetFileName(file));
+                        File.Copy(file, _homeDir + Path.GetFileName(file));
 
                         //Console.WriteLine(homeDir + System.IO.Path.GetFileName(file));
                     }
                     catch (Exception exception)
                     {
-                        System.Console.WriteLine(exception);
+                        Console.WriteLine(exception);
                     }
                 }
             }
         }
 
-        public void refreshTreeView(object source, FileSystemEventArgs e)
+        public void RefreshTreeView()
         {
+            // TODO this will cause ugly flickering when we have a ton of files
             LibraryTree.Items.Clear();
 
             var rootDirInfo = new DirectoryInfo(_homeDir);
-
-            LibraryTree.Items.Add(CreateDirectoryItem(rootDirInfo));
+            var tree = CreateDirectoryItem(rootDirInfo);
+            tree.Header = _homeDir;
+            LibraryTree.Items.Add(tree);
         }
 
-        public void refreshTreeView()
+        private void InitTreeView()
         {
-            LibraryTree.Items.Clear();
+            RefreshTreeView();
 
-            var rootDirInfo = new DirectoryInfo(_homeDir);
-
-            LibraryTree.Items.Add(CreateDirectoryItem(rootDirInfo));
-        }
-
-        private void initTreeView()
-        {
-            refreshTreeView();
-
-            var watcher = new FileSystemWatcher(_homeDir);
-            watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
-
-            watcher.Changed += new FileSystemEventHandler(OnChanged);
-            watcher.Created += new FileSystemEventHandler(OnChanged);
-            watcher.Deleted += new FileSystemEventHandler(OnChanged);
-            watcher.Renamed += new RenamedEventHandler(OnChanged);
+            var watcher = new FileSystemWatcher(_homeDir)
+            {
+                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
+            };
+            watcher.Changed += OnChanged;
+            watcher.Created += OnChanged;
+            watcher.Deleted += OnChanged;
+            watcher.Renamed += OnChanged;
 
             watcher.EnableRaisingEvents = true;
         }
 
-        private static TreeViewItem CreateDirectoryItem(DirectoryInfo dirInfo)
+        private TreeViewItem CreateDirectoryItem(DirectoryInfo dirInfo)
         {
-            var dirItem = new TreeViewItem {Header = dirInfo.Name};
+            var dirItem = new FolderTreeViewItem {Header = dirInfo.Name};
             foreach (var dir in dirInfo.GetDirectories())
             {
                 dirItem.Items.Add(CreateDirectoryItem(dir));
@@ -136,7 +135,11 @@ namespace MSOE.MediaComplete
 
             foreach (var file in dirInfo.GetFiles())
             {
-                dirItem.Items.Add(new TreeViewItem {Header = file.Name});
+                dirItem.Items.Add(new SongTreeViewItem
+                {
+                    Header = file.Name,
+                    ContextMenu = LibraryTree.Resources["SongContextMenu"] as ContextMenu
+                });
             }
 
             return dirItem;
@@ -144,11 +147,96 @@ namespace MSOE.MediaComplete
 
         private static void OnChanged(object source, FileSystemEventArgs e)
         {
-            App.Current.Dispatcher.Invoke(new Action(() =>
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                var win = App.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-                win.refreshTreeView();
-            }));
+                var win = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+                if (win != null)
+                {
+                    win.RefreshTreeView();
+                }
+            });
+        }
+
+        private async void Toolbar_AutoIDMusic_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO support multi-select
+            var selection = LibraryTree.SelectedItem as TreeViewItem;
+            if (selection is SongTreeViewItem)
+            {
+                string result = await MusicIdentifier.IdentifySong(selection.FilePath());
+                MessageBox.Show(result);
+            }
+        }
+
+        private async void ContextMenu_AutoIDMusic_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO support multi-select
+            var menuItem = sender as MenuItem;
+            if (menuItem == null)
+                return;
+            var contextMenu = menuItem.Parent as ContextMenu;
+            if (contextMenu == null)
+                return;
+            var selection = contextMenu.PlacementTarget as TreeViewItem;
+            string result;
+            // TODO probably don't need to display results. This will be phased out later.
+
+            try
+            {
+                result = await MusicIdentifier.IdentifySong(selection.FilePath());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                result = null;
+            }
+            if (result != null)
+            {
+                MessageBox.Show(result);
+            }
+        }
+
+        /// <summary>
+        /// Triggers an asyncronous sort operation. The sort engine first calculates the magnitude of the changes, and reports it to the user.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void Toolbar_SortMusic_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO - obtain from settings file, make configurable
+            var settings = new SortSettings
+            {
+                SortOrder = new List<MetaAttribute> {MetaAttribute.Artist, MetaAttribute.Album}
+            };
+
+            var sorter = new Sorter(new DirectoryInfo(_homeDir), settings);
+
+            if (sorter.MoveActions.Count == 0) // Nothing to sort! Notify and return.
+            {
+                MessageBox.Show(this,
+                    String.Format(Resources["Dialog-SortLibrary-NoSort"].ToString(), sorter.UnsortableCount),
+                    Resources["Dialog-SortLibrary-NoSortTitle"].ToString(), MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                return;
+            }
+
+            var result = MessageBox.Show(this,
+                String.Format(Resources["Dialog-SortLibrary-Confirm"].ToString(), sorter.MoveActions.Count,
+                    sorter.UnsortableCount),
+                Resources["Dialog-SortLibrary-Title"].ToString(), MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    await sorter.PerformSort();
+                }
+                catch (IOException ioe)
+                {
+                    // TODO - This should get localized and put in the application status bar (TBD)
+                    MessageBox.Show("Encountered an error while sorting files: " + ioe.Message);
+                }
+            }
         }
 
         //private static bool CtrlPressed()

@@ -1,12 +1,16 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MSOE.MediaComplete.Lib;
 
-namespace MSOE.MediaComplete.Lib
+namespace MSOE.MediaComplete.Lib.Sorting
 {
-    class SortSettings
+    /// <summary>
+    /// Contains the settings for a sort operation
+    /// </summary>
+    public class SortSettings
     {
+        /// <summary>
+        /// The order by which metadata attributes should be considered for sorting.
+        /// Example: Artist, Year, Album
+        /// </summary>
         public List<MetaAttribute> SortOrder { get; set; }
     }
 }
