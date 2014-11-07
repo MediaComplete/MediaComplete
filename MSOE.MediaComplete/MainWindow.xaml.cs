@@ -57,19 +57,17 @@ namespace MSOE.MediaComplete
                 Multiselect = true
             };
 
-            if (fileDialog.ShowDialog() == WinForms.DialogResult.OK)
+            if (fileDialog.ShowDialog() != WinForms.DialogResult.OK) return;
+            foreach (var file in fileDialog.FileNames)
             {
-                foreach (var file in fileDialog.FileNames)
+                try
                 {
-                    try
-                    {
-                        File.Copy(file, _homeDir + Path.GetFileName(file));
-                        //Console.WriteLine(homeDir + System.IO.Path.GetFileName(file));
-                    }
-                    catch (Exception exception)
-                    {
-                        Console.WriteLine(exception);
-                    }
+                    File.Copy(file, _homeDir + Path.GetFileName(file));
+                    //Console.WriteLine(homeDir + System.IO.Path.GetFileName(file));
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception);
                 }
             }
         }
@@ -77,23 +75,21 @@ namespace MSOE.MediaComplete
         private void AddFolder_Click(object sender, RoutedEventArgs e)
         {
             var folderDialog = new WinForms.FolderBrowserDialog();
-            if (folderDialog.ShowDialog() == WinForms.DialogResult.OK)
+            if (folderDialog.ShowDialog() != WinForms.DialogResult.OK) return;
+            var selectedDir = folderDialog.SelectedPath;
+            var files = Directory.GetFiles(selectedDir, "*.mp3",
+                SearchOption.AllDirectories);
+            foreach (var file in files)
             {
-                var selectedDir = folderDialog.SelectedPath;
-                var files = Directory.GetFiles(selectedDir, "*.mp3",
-                    SearchOption.AllDirectories);
-                foreach (var file in files)
+                try
                 {
-                    try
-                    {
-                        File.Copy(file, _homeDir + Path.GetFileName(file));
+                    File.Copy(file, _homeDir + Path.GetFileName(file));
 
-                        //Console.WriteLine(homeDir + System.IO.Path.GetFileName(file));
-                    }
-                    catch (Exception exception)
-                    {
-                        Console.WriteLine(exception);
-                    }
+                    //Console.WriteLine(homeDir + System.IO.Path.GetFileName(file));
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception);
                 }
             }
         }
@@ -161,11 +157,9 @@ namespace MSOE.MediaComplete
         {
             // TODO support multi-select
             var selection = LibraryTree.SelectedItem as TreeViewItem;
-            if (selection is SongTreeViewItem)
-            {
-                string result = await MusicIdentifier.IdentifySong(selection.FilePath());
-                MessageBox.Show(result);
-            }
+            if (!(selection is SongTreeViewItem)) return;
+            var result = await MusicIdentifier.IdentifySong(selection.FilePath());
+            MessageBox.Show(result);
         }
 
         private async void ContextMenu_AutoIDMusic_Click(object sender, RoutedEventArgs e)
@@ -225,17 +219,15 @@ namespace MSOE.MediaComplete
                     sorter.UnsortableCount),
                 Resources["Dialog-SortLibrary-Title"].ToString(), MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-            if (result == MessageBoxResult.Yes)
+            if (result != MessageBoxResult.Yes) return;
+            try
             {
-                try
-                {
-                    await sorter.PerformSort();
-                }
-                catch (IOException ioe)
-                {
-                    // TODO - This should get localized and put in the application status bar (TBD)
-                    MessageBox.Show("Encountered an error while sorting files: " + ioe.Message);
-                }
+                await sorter.PerformSort();
+            }
+            catch (IOException ioe)
+            {
+                // TODO - This should get localized and put in the application status bar (TBD)
+                MessageBox.Show("Encountered an error while sorting files: " + ioe.Message);
             }
         }
 

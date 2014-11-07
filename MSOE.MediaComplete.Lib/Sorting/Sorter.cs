@@ -42,12 +42,8 @@ namespace MSOE.MediaComplete.Lib.Sorting
         {
             await Task.Run(() =>
             {
-                foreach (var action in MoveActions)
+                foreach (var action in MoveActions.Where(action => action.Dest.Directory != null))
                 {
-                    if (action.Dest.Directory == null) // Will happen if something goes wrong in the calculation
-                    {
-                        continue;
-                    }
                     if (action.Dest.Exists) // If there's duplicate files in the collection. 
                     {
                         // Delete source, let the older one take precedence.
@@ -56,10 +52,8 @@ namespace MSOE.MediaComplete.Lib.Sorting
                         action.Source.Delete();
                         continue;
                     }
-                    Directory.CreateDirectory(action.Dest.Directory.FullName);
+                    if (action.Dest.Directory != null) Directory.CreateDirectory(action.Dest.Directory.FullName);
                     File.Move(action.Source.FullName, action.Dest.FullName);
-
-                    // TODO post timed updates to the status bar
                 }
                 ScrubEmptyDirectories(_root);
             });
@@ -93,17 +87,13 @@ namespace MSOE.MediaComplete.Lib.Sorting
                 }
                 
                 // Otherwise, calculate the appropriate path from the tags, and compare to the actual path.
-                for (var i = 0; i < path.Count; i++)
+                if (path.Where((t, i) => !t.DirectoryEquals(idealPath.Parent(path.Count - i - 1))).Any())
                 {
-                    if (!path[i].DirectoryEquals(idealPath.Parent(path.Count - i - 1)))
+                    MoveActions.Add(new MoveAction
                     {
-                        MoveActions.Add(new MoveAction
-                        {
-                            Source = file,
-                            Dest = idealPath
-                        });
-                        break;
-                    }
+                        Source = file,
+                        Dest = idealPath
+                    });
                 }
             }
         }
@@ -115,17 +105,12 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <param name="file">The source file to analyze</param>
         /// <param name="list">The sort-order of meta attributes</param>
         /// <returns>A new FileInfo describing where the source file should be moved to</returns>
-        private FileInfo GetNewLocation(DirectoryInfo root, FileInfo file, IEnumerable<MetaAttribute> list)
+        private static FileInfo GetNewLocation(FileSystemInfo root, FileSystemInfo file, IEnumerable<MetaAttribute> list)
         {
-            var metadata = TagLib.File.Create(file.FullName).Tag;
+            var metadata = TagLib.File.Create(file.FullName);
             var metadataPath = new StringBuilder();
-            foreach (var attr in list)
+            foreach (var metaValue in list.Select(metadata.StringForMetaAttribute).TakeWhile(metaValue => !String.IsNullOrWhiteSpace((metaValue))))
             {
-                var metaValue = metadata.StringForMetaAttribute(attr);
-                if (String.IsNullOrWhiteSpace((metaValue)))
-                {
-                    break;
-                }
                 metadataPath.Append(metaValue);
                 metadataPath.Append(Path.DirectorySeparatorChar);
             }
@@ -136,7 +121,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// Removes empty directories and subdirectories from the given root directory
         /// </summary>
         /// <param name="rootInfo">The root of the tree</param>
-        private void ScrubEmptyDirectories(DirectoryInfo rootInfo)
+        private static void ScrubEmptyDirectories(DirectoryInfo rootInfo)
         {
             foreach (var child in rootInfo.EnumerateDirectories())
             {

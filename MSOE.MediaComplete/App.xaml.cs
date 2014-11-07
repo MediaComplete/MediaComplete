@@ -1,6 +1,4 @@
-﻿using System.Windows;
-
-namespace MSOE.MediaComplete
+﻿namespace MSOE.MediaComplete
 {
     /// <summary>
     ///     Interaction logic for App.xaml
