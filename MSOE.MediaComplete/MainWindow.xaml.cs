@@ -23,7 +23,7 @@ namespace MSOE.MediaComplete
         {
             InitializeComponent();
             _homeDir = (string)Properties.Settings.Default["HomeDir"];
-            Importer.Instance._homeDir = _homeDir;
+            Importer.Instance.HomeDir = _homeDir;
 			
             InitTreeView();
         }
