@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Globalization;
+using System.IO;
 using System.Windows;
 using System.Windows.Forms;
+using MSOE.MediaComplete.Lib;
 
 namespace MSOE.MediaComplete
 {
@@ -9,14 +12,25 @@ namespace MSOE.MediaComplete
     /// </summary>
     public partial class Settings : Window
     {
+        private readonly SettingPublisher _settingPublisher = new SettingPublisher();
         public Settings()
         {
             InitializeComponent();
-            txtboxSelectedFolder.Text = (string)Properties.Settings.Default["HomeDir"];
+
+            var homedir = (string)Properties.Settings.Default["HomeDir"];
+            txtboxSelectedFolder.Text = homedir;
             txtboxInboxFolder.Text = (string)Properties.Settings.Default["InboxDir"];
             txtboxPollTime.Text = (string)Properties.Settings.Default["PollingTime"];
             checkboxPolling.IsChecked = ((bool)Properties.Settings.Default["isPolling"]);
             CheckBoxChanged(checkboxPolling, null);
+
+            _settingPublisher.RaiseSettingEvent += HandleSettingChangeEvent;
+
+        }
+
+        private void HandleSettingChangeEvent(object sender, SettingChanged e)
+        {
+            Importer.Instance._homeDir = e.HomeDir;
         }
 
         /// <summary>
@@ -81,11 +95,19 @@ namespace MSOE.MediaComplete
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             // add settings here as they are added to the UI
-            Properties.Settings.Default["HomeDir"] = txtboxSelectedFolder.Text;
+            var homeDir = txtboxSelectedFolder.Text;
+            if (!homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.CurrentCulture)))
+            {
+                homeDir += Path.DirectorySeparatorChar;
+            }
+            Properties.Settings.Default["HomeDir"] = homeDir;
             Properties.Settings.Default["InboxDir"] = txtboxInboxFolder.Text;
             Properties.Settings.Default["PollingTime"] = txtboxPollTime.Text;
             Properties.Settings.Default["isPolling"] = checkboxPolling.IsChecked;
+
             Properties.Settings.Default.Save();
+            _settingPublisher.ChangeSetting(homeDir);
+
         }
     }
 }

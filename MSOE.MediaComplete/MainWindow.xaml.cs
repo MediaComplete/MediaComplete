@@ -1,19 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Forms;
 using System.IO;
+using MSOE.MediaComplete.Lib;
+using Application = System.Windows.Application;
 
 namespace MSOE.MediaComplete
 {
@@ -22,22 +15,17 @@ namespace MSOE.MediaComplete
     /// </summary>
     public partial class MainWindow : Window
     {
-        private String homeDir;
+        private const string Mp3FileFormat = "MP3 Files (*.mp3)|*.mp3";
+        private const string FileDialogTitle = "Select Music File(s)";
+        private readonly string _homeDir;
+
         public MainWindow()
         {
             InitializeComponent();
-            homeDir = (string)Properties.Settings.Default["HomeDir"];
-            if (homeDir.EndsWith("\\"))
-            {
-                homeDir += "library\\";
-            }
-            else
-            {
-                homeDir += "\\library\\";
-            }
+            _homeDir = (string)Properties.Settings.Default["HomeDir"];
+            Importer.Instance._homeDir = _homeDir;
 			
-            Directory.CreateDirectory(homeDir);
-            initTreeView(); 
+            InitTreeView();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -50,87 +38,63 @@ namespace MSOE.MediaComplete
             new Settings().Show();
         }
 
-        private void AddFile_Click(object sender, RoutedEventArgs e)
+        private async void AddFile_Click(object sender, RoutedEventArgs e)
         {
-
-            OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.Filter = "MP3 Files (*.mp3)|*.mp3";
-            fileDialog.InitialDirectory = "C:";
-            fileDialog.Title = "Select Music File(s)";
-            fileDialog.Multiselect = true;
+            var fileDialog = new OpenFileDialog
+            {
+                Filter = Mp3FileFormat,
+                InitialDirectory = "C:",
+                Title = FileDialogTitle,
+                Multiselect = true
+            };
             if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                foreach (String file in fileDialog.FileNames)
-                {
-                    try
-                    {
-                        System.IO.File.Copy(file.ToString(), homeDir + System.IO.Path.GetFileName(file));
-                        //Console.WriteLine(homeDir + System.IO.Path.GetFileName(file));
-                    }
-                    catch (Exception exception)
-                    {
-                        System.Console.WriteLine(exception);
-                    }
-
-                }
+                await Task.Run(() => Importer.Instance.ImportFiles(fileDialog.FileNames));
             }
 
         }
 
-        private void AddFolder_Click(object sender, RoutedEventArgs e)
+        private async void AddFolder_Click(object sender, RoutedEventArgs e)
         {
-            FolderBrowserDialog folderDialog = new FolderBrowserDialog();
+            var folderDialog = new FolderBrowserDialog();
             if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                String selectedDir = folderDialog.SelectedPath;
-                String[] files = Directory.GetFiles(selectedDir, "*.mp3",
-                                         SearchOption.AllDirectories);
-                foreach (String file in files)
-                {
-                    try
-                    {
-                        System.IO.File.Copy(file.ToString(),
-                            homeDir + System.IO.Path.GetFileName(file));
-
-                        //Console.WriteLine(homeDir + System.IO.Path.GetFileName(file));
-                    }
-                    catch (Exception exception)
-                    {
-                        System.Console.WriteLine(exception);
-                    }
-                }
+                var selectedDir = folderDialog.SelectedPath;
+                await Task.Run(() => Importer.Instance.ImportDirectory(selectedDir));
+                
             }
         }
 
-        public void refreshTreeView(object source, FileSystemEventArgs e)
+        public void RefreshTreeView(object source, FileSystemEventArgs e)
         {
             LibraryTree.Items.Clear();
 
-            var rootDirInfo = new DirectoryInfo(homeDir);
+            var rootDirInfo = new DirectoryInfo(_homeDir);
 
             LibraryTree.Items.Add(CreateDirectoryItem(rootDirInfo));
         }
 
-        public void refreshTreeView()
+        public void RefreshTreeView()
         {
             LibraryTree.Items.Clear();
 
-            var rootDirInfo = new DirectoryInfo(homeDir);
+            var rootDirInfo = new DirectoryInfo(_homeDir);
 
             LibraryTree.Items.Add(CreateDirectoryItem(rootDirInfo));
         }
 
-        private void initTreeView()
+        private void InitTreeView()
         {
-            refreshTreeView();
-            
-            var watcher = new FileSystemWatcher(homeDir);
-            watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+            RefreshTreeView();
 
-            watcher.Changed += new FileSystemEventHandler(OnChanged);
-            watcher.Created += new FileSystemEventHandler(OnChanged);
-            watcher.Deleted += new FileSystemEventHandler(OnChanged);
-            watcher.Renamed += new RenamedEventHandler(OnChanged);
+            var watcher = new FileSystemWatcher(_homeDir)
+            {
+                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName
+            };
+            watcher.Changed += OnChanged;
+            watcher.Created += OnChanged;
+            watcher.Deleted += OnChanged;
+            watcher.Renamed += OnChanged;
 
             watcher.EnableRaisingEvents = true;
         }
@@ -154,25 +118,13 @@ namespace MSOE.MediaComplete
         private static void OnChanged(object source, FileSystemEventArgs e)
         {
 
-            App.Current.Dispatcher.Invoke(new Action(() => {
-
-                var win = App.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-                win.refreshTreeView();
-            
+            Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                var win = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+                if (win != null) win.RefreshTreeView();
             }));
             
         }
-
-        //private static bool CtrlPressed()
-        //{
-        //    return System.Windows.Input.Keyboard.IsKeyDown(Key.LeftCtrl) || System.Windows.Input.Keyboard.IsKeyDown(Key.RightCtrl);
-        //}
-
-        //private void LibraryTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        //{
-        //    Console.WriteLine("Sender: " + sender);
-
-        //    TreeViewItem selectedItem = (TreeViewItem) e.NewValue;
-        //}
+        
     }
 }

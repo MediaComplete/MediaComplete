@@ -1,7 +1,12 @@
 ﻿<Window x:Class="MSOE.MediaComplete.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Controls="clr-namespace:System.Windows.Controls;assembly=TreeViewEx" 
         Title="Media Complete" Height="339" Width="787">
+    <Window.Resources>
+        <Style TargetType="Controls:TreeViewExItem">
+            <Setter Property="IsExpanded" Value="{Binding IsExpandedValue}"/>
+        </Style></Window.Resources>
     <Grid Margin="0,0,0,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -42,11 +47,15 @@
                 <ColumnDefinition Width="125*"/>
                 <ColumnDefinition Width="134*"/>
             </Grid.ColumnDefinitions>
-            <TreeView Name="LibraryTree" Grid.Column="0" Margin="-5,33,5,0" Grid.ColumnSpan="2"/>
+            <Controls:TreeViewEx x:Name="LibraryTree" Grid.Column="0" Margin="0,33,0,0" Grid.ColumnSpan="2" AutomationProperties.Name="LeftTree" ItemsSource="{Binding Children}">
+                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                    <TextBlock Text="{Binding}"/>
+                </HierarchicalDataTemplate>
+            </Controls:TreeViewEx>
             <TreeView Grid.Column="2" Margin="0,33,0,0"/>
             <TreeView Grid.Column="3" Grid.ColumnSpan="2" Margin="0,33,0,0"/>
         </Grid>
-        
+
 
         <StackPanel Grid.Row="2" Grid.ColumnSpan="2">
             <Slider/>
