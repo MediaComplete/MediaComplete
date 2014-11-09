@@ -1,16 +1,28 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using MSOE.MediaComplete;
 
 namespace MSOE.MediaComplete.Lib
 {
     public class Importer
     {
-        private readonly string _homeDir;
-
-        public Importer(string dir)
+        public string _homeDir { get; set; }
+        private static Importer instance;
+        private Importer()
         {
-            _homeDir = dir;
+        }
+
+        public static Importer Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new Importer();
+                }
+                return instance;
+            }
         }
 
 
