@@ -1,17 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Forms;
 using MSOE.MediaComplete.Lib;
 
@@ -22,26 +12,24 @@ namespace MSOE.MediaComplete
     /// </summary>
     public partial class Settings : Window
     {
-        private SettingPublisher settingPublisher;
+        private readonly SettingPublisher _settingPublisher = new SettingPublisher();
         public Settings()
         {
             InitializeComponent();
             var homedir = (string)Properties.Settings.Default["HomeDir"];
             txtboxSelectedFolder.Text = homedir;
-            settingPublisher = new SettingPublisher();
-            settingPublisher.RaiseSettingEvent += HandleSettingChangeEvent;
+            _settingPublisher.RaiseSettingEvent += HandleSettingChangeEvent;
 
         }
 
         private void HandleSettingChangeEvent(object sender, SettingChanged e)
         {
             Importer.Instance._homeDir = e.HomeDir;
-            Console.WriteLine("The home Dir has been changed to: " + e.HomeDir);
         }
 
         private void btnSelectFolder_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog folderBrowserDialog1 = new FolderBrowserDialog();
+            var folderBrowserDialog1 = new FolderBrowserDialog();
             if (folderBrowserDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 txtboxSelectedFolder.Text = folderBrowserDialog1.SelectedPath;
@@ -52,13 +40,13 @@ namespace MSOE.MediaComplete
         {
             // add settings here as they are added to the UI
             var homeDir = txtboxSelectedFolder.Text;
-            if (!homeDir.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
+            if (!homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.CurrentCulture)))
             {
-                homeDir += System.IO.Path.DirectorySeparatorChar;
+                homeDir += Path.DirectorySeparatorChar;
             }
             Properties.Settings.Default["HomeDir"] = homeDir;
             Properties.Settings.Default.Save();
-            settingPublisher.ChangeSetting(homeDir);
+            _settingPublisher.ChangeSetting(homeDir);
 
             Directory.CreateDirectory(homeDir);
 

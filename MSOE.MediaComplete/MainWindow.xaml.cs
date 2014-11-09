@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.IO;
 using MSOE.MediaComplete.Lib;
+using Application = System.Windows.Application;
 
 namespace MSOE.MediaComplete
 {
@@ -16,7 +17,7 @@ namespace MSOE.MediaComplete
     {
         private const string Mp3FileFormat = "MP3 Files (*.mp3)|*.mp3";
         private const string FileDialogTitle = "Select Music File(s)";
-        private string _homeDir;
+        private readonly string _homeDir;
 
         public MainWindow()
         {
@@ -24,7 +25,7 @@ namespace MSOE.MediaComplete
             _homeDir = (string)Properties.Settings.Default["HomeDir"];
             Importer.Instance._homeDir = _homeDir;
 			
-            initTreeView();
+            InitTreeView();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -64,7 +65,7 @@ namespace MSOE.MediaComplete
             }
         }
 
-        public void refreshTreeView(object source, FileSystemEventArgs e)
+        public void RefreshTreeView(object source, FileSystemEventArgs e)
         {
             LibraryTree.Items.Clear();
 
@@ -73,7 +74,7 @@ namespace MSOE.MediaComplete
             LibraryTree.Items.Add(CreateDirectoryItem(rootDirInfo));
         }
 
-        public void refreshTreeView()
+        public void RefreshTreeView()
         {
             LibraryTree.Items.Clear();
 
@@ -82,17 +83,18 @@ namespace MSOE.MediaComplete
             LibraryTree.Items.Add(CreateDirectoryItem(rootDirInfo));
         }
 
-        private void initTreeView()
+        private void InitTreeView()
         {
-            refreshTreeView();
-            
-            var watcher = new FileSystemWatcher(_homeDir);
-            watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+            RefreshTreeView();
 
-            watcher.Changed += new FileSystemEventHandler(OnChanged);
-            watcher.Created += new FileSystemEventHandler(OnChanged);
-            watcher.Deleted += new FileSystemEventHandler(OnChanged);
-            watcher.Renamed += new RenamedEventHandler(OnChanged);
+            var watcher = new FileSystemWatcher(_homeDir)
+            {
+                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName
+            };
+            watcher.Changed += OnChanged;
+            watcher.Created += OnChanged;
+            watcher.Deleted += OnChanged;
+            watcher.Renamed += OnChanged;
 
             watcher.EnableRaisingEvents = true;
         }
@@ -116,11 +118,10 @@ namespace MSOE.MediaComplete
         private static void OnChanged(object source, FileSystemEventArgs e)
         {
 
-            App.Current.Dispatcher.Invoke(new Action(() => {
-
-                var win = App.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-                win.refreshTreeView();
-            
+            Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                var win = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+                if (win != null) win.RefreshTreeView();
             }));
             
         }
