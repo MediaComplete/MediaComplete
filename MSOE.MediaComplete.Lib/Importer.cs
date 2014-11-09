@@ -1,49 +1,48 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using MSOE.MediaComplete;
 
 namespace MSOE.MediaComplete.Lib
 {
     public class Importer
     {
-        public string _homeDir { get; set; }
-        private static Importer instance;
+        public string HomeDir { get; set; }
+        private static Importer _instance;
         private Importer()
         {
         }
 
         public static Importer Instance
         {
-            get
-            {
-                if (instance == null)
-                {
-                    instance = new Importer();
-                }
-                return instance;
-            }
+            get { return _instance ?? (_instance = new Importer()); }
         }
 
 
-        public async void ImportDirectory(string directory)
+        public async Task ImportDirectory(string directory, bool isCopying)
         {
             var files = await Task.Run(() => Directory.GetFiles(directory, "*.mp3",
             SearchOption.AllDirectories));
-            await Task.Run(() => ImportFiles(files));
+            await ImportFiles(files, isCopying);
         }
 
-        public async void ImportFiles(string[] files)
+        public async Task ImportFiles(string[] files, bool isCopying)
         {
             foreach (var file in files)
             {
                 var myFile = file;
-                var newFile = _homeDir + Path.GetFileName(file);
+                var newFile = HomeDir + Path.GetFileName(file);
                 if (!File.Exists(newFile))
                 {
                     try
                     {
-                        await Task.Run(() => File.Copy(myFile, newFile));
+                        if (isCopying)
+                        {
+                            await Task.Run(() => File.Copy(myFile, newFile));
+                        }
+                        else
+                        {
+                            await Task.Run(() => File.Move(myFile, newFile));
+                        }
                     }
                     catch (Exception exception)
                     {
@@ -51,7 +50,6 @@ namespace MSOE.MediaComplete.Lib
                     }
                 }
             }
-
         }
     }
 }

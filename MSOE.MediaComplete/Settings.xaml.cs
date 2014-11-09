@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Forms;
 using MSOE.MediaComplete.Lib;
@@ -20,7 +21,7 @@ namespace MSOE.MediaComplete
             var homedir = (string)Properties.Settings.Default["HomeDir"];
             txtboxSelectedFolder.Text = homedir;
             txtboxInboxFolder.Text = (string)Properties.Settings.Default["InboxDir"];
-            txtboxPollTime.Text = (string)Properties.Settings.Default["PollingTime"];
+            comboBox.SelectedValue = Properties.Settings.Default["PollingTime"];
             checkboxPolling.IsChecked = ((bool)Properties.Settings.Default["isPolling"]);
             CheckBoxChanged(checkboxPolling, null);
 
@@ -30,7 +31,7 @@ namespace MSOE.MediaComplete
 
         private void HandleSettingChangeEvent(object sender, SettingChanged e)
         {
-            Importer.Instance._homeDir = e.HomeDir;
+            Importer.Instance.HomeDir = e.HomeDir;
         }
 
         /// <summary>
@@ -69,7 +70,7 @@ namespace MSOE.MediaComplete
             if (button != null && button.IsChecked == true)
             {
                 txtboxInboxFolder.IsEnabled = true;
-                txtboxPollTime.IsEnabled = true;
+                comboBox.IsEnabled = true;
                 btnInboxFolder.IsEnabled = true;
                 lblPollTime.IsEnabled = true;
                 lblMin.IsEnabled = true;
@@ -78,7 +79,7 @@ namespace MSOE.MediaComplete
             else
             {
                 txtboxInboxFolder.IsEnabled = false;
-                txtboxPollTime.IsEnabled = false;
+                comboBox.IsEnabled = false;
                 btnInboxFolder.IsEnabled = false;
                 lblPollTime.IsEnabled = false;
                 lblMin.IsEnabled = false;
@@ -102,12 +103,22 @@ namespace MSOE.MediaComplete
             }
             Properties.Settings.Default["HomeDir"] = homeDir;
             Properties.Settings.Default["InboxDir"] = txtboxInboxFolder.Text;
-            Properties.Settings.Default["PollingTime"] = txtboxPollTime.Text;
+            Properties.Settings.Default["PollingTime"] = comboBox.SelectedValue;
             Properties.Settings.Default["isPolling"] = checkboxPolling.IsChecked;
 
             Properties.Settings.Default.Save();
+			
             _settingPublisher.ChangeSetting(homeDir);
 
+            Polling.Instance.PollingChanged(Convert.ToDouble(comboBox.SelectedValue), txtboxInboxFolder.Text);
+        }
+
+        private void ComboBox_Loaded(object sender, RoutedEventArgs args)
+        {
+            var dataList = new List<string> {".5", "1", "5", "10", "30", "60", "120", "240"};
+
+            var box = sender as System.Windows.Controls.ComboBox;
+            if (box != null) box.ItemsSource = dataList;
         }
     }
 }

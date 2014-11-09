@@ -23,8 +23,13 @@
                         <StackPanel Orientation="Horizontal">
                             <Label Name="lblPollTime" Content="Polling Time: " VerticalAlignment="Center"
                                    HorizontalAlignment="Left" />
-                            <TextBox Name="txtboxPollTime" VerticalAlignment="Center" VerticalContentAlignment="Center"
-                                     HorizontalAlignment="Right" Width="70" TextAlignment="Right" />
+                            <ComboBox
+                                Name="comboBox"
+                                HorizontalAlignment="Left"
+                                Margin="10,10,0,0"
+	                            VerticalAlignment="Top"
+	                            Width="120"
+	                            Loaded="ComboBox_Loaded"/>
                             <Label Name="lblMin" Content="(min)" VerticalAlignment="Center" HorizontalAlignment="Left"
                                    FontWeight="Light" />
                         </StackPanel>

@@ -23,8 +23,13 @@ namespace MSOE.MediaComplete
         {
             InitializeComponent();
             _homeDir = (string)Properties.Settings.Default["HomeDir"];
-            Importer.Instance._homeDir = _homeDir;
+            Importer.Instance.HomeDir = _homeDir;
 			
+            Directory.CreateDirectory(_homeDir);
+
+            Polling.Instance.TimeInMinutes = Convert.ToDouble(Properties.Settings.Default["PollingTime"]);
+            Polling.Instance.inboxDir = (string)Properties.Settings.Default["InboxDir"];
+            Polling.Instance.Start();
             InitTreeView();
         }
 
@@ -49,7 +54,7 @@ namespace MSOE.MediaComplete
             };
             if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                await Task.Run(() => Importer.Instance.ImportFiles(fileDialog.FileNames));
+                await Importer.Instance.ImportFiles(fileDialog.FileNames, true);
             }
 
         }
@@ -60,7 +65,7 @@ namespace MSOE.MediaComplete
             if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 var selectedDir = folderDialog.SelectedPath;
-                await Task.Run(() => Importer.Instance.ImportDirectory(selectedDir));
+                await Importer.Instance.ImportDirectory(selectedDir, true);
                 
             }
         }
