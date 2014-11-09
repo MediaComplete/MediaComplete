@@ -1,48 +1,41 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Forms;
-using System.IO;
+using Microsoft.Win32;
+using MSOE.MediaComplete.CustomControls;
+using MSOE.MediaComplete.Lib;
+using WinForms = System.Windows.Forms;
 
 namespace MSOE.MediaComplete
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    ///     Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        private String homeDir;
+        public static readonly string LibraryDirName = "library";
+
+        private string libraryDir;
+
         public MainWindow()
         {
             InitializeComponent();
-            homeDir = (string)Properties.Settings.Default["HomeDir"];
-            if (homeDir.EndsWith("\\"))
+            var homeDir = (string) Properties.Settings.Default["HomeDir"];
+            libraryDir = homeDir;
+            if (!homeDir.EndsWith(Path.DirectorySeparatorChar.ToString()))
             {
-                homeDir += "library\\";
+                libraryDir += Path.DirectorySeparatorChar;
             }
-            else
-            {
-                homeDir += "\\library\\";
-            }
-			
-            Directory.CreateDirectory(homeDir);
+            libraryDir += LibraryDirName + Path.DirectorySeparatorChar;
+
+            Directory.CreateDirectory(libraryDir);
             initTreeView();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
@@ -52,51 +45,48 @@ namespace MSOE.MediaComplete
 
         private void AddFile_Click(object sender, RoutedEventArgs e)
         {
-
-            OpenFileDialog fileDialog = new OpenFileDialog();
+            var fileDialog = new OpenFileDialog();
             fileDialog.Filter = "MP3 Files (*.mp3)|*.mp3";
             fileDialog.InitialDirectory = "C:";
             fileDialog.Title = "Select Music File(s)";
             fileDialog.Multiselect = true;
-            if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (fileDialog.ShowDialog(this) == true)
             {
-                foreach (String file in fileDialog.FileNames)
+                foreach (string file in fileDialog.FileNames)
                 {
                     try
                     {
-                        System.IO.File.Copy(file.ToString(), homeDir + System.IO.Path.GetFileName(file));
+                        File.Copy(file.ToString(), libraryDir + Path.GetFileName(file));
                         //Console.WriteLine(homeDir + System.IO.Path.GetFileName(file));
                     }
                     catch (Exception exception)
                     {
-                        System.Console.WriteLine(exception);
+                        Console.WriteLine(exception);
                     }
-
                 }
             }
-
         }
 
         private void AddFolder_Click(object sender, RoutedEventArgs e)
         {
-            FolderBrowserDialog folderDialog = new FolderBrowserDialog();
-            if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            var folderDialog = new WinForms.FolderBrowserDialog();
+            if (folderDialog.ShowDialog() == WinForms.DialogResult.OK)
             {
-                String selectedDir = folderDialog.SelectedPath;
-                String[] files = Directory.GetFiles(selectedDir, "*.mp3",
-                                         SearchOption.AllDirectories);
-                foreach (String file in files)
+                string selectedDir = folderDialog.SelectedPath;
+                string[] files = Directory.GetFiles(selectedDir, "*.mp3",
+                    SearchOption.AllDirectories);
+                foreach (string file in files)
                 {
                     try
                     {
-                        System.IO.File.Copy(file.ToString(),
-                            homeDir + System.IO.Path.GetFileName(file));
+                        File.Copy(file.ToString(),
+                            libraryDir + Path.GetFileName(file));
 
                         //Console.WriteLine(homeDir + System.IO.Path.GetFileName(file));
                     }
                     catch (Exception exception)
                     {
-                        System.Console.WriteLine(exception);
+                        Console.WriteLine(exception);
                     }
                 }
             }
@@ -106,25 +96,27 @@ namespace MSOE.MediaComplete
         {
             LibraryTree.Items.Clear();
 
-            var rootDirInfo = new DirectoryInfo(homeDir);
+            var rootDirInfo = new DirectoryInfo(libraryDir);
 
             LibraryTree.Items.Add(CreateDirectoryItem(rootDirInfo));
         }
 
         public void refreshTreeView()
         {
+            // TODO this will cause ugly flickering when we have a ton of files
             LibraryTree.Items.Clear();
 
-            var rootDirInfo = new DirectoryInfo(homeDir);
-
-            LibraryTree.Items.Add(CreateDirectoryItem(rootDirInfo));
+            var rootDirInfo = new DirectoryInfo(libraryDir);
+            TreeViewItem tree = CreateDirectoryItem(rootDirInfo);
+            tree.Header = libraryDir;
+            LibraryTree.Items.Add(tree);
         }
 
         private void initTreeView()
         {
             refreshTreeView();
-            
-            var watcher = new FileSystemWatcher(homeDir);
+
+            var watcher = new FileSystemWatcher(libraryDir);
             watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
 
             watcher.Changed += new FileSystemEventHandler(OnChanged);
@@ -135,17 +127,21 @@ namespace MSOE.MediaComplete
             watcher.EnableRaisingEvents = true;
         }
 
-        private static TreeViewItem CreateDirectoryItem(DirectoryInfo dirInfo)
+        private TreeViewItem CreateDirectoryItem(DirectoryInfo dirInfo)
         {
-            var dirItem = new TreeViewItem { Header = dirInfo.Name };
-            foreach (var dir in dirInfo.GetDirectories())
+            var dirItem = new FolderTreeViewItem {Header = dirInfo.Name};
+            foreach (DirectoryInfo dir in dirInfo.GetDirectories())
             {
                 dirItem.Items.Add(CreateDirectoryItem(dir));
             }
 
-            foreach (var file in dirInfo.GetFiles())
+            foreach (FileInfo file in dirInfo.GetFiles())
             {
-                dirItem.Items.Add(new TreeViewItem { Header = file.Name });
+                dirItem.Items.Add(new SongTreeViewItem
+                {
+                    Header = file.Name,
+                    ContextMenu = LibraryTree.Resources["SongContextMenu"] as ContextMenu
+                });
             }
 
             return dirItem;
@@ -153,14 +149,47 @@ namespace MSOE.MediaComplete
 
         private static void OnChanged(object source, FileSystemEventArgs e)
         {
-
-            App.Current.Dispatcher.Invoke(new Action(() => {
-
-                var win = App.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+            App.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                MainWindow win = App.Current.Windows.OfType<MainWindow>().FirstOrDefault();
                 win.refreshTreeView();
-            
             }));
-            
+        }
+
+        private async void Toolbar_AutoIDMusic_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO support multi-select
+            var selection = LibraryTree.SelectedItem as TreeViewItem;
+            if (selection == null || !(selection is SongTreeViewItem))
+            {
+                return;
+            }
+            else
+            {
+                string result = await MusicIdentifier.IdentifySong(selection.FilePath());
+                MessageBox.Show(result);   
+            }
+        }
+
+        private async void ContextMenu_AutoIDMusic_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO support multi-select
+            var selection = ((sender as MenuItem).Parent as ContextMenu).PlacementTarget as TreeViewItem;
+            string result;
+            // TODO probably don't need to display results. This will be phased out later.
+            try
+            {
+                result = await MusicIdentifier.IdentifySong(selection.FilePath());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                result = null;
+            }
+            if (result != null)
+            {
+                MessageBox.Show(result);
+            }
         }
 
         //private static bool CtrlPressed()

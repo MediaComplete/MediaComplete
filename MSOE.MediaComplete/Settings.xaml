@@ -8,22 +8,23 @@
             <TabItem Header="TabItem">
                 <DockPanel LastChildFill="False">
                     <StackPanel DockPanel.Dock="Top">
-                        <Label Content="Select Location of Home Directory:"/>
+                        <Label Content="Select Location of Home Directory:" />
                         <StackPanel Orientation="Horizontal">
-                            <TextBox x:Name="txtboxSelectedFolder" Width="390" AcceptsReturn="True"/>
-                            <Button x:Name="btnSelectFolder" Margin="8, 0, 0, 0" Content="Select File" Click="btnSelectFolder_Click"/>
+                            <TextBox x:Name="txtboxSelectedFolder" Width="390" AcceptsReturn="True" />
+                            <Button x:Name="btnSelectFolder" Margin="8, 0, 0, 0" Content="Select File"
+                                    Click="btnSelectFolder_Click" />
                         </StackPanel>
                     </StackPanel>
-                    <StackPanel DockPanel.Dock="Bottom" >
+                    <StackPanel DockPanel.Dock="Bottom">
                         <StackPanel HorizontalAlignment="Right" Margin="0,0,0,4" Orientation="Horizontal">
-                            <Button Name="btnSave" Margin="4" Content="Save Settings" Click="btnSave_Click"/>
+                            <Button Name="btnSave" Margin="4" Content="Save Settings" Click="btnSave_Click" />
                         </StackPanel>
                     </StackPanel>
-                    
+
                 </DockPanel>
             </TabItem>
             <TabItem Header="TabItem">
-                <Grid Background="#FFE5E5E5" Margin="0,0,0,0"/>
+                <Grid Background="#FFE5E5E5" Margin="0,0,0,0" />
             </TabItem>
         </TabControl>
     </Grid>
