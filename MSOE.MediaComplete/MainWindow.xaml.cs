@@ -6,9 +6,10 @@ using System.Linq;
 using MSOE.MediaComplete.Lib;
 using WinForms = System.Windows.Forms;
 using System.Windows;
-using System.Windows.Controls;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib.Sorting;
+using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace MSOE.MediaComplete
 {
@@ -18,6 +19,7 @@ namespace MSOE.MediaComplete
     public partial class MainWindow
     {
         private readonly string _homeDir;
+        private readonly Importer _importer;
 
         public MainWindow()
         {
@@ -29,10 +31,11 @@ namespace MSOE.MediaComplete
             {
                 homeDir += Path.DirectorySeparatorChar;
             }
-            homeDir += Constants.LibraryDirName + Path.DirectorySeparatorChar;
+            homeDir += Lib.Constants.LibraryDirName + Path.DirectorySeparatorChar;
 
             Directory.CreateDirectory(homeDir);
             _homeDir = homeDir;
+            _importer = new Importer(_homeDir);
             InitTreeView();
         }
 
@@ -45,13 +48,13 @@ namespace MSOE.MediaComplete
             new Settings().Show();
         }
 
-        private void AddFile_Click(object sender, RoutedEventArgs e)
+        private async void AddFile_Click(object sender, RoutedEventArgs e)
         {
             var fileDialog = new WinForms.OpenFileDialog
             {
                 Filter =
-                    Resources["Dialog-AddFile-FileFilter"] + "" + Constants.FileDialogFilterStringSeparator +
-                    Constants.MusicFilePattern,
+                    Resources["Dialog-AddFile-FileFilter"] + "" + Lib.Constants.FileDialogFilterStringSeparator +
+                    Lib.Constants.MusicFilePattern,
                 InitialDirectory = Path.GetPathRoot(Environment.SystemDirectory),
                 Title = Resources["Dialog-AddFile-Title"].ToString(),
                 Multiselect = true
@@ -59,42 +62,18 @@ namespace MSOE.MediaComplete
 
             if (fileDialog.ShowDialog() == WinForms.DialogResult.OK)
             {
-                foreach (var file in fileDialog.FileNames)
-                {
-                    try
-                    {
-                        File.Copy(file, _homeDir + Path.GetFileName(file));
-                        //Console.WriteLine(homeDir + System.IO.Path.GetFileName(file));
-                    }
-                    catch (Exception exception)
-                    {
-                        Console.WriteLine(exception);
-                    }
-                }
+                await Task.Run(() => _importer.ImportFiles(fileDialog.FileNames));
             }
         }
 
-        private void AddFolder_Click(object sender, RoutedEventArgs e)
+        private async void AddFolder_Click(object sender, RoutedEventArgs e)
         {
             var folderDialog = new WinForms.FolderBrowserDialog();
-            if (folderDialog.ShowDialog() == WinForms.DialogResult.OK)
+            if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 var selectedDir = folderDialog.SelectedPath;
-                var files = Directory.GetFiles(selectedDir, "*.mp3",
-                    SearchOption.AllDirectories);
-                foreach (var file in files)
-                {
-                    try
-                    {
-                        File.Copy(file, _homeDir + Path.GetFileName(file));
-
-                        //Console.WriteLine(homeDir + System.IO.Path.GetFileName(file));
-                    }
-                    catch (Exception exception)
-                    {
-                        Console.WriteLine(exception);
-                    }
-                }
+                await Task.Run(() => _importer.ImportDirectory(selectedDir));
+                
             }
         }
 
@@ -104,9 +83,8 @@ namespace MSOE.MediaComplete
             LibraryTree.Items.Clear();
 
             var rootDirInfo = new DirectoryInfo(_homeDir);
-            var tree = CreateDirectoryItem(rootDirInfo);
-            tree.Header = _homeDir;
-            LibraryTree.Items.Add(tree);
+
+            LibraryTree.Items.Add(CreateDirectoryItem(rootDirInfo));
         }
 
         private void InitTreeView()
@@ -160,11 +138,14 @@ namespace MSOE.MediaComplete
         private async void Toolbar_AutoIDMusic_Click(object sender, RoutedEventArgs e)
         {
             // TODO support multi-select
-            var selection = LibraryTree.SelectedItem as TreeViewItem;
-            if (selection is SongTreeViewItem)
+            var selection = LibraryTree.SelectedItems;
+            foreach (var node in selection)
             {
-                string result = await MusicIdentifier.IdentifySong(selection.FilePath());
-                MessageBox.Show(result);
+                if (node is SongTreeViewItem)
+                {
+                    string result = await MusicIdentifier.IdentifySong((node as SongTreeViewItem).FilePath());
+                    MessageBox.Show(result);
+                }   
             }
         }
 
@@ -238,17 +219,6 @@ namespace MSOE.MediaComplete
                 }
             }
         }
-
-        //private static bool CtrlPressed()
-        //{
-        //    return System.Windows.Input.Keyboard.IsKeyDown(Key.LeftCtrl) || System.Windows.Input.Keyboard.IsKeyDown(Key.RightCtrl);
-        //}
-
-        //private void LibraryTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        //{
-        //    Console.WriteLine("Sender: " + sender);
-
-        //    TreeViewItem selectedItem = (TreeViewItem) e.NewValue;
-        //}
+        
     }
 }
