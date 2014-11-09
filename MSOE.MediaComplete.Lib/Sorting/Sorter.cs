@@ -28,12 +28,20 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// </summary>
         /// <param name="root">The root of the library</param>
         /// <param name="settings">Sort settings</param>
-        public Sorter(DirectoryInfo root, SortSettings settings)
+        public Sorter(DirectoryInfo root, SortSettings settings) : this(root)
+        {
+            // TODO investigation - could this lock up the GUI?
+            if (_root != null)
+            {
+                CalculateActions(_root.EnumerateFiles(Constants.MusicFilePattern, SearchOption.AllDirectories), settings);    
+            }
+        }
+
+        private Sorter(DirectoryInfo root)
         {
             _root = root;
-            Actions = new List<IAction>();
             UnsortableCount = 0;
-            CalculateActions(settings); // TODO investigation - could this lock up the GUI?
+            Actions = new List<IAction>();
         }
 
         /// <summary>
@@ -58,9 +66,16 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// Private function to determine what movements need to occur to put the library in order
         /// </summary>
         /// <param name="settings">The sorting settings</param>
-        private void CalculateActions(SortSettings settings)
+        /// <param name="files">The files to consider taking action upon</param>
+        private void CalculateActions(IEnumerable<FileInfo> files, SortSettings settings)
         {
-            foreach (var file in _root.EnumerateFiles(Constants.MusicFilePattern, SearchOption.AllDirectories))
+            var fileInfos = files as IList<FileInfo> ?? files.ToList();
+            if (!fileInfos.Any() || settings == null)
+            {
+                return;
+            }
+
+            foreach (var file in fileInfos)
             {
                 var path = _root.PathSegment(file.Directory);
                 var targetFile = GetNewLocation(file, settings.SortOrder);
@@ -148,6 +163,34 @@ namespace MSOE.MediaComplete.Lib.Sorting
             }
         }
 
+        #region Import Event Handling
+
+        static Sorter()
+        {
+            Importer.ImportFinished += SortNewImports;   
+        }
+
+        /// <summary>
+        /// Sorts incoming files that have just been imported.
+        /// </summary>
+        /// <param name="files">The new files</param>
+        /// <param name="homeDir">The library root</param>
+        public static async void SortNewImports (List<FileInfo> files, DirectoryInfo homeDir)
+        {
+            // TODO get settings from configuration
+            var settings = new SortSettings
+            {
+                SortOrder = new List<MetaAttribute> {MetaAttribute.Artist, MetaAttribute.Album}
+            };
+            var sorter = new Sorter(homeDir);
+            sorter.CalculateActions(files, settings);
+            await sorter.PerformSort();
+        }
+
+        #endregion
+
+        #region Actions
+
         public interface IAction
         {
             void Do();
@@ -184,5 +227,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                 Target.Delete(); // TODO This should be a "recycle" delete. Not implemented yet.
             }
         }
+
+        #endregion
     }
 }
