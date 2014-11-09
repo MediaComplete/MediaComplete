@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Constants.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="FileExtensions.cs" />
     <Compile Include="Mp3MetadataEditor.cs" />
     <Compile Include="MusicIdentifier.cs">
       <SubType>Code</SubType>

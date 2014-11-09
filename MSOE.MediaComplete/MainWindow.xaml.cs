@@ -211,7 +211,7 @@ namespace MSOE.MediaComplete
 
             var sorter = new Sorter(new DirectoryInfo(_homeDir), settings);
 
-            if (sorter.MoveActions.Count == 0) // Nothing to sort! Notify and return.
+            if (sorter.Actions.Count == 0) // Nothing to do! Notify and return.
             {
                 MessageBox.Show(this,
                     String.Format(Resources["Dialog-SortLibrary-NoSort"].ToString(), sorter.UnsortableCount),
@@ -221,7 +221,7 @@ namespace MSOE.MediaComplete
             }
 
             var result = MessageBox.Show(this,
-                String.Format(Resources["Dialog-SortLibrary-Confirm"].ToString(), sorter.MoveActions.Count,
+                String.Format(Resources["Dialog-SortLibrary-Confirm"].ToString(), sorter.MoveCount, sorter.DupCount,
                     sorter.UnsortableCount),
                 Resources["Dialog-SortLibrary-Title"].ToString(), MessageBoxButton.YesNo, MessageBoxImage.Question);
 

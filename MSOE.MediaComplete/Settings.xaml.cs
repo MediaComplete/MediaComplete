@@ -12,7 +12,7 @@ namespace MSOE.MediaComplete
         public Settings()
         {
             InitializeComponent();
-            txtboxSelectedFolder.Text = (string) Properties.Settings.Default["HomeDir"];
+            TxtboxSelectedFolder.Text = (string) Properties.Settings.Default["HomeDir"];
         }
 
         private void btnSelectFolder_Click(object sender, EventArgs e)
@@ -20,14 +20,14 @@ namespace MSOE.MediaComplete
             var folderBrowserDialog1 = new FolderBrowserDialog();
             if (folderBrowserDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                txtboxSelectedFolder.Text = folderBrowserDialog1.SelectedPath;
+                TxtboxSelectedFolder.Text = folderBrowserDialog1.SelectedPath;
             }
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             // add settings here as they are added to the UI
-            Properties.Settings.Default["HomeDir"] = txtboxSelectedFolder.Text;
+            Properties.Settings.Default["HomeDir"] = TxtboxSelectedFolder.Text;
             Properties.Settings.Default.Save();
         }
     }

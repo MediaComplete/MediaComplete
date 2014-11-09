@@ -8,7 +8,7 @@
     <system:String x:Key="ContextMenu-AutoIdMusic-Header">Restore Metadata</system:String>
     <system:String x:Key="Dialog-AddFile-FileFilter">MP3 Files (*.mp3)</system:String>
     <system:String x:Key="Dialog-AddFile-Title">Select Music File(s)</system:String>
-    <system:String x:Key="Dialog-SortLibrary-Confirm">{0} file(s) will be moved, {1} file(s) cannot be sorted, do you want to perform this operation?</system:String>
+    <system:String x:Key="Dialog-SortLibrary-Confirm">{0} file(s) will be moved, {1} duplicate file(s) will be deleted, {2} file(s) cannot be sorted, do you want to perform this operation?</system:String>
     <system:String x:Key="Dialog-SortLibrary-Title">Confirm</system:String>
     <system:String x:Key="Dialog-SortLibrary-NoSort">No files require sorting. There were {0} file(s) missing metadata that make them impossible to sort.</system:String>
     <system:String x:Key="Dialog-SortLibrary-NoSortTitle">Nothing to Sort</system:String>

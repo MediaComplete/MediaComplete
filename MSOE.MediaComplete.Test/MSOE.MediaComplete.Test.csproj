@@ -58,11 +58,20 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Constants.cs" />
+    <Compile Include="FileHelper.cs" />
     <Compile Include="Mp3MetadataEditorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SortingTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\InvalidMp3File.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\MissingAlbumMp3File.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\MissingArtistMp3File.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\ValidMp3File.mp3">
