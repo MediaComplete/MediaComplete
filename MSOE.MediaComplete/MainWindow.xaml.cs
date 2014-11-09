@@ -49,7 +49,7 @@ namespace MSOE.MediaComplete
             };
             if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                await Task.Run(() => Importer.Instance.ImportFiles(fileDialog.FileNames));
+                await Importer.Instance.ImportFiles(fileDialog.FileNames);
             }
 
         }
@@ -60,7 +60,7 @@ namespace MSOE.MediaComplete
             if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 var selectedDir = folderDialog.SelectedPath;
-                await Task.Run(() => Importer.Instance.ImportDirectory(selectedDir));
+                await Importer.Instance.ImportDirectory(selectedDir);
                 
             }
         }

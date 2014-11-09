@@ -24,7 +24,7 @@ namespace MSOE.MediaComplete
 
         private void HandleSettingChangeEvent(object sender, SettingChanged e)
         {
-            Importer.Instance._homeDir = e.HomeDir;
+            Importer.Instance.HomeDir = e.HomeDir;
         }
 
         private void btnSelectFolder_Click(object sender, EventArgs e)
