@@ -10,32 +10,22 @@ using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
 
 namespace MSOE.MediaComplete
-{
+{ 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow
+    public partial class MainWindow : Window
     {
         private const string Mp3FileFormat = "MP3 Files (*.mp3)|*.mp3";
         private const string FileDialogTitle = "Select Music File(s)";
         private readonly string _homeDir;
-        private readonly Importer _importer;
 
         public MainWindow()
         {
             InitializeComponent();
             _homeDir = (string)Properties.Settings.Default["HomeDir"];
-            if (_homeDir.EndsWith("\\"))
-            {
-                _homeDir += "library\\";
-            }
-            else
-            {
-                _homeDir += "\\library\\";
-            }
+            Importer.Instance.HomeDir = _homeDir;
 
-            Directory.CreateDirectory(_homeDir);
-            _importer = new Importer(_homeDir);
             InitTreeView();
         }
 
@@ -60,7 +50,7 @@ namespace MSOE.MediaComplete
             };
             if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                await Task.Run(() => _importer.ImportFiles(fileDialog.FileNames));
+                await Importer.Instance.ImportFiles(fileDialog.FileNames);
             }
 
         }
@@ -71,7 +61,7 @@ namespace MSOE.MediaComplete
             if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 var selectedDir = folderDialog.SelectedPath;
-                await Task.Run(() => _importer.ImportDirectory(selectedDir));
+                await Importer.Instance.ImportDirectory(selectedDir);
 
             }
         }
