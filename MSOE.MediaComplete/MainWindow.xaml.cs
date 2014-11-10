@@ -16,6 +16,9 @@ namespace MSOE.MediaComplete
     /// </summary>
     public partial class MainWindow : Window
     {
+        
+        private string libraryDir;
+
         private const string Mp3FileFormat = "MP3 Files (*.mp3)|*.mp3";
         private const string FileDialogTitle = "Select Music File(s)";
         private readonly string _homeDir;
@@ -24,8 +27,13 @@ namespace MSOE.MediaComplete
         {
             InitializeComponent();
             _homeDir = (string)Properties.Settings.Default["HomeDir"];
-            Importer.Instance.HomeDir = _homeDir;
+            libraryDir = _homeDir;
+            if (!_homeDir.EndsWith(Path.DirectorySeparatorChar.ToString()))
+            {
+                libraryDir += Path.DirectorySeparatorChar;
+            }
 
+            Directory.CreateDirectory(libraryDir);
             InitTreeView();
         }
 
