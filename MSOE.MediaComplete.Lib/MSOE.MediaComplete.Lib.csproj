@@ -76,6 +76,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SettingChanged.cs" />
+    <Compile Include="SettingPublisher.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="codegen.dll">

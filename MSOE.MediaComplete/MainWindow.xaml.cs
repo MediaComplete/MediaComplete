@@ -84,7 +84,7 @@ namespace MSOE.MediaComplete
             var rootDirInfo = new DirectoryInfo(_homeDir);
             foreach (var rootChild in rootDirInfo.GetDirectories())
             {
-                FolderTree.Items.Add(CreateFolderItem(rootChild, SongTree));
+                FolderTree.Items.Add(PopulateFromFolder(rootChild, SongTree));
             }
             foreach (var rootChild in rootDirInfo.GetFiles())
             {
@@ -109,12 +109,12 @@ namespace MSOE.MediaComplete
         }
 
        
-        private static FolderTreeViewItem CreateFolderItem(DirectoryInfo dirInfo, TreeViewEx songTree)
+        private static FolderTreeViewItem PopulateFromFolder(DirectoryInfo dirInfo, TreeViewEx songTree)
         {
             var dirItem = new FolderTreeViewItem() { Header = dirInfo.Name };
             foreach (var dir in dirInfo.GetDirectories())
             {
-                dirItem.Items.Add(CreateFolderItem(dir, songTree));
+                dirItem.Items.Add(PopulateFromFolder(dir, songTree));
             }
 
             foreach (var file in dirInfo.GetFiles())

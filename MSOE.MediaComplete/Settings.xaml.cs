@@ -1,18 +1,30 @@
 ﻿using System;
+using System.Globalization;
+using System.IO;
 using System.Windows;
 using System.Windows.Forms;
+using MSOE.MediaComplete.Lib;
 
 namespace MSOE.MediaComplete
 {
     /// <summary>
-    ///     Interaction logic for Settings.xaml
+    /// Interaction logic for Settings.xaml
     /// </summary>
     public partial class Settings : Window
     {
+        private readonly SettingPublisher _settingPublisher = new SettingPublisher();
         public Settings()
         {
             InitializeComponent();
-            txtboxSelectedFolder.Text = (string) Properties.Settings.Default["HomeDir"];
+            var homedir = (string)Properties.Settings.Default["HomeDir"];
+            txtboxSelectedFolder.Text = homedir;
+            _settingPublisher.RaiseSettingEvent += HandleSettingChangeEvent;
+
+        }
+
+        private void HandleSettingChangeEvent(object sender, SettingChanged e)
+        {
+            Importer.Instance.HomeDir = e.HomeDir;
         }
 
         private void btnSelectFolder_Click(object sender, EventArgs e)
@@ -27,8 +39,17 @@ namespace MSOE.MediaComplete
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             // add settings here as they are added to the UI
-            Properties.Settings.Default["HomeDir"] = txtboxSelectedFolder.Text;
+            var homeDir = txtboxSelectedFolder.Text;
+            if (!homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.CurrentCulture)))
+            {
+                homeDir += Path.DirectorySeparatorChar;
+            }
+            Properties.Settings.Default["HomeDir"] = homeDir;
             Properties.Settings.Default.Save();
+            _settingPublisher.ChangeSetting(homeDir);
+
+            Directory.CreateDirectory(homeDir);
+
         }
     }
 }
