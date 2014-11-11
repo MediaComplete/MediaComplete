@@ -50,6 +50,7 @@ namespace MSOE.MediaComplete
 
             Directory.CreateDirectory(homeDir);
 
+            this.DialogResult = true;
         }
     }
 }

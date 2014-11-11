@@ -2,7 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Settings" Height="372" Width="482"
-        ResizeMode="NoResize">
+        ResizeMode="NoResize"
+        ShowInTaskbar="False">
     <Grid>
         <TabControl HorizontalAlignment="Left" Height="342" VerticalAlignment="Top" Width="472">
             <TabItem Header="TabItem">

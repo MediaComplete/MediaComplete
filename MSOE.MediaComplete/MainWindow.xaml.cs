@@ -18,7 +18,7 @@ namespace MSOE.MediaComplete
     {
         private const string Mp3FileFormat = "MP3 Files (*.mp3)|*.mp3";
         private const string FileDialogTitle = "Select Music File(s)";
-        private readonly string _homeDir;
+        private string _homeDir;
 
         public MainWindow()
         {
@@ -36,7 +36,16 @@ namespace MSOE.MediaComplete
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            new Settings().Show();
+            var settingsWindow = new Settings();
+            settingsWindow.Owner = this;
+            settingsWindow.ShowDialog();
+            if (settingsWindow.DialogResult.GetValueOrDefault(false))
+            {
+                _homeDir = (string)Properties.Settings.Default["HomeDir"];
+                Importer.Instance.HomeDir = _homeDir;
+                RefreshTreeView(); 
+            }
+
         }
 
         private async void AddFile_Click(object sender, RoutedEventArgs e)
@@ -53,6 +62,7 @@ namespace MSOE.MediaComplete
                 await Importer.Instance.ImportFiles(fileDialog.FileNames);
             }
 
+            RefreshTreeView();
         }
 
         private async void AddFolder_Click(object sender, RoutedEventArgs e)
@@ -64,6 +74,7 @@ namespace MSOE.MediaComplete
                 await Importer.Instance.ImportDirectory(selectedDir);
 
             }
+            RefreshTreeView();
         }
 
         public void RefreshTreeView()
@@ -78,7 +89,9 @@ namespace MSOE.MediaComplete
             }
             foreach (var rootChild in rootDirInfo.GetFiles())
             {
-                SongTree.Items.Add(new SongTreeViewItem {Header = rootChild.Name});
+                if (rootChild.Name.EndsWith(".mp3")) { 
+                    SongTree.Items.Add(new SongTreeViewItem {Header = rootChild.Name});
+                }
             }
             
         }
@@ -109,15 +122,17 @@ namespace MSOE.MediaComplete
 
             foreach (var file in dirInfo.GetFiles())
             {
-                songTree.Items.Add(new SongTreeViewItem { Header = file.Name });
+                if (file.Name.EndsWith(".mp3"))
+                {
+                    songTree.Items.Add(new SongTreeViewItem { Header = file.Name });
+                }
             }
-            
+
             return dirItem;
         }
 
         private static void OnChanged(object source, FileSystemEventArgs e)
         {
-
             App.Current.Dispatcher.Invoke(new Action(() =>
             {
             }));
