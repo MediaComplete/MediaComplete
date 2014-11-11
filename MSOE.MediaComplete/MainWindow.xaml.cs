@@ -56,7 +56,8 @@ namespace MSOE.MediaComplete
                 Multiselect = true
             };
 
-            if (fileDialog.ShowDialog() == WinForms.DialogResult.OK)
+            if (fileDialog.ShowDialog() != WinForms.DialogResult.OK) return;
+            foreach (var file in fileDialog.FileNames)
             {
                 await Importer.Instance.ImportFiles(fileDialog.FileNames, true);
             }
@@ -65,11 +66,23 @@ namespace MSOE.MediaComplete
         private async void AddFolder_Click(object sender, RoutedEventArgs e)
         {
             var folderDialog = new WinForms.FolderBrowserDialog();
-            if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+
+            if (folderDialog.ShowDialog() != WinForms.DialogResult.OK) return;
+            var selectedDir = folderDialog.SelectedPath;
+            var files = Directory.GetFiles(selectedDir, "*.mp3",
+                SearchOption.AllDirectories);
+            foreach (var file in files)
             {
-                var selectedDir = folderDialog.SelectedPath;
-                await Importer.Instance.ImportDirectory(selectedDir, true);
-                
+                try
+                {
+                    File.Copy(file, _homeDir + Path.GetFileName(file));
+
+                    //Console.WriteLine(homeDir + System.IO.Path.GetFileName(file));
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception);
+                }
             }
         }
 
@@ -79,8 +92,9 @@ namespace MSOE.MediaComplete
             LibraryTree.Items.Clear();
 
             var rootDirInfo = new DirectoryInfo(_homeDir);
-
-            LibraryTree.Items.Add(CreateDirectoryItem(rootDirInfo));
+            var tree = CreateDirectoryItem(rootDirInfo);
+            tree.Header = _homeDir;
+            LibraryTree.Items.Add(tree);
         }
 
         private void InitTreeView()
@@ -89,7 +103,7 @@ namespace MSOE.MediaComplete
 
             var watcher = new FileSystemWatcher(_homeDir)
             {
-                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName
+                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
             };
             watcher.Changed += OnChanged;
             watcher.Created += OnChanged;
@@ -101,7 +115,7 @@ namespace MSOE.MediaComplete
 
         private TreeViewItem CreateDirectoryItem(DirectoryInfo dirInfo)
         {
-            var dirItem = new FolderTreeViewItem {Header = dirInfo.Name};
+            var dirItem = new FolderTreeViewItem { Header = dirInfo.Name + Path.DirectorySeparatorChar};
             foreach (var dir in dirInfo.GetDirectories())
             {
                 dirItem.Items.Add(CreateDirectoryItem(dir));
@@ -134,14 +148,10 @@ namespace MSOE.MediaComplete
         private async void Toolbar_AutoIDMusic_Click(object sender, RoutedEventArgs e)
         {
             // TODO support multi-select
-            var selection = LibraryTree.SelectedItems;
-            foreach (var node in selection)
+            var node = LibraryTree.SelectedItem;
+            if (node is SongTreeViewItem)
             {
-                if (node is SongTreeViewItem)
-                {
-                    string result = await MusicIdentifier.IdentifySong((node as SongTreeViewItem).FilePath());
-                    MessageBox.Show(result);
-                }   
+                await MusicIdentifier.IdentifySong((node as SongTreeViewItem).FilePath());
             }
         }
 
@@ -155,21 +165,13 @@ namespace MSOE.MediaComplete
             if (contextMenu == null)
                 return;
             var selection = contextMenu.PlacementTarget as TreeViewItem;
-            string result;
-            // TODO probably don't need to display results. This will be phased out later.
-
             try
             {
-                result = await MusicIdentifier.IdentifySong(selection.FilePath());
+                await MusicIdentifier.IdentifySong(selection.FilePath());
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                result = null;
-            }
-            if (result != null)
-            {
-                MessageBox.Show(result);
             }
         }
 
@@ -202,17 +204,15 @@ namespace MSOE.MediaComplete
                     sorter.UnsortableCount),
                 Resources["Dialog-SortLibrary-Title"].ToString(), MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-            if (result == MessageBoxResult.Yes)
+            if (result != MessageBoxResult.Yes) return;
+            try
             {
-                try
-                {
-                    await sorter.PerformSort();
-                }
-                catch (IOException ioe)
-                {
-                    // TODO - This should get localized and put in the application status bar (TBD)
-                    MessageBox.Show("Encountered an error while sorting files: " + ioe.Message);
-                }
+                await sorter.PerformSort();
+            }
+            catch (IOException ioe)
+            {
+                // TODO - This should get localized and put in the application status bar (TBD)
+                MessageBox.Show("Encountered an error while sorting files: " + ioe.Message);
             }
         }
         

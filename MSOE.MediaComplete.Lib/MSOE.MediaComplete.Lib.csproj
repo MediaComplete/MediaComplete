@@ -65,11 +65,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
-    <Compile Include="Extensions.cs" />
-    <Compile Include="FileExtensions.cs" />
     <Compile Include="Class2.cs" />
     <Compile Include="Importer.cs" />
     <Compile Include="Mp3MetadataEditor.cs" />
+    <Compile Include="MetaDataExtensions.cs" />
+    <Compile Include="SystemExtensions.cs" />
     <Compile Include="MusicIdentifier.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -20,7 +20,7 @@ namespace MSOE.MediaComplete
             InitializeComponent();
 
             var homedir = (string)Properties.Settings.Default["HomeDir"];
-            txtboxSelectedFolder.Text = homedir;
+            TxtboxSelectedFolder.Text = homedir;
             txtboxInboxFolder.Text = (string)Properties.Settings.Default["InboxDir"];
             comboBox.SelectedValue = Properties.Settings.Default["PollingTime"];
             checkboxPolling.IsChecked = ((bool)Properties.Settings.Default["isPolling"]);
@@ -50,7 +50,7 @@ namespace MSOE.MediaComplete
                 switch (button.Name)
                 {
                     case "btnSelectFolder":
-                        txtboxSelectedFolder.Text = folderBrowserDialog1.SelectedPath;
+                        TxtboxSelectedFolder.Text = folderBrowserDialog1.SelectedPath;
                         break;
                     case "btnInboxFolder":
                         txtboxInboxFolder.Text = folderBrowserDialog1.SelectedPath;
@@ -97,8 +97,7 @@ namespace MSOE.MediaComplete
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             // add settings here as they are added to the UI
-
-            var homeDir = txtboxSelectedFolder.Text;
+            var homeDir = TxtboxSelectedFolder.Text;
             if (!homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.CurrentCulture)))
             {
                 homeDir += Path.DirectorySeparatorChar;

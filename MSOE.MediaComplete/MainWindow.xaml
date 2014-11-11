@@ -53,8 +53,8 @@
                 <ColumnDefinition Width="100*" />
                 <ColumnDefinition Width="100*" />
             </Grid.ColumnDefinitions>
-            <controls:TreeViewEx x:Name="LibraryTree" Grid.Column="0" AutomationProperties.Name="LeftTree">
-                <controls:TreeViewEx.Resources>
+            <TreeView Name="LibraryTree" Grid.Column="0">
+                <TreeView.Resources>
                     <!-- Disabling warnings below - these resources are accessed from code, so Resharper doesn't think we're using them. -->
                     <!-- ReSharper disable once Xaml.RedundantResource -->
                     <ContextMenu x:Key="SongContextMenu" StaysOpen="True">
@@ -63,8 +63,8 @@
                     </ContextMenu>
                     <!-- ReSharper disable once Xaml.RedundantResource -->
                     <ContextMenu x:Key="FolderContextMenu" StaysOpen="True" />
-                </controls:TreeViewEx.Resources>
-            </controls:TreeViewEx>
+                </TreeView.Resources>
+            </TreeView>
             <TreeView Grid.Column="1" />
             <TreeView Grid.Column="2" />
         </Grid>
