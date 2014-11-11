@@ -24,8 +24,14 @@ namespace MSOE.MediaComplete
         {
             InitializeComponent();
             _homeDir = (string)Properties.Settings.Default["HomeDir"];
-            Importer.Instance.HomeDir = _homeDir;
+            var libraryDir = _homeDir;
+            if (!_homeDir.EndsWith(Path.DirectorySeparatorChar.ToString()))
+            {
+                libraryDir += Path.DirectorySeparatorChar;
+            }
 
+            Directory.CreateDirectory(libraryDir);
+            Importer.Instance.HomeDir = libraryDir;
             InitTreeView();
         }
 
@@ -72,7 +78,6 @@ namespace MSOE.MediaComplete
             {
                 var selectedDir = folderDialog.SelectedPath;
                 await Importer.Instance.ImportDirectory(selectedDir);
-
             }
             RefreshTreeView();
         }
