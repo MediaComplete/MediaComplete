@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using MSOE.MediaComplete.Lib;
@@ -8,8 +7,8 @@ using WinForms = System.Windows.Forms;
 using System.Windows;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib.Sorting;
-using System.Threading.Tasks;
 using System.Windows.Controls;
+using Application = System.Windows.Application;
 
 namespace MSOE.MediaComplete
 {
@@ -19,23 +18,20 @@ namespace MSOE.MediaComplete
     public partial class MainWindow
     {
         private readonly string _homeDir;
-        private readonly Importer _importer;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            var homeDir = Properties.Settings.Default["HomeDir"] as string ??
-                          Path.GetPathRoot(Environment.SystemDirectory);
-            if (!homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
-            {
-                homeDir += Path.DirectorySeparatorChar;
-            }
-            homeDir += Lib.Constants.LibraryDirName + Path.DirectorySeparatorChar;
+            _homeDir = (string)Properties.Settings.Default["HomeDir"];
+            Importer.Instance.HomeDir = _homeDir;
+			
+            Directory.CreateDirectory(_homeDir);
 
-            Directory.CreateDirectory(homeDir);
-            _homeDir = homeDir;
-            _importer = new Importer(_homeDir);
+            Polling.Instance.TimeInMinutes = Convert.ToDouble(Properties.Settings.Default["PollingTime"]);
+            Polling.Instance.inboxDir = (string)Properties.Settings.Default["InboxDir"];
+            Polling.Instance.Start();
+
             InitTreeView();
         }
 
@@ -62,7 +58,7 @@ namespace MSOE.MediaComplete
 
             if (fileDialog.ShowDialog() == WinForms.DialogResult.OK)
             {
-                await Task.Run(() => _importer.ImportFiles(fileDialog.FileNames));
+                await Importer.Instance.ImportFiles(fileDialog.FileNames, true);
             }
         }
 
@@ -72,7 +68,7 @@ namespace MSOE.MediaComplete
             if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 var selectedDir = folderDialog.SelectedPath;
-                await Task.Run(() => _importer.ImportDirectory(selectedDir));
+                await Importer.Instance.ImportDirectory(selectedDir, true);
                 
             }
         }
@@ -93,7 +89,7 @@ namespace MSOE.MediaComplete
 
             var watcher = new FileSystemWatcher(_homeDir)
             {
-                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
+                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName
             };
             watcher.Changed += OnChanged;
             watcher.Created += OnChanged;

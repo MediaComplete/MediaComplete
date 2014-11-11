@@ -77,6 +77,9 @@
     <Compile Include="MetaAttribute.cs" />
     <Compile Include="Sorting\Sorter.cs" />
     <Compile Include="Sorting\SortSettings.cs" />
+    <Compile Include="Polling.cs" />
+    <Compile Include="SettingChanged.cs" />
+    <Compile Include="SettingPublisher.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="codegen.dll">

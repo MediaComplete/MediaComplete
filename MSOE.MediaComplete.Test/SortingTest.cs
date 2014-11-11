@@ -211,8 +211,9 @@ namespace MSOE.MediaComplete.Test
             var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.ValidMp3FileName;
 
-            var importer = new Importer(_homeDir.FullName);
-            var task = importer.ImportDirectory(_importDir.FullName);
+            var importer = Importer.Instance;
+            importer.HomeDir = _homeDir.FullName;
+            var task = importer.ImportDirectory(_importDir.FullName, true);
             while (!task.IsCompleted)
             {
                 

@@ -9,7 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSOE.MediaComplete.Lib", "M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSOE.MediaComplete.Test", "MSOE.MediaComplete.Test\MSOE.MediaComplete.Test.csproj", "{EA95E81C-E2DB-4E00-80A5-219653E9411E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{710947CB-EF32-4820-BF89-C88B02B8A09D}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.Config = .nuget\NuGet.Config
 		.nuget\NuGet.exe = .nuget\NuGet.exe
