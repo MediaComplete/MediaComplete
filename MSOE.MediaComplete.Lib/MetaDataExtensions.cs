@@ -9,7 +9,7 @@ namespace MSOE.MediaComplete.Lib
     /// <summary>
     /// Contains various extension methods for meta data related operations
     /// </summary>
-    internal static class MetaDataExtensions
+    public static class MetaDataExtensions
     {
 
         public static void SetMetaAttribute(this File file, MetaAttribute attr, object value)

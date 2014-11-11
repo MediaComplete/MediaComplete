@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web;
 using ENMFPdotNet;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
@@ -16,7 +17,7 @@ namespace MSOE.MediaComplete.Lib
         private const int Freq = 22050;
         private const int SampleSeconds = 30;
         private const int SampleSize = Freq*SampleSeconds;
-        private const string Url = "http://developer.echonest.com";
+        private static readonly UriBuilder Uri = new UriBuilder("http", "developer.echonest.com");
         private const string Path = "/api/v4/song/identify";
         private const string ApiKey = "MUIGA58IV1VQUOEJ5";
 
@@ -30,9 +31,12 @@ namespace MSOE.MediaComplete.Lib
             var codegen = new FingerprintGenerator(audioData, 0);
             var code = codegen.GetFingerprintCode().Code;
 
-            var client = new HttpClient {BaseAddress = new Uri(Url)};
-            // TODO lookup and add any metadata fields already on the file
-            var response = await client.GetAsync(Path + "?api_key=" + ApiKey + "&code=" + code);
+            var client = new HttpClient {BaseAddress = new Uri(Uri.ToString())};
+
+            var query = HttpUtility.ParseQueryString(string.Empty);
+            query["api_key"] = ApiKey;
+            query["code"] = code;
+            var response = await client.GetAsync(Path + "?" + query);
 
             // Parse the response body.
             var json = JObject.Parse(await response.Content.ReadAsStringAsync());
