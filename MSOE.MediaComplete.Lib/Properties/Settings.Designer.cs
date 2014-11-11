@@ -8,11 +8,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MSOE.MediaComplete.Properties {
+namespace MSOE.MediaComplete.Lib.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "11.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "12.0.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -25,7 +25,7 @@ namespace MSOE.MediaComplete.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\library\\")]
         public string HomeDir {
             get {
                 return ((string)(this["HomeDir"]));
@@ -37,7 +37,7 @@ namespace MSOE.MediaComplete.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\inboxForLibrary\\")]
         public string InboxDir {
             get {
                 return ((string)(this["InboxDir"]));
@@ -49,7 +49,7 @@ namespace MSOE.MediaComplete.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
         public string PollingTime {
             get {
                 return ((string)(this["PollingTime"]));
@@ -62,12 +62,24 @@ namespace MSOE.MediaComplete.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool isPolling {
+        public bool IsPolling {
             get {
-                return ((bool)(this["isPolling"]));
+                return ((bool)(this["IsPolling"]));
             }
             set {
-                this["isPolling"] = value;
+                this["IsPolling"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowInputDialog {
+            get {
+                return ((bool)(this["ShowInputDialog"]));
+            }
+            set {
+                this["ShowInputDialog"] = value;
             }
         }
     }

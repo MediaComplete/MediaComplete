@@ -13,26 +13,19 @@ namespace MSOE.MediaComplete
     /// </summary>
     public partial class Settings : Window
     {
-        private readonly SettingPublisher _settingPublisher = new SettingPublisher();
+        
         public Settings()
         {
             InitializeComponent();
 
-            var homedir = (string)Properties.Settings.Default["HomeDir"];
-            txtboxSelectedFolder.Text = homedir;
-            txtboxInboxFolder.Text = (string)Properties.Settings.Default["InboxDir"];
-            comboBox.SelectedValue = Properties.Settings.Default["PollingTime"];
-            checkboxPolling.IsChecked = ((bool)Properties.Settings.Default["isPolling"]);
+            txtboxSelectedFolder.Text = SettingWrapper.GetHomeDir();
+            txtboxInboxFolder.Text = SettingWrapper.GetInboxDir();
+            comboBox.SelectedValue = SettingWrapper.GetPollingTime().ToString();
+            checkboxPolling.IsChecked = SettingWrapper.GetIsPolling();
             CheckBoxChanged(checkboxPolling, null);
-
-            _settingPublisher.RaiseSettingEvent += HandleSettingChangeEvent;
-
         }
 
-        private void HandleSettingChangeEvent(object sender, SettingChanged e)
-        {
-            Importer.Instance.HomeDir = e.HomeDir;
-        }
+
 
         /// <summary>
         /// The handler for the folder selection buttons of the setting screen.
@@ -101,21 +94,19 @@ namespace MSOE.MediaComplete
             {
                 homeDir += Path.DirectorySeparatorChar;
             }
-            Properties.Settings.Default["HomeDir"] = homeDir;
-            Properties.Settings.Default["InboxDir"] = txtboxInboxFolder.Text;
-            Properties.Settings.Default["PollingTime"] = comboBox.SelectedValue;
-            Properties.Settings.Default["isPolling"] = checkboxPolling.IsChecked;
 
-            Properties.Settings.Default.Save();
+            SettingWrapper.SetHomeDir(homeDir);
+            SettingWrapper.SetInboxDir(txtboxInboxFolder.Text);
+            SettingWrapper.SetPollingTime(comboBox.SelectedValue);
+            SettingWrapper.SetIsPolling(checkboxPolling.IsChecked.GetValueOrDefault(false));
+            SettingWrapper.Save();
 			
-            _settingPublisher.ChangeSetting(homeDir);
-
             Polling.Instance.PollingChanged(Convert.ToDouble(comboBox.SelectedValue), txtboxInboxFolder.Text);
         }
 
         private void ComboBox_Loaded(object sender, RoutedEventArgs args)
         {
-            var dataList = new List<string> {".5", "1", "5", "10", "30", "60", "120", "240"};
+            var dataList = new List<string> {"0.5", "1", "5", "10", "30", "60", "120", "240"};
 
             var box = sender as System.Windows.Controls.ComboBox;
             if (box != null) box.ItemsSource = dataList;

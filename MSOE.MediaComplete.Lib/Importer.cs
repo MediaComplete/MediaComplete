@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using MSOE.MediaComplete.Lib.Properties;
 
 namespace MSOE.MediaComplete.Lib
 {
@@ -10,6 +11,7 @@ namespace MSOE.MediaComplete.Lib
         private static Importer _instance;
         private Importer()
         {
+            SettingWrapper.RaiseSettingEvent += HandleSettingChangeEvent;
         }
 
         public static Importer Instance
@@ -17,6 +19,10 @@ namespace MSOE.MediaComplete.Lib
             get { return _instance ?? (_instance = new Importer()); }
         }
 
+        private static void HandleSettingChangeEvent()
+        {
+            Instance.HomeDir = SettingWrapper.GetHomeDir();
+        }
 
         public async Task ImportDirectory(string directory, bool isCopying)
         {

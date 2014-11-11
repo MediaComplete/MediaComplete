@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,15 +24,31 @@ namespace MSOE.MediaComplete
         public MainWindow()
         {
             InitializeComponent();
-            _homeDir = (string)Properties.Settings.Default["HomeDir"];
+            _homeDir = SettingWrapper.GetHomeDir();
             Importer.Instance.HomeDir = _homeDir;
 			
             Directory.CreateDirectory(_homeDir);
 
-            Polling.Instance.TimeInMinutes = Convert.ToDouble(Properties.Settings.Default["PollingTime"]);
-            Polling.Instance.inboxDir = (string)Properties.Settings.Default["InboxDir"];
-            Polling.Instance.Start();
+            if (SettingWrapper.GetIsPolling())
+            {
+                Polling.Instance.TimeInMinutes = SettingWrapper.GetPollingTime();
+                Polling.Instance.inboxDir = SettingWrapper.GetInboxDir();
+                Polling.Instance.Start();
+            }
+            Polling.InboxFilesDetected += ImportFromInbox;
             InitTreeView();
+        }
+
+        private async void ImportFromInbox(IEnumerable<FileInfo> files)
+        {
+            if (SettingWrapper.GetShowInputDialog())
+            {
+                Dispatcher.BeginInvoke(new Action(() => new InboxImportDialog(files){Owner = this}.ShowDialog()));
+            }
+            else
+            {
+                await Importer.Instance.ImportFiles(files.Select(f => f.FullName).ToArray(), false);
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
