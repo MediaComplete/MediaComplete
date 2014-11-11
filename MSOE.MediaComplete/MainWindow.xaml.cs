@@ -79,6 +79,7 @@ namespace MSOE.MediaComplete
                 var selectedDir = folderDialog.SelectedPath;
                 await Importer.Instance.ImportDirectory(selectedDir);
             }
+
             RefreshTreeView();
         }
 
@@ -132,52 +133,46 @@ namespace MSOE.MediaComplete
                     songTree.Items.Add(new SongTreeViewItem { Header = file.Name });
                 }
             }
-
             return dirItem;
         }
 
         private static void OnChanged(object source, FileSystemEventArgs e)
         {
-            App.Current.Dispatcher.Invoke(new Action(() =>
-            {
-            }));
+
         }
 
 
         private async void Toolbar_AutoIDMusic_Click(object sender, RoutedEventArgs e)
         {
             // TODO support multi-select
-            //var selection = LibraryTree.SelectedItem as TreeViewItem;
-            //if (selection == null || !(selection is SongTreeViewItem))
-            //{
-            //    return;
-            //}
-            //else
-            //{
-            //    string result = await MusicIdentifier.IdentifySong(selection.FilePath());
-            //    System.Windows.Forms.MessageBox.Show(result);
-            //}
+            var selection = SongTree.LastSelectedItem as TreeViewItem;
+            if (selection is SongTreeViewItem)
+            {
+                Console.Out.WriteLine("  s"+selection.FilePath());
+                string result = await MusicIdentifier.IdentifySong(selection.FilePath());
+                System.Windows.Forms.MessageBox.Show(result);
+            }
         }
 
         private async void ContextMenu_AutoIDMusic_Click(object sender, RoutedEventArgs e)
         {
-            //// TODO support multi-select
-            //var selection = ((sender as System.Windows.Controls.MenuItem).Parent as System.Windows.Controls.ContextMenu).PlacementTarget as TreeViewItem;
-            //string result;
-            //// TODO probably don't need to display results. This will be phased out later.
-            //try
-            //{
-            //    result = await MusicIdentifier.IdentifySong(selection.FilePath());
-            //}
-            //catch (Exception ex)
-            //{
-            //    System.Windows.Forms.MessageBox.Show(ex.Message);
-            //    result = null;
-            //}
-            //if (result != null)
-            //{
-            //    System.Windows.Forms.MessageBox.Show(result);
-            //}
+            // TODO support multi-select
+            var selection = ((sender as System.Windows.Controls.MenuItem).Parent as System.Windows.Controls.ContextMenu).PlacementTarget as TreeViewItem;
+            string result;
+            // TODO probably don't need to display results. This will be phased out later.
+            try
+            {
+                result = await MusicIdentifier.IdentifySong(selection.FilePath());
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.Message);
+                result = null;
+            }
+            if (result != null)
+            {
+                System.Windows.Forms.MessageBox.Show(result);
+            }
         }
 
         //private static bool CtrlPressed()
