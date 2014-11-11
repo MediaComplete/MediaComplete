@@ -9,7 +9,7 @@ namespace MSOE.MediaComplete.Lib
     public class Importer
     {
         public delegate void ImportHandler(List<FileInfo> files, DirectoryInfo homeDir);
-        public static event ImportHandler ImportFinished;
+        public static event ImportHandler ImportFinished = delegate {};
 
         private readonly string _homeDir;
 
