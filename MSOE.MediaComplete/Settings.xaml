@@ -10,14 +10,14 @@
                     <StackPanel DockPanel.Dock="Top">
                         <Label Content="Select Location of Home Directory:" />
                         <StackPanel Orientation="Horizontal">
-                            <TextBox x:Name="txtboxSelectedFolder" Width="390" AcceptsReturn="True" />
-                            <Button x:Name="btnSelectFolder" Margin="8, 0, 0, 0" Content="Select File"
+                            <TextBox x:Name="TxtboxSelectedFolder" Width="390" AcceptsReturn="True" />
+                            <Button x:Name="BtnSelectFolder" Margin="8, 0, 0, 0" Content="Select File"
                                     Click="btnSelectFolder_Click" />
                         </StackPanel>
                     </StackPanel>
                     <StackPanel DockPanel.Dock="Bottom">
                         <StackPanel HorizontalAlignment="Right" Margin="0,0,0,4" Orientation="Horizontal">
-                            <Button Name="btnSave" Margin="4" Content="Save Settings" Click="btnSave_Click" />
+                            <Button Name="BtnSave" Margin="4" Content="Save Settings" Click="btnSave_Click" />
                         </StackPanel>
                     </StackPanel>
 

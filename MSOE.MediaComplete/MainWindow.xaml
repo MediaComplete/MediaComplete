@@ -10,18 +10,15 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <Grid Margin="0,0,0,0">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="189" />
-        </Grid.ColumnDefinitions>
+    <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="24" />
             <RowDefinition Height="24" />
             <RowDefinition />
             <RowDefinition Height="100" />
         </Grid.RowDefinitions>
 
-        <Menu Grid.Row="0" Grid.Column="0" Margin="0,0,0,0" Grid.ColumnSpan="1">
+        <Menu Grid.Row="0">
             <MenuItem Header="_File">
                 <MenuItem Header="_Exit" />
             </MenuItem>
@@ -31,44 +28,47 @@
             <MenuItem Header="_Playlists" />
             <MenuItem Header="_MetaDataFinderThing" />
         </Menu>
-        <TextBox Grid.Column="1" Height="23" Text="Search" Width="189" HorizontalAlignment="Right" />
+        <TextBox Grid.Row="0" Text="Search" Width="200" HorizontalAlignment="Right" />
         <ToolBarTray Grid.Row="1">
-            <ToolBar Grid.Row="1" Margin="0,0,0,161" Grid.ColumnSpan="2">
-                <Button Name="addFile" ToolTip="Add File" VerticalAlignment="Center" Click="AddFile_Click">
-                    <Image Source="{StaticResource Toolbar_AddMusicFile_Icon}" />
+            <ToolBar>
+                <Button Name="AddFile" ToolTip="Add File" VerticalAlignment="Center" Click="AddFile_Click">
+                    <Image Source="{StaticResource Toolbar-AddMusicFile-Icon}" />
                 </Button>
-                <Button Name="addFolder" ToolTip="Add Folder" VerticalAlignment="Center" Click="AddFolder_Click">
-                    <Image Source="{StaticResource Toolbar_AddMusicFolder_Icon}" />
+                <Button Name="AddFolder" ToolTip="Add Folder" VerticalAlignment="Center" Click="AddFolder_Click">
+                    <Image Source="{StaticResource Toolbar-AddMusicFolder-Icon}" />
                 </Button>
-                <Button Name="autoIdentifyMusic" ToolTip="{StaticResource Toolbar_AutoIDMusic_Tooltip}"
+                <Button Name="AutoIdentifyMusic" ToolTip="{StaticResource Toolbar-AutoIdMusic-Tooltip}"
                         VerticalAlignment="Center" Click="Toolbar_AutoIDMusic_Click">
-                    <Image Source="{StaticResource Toolbar_AutoIDMusic_Icon}" />
+                    <Image Source="{StaticResource Toolbar-AutoIdMusic-Icon}" />
+                </Button>
+                <Button Name="SortMusic" ToolTip="{StaticResource Toolbar-SortMusic-Tooltip}"
+                        VerticalAlignment="Center" Click="Toolbar_SortMusic_Click">
+                    <Image Source="{StaticResource Toolbar-SortMusic-Icon}" />
                 </Button>
             </ToolBar>
         </ToolBarTray>
-        <Grid Margin="0,0,0,1" Grid.Row="1" Grid.ColumnSpan="2">
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="150*" />
-                <ColumnDefinition Width="110*" />
-                <ColumnDefinition Width="260*" />
-                <ColumnDefinition Width="125*" />
-                <ColumnDefinition Width="134*" />
+                <ColumnDefinition Width="100*" />
+                <ColumnDefinition Width="100*" />
+                <ColumnDefinition Width="100*" />
             </Grid.ColumnDefinitions>
-            <TreeView Name="LibraryTree" Grid.Column="0" Margin="-5,33,5,0" Grid.ColumnSpan="2">
+            <TreeView Name="LibraryTree" Grid.Column="0">
                 <TreeView.Resources>
+                    <!-- Disabling warnings below - these resources are accessed from code, so Resharper doesn't think we're using them. -->
+                    <!-- ReSharper disable once Xaml.RedundantResource -->
                     <ContextMenu x:Key="SongContextMenu" StaysOpen="True">
-                        <MenuItem Header="{StaticResource ContextMenu_AutoIDMusic_Header}"
+                        <MenuItem Header="{StaticResource ContextMenu-AutoIdMusic-Header}"
                                   Click="ContextMenu_AutoIDMusic_Click" />
                     </ContextMenu>
+                    <!-- ReSharper disable once Xaml.RedundantResource -->
                     <ContextMenu x:Key="FolderContextMenu" StaysOpen="True" />
                 </TreeView.Resources>
             </TreeView>
-            <TreeView Grid.Column="2" Margin="0,33,0,0" />
-            <TreeView Grid.Column="3" Grid.ColumnSpan="2" Margin="0,33,0,0" />
+            <TreeView Grid.Column="1" />
+            <TreeView Grid.Column="2" />
         </Grid>
-
-
-        <StackPanel Grid.Row="2" Grid.ColumnSpan="2">
+        <StackPanel Grid.Row="3">
             <Slider />
             <StackPanel Height="64" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Content="Previous" MinWidth="75" Click="Button_Click" />
