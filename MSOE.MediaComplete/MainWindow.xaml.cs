@@ -85,21 +85,24 @@ namespace MSOE.MediaComplete
 
         public void RefreshTreeView()
         {
-            FolderTree.Items.Clear();
+            var firstNode = new FolderTreeViewItem { Header = "element" };
+            
             SongTree.Items.Clear();
 
             var rootDirInfo = new DirectoryInfo(_homeDir);
             foreach (var rootChild in rootDirInfo.GetDirectories())
             {
-                FolderTree.Items.Add(PopulateFromFolder(rootChild, SongTree));
+               firstNode.Children.Add(PopulateFromFolder(rootChild, SongTree));
             }
             foreach (var rootChild in rootDirInfo.GetFiles())
             {
-                if (rootChild.Name.EndsWith(".mp3")) { 
-                    SongTree.Items.Add(new SongTreeViewItem {Header = rootChild.Name});
+                if (rootChild.Name.EndsWith(".mp3"))
+                {
+                    SongTree.Items.Add(new SongTreeViewItem { Header = rootChild.Name });
                 }
             }
-            
+
+            DataContext = firstNode;
         }
 
         private void InitTreeView()
@@ -123,7 +126,7 @@ namespace MSOE.MediaComplete
             var dirItem = new FolderTreeViewItem() { Header = dirInfo.Name };
             foreach (var dir in dirInfo.GetDirectories())
             {
-                dirItem.Items.Add(PopulateFromFolder(dir, songTree));
+                dirItem.Children.Add(PopulateFromFolder(dir, songTree));
             }
 
             foreach (var file in dirInfo.GetFiles())
