@@ -85,20 +85,24 @@ namespace MSOE.MediaComplete
 
         public void RefreshTreeView()
         {
-            var firstNode = new FolderTreeViewItem { Header = "element" };
+            //Create Parent node
+            var firstNode = new FolderTreeViewItem { Header = "element", ParentItem = null};
             
             SongTree.Items.Clear();
 
+            
             var rootDirInfo = new DirectoryInfo(_homeDir);
+            //For each folder in the root Directory
             foreach (var rootChild in rootDirInfo.GetDirectories())
             {
-               firstNode.Children.Add(PopulateFromFolder(rootChild, SongTree));
+               //add each child to the root folder
+               firstNode.Children.Add(PopulateFromFolder(rootChild, SongTree, firstNode));
             }
             foreach (var rootChild in rootDirInfo.GetFiles())
             {
                 if (rootChild.Name.EndsWith(".mp3"))
                 {
-                    SongTree.Items.Add(new SongTreeViewItem { Header = rootChild.Name });
+                    SongTree.Items.Add(new SongTreeViewItem { Header = rootChild.Name, ParentItem = firstNode});
                 }
             }
 
@@ -121,19 +125,19 @@ namespace MSOE.MediaComplete
         }
 
        
-        private static FolderTreeViewItem PopulateFromFolder(DirectoryInfo dirInfo, TreeViewEx songTree)
+        private static FolderTreeViewItem PopulateFromFolder(DirectoryInfo dirInfo, TreeViewEx songTree, FolderTreeViewItem parent)
         {
-            var dirItem = new FolderTreeViewItem() { Header = dirInfo.Name };
+            var dirItem = new FolderTreeViewItem() { Header = dirInfo.Name, ParentItem = parent};
             foreach (var dir in dirInfo.GetDirectories())
             {
-                dirItem.Children.Add(PopulateFromFolder(dir, songTree));
+                dirItem.Children.Add(PopulateFromFolder(dir, songTree, dirItem));
             }
 
             foreach (var file in dirInfo.GetFiles())
             {
                 if (file.Name.EndsWith(".mp3"))
                 {
-                    songTree.Items.Add(new SongTreeViewItem { Header = file.Name });
+                    songTree.Items.Add(new SongTreeViewItem { Header = file.Name, ParentItem = dirItem});
                 }
             }
             return dirItem;

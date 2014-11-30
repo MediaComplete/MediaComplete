@@ -12,6 +12,7 @@ namespace MSOE.MediaComplete.CustomControls
 
 
         public ObservableCollection<FolderTreeViewItem> Children { get; set; }
+        public FolderTreeViewItem ParentItem { get; set; }
 
         public override string ToString()
         {

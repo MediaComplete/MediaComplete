@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using MSOE.MediaComplete.CustomControls;
 
 namespace MSOE.MediaComplete
 {
@@ -6,12 +7,25 @@ namespace MSOE.MediaComplete
     {
         public static string FilePath(this TreeViewItem leaf)
         {
-            string parentPath = "";
-            if (leaf.Parent is TreeViewItem)
+            var parentPath = "";
+            if (leaf is SongTreeViewItem)
             {
-                parentPath = (leaf.Parent as TreeViewItem).FilePath();
+                var songLeaf = (SongTreeViewItem) leaf;
+                var temp = (songLeaf.ParentItem as FolderTreeViewItem);
+                if (temp != null) { 
+                    parentPath = temp.FilePath();
+                }
             }
-            return parentPath + leaf.Header;
+            else if (leaf is FolderTreeViewItem)
+            {
+                var folderLeaf = (FolderTreeViewItem)leaf;
+                var temp = (folderLeaf.ParentItem as FolderTreeViewItem);
+                if (temp != null)
+                {
+                    parentPath = temp.FilePath();
+                }
+            }
+            return parentPath + "\\" + leaf.Header;
         }
     }
 }
