@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using MSOE.MediaComplete.Lib;
 using WinForms = System.Windows.Forms;
 using System.Windows;
-using System.Windows.Controls;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib.Sorting;
+using System.Windows.Controls;
+using Application = System.Windows.Application;
 
 namespace MSOE.MediaComplete
 {
@@ -23,16 +23,15 @@ namespace MSOE.MediaComplete
         {
             InitializeComponent();
 
-            var homeDir = Properties.Settings.Default["HomeDir"] as string ??
-                          Path.GetPathRoot(Environment.SystemDirectory);
-            if (!homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
-            {
-                homeDir += Path.DirectorySeparatorChar;
-            }
-            homeDir += Constants.LibraryDirName + Path.DirectorySeparatorChar;
+            _homeDir = (string)Properties.Settings.Default["HomeDir"];
+            Importer.Instance.HomeDir = _homeDir;
+			
+            Directory.CreateDirectory(_homeDir);
 
-            Directory.CreateDirectory(homeDir);
-            _homeDir = homeDir;
+            Polling.Instance.TimeInMinutes = Convert.ToDouble(Properties.Settings.Default["PollingTime"]);
+            Polling.Instance.inboxDir = (string)Properties.Settings.Default["InboxDir"];
+            Polling.Instance.Start();
+
             InitTreeView();
         }
 
@@ -45,13 +44,13 @@ namespace MSOE.MediaComplete
             new Settings().Show();
         }
 
-        private void AddFile_Click(object sender, RoutedEventArgs e)
+        private async void AddFile_Click(object sender, RoutedEventArgs e)
         {
             var fileDialog = new WinForms.OpenFileDialog
             {
                 Filter =
-                    Resources["Dialog-AddFile-FileFilter"] + "" + Constants.FileDialogFilterStringSeparator +
-                    Constants.MusicFilePattern,
+                    Resources["Dialog-AddFile-FileFilter"] + "" + Lib.Constants.FileDialogFilterStringSeparator +
+                    Lib.Constants.MusicFilePattern,
                 InitialDirectory = Path.GetPathRoot(Environment.SystemDirectory),
                 Title = Resources["Dialog-AddFile-Title"].ToString(),
                 Multiselect = true
@@ -60,21 +59,14 @@ namespace MSOE.MediaComplete
             if (fileDialog.ShowDialog() != WinForms.DialogResult.OK) return;
             foreach (var file in fileDialog.FileNames)
             {
-                try
-                {
-                    File.Copy(file, _homeDir + Path.GetFileName(file));
-                    //Console.WriteLine(homeDir + System.IO.Path.GetFileName(file));
-                }
-                catch (Exception exception)
-                {
-                    Console.WriteLine(exception);
-                }
+                await Importer.Instance.ImportFiles(fileDialog.FileNames, true);
             }
         }
 
-        private void AddFolder_Click(object sender, RoutedEventArgs e)
+        private async void AddFolder_Click(object sender, RoutedEventArgs e)
         {
             var folderDialog = new WinForms.FolderBrowserDialog();
+
             if (folderDialog.ShowDialog() != WinForms.DialogResult.OK) return;
             var selectedDir = folderDialog.SelectedPath;
             var files = Directory.GetFiles(selectedDir, "*.mp3",
@@ -123,7 +115,7 @@ namespace MSOE.MediaComplete
 
         private TreeViewItem CreateDirectoryItem(DirectoryInfo dirInfo)
         {
-            var dirItem = new FolderTreeViewItem {Header = dirInfo.Name};
+            var dirItem = new FolderTreeViewItem { Header = dirInfo.Name + Path.DirectorySeparatorChar};
             foreach (var dir in dirInfo.GetDirectories())
             {
                 dirItem.Items.Add(CreateDirectoryItem(dir));
@@ -156,10 +148,11 @@ namespace MSOE.MediaComplete
         private async void Toolbar_AutoIDMusic_Click(object sender, RoutedEventArgs e)
         {
             // TODO support multi-select
-            var selection = LibraryTree.SelectedItem as TreeViewItem;
-            if (!(selection is SongTreeViewItem)) return;
-            var result = await MusicIdentifier.IdentifySong(selection.FilePath());
-            MessageBox.Show(result);
+            var node = LibraryTree.SelectedItem;
+            if (node is SongTreeViewItem)
+            {
+                await MusicIdentifier.IdentifySong((node as SongTreeViewItem).FilePath());
+            }
         }
 
         private async void ContextMenu_AutoIDMusic_Click(object sender, RoutedEventArgs e)
@@ -172,21 +165,13 @@ namespace MSOE.MediaComplete
             if (contextMenu == null)
                 return;
             var selection = contextMenu.PlacementTarget as TreeViewItem;
-            string result;
-            // TODO probably don't need to display results. This will be phased out later.
-
             try
             {
-                result = await MusicIdentifier.IdentifySong(selection.FilePath());
+                await MusicIdentifier.IdentifySong(selection.FilePath());
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                result = null;
-            }
-            if (result != null)
-            {
-                MessageBox.Show(result);
             }
         }
 
@@ -205,7 +190,7 @@ namespace MSOE.MediaComplete
 
             var sorter = new Sorter(new DirectoryInfo(_homeDir), settings);
 
-            if (sorter.MoveActions.Count == 0) // Nothing to sort! Notify and return.
+            if (sorter.Actions.Count == 0) // Nothing to do! Notify and return.
             {
                 MessageBox.Show(this,
                     String.Format(Resources["Dialog-SortLibrary-NoSort"].ToString(), sorter.UnsortableCount),
@@ -215,7 +200,7 @@ namespace MSOE.MediaComplete
             }
 
             var result = MessageBox.Show(this,
-                String.Format(Resources["Dialog-SortLibrary-Confirm"].ToString(), sorter.MoveActions.Count,
+                String.Format(Resources["Dialog-SortLibrary-Confirm"].ToString(), sorter.MoveCount, sorter.DupCount,
                     sorter.UnsortableCount),
                 Resources["Dialog-SortLibrary-Title"].ToString(), MessageBoxButton.YesNo, MessageBoxImage.Question);
 
@@ -230,17 +215,6 @@ namespace MSOE.MediaComplete
                 MessageBox.Show("Encountered an error while sorting files: " + ioe.Message);
             }
         }
-
-        //private static bool CtrlPressed()
-        //{
-        //    return System.Windows.Input.Keyboard.IsKeyDown(Key.LeftCtrl) || System.Windows.Input.Keyboard.IsKeyDown(Key.RightCtrl);
-        //}
-
-        //private void LibraryTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        //{
-        //    Console.WriteLine("Sender: " + sender);
-
-        //    TreeViewItem selectedItem = (TreeViewItem) e.NewValue;
-        //}
+        
     }
 }

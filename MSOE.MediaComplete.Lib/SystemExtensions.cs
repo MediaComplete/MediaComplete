@@ -53,6 +53,7 @@ namespace MSOE.MediaComplete.Lib
             return ret;
         }
 
+
         /// <summary>
         /// Performs an equality test using Windows conventions for directory equality. 
         /// Case insensitive, trailing slashes ignored
@@ -65,6 +66,31 @@ namespace MSOE.MediaComplete.Lib
             var firstName = first.FullName.TrimEnd(new[] { Path.DirectorySeparatorChar });
             var secondName = second.FullName.TrimEnd(new[] { Path.DirectorySeparatorChar });
             return firstName.Equals(secondName, StringComparison.CurrentCultureIgnoreCase);
+        }
+
+        public static string GetValidFileName(this string fileName)
+        {
+            //special chars not allowed in filename 
+            string specialChars = @"/:*?""<>|#%&.{}~";
+
+            //Replace special chars in raw filename with empty spaces to make it valid  
+            Array.ForEach(specialChars.ToCharArray(), specialChar => fileName = fileName.Replace(specialChar.ToString(), ""));
+
+            return fileName;
+
+        }  
+    }
+
+    public class DirectoryEqualityComparer : IEqualityComparer<DirectoryInfo>
+    {
+        public bool Equals(DirectoryInfo x, DirectoryInfo y)
+        {
+            return x.DirectoryEquals(y);
+        }
+
+        public int GetHashCode(DirectoryInfo obj)
+        {
+            return obj.FullName.TrimEnd(new[] { Path.DirectorySeparatorChar }).ToLower().GetHashCode();
         }
     }
 }

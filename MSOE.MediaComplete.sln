@@ -1,13 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 2013 for Windows Desktop
-VisualStudioVersion = 12.0.30501.0
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSOE.MediaComplete", "MSOE.MediaComplete\MSOE.MediaComplete.csproj", "{A0884657-5FDE-459B-BACC-94B19AF58401}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSOE.MediaComplete.Lib", "MSOE.MediaComplete.Lib\MSOE.MediaComplete.Lib.csproj", "{9FC3A1A0-F81A-45BA-A8EB-1F4A10F0D3F1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSOE.MediaComplete.Test", "MSOE.MediaComplete.Test\MSOE.MediaComplete.Test.csproj", "{EA95E81C-E2DB-4E00-80A5-219653E9411E}"
+EndProject
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,7 +23,6 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A0884657-5FDE-459B-BACC-94B19AF58401}.Debug|x86.ActiveCfg = Debug|x86
 		{A0884657-5FDE-459B-BACC-94B19AF58401}.Debug|x86.Build.0 = Debug|x86
-		{A0884657-5FDE-459B-BACC-94B19AF58401}.Debug|x86.Deploy.0 = Debug|x86
 		{A0884657-5FDE-459B-BACC-94B19AF58401}.Release|x86.ActiveCfg = Release|x86
 		{A0884657-5FDE-459B-BACC-94B19AF58401}.Release|x86.Build.0 = Release|x86
 		{9FC3A1A0-F81A-45BA-A8EB-1F4A10F0D3F1}.Debug|x86.ActiveCfg = Debug|x86
