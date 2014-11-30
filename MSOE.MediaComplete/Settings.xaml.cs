@@ -10,14 +10,14 @@ namespace MSOE.MediaComplete
     /// <summary>
     /// Interaction logic for Settings.xaml
     /// </summary>
-    public partial class Settings : Window
+    public partial class Settings
     {
         private readonly SettingPublisher _settingPublisher = new SettingPublisher();
         public Settings()
         {
             InitializeComponent();
             var homedir = (string)Properties.Settings.Default["HomeDir"];
-            txtboxSelectedFolder.Text = homedir;
+            TxtboxSelectedFolder.Text = homedir;
             _settingPublisher.RaiseSettingEvent += HandleSettingChangeEvent;
 
         }
@@ -25,6 +25,7 @@ namespace MSOE.MediaComplete
         private void HandleSettingChangeEvent(object sender, SettingChanged e)
         {
             Importer.Instance.HomeDir = e.HomeDir;
+            TxtboxSelectedFolder.Text = (string) Properties.Settings.Default["HomeDir"];
         }
 
         private void btnSelectFolder_Click(object sender, EventArgs e)
@@ -32,19 +33,20 @@ namespace MSOE.MediaComplete
             var folderBrowserDialog1 = new FolderBrowserDialog();
             if (folderBrowserDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                txtboxSelectedFolder.Text = folderBrowserDialog1.SelectedPath;
+                TxtboxSelectedFolder.Text = folderBrowserDialog1.SelectedPath;
             }
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             // add settings here as they are added to the UI
-            var homeDir = txtboxSelectedFolder.Text;
+            var homeDir = TxtboxSelectedFolder.Text;
             if (!homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.CurrentCulture)))
             {
                 homeDir += Path.DirectorySeparatorChar;
             }
             Properties.Settings.Default["HomeDir"] = homeDir;
+            Properties.Settings.Default["HomeDir"] = TxtboxSelectedFolder.Text;
             Properties.Settings.Default.Save();
             _settingPublisher.ChangeSetting(homeDir);
 
