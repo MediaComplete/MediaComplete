@@ -25,7 +25,7 @@ namespace MSOE.MediaComplete.Lib
             // We have to force "SampleAudio" onto a new thread, otherwise the main thread 
             // will lock while doing the expensive file reading and audio manipulation.
             if (!System.IO.File.Exists(filename)) return null;
-            var audioData = await Task.Run(() => SampleAudio(filename));
+            var audioData = SampleAudio(filename);
             if (audioData == null) return null;
             var codegen = new FingerprintGenerator(audioData, 0);
             var code = codegen.GetFingerprintCode().Code;
@@ -62,7 +62,6 @@ namespace MSOE.MediaComplete.Lib
         /*
          * Parses an MP3 file and pulls the first 30 seconds into the format needed for the Echonest code generator
          */
-
         private static float[] SampleAudio(string filename)
         {
             var inFile = filename;
@@ -71,28 +70,44 @@ namespace MSOE.MediaComplete.Lib
 
             var result = new List<float>();
 
-            using (var reader = new Mp3FileReader(inFile)) //TODO BJK -- handle null files/other exceptions
+            try
             {
-                using (var pcmStream = WaveFormatConversionStream.CreatePcmStream(reader))
+                using (var reader = new Mp3FileReader(inFile))
                 {
-                    var format = new WaveFormat(Freq, 1);
-                    using (var readerStream = new WaveFormatConversionStream(format, pcmStream))
+                    using (var pcmStream = WaveFormatConversionStream.CreatePcmStream(reader))
                     {
-                        var provider = new Pcm16BitToSampleProvider(readerStream);
-                            // Assumes 16 bit... TODO is this a problem?
-                        // Read blocks of samples until no more available
-                        const int blockSize = 2000;
-                        var buffer = new float[blockSize];
-                        int rc;
-                        while ((result.Count + blockSize) < SampleSize && (rc = provider.Read(buffer, 0, blockSize)) > 0)
+                        var format = new WaveFormat(Freq, 1);
+                        using (var readerStream = new WaveFormatConversionStream(format, pcmStream))
                         {
-                            result.AddRange(buffer.Take(rc));
+                            var provider = new Pcm16BitToSampleProvider(readerStream);
+                            // Assumes 16 bit... TODO is this a problem?
+                            // Read blocks of samples until no more available
+                            const int blockSize = 2000;
+                            var buffer = new float[blockSize];
+                            int rc;
+                            while ((result.Count + blockSize) < SampleSize &&
+                                   (rc = provider.Read(buffer, 0, blockSize)) > 0)
+                            {
+                                result.AddRange(buffer.Take(rc));
+                            }
                         }
                     }
                 }
             }
-
+            catch (Exception e)
+            {
+                throw new IdentificationException(String.Format(
+                    "Could not identify music file {0}. It could be in use by another program, or not in a format we recognize.",
+                    filename), e);
+            }
             return result.ToArray();
+        }
+    }
+
+    public class IdentificationException : Exception
+    {
+        public IdentificationException(string message, Exception exception) : base(message, exception)
+        {
         }
     }
 }

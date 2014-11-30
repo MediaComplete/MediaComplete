@@ -35,7 +35,7 @@ namespace MSOE.MediaComplete.Lib
             foreach (var file in files)
             {
                 var myFile = file;
-                var newFile = HomeDir + Path.GetFileName(file);
+                var newFile = HomeDir + Path.DirectorySeparatorChar + Path.GetFileName(file);
                 if (!File.Exists(newFile))
                 {
                     try

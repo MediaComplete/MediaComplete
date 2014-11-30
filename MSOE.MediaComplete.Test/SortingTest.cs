@@ -19,8 +19,8 @@ namespace MSOE.MediaComplete.Test
         [TestInitialize]
         public void Setup()
         {
-            _homeDir = Directory.CreateDirectory(Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "SortingTestHomeDir");
-            _importDir = Directory.CreateDirectory(Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "SortingTestImportDir");
+            _homeDir = FileHelper.CreateDirectory("SortingTestHomeDir");
+            _importDir = FileHelper.CreateDirectory("SortingTestImportDir");
         }
 
         [TestCleanup]
@@ -218,12 +218,12 @@ namespace MSOE.MediaComplete.Test
             {
                 
             }
-            var targetFile = new FileInfo(normalFileDest);
+
             // Need to poll for the file, since we don't have a way of monitoring the sorter directly.
             var i = 0;
-            while (!targetFile.Exists)
+            while (!File.Exists(normalFileDest))
             {
-                Thread.Sleep(100);
+                Thread.Sleep(1000);
                 if (i++ > 20)
                 {
                     Assert.Fail("Post-import event didn't sort the file (timeout)!");

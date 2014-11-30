@@ -7,6 +7,16 @@ namespace MSOE.MediaComplete.Test
     /// </summary>
     class FileHelper
     {
+        public static DirectoryInfo CreateDirectory(string path)
+        {
+            var fullPath = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + path;
+            if (Directory.Exists(fullPath))
+            {
+                Directory.Delete(fullPath, true);
+            }
+            return Directory.CreateDirectory(fullPath);
+        }
+
         public static FileInfo CreateTestFile(string path)
         {
             var destPath = path + Path.DirectorySeparatorChar + Constants.ValidMp3FileName;
@@ -16,6 +26,18 @@ namespace MSOE.MediaComplete.Test
             }
             Directory.CreateDirectory(path);
             File.Copy(Constants.ValidMp3FullPath, destPath);
+            return new FileInfo(destPath);
+        }
+
+        public static FileInfo CreateUnknownFile(string path)
+        {
+            var destPath = path + Path.DirectorySeparatorChar + Constants.ValidMp3FileName;
+            if (File.Exists(destPath))
+            {
+                File.Delete(destPath);
+            }
+            Directory.CreateDirectory(path);
+            File.Copy(Constants.UnknownMp3FullPath, destPath);
             return new FileInfo(destPath);
         }
 
