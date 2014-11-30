@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Runtime.CompilerServices;
+using System.Windows.Controls;
 using MSOE.MediaComplete.CustomControls;
 
 namespace MSOE.MediaComplete
@@ -12,20 +13,36 @@ namespace MSOE.MediaComplete
             {
                 var songLeaf = (SongTreeViewItem) leaf;
                 var temp = (songLeaf.ParentItem as FolderTreeViewItem);
-                if (temp != null) { 
+                if (temp != null) 
+                { 
                     parentPath = temp.FilePath();
                 }
             }
             else if (leaf is FolderTreeViewItem)
             {
                 var folderLeaf = (FolderTreeViewItem)leaf;
-                var temp = (folderLeaf.ParentItem as FolderTreeViewItem);
-                if (temp != null)
+                if (folderLeaf.Root)
                 {
-                    parentPath = temp.FilePath();
+                    parentPath = null;
+                }
+                else { 
+                    var temp = (folderLeaf.ParentItem as FolderTreeViewItem);
+                    if (temp != null)
+                    {
+                        parentPath = temp.FilePath();
+                    }
                 }
             }
-            return parentPath + "\\" + leaf.Header;
+            var output = "";
+            if (parentPath == null)
+            {
+                output =(string) leaf.Header;
+            }
+            else
+            {
+                output = parentPath +"\\"+ leaf.Header;
+            }
+            return output;
         }
     }
 }

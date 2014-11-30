@@ -86,7 +86,7 @@ namespace MSOE.MediaComplete
         public void RefreshTreeView()
         {
             //Create Parent node
-            var firstNode = new FolderTreeViewItem { Header = "element", ParentItem = null};
+            var firstNode = new FolderTreeViewItem { Header = _homeDir, ParentItem = null, Root = true};
             
             SongTree.Items.Clear();
 
