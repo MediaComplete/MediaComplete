@@ -24,24 +24,21 @@ namespace MSOE.MediaComplete.Lib
         {
             // We have to force "SampleAudio" onto a new thread, otherwise the main thread 
             // will lock while doing the expensive file reading and audio manipulation.
-            if (File.Exists(filename))
-            {
-                float[] audioData = await Task.Run(() => SampleAudio(filename));
-                var codegen = new FingerprintGenerator(audioData, 0);
-                string code = codegen.GetFingerprintCode().Code;
+            if (!File.Exists(filename)) return null;
+            var audioData = await Task.Run(() => SampleAudio(filename));
+            var codegen = new FingerprintGenerator(audioData, 0);
+            var code = codegen.GetFingerprintCode().Code;
 
-                var client = new HttpClient {BaseAddress = new Uri(Url)};
-                // TODO lookup and add any metadata fields already on the file
-                HttpResponseMessage response = await client.GetAsync(Path + "?api_key=" + ApiKey + "&code=" + code);
+            var client = new HttpClient {BaseAddress = new Uri(Url)};
+            // TODO lookup and add any metadata fields already on the file
+            var response = await client.GetAsync(Path + "?api_key=" + ApiKey + "&code=" + code);
 
-                // Parse the response body.
-                JObject json = JObject.Parse(await response.Content.ReadAsStringAsync());
+            // Parse the response body.
+            var json = JObject.Parse(await response.Content.ReadAsStringAsync());
 
-                // TODO - return useful data and handle failed identification...
-                string title = json.SelectToken("response.songs[0].title").ToString();
-                return title;
-            }
-            return null;
+            // TODO - return useful data and handle failed identification...
+            var title = json.SelectToken("response.songs[0].title").ToString();
+            return title;
         }
 
         /*
@@ -55,12 +52,12 @@ namespace MSOE.MediaComplete.Lib
 
             using (var reader = new Mp3FileReader(inFile)) //TODO BJK -- handle null files/other exceptions
             {
-                using (WaveStream pcmStream = WaveFormatConversionStream.CreatePcmStream(reader))
+                using (var pcmStream = WaveFormatConversionStream.CreatePcmStream(reader))
                 {
                     var format = new WaveFormat(Freq, 1);
-                    using (WaveStream readerStream = new WaveFormatConversionStream(format, pcmStream))
+                    using (var readerStream = new WaveFormatConversionStream(format, pcmStream))
                     {
-                        ISampleProvider provider = new Pcm16BitToSampleProvider(readerStream);
+                        var provider = new Pcm16BitToSampleProvider(readerStream);
                             // Assumes 16 bit... TODO is this a problem?
                         // Read blocks of samples until no more available
                         const int blockSize = 2000;

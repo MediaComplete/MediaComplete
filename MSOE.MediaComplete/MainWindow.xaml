@@ -37,14 +37,14 @@
         <ToolBarTray Grid.Row="1" Grid.Column="0">
             <ToolBar Margin="0,0,0,161">
                 <Button Name="AddFile" ToolTip="Add File" VerticalAlignment="Center" Click="AddFile_Click">
-                    <Image Source="{StaticResource Toolbar_AddMusicFile_Icon}" />
+                    <Image Source="{StaticResource Toolbar-AddMusicFile-Icon}" />
                 </Button>
                 <Button Name="AddFolder" ToolTip="Add Folder" VerticalAlignment="Center" Click="AddFolder_Click">
-                    <Image Source="{StaticResource Toolbar_AddMusicFolder_Icon}" />
+                    <Image Source="{StaticResource Toolbar-AddMusicFolder-Icon}" />
                 </Button>
-                <Button Name="AutoIdentifyMusic" ToolTip="{StaticResource Toolbar_AutoIDMusic_Tooltip}"
+                <Button Name="AutoIdentifyMusic" ToolTip="{StaticResource Toolbar-AutoIdMusic-Tooltip}"
                         VerticalAlignment="Center" Click="Toolbar_AutoIDMusic_Click">
-                    <Image Source="{StaticResource Toolbar_AutoIDMusic_Icon}" />
+                    <Image Source="{StaticResource Toolbar-AutoIdMusic-Icon}" />
                 </Button>
             </ToolBar>
         </ToolBarTray>
