@@ -43,7 +43,7 @@
   <ItemGroup>
     <Reference Include="policy.2.0.taglib-sharp">
       <HintPath>..\packages\taglib.2.1.0.0\lib\policy.2.0.taglib-sharp.dll</HintPath>
-    </Reference>
+	</Reference>
     <Reference Include="ENMFPdotNet">
       <HintPath>..\packages\ENMFPdotNet.1.1\lib\ENMFPdotNet.dll</HintPath>
     </Reference>
