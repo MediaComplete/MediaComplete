@@ -16,27 +16,27 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                             <Label Content="Polling" VerticalAlignment="Center" FontWeight="ExtraBold" />
-                            <CheckBox Name="checkboxPolling" VerticalAlignment="Center"
+                            <CheckBox Name="CheckboxPolling" VerticalAlignment="Center"
                                       VerticalContentAlignment="Center" Checked="CheckBoxChanged"
                                       Unchecked="CheckBoxChanged" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <Label Name="lblPollTime" Content="Polling Time: " VerticalAlignment="Center"
+                            <Label Name="LblPollTime" Content="Polling Time: " VerticalAlignment="Center"
                                    HorizontalAlignment="Left" />
                             <ComboBox
-                                Name="comboBox"
+                                Name="ComboBox"
                                 HorizontalAlignment="Left"
                                 Margin="10,10,0,0"
 	                            VerticalAlignment="Top"
 	                            Width="120"
 	                            Loaded="ComboBox_Loaded"/>
-                            <Label Name="lblMin" Content="(min)" VerticalAlignment="Center" HorizontalAlignment="Left"
+                            <Label Name="LblMin" Content="(min)" VerticalAlignment="Center" HorizontalAlignment="Left"
                                    FontWeight="Light" />
                         </StackPanel>
-                        <Label Name="lblSelectInboxLocation" Content="Select Location of Inbox Directory:" />
+                        <Label Name="LblSelectInboxLocation" Content="Select Location of Inbox Directory:" />
                         <StackPanel Orientation="Horizontal">
-                            <TextBox x:Name="txtboxInboxFolder" Width="390" />
-                            <Button x:Name="btnInboxFolder" Margin="8, 0, 0, 0" Content="Select File"
+                            <TextBox x:Name="TxtboxInboxFolder" Width="390" />
+                            <Button x:Name="BtnInboxFolder" Margin="8, 0, 0, 0" Content="Select File"
                                     Click="btnSelectFolder_Click" />
                         </StackPanel>
                     </StackPanel>

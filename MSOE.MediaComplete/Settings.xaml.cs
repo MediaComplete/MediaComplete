@@ -20,10 +20,10 @@ namespace MSOE.MediaComplete
             InitializeComponent();
 
             TxtboxSelectedFolder.Text = SettingWrapper.GetHomeDir();
-            txtboxInboxFolder.Text = SettingWrapper.GetInboxDir();
-            comboBox.SelectedValue = SettingWrapper.GetPollingTime().ToString();
-            checkboxPolling.IsChecked = SettingWrapper.GetIsPolling();
-            CheckBoxChanged(checkboxPolling, null);
+            TxtboxInboxFolder.Text = SettingWrapper.GetInboxDir();
+            ComboBox.SelectedValue = SettingWrapper.GetPollingTime().ToString(CultureInfo.InvariantCulture);
+            CheckboxPolling.IsChecked = SettingWrapper.GetIsPolling();
+            CheckBoxChanged(CheckboxPolling, null);
         }
 
 
@@ -42,11 +42,11 @@ namespace MSOE.MediaComplete
             if (button != null)
                 switch (button.Name)
                 {
-                    case "btnSelectFolder":
+                    case "BtnSelectFolder":
                         TxtboxSelectedFolder.Text = folderBrowserDialog1.SelectedPath;
                         break;
-                    case "btnInboxFolder":
-                        txtboxInboxFolder.Text = folderBrowserDialog1.SelectedPath;
+                    case "BtnInboxFolder":
+                        TxtboxInboxFolder.Text = folderBrowserDialog1.SelectedPath;
                         break;
                 }
         }
@@ -63,21 +63,21 @@ namespace MSOE.MediaComplete
             var button = sender as CheckBox;
             if (button != null && button.IsChecked == true)
             {
-                txtboxInboxFolder.IsEnabled = true;
-                comboBox.IsEnabled = true;
-                btnInboxFolder.IsEnabled = true;
-                lblPollTime.IsEnabled = true;
-                lblMin.IsEnabled = true;
-                lblSelectInboxLocation.IsEnabled = true;
+                TxtboxInboxFolder.IsEnabled = true;
+                ComboBox.IsEnabled = true;
+                BtnInboxFolder.IsEnabled = true;
+                LblPollTime.IsEnabled = true;
+                LblMin.IsEnabled = true;
+                LblSelectInboxLocation.IsEnabled = true;
             }
             else
             {
-                txtboxInboxFolder.IsEnabled = false;
-                comboBox.IsEnabled = false;
-                btnInboxFolder.IsEnabled = false;
-                lblPollTime.IsEnabled = false;
-                lblMin.IsEnabled = false;
-                lblSelectInboxLocation.IsEnabled = false;
+                TxtboxInboxFolder.IsEnabled = false;
+                ComboBox.IsEnabled = false;
+                BtnInboxFolder.IsEnabled = false;
+                LblPollTime.IsEnabled = false;
+                LblMin.IsEnabled = false;
+                LblSelectInboxLocation.IsEnabled = false;
             }
         }
 
@@ -97,12 +97,12 @@ namespace MSOE.MediaComplete
             }
 
             SettingWrapper.SetHomeDir(homeDir);
-            SettingWrapper.SetInboxDir(txtboxInboxFolder.Text);
-            SettingWrapper.SetPollingTime(comboBox.SelectedValue);
-            SettingWrapper.SetIsPolling(checkboxPolling.IsChecked.GetValueOrDefault(false));
+            SettingWrapper.SetInboxDir(TxtboxInboxFolder.Text);
+            SettingWrapper.SetPollingTime(ComboBox.SelectedValue);
+            SettingWrapper.SetIsPolling(CheckboxPolling.IsChecked.GetValueOrDefault(false));
             SettingWrapper.Save();
 			
-            Polling.Instance.PollingChanged(Convert.ToDouble(comboBox.SelectedValue), txtboxInboxFolder.Text);
+            Polling.Instance.PollingChanged(Convert.ToDouble(ComboBox.SelectedValue), TxtboxInboxFolder.Text);
         }
 
         private void ComboBox_Loaded(object sender, RoutedEventArgs args)
