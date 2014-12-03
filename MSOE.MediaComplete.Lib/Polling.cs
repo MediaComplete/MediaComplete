@@ -1,5 +1,7 @@
 ﻿using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Timers;
 
 namespace MSOE.MediaComplete.Lib
@@ -10,6 +12,10 @@ namespace MSOE.MediaComplete.Lib
         public double TimeInMinutes { get; set; }
         public string inboxDir { get; set; }
         private static Polling _instance;
+
+        public delegate void InboxFilesHandler(IEnumerable<FileInfo> files);
+        public static event InboxFilesHandler InboxFilesDetected = delegate {};
+
 
         private Polling()
         {
@@ -39,9 +45,17 @@ namespace MSOE.MediaComplete.Lib
             _timer.Enabled = true;
         }
 
-        private async void OnTimerFinished(Object sender, ElapsedEventArgs args)
+        [STAThread]
+        private void OnTimerFinished(Object sender, ElapsedEventArgs args)
         {
-            await Task.Run(() => Importer.Instance.ImportDirectory(inboxDir, false));
+            var inbox = new DirectoryInfo(SettingWrapper.GetInboxDir());
+            var files = inbox.EnumerateFiles("*.mp3");
+            if(files.Any())
+            {
+                InboxFilesDetected(files);
+            }
+            
+            //await Task.Run(() => Importer.Instance.ImportDirectory(inboxDir, false));
         }
     }
 }

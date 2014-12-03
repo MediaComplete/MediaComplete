@@ -78,8 +78,12 @@
     <Compile Include="Sorting\Sorter.cs" />
     <Compile Include="Sorting\SortSettings.cs" />
     <Compile Include="Polling.cs" />
-    <Compile Include="SettingChanged.cs" />
-    <Compile Include="SettingPublisher.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="SettingWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="codegen.dll">
@@ -88,7 +92,12 @@
     <Content Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
