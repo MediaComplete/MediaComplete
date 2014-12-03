@@ -58,7 +58,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Mp3MetadataEditorTest.cs" />
+    <Compile Include="MetaDataExtensionsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

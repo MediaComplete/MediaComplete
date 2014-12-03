@@ -7,9 +7,9 @@ namespace MSOE.MediaComplete.Test
     [TestClass]
     public class MetaDataExtensions
     {
-        
+        /*
         //TODO this was the old metadata test...needs to be refactored -- issues accessing the extension code...
-        /*private Mp3MetadataEditor _mp3;
+        private Mp3MetadataEditor _mp3;
         private TagLib.File _mp3File;
         private const string InvalidMp3FileName = "Resources/InvalidMp3File.mp3";
         private const string ValidMp3FileName = "Resources/ValidMp3File.mp3";
@@ -39,6 +39,6 @@ namespace MSOE.MediaComplete.Test
         }
          */
     }
-
+        
 
 }
