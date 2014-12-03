@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows.Media.Imaging;
 using MSOE.MediaComplete.Lib;
 using WinForms = System.Windows.Forms;
 using System.Windows;
@@ -32,7 +33,16 @@ namespace MSOE.MediaComplete
             Polling.Instance.inboxDir = (string)Properties.Settings.Default["InboxDir"];
             Polling.Instance.Start();
 
+            StatusBarHandler.RaiseStatusBarEvent += HandleStatusBarChangeEvent;
+
             InitTreeView();
+        }
+
+        private void HandleStatusBarChangeEvent()
+        {
+            statusMessage.Text = StatusBarHandler.Message;
+            var sourceUri = new Uri("./Resources/" + StatusBarHandler.Icon + ".png", UriKind.Relative);
+            statusIcon.Source = new BitmapImage(sourceUri);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

@@ -92,10 +92,10 @@
                     </ItemsPanelTemplate>
                 </StatusBar.ItemsPanel>
                 <StatusBarItem Grid.Column="1">
-                    <TextBlock></TextBlock>
+                    <TextBlock Name="statusMessage"></TextBlock>
                 </StatusBarItem>
                 <StatusBarItem Grid.Column="2">
-                    <Image/>
+                    <Image Name="statusIcon"/>
                 </StatusBarItem>
             </StatusBar>
         </DockPanel>

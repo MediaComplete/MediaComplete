@@ -210,6 +210,21 @@
       <Name>MSOE.MediaComplete.Lib</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Error.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Information.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Success.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Warning.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Working.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
