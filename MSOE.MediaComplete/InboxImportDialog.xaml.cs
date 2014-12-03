@@ -22,13 +22,29 @@ namespace MSOE.MediaComplete
     /// </summary>
     public partial class InboxImportDialog : Window
     {
-        private readonly IEnumerable<FileInfo> _files;
+        private static IEnumerable<FileInfo> _files;
+        private static InboxImportDialog _instance;
 
-        public InboxImportDialog(IEnumerable<FileInfo> files)
+
+        private InboxImportDialog()
         {
             InitializeComponent();
+        }
+
+        private static InboxImportDialog Instance(Window owner)
+        {
+            return _instance ?? (_instance = new InboxImportDialog {Owner = owner});
+        }
+        
+        public static void Prompt(Window newOwner, IEnumerable<FileInfo> files)
+        {
             _files = files;
-            MessageTextBlock.Text = "Found " + _files.Count() + " file(s).\nWould you like to import them now?";
+            var inst = Instance(newOwner);
+            inst.MessageTextBlock.Text = "Found " + _files.Count() + " file(s).\nWould you like to import them now?";
+            if(!inst.IsVisible)
+            {
+                inst.ShowDialog();
+            }
         }
 
         private async void okButton_Click(object sender, RoutedEventArgs e)
@@ -40,7 +56,6 @@ namespace MSOE.MediaComplete
 
             DialogResult = true;
         }
-
 
         private void CancelButton_OnClick(object sender, RoutedEventArgs e)
         {

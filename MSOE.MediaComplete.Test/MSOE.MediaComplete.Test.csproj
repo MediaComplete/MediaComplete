@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="Mp3MetadataEditorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PollingTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\InvalidMp3File.mp3">

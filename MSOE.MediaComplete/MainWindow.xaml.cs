@@ -20,6 +20,7 @@ namespace MSOE.MediaComplete
         private const string Mp3FileFormat = "MP3 Files (*.mp3)|*.mp3";
         private const string FileDialogTitle = "Select Music File(s)";
         private readonly string _homeDir;
+        private bool inputDialogShown = false;
 
         public MainWindow()
         {
@@ -43,7 +44,8 @@ namespace MSOE.MediaComplete
         {
             if (SettingWrapper.GetShowInputDialog())
             {
-                Dispatcher.BeginInvoke(new Action(() => new InboxImportDialog(files){Owner = this}.ShowDialog()));
+                inputDialogShown = true;
+                Dispatcher.BeginInvoke(new Action(() => InboxImportDialog.Prompt(this, files)));
             }
             else
             {

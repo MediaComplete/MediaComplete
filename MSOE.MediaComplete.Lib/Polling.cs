@@ -49,7 +49,6 @@ namespace MSOE.MediaComplete.Lib
             _timer.Enabled = true;
         }
 
-        [STAThread]
         private void OnTimerFinished(Object sender, ElapsedEventArgs args)
         {
             var inbox = new DirectoryInfo(SettingWrapper.GetInboxDir());
@@ -58,8 +57,6 @@ namespace MSOE.MediaComplete.Lib
             {
                 InboxFilesDetected(files);
             }
-            
-            //await Task.Run(() => Importer.Instance.ImportDirectory(inboxDir, false));
         }
     }
 }
