@@ -78,8 +78,8 @@
                 <Button Content="Skip" MinWidth="75" />
             </StackPanel>
         </StackPanel>
-        <DockPanel Grid.Row="4">
-            <StatusBar DockPanel.Dock="Bottom">
+        <StackPanel Grid.Row="4">
+            <StatusBar>
                 <StatusBar.ItemsPanel>
                     <ItemsPanelTemplate>
                         <Grid>
@@ -98,6 +98,6 @@
                     <Image Name="statusIcon"/>
                 </StatusBarItem>
             </StatusBar>
-        </DockPanel>
+        </StackPanel>
     </Grid>
 </Window>
