@@ -38,10 +38,10 @@ namespace MSOE.MediaComplete
             InitTreeView();
         }
 
-        private void HandleStatusBarChangeEvent()
+        private void HandleStatusBarChangeEvent(string message, StatusBarHandler.StatusIcon icon)
         {
-            statusMessage.Text = StatusBarHandler.Message;
-            var sourceUri = new Uri("./Resources/" + StatusBarHandler.Icon + ".png", UriKind.Relative);
+            statusMessage.Text = message;
+            var sourceUri = new Uri("./Resources/" + icon + ".png", UriKind.Relative);
             statusIcon.Source = new BitmapImage(sourceUri);
         }
 
