@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.IO;
+using System.Windows.Input;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Sorting;
@@ -92,7 +93,6 @@ namespace MSOE.MediaComplete
 
             SongTree.Items.Clear();
 
-
             var rootDirInfo = new DirectoryInfo(_homeDir);
             //For each folder in the root Directory
             foreach (var rootChild in rootDirInfo.GetDirectories())
@@ -126,7 +126,6 @@ namespace MSOE.MediaComplete
             watcher.EnableRaisingEvents = true;
         }
 
-
         private static FolderTreeViewItem PopulateFromFolder(DirectoryInfo dirInfo, TreeViewEx songTree, FolderTreeViewItem parent)
         {
             var dirItem = new FolderTreeViewItem() { Header = dirInfo.Name, ParentItem = parent };
@@ -143,6 +142,25 @@ namespace MSOE.MediaComplete
                 }
             }
             return dirItem;
+        }
+
+        private void FolderTree_OnMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (FolderTree.SelectedItems != null && FolderTree.SelectedItems.Count > 0)
+            {
+                SongTree.Items.Clear();
+                foreach (var folder in FolderTree.SelectedItems)
+                {
+                    var item = (FolderTreeViewItem) folder;
+                    var rootDirInfo = new DirectoryInfo((item.GetPath("")));
+
+                    PopulateFromFolder(rootDirInfo, SongTree, (FolderTreeViewItem) folder);
+                }
+            }
+            else
+            {
+                RefreshTreeView();
+            }
         }
 
         private static void OnChanged(object source, FileSystemEventArgs e)

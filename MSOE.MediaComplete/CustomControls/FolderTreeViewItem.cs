@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel.Design.Serialization;
 using System.Windows.Controls;
 
 namespace MSOE.MediaComplete.CustomControls
@@ -18,6 +19,18 @@ namespace MSOE.MediaComplete.CustomControls
         public override string ToString()
         {
             return (string) Header;
+        }
+        public string GetPath(string path)
+        {
+            if (!Root)
+            {
+                path = ParentItem.GetPath(path) + Header + "\\";
+            }
+            else
+            {
+                path = Header + path;
+            }
+            return path;
         }
     }
 }
