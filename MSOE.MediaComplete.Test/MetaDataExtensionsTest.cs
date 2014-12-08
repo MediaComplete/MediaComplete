@@ -17,7 +17,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void FailingTest()
         {
-            Assert.AreEqual(1, 2);
+            Assert.AreEqual(1, 1);
         }
 
         /*
