@@ -1,5 +1,4 @@
-﻿using System.Runtime;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib;
 using TagLib;
 
@@ -8,18 +7,6 @@ namespace MSOE.MediaComplete.Test
     [TestClass]
     public class MetaDataExtensions
     {
-        [TestMethod]
-        public void PassingTest()
-        {
-            return;
-        }
-
-        [TestMethod]
-        public void FailingTest()
-        {
-            Assert.AreEqual(1, 1);
-        }
-
         /*
         //TODO this was the old metadata test...needs to be refactored -- issues accessing the extension code...
         private Mp3MetadataEditor _mp3;
