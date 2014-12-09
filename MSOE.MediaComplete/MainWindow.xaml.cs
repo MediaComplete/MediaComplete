@@ -33,7 +33,7 @@ namespace MSOE.MediaComplete
             Polling.Instance.inboxDir = (string)Properties.Settings.Default["InboxDir"];
             Polling.Instance.Start();
 
-            StatusBarHandler.RaiseStatusBarEvent += HandleStatusBarChangeEvent;
+            StatusBarHandler.Instance.RaiseStatusBarEvent += HandleStatusBarChangeEvent;
 
             InitTreeView();
         }
@@ -56,6 +56,8 @@ namespace MSOE.MediaComplete
 
         private async void AddFile_Click(object sender, RoutedEventArgs e)
         {
+            StatusBarHandler.Instance.ChangeStatusBarMessage("Test", StatusBarHandler.StatusIcon.Error);
+
             var fileDialog = new WinForms.OpenFileDialog
             {
                 Filter =
