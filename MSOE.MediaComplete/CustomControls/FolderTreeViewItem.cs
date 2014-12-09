@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.ComponentModel.Design.Serialization;
 using System.Windows.Controls;
 
 namespace MSOE.MediaComplete.CustomControls
@@ -9,20 +8,20 @@ namespace MSOE.MediaComplete.CustomControls
         public FolderTreeViewItem()
 		{
             Children = new ObservableCollection<FolderTreeViewItem>();
-            Root = false;
+            HasParent = true;
 		}
 
 
         public ObservableCollection<FolderTreeViewItem> Children { get; set; }
         public FolderTreeViewItem ParentItem { get; set; }
-        public bool Root { get; set; }
+        public bool HasParent { get; set; }
         public override string ToString()
         {
             return (string) Header;
         }
         public string GetPath(string path)
         {
-            if (!Root)
+            if (HasParent)
             {
                 path = ParentItem.GetPath(path) + Header + "\\";
             }
@@ -31,6 +30,11 @@ namespace MSOE.MediaComplete.CustomControls
                 path = Header + path;
             }
             return path;
+        }
+
+        public string GetPath()
+        {
+            return GetPath("");
         }
     }
 }

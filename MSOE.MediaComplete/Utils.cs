@@ -11,7 +11,7 @@ namespace MSOE.MediaComplete
             if (leaf is SongTreeViewItem)
             {
                 var songLeaf = (SongTreeViewItem)leaf;
-                var temp = (songLeaf.ParentItem as FolderTreeViewItem);
+                var temp = (songLeaf.ParentItem);
                 if (temp != null)
                 {
                     parentPath = temp.FilePath();
@@ -20,20 +20,20 @@ namespace MSOE.MediaComplete
             else if (leaf is FolderTreeViewItem)
             {
                 var folderLeaf = (FolderTreeViewItem)leaf;
-                if (folderLeaf.Root)
+                if (!folderLeaf.HasParent)
                 {
                     parentPath = null;
                 }
                 else
                 {
-                    var temp = (folderLeaf.ParentItem as FolderTreeViewItem);
+                    var temp = (folderLeaf.ParentItem);
                     if (temp != null)
                     {
                         parentPath = temp.FilePath();
                     }
                 }
             }
-            var output = "";
+            string output;
             if (parentPath == null)
             {
                 output = (string)leaf.Header;

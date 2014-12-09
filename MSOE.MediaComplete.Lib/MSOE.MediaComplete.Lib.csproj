@@ -74,7 +74,7 @@
     <Compile Include="Constants.cs" />
     <Compile Include="MetaDataExtensions.cs" />
     <Compile Include="SystemExtensions.cs" />
-    <Compile Include="Class2.cs" />
+    <Compile Include="TreeViewBackend.cs" />
     <Compile Include="Importer.cs" />
     <Compile Include="Mp3MetadataEditor.cs" />
     <Compile Include="MusicIdentifier.cs">
@@ -98,6 +98,9 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Di\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />

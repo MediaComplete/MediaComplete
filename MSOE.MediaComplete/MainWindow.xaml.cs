@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.IO;
 using System.Windows.Input;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
@@ -17,7 +16,7 @@ namespace MSOE.MediaComplete
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         private const string Mp3FileFormat = "MP3 Files (*.mp3)|*.mp3";
         private const string FileDialogTitle = "Select Music File(s)";
@@ -28,7 +27,8 @@ namespace MSOE.MediaComplete
             InitializeComponent();
             _homeDir = (string)Properties.Settings.Default["HomeDir"];
             var libraryDir = _homeDir;
-            if (!_homeDir.EndsWith(Path.DirectorySeparatorChar.ToString()))
+
+            if (!_homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
             {
                 libraryDir += Path.DirectorySeparatorChar;
             }
@@ -89,18 +89,20 @@ namespace MSOE.MediaComplete
         public void RefreshTreeView()
         {
             //Create Parent node
-            var firstNode = new FolderTreeViewItem { Header = _homeDir, ParentItem = null, Root = true };
+            var firstNode = new FolderTreeViewItem { Header = _homeDir, ParentItem = null, HasParent = false };
 
             SongTree.Items.Clear();
 
-            var rootDirInfo = new DirectoryInfo(_homeDir);
+            var rootFiles = TreeViewBackend.GetFiles(_homeDir);
+            var rootDirs = TreeViewBackend.GetDirectories(_homeDir);
+
             //For each folder in the root Directory
-            foreach (var rootChild in rootDirInfo.GetDirectories())
+            foreach (var rootChild in rootDirs)
             {
                 //add each child to the root folder
                 firstNode.Children.Add(PopulateFromFolder(rootChild, SongTree, firstNode));
             }
-            foreach (var rootChild in rootDirInfo.GetFiles())
+            foreach (var rootChild in rootFiles)
             {
                 if (rootChild.Name.EndsWith(".mp3"))
                 {
@@ -128,13 +130,13 @@ namespace MSOE.MediaComplete
 
         private static FolderTreeViewItem PopulateFromFolder(DirectoryInfo dirInfo, TreeViewEx songTree, FolderTreeViewItem parent)
         {
-            var dirItem = new FolderTreeViewItem() { Header = dirInfo.Name, ParentItem = parent };
-            foreach (var dir in dirInfo.GetDirectories())
+            var dirItem = new FolderTreeViewItem { Header = dirInfo.Name, ParentItem = parent };
+            foreach (var dir in TreeViewBackend.GetDirectories(dirInfo))
             {
                 dirItem.Children.Add(PopulateFromFolder(dir, songTree, dirItem));
             }
 
-            foreach (var file in dirInfo.GetFiles())
+            foreach (var file in TreeViewBackend.GetFiles(dirInfo))
             {
                 if (file.Name.EndsWith(".mp3"))
                 {
@@ -152,7 +154,7 @@ namespace MSOE.MediaComplete
                 foreach (var folder in FolderTree.SelectedItems)
                 {
                     var item = (FolderTreeViewItem) folder;
-                    var rootDirInfo = new DirectoryInfo((item.GetPath("")));
+                    var rootDirInfo = new DirectoryInfo((item.GetPath()));
 
                     PopulateFromFolder(rootDirInfo, SongTree, (FolderTreeViewItem) folder);
                 }
@@ -178,38 +180,44 @@ namespace MSOE.MediaComplete
 
         private async void Toolbar_AutoIDMusic_Click(object sender, RoutedEventArgs e)
         {
-            // TODO support multi-select
-            var selection = SongTree.LastSelectedItem as TreeViewItem;
-            if (selection is SongTreeViewItem)
+            if (SongTree.SelectedItems.Count > 0)
             {
-                Console.Out.WriteLine("  s" + selection.FilePath());
-                string result = await MusicIdentifier.IdentifySong(selection.FilePath());
-                System.Windows.Forms.MessageBox.Show(result);
+                foreach (var item in SongTree.SelectedItems)
+                {
+                    var selection = item as TreeViewItem;
+                    if (selection is SongTreeViewItem)
+                    {
+                        Console.Out.WriteLine("  s" + selection.FilePath());
+                        string result = await MusicIdentifier.IdentifySong(selection.FilePath());
+                        System.Windows.Forms.MessageBox.Show(result);
+                    }
+                }
             }
         }
 
         private async void ContextMenu_AutoIDMusic_Click(object sender, RoutedEventArgs e)
         {
-            // TODO support multi-select
             var menuItem = sender as MenuItem;
             if (menuItem == null)
                 return;
             var contextMenu = menuItem.Parent as ContextMenu;
             if (contextMenu == null)
                 return;
-            var selection = contextMenu.PlacementTarget as TreeViewItem;
-            string result;
-            // TODO probably don't need to display results. This will be phased out later.
+            string result = null;
 
             try
             {
-                result = await MusicIdentifier.IdentifySong(selection.FilePath());
+                foreach (SongTreeViewItem item in SongTree.SelectedItems)
+                {
+                    result = await MusicIdentifier.IdentifySong(item.GetPath());
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
                 result = null;
             }
+
             if (result != null)
             {
                 MessageBox.Show(result);
@@ -256,16 +264,5 @@ namespace MSOE.MediaComplete
                 MessageBox.Show("Encountered an error while sorting files: " + ioe.Message);
             }
         }
-        //private static bool CtrlPressed()
-        //{
-        //    return System.Windows.Input.Keyboard.IsKeyDown(Key.LeftCtrl) || System.Windows.Input.Keyboard.IsKeyDown(Key.RightCtrl);
-        //}
-
-        //private void LibraryTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        //{
-        //    Console.WriteLine("Sender: " + sender);
-
-        //    TreeViewItem selectedItem = (TreeViewItem) e.NewValue;
-        //}
     }
 }
