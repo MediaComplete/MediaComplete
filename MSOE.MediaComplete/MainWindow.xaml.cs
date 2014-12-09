@@ -180,47 +180,43 @@ namespace MSOE.MediaComplete
 
         private async void Toolbar_AutoIDMusic_Click(object sender, RoutedEventArgs e)
         {
-            if (SongTree.SelectedItems.Count > 0)
+            // TODO mass ID of multi-selected songs or folders
+            foreach (var item in SongTree.SelectedItems)
             {
-                foreach (var item in SongTree.SelectedItems)
+                var selection = item as SongTreeViewItem;
+                try
                 {
-                    var selection = item as TreeViewItem;
-                    if (selection is SongTreeViewItem)
-                    {
-                        Console.Out.WriteLine("  s" + selection.FilePath());
-                        string result = await MusicIdentifier.IdentifySong(selection.FilePath());
-                        System.Windows.Forms.MessageBox.Show(result);
-                    }
+                    await MusicIdentifier.IdentifySong(selection.FilePath());
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message); // TODO status bar error message
                 }
             }
         }
 
         private async void ContextMenu_AutoIDMusic_Click(object sender, RoutedEventArgs e)
         {
+            // Access the targetted song 
+            // TODO mass ID of multi-selected songs
+            // TODO provide this context menu item for folders
             var menuItem = sender as MenuItem;
             if (menuItem == null)
                 return;
             var contextMenu = menuItem.Parent as ContextMenu;
             if (contextMenu == null)
                 return;
-            string result = null;
+            var treeViewItem = contextMenu.Parent as SongTreeViewItem;
+            if (treeViewItem == null)
+                return;
 
             try
             {
-                foreach (SongTreeViewItem item in SongTree.SelectedItems)
-                {
-                    result = await MusicIdentifier.IdentifySong(item.GetPath());
-                }
+                await MusicIdentifier.IdentifySong(treeViewItem.GetPath());
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
-                result = null;
-            }
-
-            if (result != null)
-            {
-                MessageBox.Show(result);
+                MessageBox.Show(ex.Message); // TODO status bar error message
             }
         }
 
