@@ -14,6 +14,7 @@ namespace MSOE.MediaComplete.Test
         {
             const string testMessage = "Test is successful";
             const StatusBarHandler.StatusIcon testIcon = StatusBarHandler.StatusIcon.Success;
+            StatusBarHandler.Instance.Interval = 0;
             
             StatusBarHandler.Instance.RaiseStatusBarEvent += HandleStatusBarChangeEvent;
             StatusBarHandler.Instance.ChangeStatusBarMessage(testMessage, testIcon);

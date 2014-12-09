@@ -7,6 +7,7 @@ namespace MSOE.MediaComplete.Lib
     {
         private readonly DispatcherTimer _timer;
         private static StatusBarHandler _instance;
+        public int Interval { get; set; }
 
         public static StatusBarHandler Instance
         {
@@ -15,6 +16,7 @@ namespace MSOE.MediaComplete.Lib
 
         public StatusBarHandler()
         {
+            Interval = 30;
             _timer = new DispatcherTimer {IsEnabled = false};
             _timer.Tick += OnTimerFinished;
         }
@@ -47,7 +49,7 @@ namespace MSOE.MediaComplete.Lib
         private void SetTimer()
         {
             _timer.Stop();
-            _timer.Interval = TimeSpan.FromMinutes(30);
+            _timer.Interval = TimeSpan.FromMinutes(Interval);
             _timer.Start();
 
         }
