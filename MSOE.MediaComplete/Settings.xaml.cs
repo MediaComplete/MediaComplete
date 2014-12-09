@@ -11,18 +11,19 @@ namespace MSOE.MediaComplete
     /// <summary>
     /// Interaction logic for Settings.xaml
     /// </summary>
-    public partial class Settings : Window
+    public partial class Settings
     {
         
         public Settings()
         {
             InitializeComponent();
 
-            txtboxSelectedFolder.Text = SettingWrapper.GetHomeDir();
-            txtboxInboxFolder.Text = SettingWrapper.GetInboxDir();
-            comboBox.SelectedValue = SettingWrapper.GetPollingTime().ToString();
-            checkboxPolling.IsChecked = SettingWrapper.GetIsPolling();
-            CheckBoxChanged(checkboxPolling, null);
+            TxtboxSelectedFolder.Text = SettingWrapper.GetHomeDir();
+            TxtboxInboxFolder.Text = SettingWrapper.GetInboxDir();
+            ComboBoxPollingTime.SelectedValue = SettingWrapper.GetPollingTime().ToString(CultureInfo.InvariantCulture);
+            CheckboxPolling.IsChecked = SettingWrapper.GetIsPolling();
+            CheckboxShowImportDialog.IsChecked = SettingWrapper.GetShowInputDialog();
+            PollingCheckBoxChanged(CheckboxPolling, null);
         }
 
 
@@ -33,7 +34,7 @@ namespace MSOE.MediaComplete
         /// </summary>
         /// <param name="sender">The sender of the action(the folder selection button)</param>
         /// <param name="e">Type of event</param>
-        private void btnSelectFolder_Click(object sender, EventArgs e)
+        private void BtnSelectFolder_Click(object sender, EventArgs e)
         {
             var folderBrowserDialog1 = new FolderBrowserDialog();
             var button = sender as System.Windows.Controls.Button;
@@ -42,10 +43,10 @@ namespace MSOE.MediaComplete
                 switch (button.Name)
                 {
                     case "btnSelectFolder":
-                        txtboxSelectedFolder.Text = folderBrowserDialog1.SelectedPath;
+                        TxtboxSelectedFolder.Text = folderBrowserDialog1.SelectedPath;
                         break;
                     case "btnInboxFolder":
-                        txtboxInboxFolder.Text = folderBrowserDialog1.SelectedPath;
+                        TxtboxInboxFolder.Text = folderBrowserDialog1.SelectedPath;
                         break;
                 }
         }
@@ -56,27 +57,30 @@ namespace MSOE.MediaComplete
         /// </summary>
         /// <param name="sender">The sender of the action(the checkbox for polling)</param>
         /// <param name="e">Type of event</param>
-        private void CheckBoxChanged(object sender, RoutedEventArgs e)
+        private void PollingCheckBoxChanged(object sender, RoutedEventArgs e)
         {
 
             var button = sender as System.Windows.Controls.CheckBox;
             if (button != null && button.IsChecked == true)
             {
-                txtboxInboxFolder.IsEnabled = true;
-                comboBox.IsEnabled = true;
-                btnInboxFolder.IsEnabled = true;
-                lblPollTime.IsEnabled = true;
-                lblMin.IsEnabled = true;
-                lblSelectInboxLocation.IsEnabled = true;
+                CheckboxShowImportDialog.IsEnabled = true;
+                
+                TxtboxInboxFolder.IsEnabled = true;
+                ComboBoxPollingTime.IsEnabled = true;
+                BtnInboxFolder.IsEnabled = true;
+                LblPollTime.IsEnabled = true;
+                LblMin.IsEnabled = true;
+                LblSelectInboxLocation.IsEnabled = true;
             }
             else
             {
-                txtboxInboxFolder.IsEnabled = false;
-                comboBox.IsEnabled = false;
-                btnInboxFolder.IsEnabled = false;
-                lblPollTime.IsEnabled = false;
-                lblMin.IsEnabled = false;
-                lblSelectInboxLocation.IsEnabled = false;
+                CheckboxShowImportDialog.IsEnabled = false;
+                TxtboxInboxFolder.IsEnabled = false;
+                ComboBoxPollingTime.IsEnabled = false;
+                BtnInboxFolder.IsEnabled = false;
+                LblPollTime.IsEnabled = false;
+                LblMin.IsEnabled = false;
+                LblSelectInboxLocation.IsEnabled = false;
             }
         }
 
@@ -86,22 +90,23 @@ namespace MSOE.MediaComplete
         /// </summary>
         /// <param name="sender">The sender of the action</param>
         /// <param name="e">Type of event</param>
-        private void btnSave_Click(object sender, RoutedEventArgs e)
+        private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
             // add settings here as they are added to the UI
-            var homeDir = txtboxSelectedFolder.Text;
+            var homeDir = TxtboxSelectedFolder.Text;
             if (!homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.CurrentCulture)))
             {
                 homeDir += Path.DirectorySeparatorChar;
             }
 
             SettingWrapper.SetHomeDir(homeDir);
-            SettingWrapper.SetInboxDir(txtboxInboxFolder.Text);
-            SettingWrapper.SetPollingTime(comboBox.SelectedValue);
-            SettingWrapper.SetIsPolling(checkboxPolling.IsChecked.GetValueOrDefault(false));
+            SettingWrapper.SetInboxDir(TxtboxInboxFolder.Text);
+            SettingWrapper.SetPollingTime(ComboBoxPollingTime.SelectedValue);
+            SettingWrapper.SetIsPolling(CheckboxPolling.IsChecked.GetValueOrDefault(false));
+            SettingWrapper.SetShowInputDialog(CheckboxShowImportDialog.IsChecked.GetValueOrDefault(false));
             SettingWrapper.Save();
 			
-            Polling.Instance.PollingChanged(Convert.ToDouble(comboBox.SelectedValue), txtboxInboxFolder.Text);
+            Polling.Instance.PollingChanged(Convert.ToDouble(ComboBoxPollingTime.SelectedValue), TxtboxInboxFolder.Text);
         }
 
         private void ComboBox_Loaded(object sender, RoutedEventArgs args)

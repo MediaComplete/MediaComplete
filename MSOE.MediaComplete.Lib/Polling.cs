@@ -1,20 +1,16 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Timers;
-using System.Windows.Media.Media3D;
-using MSOE.MediaComplete.Lib.Properties;
 
 namespace MSOE.MediaComplete.Lib
 {
     public class Polling
     {
-        private Timer _timer;
+        private readonly Timer _timer;
         public double TimeInMinutes { get; set; }
-        public string inboxDir { get; set; }
+        public string InboxDir { get; set; }
         private static Polling _instance;
 
         public delegate void InboxFilesHandler(IEnumerable<FileInfo> files);
@@ -42,20 +38,21 @@ namespace MSOE.MediaComplete.Lib
 
         public void PollingChanged(double newTimeInMinutes, string dir)
         {
-            inboxDir = dir;
+            InboxDir = dir;
             var timeInMilliseconds = TimeSpan.FromMinutes(newTimeInMinutes).TotalMilliseconds;
             _timer.Enabled = false;
             _timer.Interval = timeInMilliseconds;
             _timer.Enabled = true;
         }
 
-        private void OnTimerFinished(Object sender, ElapsedEventArgs args)
+        private static void OnTimerFinished(Object sender, ElapsedEventArgs args)
         {
             var inbox = new DirectoryInfo(SettingWrapper.GetInboxDir());
             var files = inbox.EnumerateFiles("*.mp3");
-            if(files.Any())
+            var fileInfos = files as FileInfo[] ?? files.ToArray();
+            if(fileInfos.Any())
             {
-                InboxFilesDetected(files);
+                InboxFilesDetected(fileInfos);
             }
         }
     }

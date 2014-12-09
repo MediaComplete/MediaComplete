@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -15,12 +13,11 @@ namespace MSOE.MediaComplete
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         private const string Mp3FileFormat = "MP3 Files (*.mp3)|*.mp3";
         private const string FileDialogTitle = "Select Music File(s)";
         private readonly string _homeDir;
-        private bool inputDialogShown = false;
 
         public MainWindow()
         {
@@ -33,7 +30,7 @@ namespace MSOE.MediaComplete
             if (SettingWrapper.GetIsPolling())
             {
                 Polling.Instance.TimeInMinutes = SettingWrapper.GetPollingTime();
-                Polling.Instance.inboxDir = SettingWrapper.GetInboxDir();
+                Polling.Instance.InboxDir = SettingWrapper.GetInboxDir();
                 Polling.Instance.Start();
             }
             Polling.InboxFilesDetected += ImportFromInbox;
@@ -44,7 +41,6 @@ namespace MSOE.MediaComplete
         {
             if (SettingWrapper.GetShowInputDialog())
             {
-                inputDialogShown = true;
                 Dispatcher.BeginInvoke(new Action(() => InboxImportDialog.Prompt(this, files)));
             }
             else
@@ -143,11 +139,11 @@ namespace MSOE.MediaComplete
         private static void OnChanged(object source, FileSystemEventArgs e)
         {
 
-            Application.Current.Dispatcher.Invoke(new Action(() =>
+            Application.Current.Dispatcher.Invoke(() =>
             {
                 var win = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
                 if (win != null) win.RefreshTreeView();
-            }));
+            });
             
         }
         

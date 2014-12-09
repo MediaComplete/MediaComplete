@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Permissions;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using MSOE.MediaComplete.Lib;
 
 namespace MSOE.MediaComplete
@@ -20,7 +9,7 @@ namespace MSOE.MediaComplete
     /// <summary>
     /// Interaction logic for InboxImportDialog.xaml
     /// </summary>
-    public partial class InboxImportDialog : Window
+    public partial class InboxImportDialog
     {
         private static IEnumerable<FileInfo> _files;
         private static InboxImportDialog _instance;
@@ -33,7 +22,11 @@ namespace MSOE.MediaComplete
 
         private static InboxImportDialog Instance(Window owner)
         {
-            return _instance ?? (_instance = new InboxImportDialog {Owner = owner});
+            if (_instance == null || !_instance.IsLoaded)// IsLoaded == false iff dialog not ready to be shown or already closed (so we need to init one)
+            {
+                _instance = new InboxImportDialog {Owner = owner};
+            }
+            return _instance;
         }
         
         public static void Prompt(Window newOwner, IEnumerable<FileInfo> files)
@@ -49,16 +42,14 @@ namespace MSOE.MediaComplete
 
         private async void okButton_Click(object sender, RoutedEventArgs e)
         {
-            //apply to settings if they choose to not show again
             SettingWrapper.SetShowInputDialog(!StopShowingCheckBox.IsChecked.GetValueOrDefault(false));
-            //Do the move
             await Importer.Instance.ImportFiles(_files.Select(f => f.FullName).ToArray(), false);
-
             DialogResult = true;
         }
 
         private void CancelButton_OnClick(object sender, RoutedEventArgs e)
         {
+            SettingWrapper.SetIsPolling(!StopShowingCheckBox.IsChecked.GetValueOrDefault((false)));
             DialogResult = false;
         }
     }
