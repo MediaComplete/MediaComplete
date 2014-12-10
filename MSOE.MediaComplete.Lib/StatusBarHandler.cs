@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Timers;
 using System.Windows.Threading;
 
 namespace MSOE.MediaComplete.Lib
 {
     public class StatusBarHandler
     {
-        private readonly DispatcherTimer _timer;
+        private readonly Timer _timer;
         private static StatusBarHandler _instance;
-        public int Interval { get; set; }
+        public double Interval { get; set; }
 
         public static StatusBarHandler Instance
         {
@@ -17,8 +18,8 @@ namespace MSOE.MediaComplete.Lib
         public StatusBarHandler()
         {
             Interval = 30;
-            _timer = new DispatcherTimer {IsEnabled = false};
-            _timer.Tick += OnTimerFinished;
+            _timer = new Timer();
+            _timer.Elapsed += OnTimerFinished;
         }
 
         private void OnTimerFinished(object sender, EventArgs eventArgs)
@@ -49,7 +50,7 @@ namespace MSOE.MediaComplete.Lib
         private void SetTimer()
         {
             _timer.Stop();
-            _timer.Interval = TimeSpan.FromMinutes(Interval);
+            _timer.Interval = 1000 * 60 * .1;
             _timer.Start();
 
         }

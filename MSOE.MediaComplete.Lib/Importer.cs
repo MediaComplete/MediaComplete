@@ -9,10 +9,12 @@ namespace MSOE.MediaComplete.Lib
     public class Importer
     {
         public delegate void ImportHandler(List<FileInfo> files, DirectoryInfo homeDir);
-        public static event ImportHandler ImportFinished = delegate {};
+
+        public static event ImportHandler ImportFinished = delegate { };
 
         public string HomeDir { get; set; }
         private static Importer _instance;
+
         private Importer()
         {
         }
@@ -24,13 +26,16 @@ namespace MSOE.MediaComplete.Lib
 
         public async Task ImportDirectory(string directory, bool isCopying)
         {
+            StatusBarHandler.Instance.ChangeStatusBarMessage("Import-Started", StatusBarHandler.StatusIcon.Working);
             var files = await Task.Run(() => Directory.GetFiles(directory, "*.mp3",
-            SearchOption.AllDirectories));
+                SearchOption.AllDirectories));
             await ImportFiles(files, isCopying);
+            StatusBarHandler.Instance.ChangeStatusBarMessage("Import-Success", StatusBarHandler.StatusIcon.Success);
         }
 
         public async Task ImportFiles(string[] files, bool isCopying)
         {
+            StatusBarHandler.Instance.ChangeStatusBarMessage("Import-Started", StatusBarHandler.StatusIcon.Working);
             var newFiles = new List<FileInfo>(files.Length);
             foreach (var file in files)
             {
@@ -49,14 +54,16 @@ namespace MSOE.MediaComplete.Lib
                             await Task.Run(() => File.Move(myFile, newFile));
                         }
                     }
-                    catch (Exception exception)
+                    catch (Exception)
                     {
-                        Console.WriteLine(exception);
+                        StatusBarHandler.Instance.ChangeStatusBarMessage("Importing-Error",
+                            StatusBarHandler.StatusIcon.Error);
                     }
                     newFiles.Add(new FileInfo(newFile));
                 }
             }
             ImportFinished(newFiles, new DirectoryInfo(HomeDir));
+            StatusBarHandler.Instance.ChangeStatusBarMessage("Import-Success", StatusBarHandler.StatusIcon.Success);
         }
     }
 }

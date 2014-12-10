@@ -40,9 +40,12 @@ namespace MSOE.MediaComplete
 
         private void HandleStatusBarChangeEvent(string message, StatusBarHandler.StatusIcon icon)
         {
-            statusMessage.Text = message;
-            var sourceUri = new Uri("./Resources/" + icon + ".png", UriKind.Relative);
-            statusIcon.Source = new BitmapImage(sourceUri);
+            Dispatcher.Invoke(() =>
+            {
+                statusMessage.Text = (message.Length == 0) ? "" : Resources[message].ToString();
+                var sourceUri = new Uri("./Resources/" + icon + ".png", UriKind.Relative);
+                statusIcon.Source = new BitmapImage(sourceUri);
+            });
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -56,8 +59,6 @@ namespace MSOE.MediaComplete
 
         private async void AddFile_Click(object sender, RoutedEventArgs e)
         {
-            StatusBarHandler.Instance.ChangeStatusBarMessage("Test", StatusBarHandler.StatusIcon.Error);
-
             var fileDialog = new WinForms.OpenFileDialog
             {
                 Filter =

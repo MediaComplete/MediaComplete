@@ -49,10 +49,10 @@ namespace MSOE.MediaComplete
             if (button != null)
                 switch (button.Name)
                 {
-                    case "btnSelectFolder":
+                    case "BtnSelectFolder":
                         TxtboxSelectedFolder.Text = folderBrowserDialog1.SelectedPath;
                         break;
-                    case "btnInboxFolder":
+                    case "BtnInboxFolder":
                         txtboxInboxFolder.Text = folderBrowserDialog1.SelectedPath;
                         break;
                 }
