@@ -11,19 +11,24 @@ namespace MSOE.MediaComplete.Test
         private static bool _pass;
         private static FileInfo _file;
 
-        [ClassInitialize]
-        public void Before()
+        [TestInitialize]
+        public  void Before()
         {
-            _file = new FileInfo("C:\\inboxForLibrary\\file.mp3");
+            Directory.CreateDirectory("C:\\TESTinboxForLibrary");
+            _file = new FileInfo("C:\\TESTinboxForLibrary\\file.mp3");
             File.Create(_file.FullName);
         }
 
-        [ClassCleanup]
+        [TestCleanup]
         public void After()
         {
             if (File.Exists(_file.FullName))
             {
                 File.Delete(_file.FullName);
+            }
+            if (Directory.Exists("C:\\TESTinboxForLibrary"))
+            {
+                Directory.Delete("C:\\TESTinboxForLibrary");
             }
         }
 
@@ -32,10 +37,10 @@ namespace MSOE.MediaComplete.Test
         /// </summary>
         [TestMethod]
         [Timeout(40000)]//Milliseconds
-        public static void OnTimerFinishedTest()
+        public void OnTimerFinishedTest()
         {
             Polling.Instance.InboxDir = _file.DirectoryName;
-            Polling.Instance.TimeInMinutes = 0.5;
+            Polling.Instance.TimeInMinutes = 0.0005;
             Polling.InboxFilesDetected += RunMe;
             Polling.Instance.Start();
 
