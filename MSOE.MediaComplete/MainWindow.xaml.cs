@@ -70,10 +70,7 @@ namespace MSOE.MediaComplete
             };
 
             if (fileDialog.ShowDialog() != WinForms.DialogResult.OK) return;
-            foreach (var file in fileDialog.FileNames)
-            {
-                await Importer.Instance.ImportFiles(fileDialog.FileNames, true);
-            }
+            await Importer.Instance.ImportFiles(fileDialog.FileNames, true);
         }
 
         private async void AddFolder_Click(object sender, RoutedEventArgs e)
@@ -82,21 +79,7 @@ namespace MSOE.MediaComplete
 
             if (folderDialog.ShowDialog() != WinForms.DialogResult.OK) return;
             var selectedDir = folderDialog.SelectedPath;
-            var files = Directory.GetFiles(selectedDir, "*.mp3",
-                SearchOption.AllDirectories);
-            foreach (var file in files)
-            {
-                try
-                {
-                    File.Copy(file, _homeDir + Path.GetFileName(file));
-
-                    //Console.WriteLine(homeDir + System.IO.Path.GetFileName(file));
-                }
-                catch (Exception exception)
-                {
-                    Console.WriteLine(exception);
-                }
-            }
+            await Importer.Instance.ImportDirectory(selectedDir, true);
         }
 
         public void RefreshTreeView()

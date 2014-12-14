@@ -8,7 +8,7 @@ namespace MSOE.MediaComplete.Lib
     {
         private Timer _timer;
         public double TimeInMinutes { get; set; }
-        public string inboxDir { get; set; }
+        public string InboxDir { get; set; }
         private static Polling _instance;
 
         private Polling()
@@ -32,7 +32,7 @@ namespace MSOE.MediaComplete.Lib
 
         public void PollingChanged(double newTimeInMinutes, string dir)
         {
-            inboxDir = dir;
+            InboxDir = dir;
             var timeInMilliseconds = TimeSpan.FromMinutes(newTimeInMinutes).TotalMilliseconds;
             _timer.Enabled = false;
             _timer.Interval = timeInMilliseconds;
@@ -41,7 +41,7 @@ namespace MSOE.MediaComplete.Lib
 
         private async void OnTimerFinished(Object sender, ElapsedEventArgs args)
         {
-            await Task.Run(() => Importer.Instance.ImportDirectory(inboxDir, false));
+            await Task.Run(() => Importer.Instance.ImportDirectory(InboxDir, false));
         }
     }
 }
