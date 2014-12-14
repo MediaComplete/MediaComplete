@@ -168,17 +168,16 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <summary>
         /// Sorts incoming files that have just been imported.
         /// </summary>
-        /// <param name="files">The new files</param>
-        /// <param name="homeDir">The library root</param>
-        public static async void SortNewImports (List<FileInfo> files, DirectoryInfo homeDir)
+        /// <param name="results">The results of the triggering import</param>
+        public static async void SortNewImports (ImportResults results)
         {
             // TODO get settings from configuration
             var settings = new SortSettings
             {
                 SortOrder = new List<MetaAttribute> {MetaAttribute.Artist, MetaAttribute.Album}
             };
-            var sorter = new Sorter(homeDir);
-            sorter.CalculateActions(files, settings);
+            var sorter = new Sorter(results.HomeDir);
+            sorter.CalculateActions(results.NewFiles, settings);
             await sorter.PerformSort();
         }
 

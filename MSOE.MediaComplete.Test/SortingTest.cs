@@ -4,6 +4,7 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Sorting;
+using MSOE.MediaComplete.Test.Util;
 
 namespace MSOE.MediaComplete.Test
 {
@@ -21,6 +22,7 @@ namespace MSOE.MediaComplete.Test
         {
             _homeDir = FileHelper.CreateDirectory("SortingTestHomeDir");
             _importDir = FileHelper.CreateDirectory("SortingTestImportDir");
+            SettingWrapper.SetHomeDir(_homeDir.FullName);
         }
 
         [TestCleanup]
@@ -47,7 +49,7 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(0, subject.UnsortableCount, "Sorter shouldn't have invalid files!");
             Assert.AreEqual(0, subject.MoveCount, "Sorter shouldn't move any files!");
             Assert.AreEqual(1, subject.DupCount, "Sorter didn't plan to delete dup file!");
-            Assert.AreEqual(_homeDir.FullName + Path.DirectorySeparatorChar + Constants.ValidMp3FileName + ".test.mp3",
+            Assert.AreEqual(_homeDir.FullName + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName + ".test.mp3",
                 ((Sorter.DeleteAction) subject.Actions[0]).Target.FullName, "Didn't plan to delete the right file.");
 
             var task = subject.PerformSort();
@@ -68,14 +70,14 @@ namespace MSOE.MediaComplete.Test
             FileHelper.CreateInvalidTestFile(_homeDir.FullName);
             FileHelper.CreateTestFile(_homeDir.FullName);
             var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" + 
-                Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.ValidMp3FileName;
+                Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName;
 
             var subject = new Sorter(_homeDir, GetNormalSettings());
 
             Assert.AreEqual(1, subject.UnsortableCount, "Sorter didn't count up the invalid file!");
             Assert.AreEqual(1, subject.MoveCount, "Sorter didn't plan to move the valid file!");
             Assert.AreEqual(0, subject.DupCount, "Sorter didn't plan to move the valid file!");
-            Assert.AreEqual(_homeDir.FullName + Path.DirectorySeparatorChar + Constants.ValidMp3FileName, 
+            Assert.AreEqual(_homeDir.FullName + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName, 
                 ((Sorter.MoveAction)subject.Actions[0]).Source.FullName, "Didn't plan to move the right file.");
             Assert.AreEqual(normalFileDest, ((Sorter.MoveAction)subject.Actions[0]).Dest.FullName, 
                 "Didn't plan to move to the right destination.");
@@ -89,10 +91,10 @@ namespace MSOE.MediaComplete.Test
         {
             FileHelper.CreateMissingAlbumTestFile(_homeDir.FullName);
             var noAblbumDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" + 
-                Path.DirectorySeparatorChar + Constants.MissingAlbumMp3FileName;
+                Path.DirectorySeparatorChar + Util.Constants.MissingAlbumMp3FileName;
             FileHelper.CreateTestFile(_homeDir.FullName);
-            var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" + 
-                Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.ValidMp3FileName;
+            var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
+                Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName;
 
             var subject = new Sorter(_homeDir, GetNormalSettings());
 
@@ -100,12 +102,12 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(2, subject.MoveCount, "Both files should move!");
             Assert.AreEqual(0, subject.DupCount, "There shouldn't be any dups!");
 
-            Assert.AreEqual(_homeDir.FullName + Path.DirectorySeparatorChar + Constants.ValidMp3FileName,
+            Assert.AreEqual(_homeDir.FullName + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName,
                 ((Sorter.MoveAction)subject.Actions[1]).Source.FullName, "Didn't plan to move the normal file.");
             Assert.AreEqual(normalFileDest, ((Sorter.MoveAction)subject.Actions[1]).Dest.FullName, 
                 "Didn't plan to move normal file to the right destination.");
 
-            Assert.AreEqual(_homeDir.FullName + Path.DirectorySeparatorChar + Constants.MissingAlbumMp3FileName,
+            Assert.AreEqual(_homeDir.FullName + Path.DirectorySeparatorChar + Util.Constants.MissingAlbumMp3FileName,
                 ((Sorter.MoveAction)subject.Actions[0]).Source.FullName, "Didn't plan to move the missing album file.");
             Assert.AreEqual(noAblbumDest, ((Sorter.MoveAction)subject.Actions[0]).Dest.FullName, 
                 "Didn't plan to move missing album file to the right destination.");
@@ -119,8 +121,8 @@ namespace MSOE.MediaComplete.Test
         {
             FileHelper.CreateMissingArtistTestFile(_homeDir.FullName);
             FileHelper.CreateTestFile(_homeDir.FullName);
-            var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" + 
-                Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.ValidMp3FileName;
+            var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
+                Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName;
 
             var subject = new Sorter(_homeDir, GetNormalSettings());
 
@@ -128,7 +130,7 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(1, subject.MoveCount, "Only the normal file should move!");
             Assert.AreEqual(0, subject.DupCount, "There shouldn't be any dups!");
 
-            Assert.AreEqual(_homeDir.FullName + Path.DirectorySeparatorChar + Constants.ValidMp3FileName,
+            Assert.AreEqual(_homeDir.FullName + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName,
                 ((Sorter.MoveAction)subject.Actions[0]).Source.FullName, "Didn't plan to move the normal file.");
             Assert.AreEqual(normalFileDest, ((Sorter.MoveAction)subject.Actions[0]).Dest.FullName, 
                 "Didn't plan to move normal file to the right destination.");
@@ -142,8 +144,8 @@ namespace MSOE.MediaComplete.Test
         {
             var oldDir = Directory.CreateDirectory(_homeDir.FullName + Path.DirectorySeparatorChar + "oldDir");
             FileHelper.CreateTestFile(oldDir.FullName);
-            var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" + 
-                Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.ValidMp3FileName;
+            var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
+                Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName;
 
             var subject = new Sorter(_homeDir, GetNormalSettings());
 
@@ -151,7 +153,7 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(1, subject.MoveCount, "The file should be moved!");
             Assert.AreEqual(0, subject.DupCount, "There shouldn't be any dups!");
 
-            Assert.AreEqual(oldDir.FullName + Path.DirectorySeparatorChar + Constants.ValidMp3FileName,
+            Assert.AreEqual(oldDir.FullName + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName,
                 ((Sorter.MoveAction)subject.Actions[0]).Source.FullName, "Didn't plan to move the normal file.");
             Assert.AreEqual(normalFileDest, ((Sorter.MoveAction)subject.Actions[0]).Dest.FullName, 
                 "Didn't plan to move normal file to the right destination.");
@@ -174,8 +176,8 @@ namespace MSOE.MediaComplete.Test
             var oldDir = Directory.CreateDirectory(_homeDir.FullName + Path.DirectorySeparatorChar + "oldDir");
             FileHelper.CreateTestFile(oldDir.FullName);
             FileHelper.CreateNonMp3TestFile(oldDir.FullName);
-            var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" + 
-                Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.ValidMp3FileName;
+            var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
+                Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName;
 
             var subject = new Sorter(_homeDir, GetNormalSettings());
 
@@ -183,7 +185,7 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(1, subject.MoveCount, "The file should be moved!");
             Assert.AreEqual(0, subject.DupCount, "There shouldn't be any dups!");
 
-            Assert.AreEqual(oldDir.FullName + Path.DirectorySeparatorChar + Constants.ValidMp3FileName,
+            Assert.AreEqual(oldDir.FullName + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName,
                 ((Sorter.MoveAction)subject.Actions[0]).Source.FullName, "Didn't plan to move the normal file.");
             Assert.AreEqual(normalFileDest, ((Sorter.MoveAction)subject.Actions[0]).Dest.FullName,
                 "Didn't plan to move normal file to the right destination.");
@@ -209,11 +211,9 @@ namespace MSOE.MediaComplete.Test
             decoyFile.MoveTo(decoyFile.FullName + ".decoy.mp3");
             FileHelper.CreateTestFile(_importDir.FullName);
             var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
-                Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.ValidMp3FileName;
+                Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName;
 
-            var importer = Importer.Instance;
-            importer.HomeDir = _homeDir.FullName;
-            var task = importer.ImportDirectory(_importDir.FullName, true);
+            var task = new Importer().ImportDirectory(_importDir.FullName, true);
             while (!task.IsCompleted)
             {
                 

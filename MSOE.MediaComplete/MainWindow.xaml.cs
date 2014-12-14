@@ -23,7 +23,6 @@ namespace MSOE.MediaComplete
         {
             InitializeComponent();
             _homeDir = SettingWrapper.GetHomeDir();
-            Importer.Instance.HomeDir = _homeDir;
 			
             Directory.CreateDirectory(_homeDir);
 
@@ -46,7 +45,7 @@ namespace MSOE.MediaComplete
             }
             else
             {
-                await Importer.Instance.ImportFiles(files.Select(f => f.FullName).ToArray(), false);
+                await new Importer().ImportFiles(files.Select(f => f.FullName).ToArray(), false);
             }
         }
 
@@ -72,7 +71,14 @@ namespace MSOE.MediaComplete
             };
 
             if (fileDialog.ShowDialog() != WinForms.DialogResult.OK) return;
-            await Importer.Instance.ImportFiles(fileDialog.FileNames, true);
+            var results = await new Importer().ImportFiles(fileDialog.FileNames, true);
+            if (results.FailCount > 0)
+            {
+                MessageBox.Show(this, 
+                    String.Format(Resources["Dialog-Import-ItemsFailed-Message"].ToString(), results.FailCount), 
+                    Resources["Dialog-Common-Warning-Title"].ToString(), 
+                    MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
         }
 
         private async void AddFolder_Click(object sender, RoutedEventArgs e)
@@ -81,7 +87,14 @@ namespace MSOE.MediaComplete
 
             if (folderDialog.ShowDialog() != WinForms.DialogResult.OK) return;
             var selectedDir = folderDialog.SelectedPath;
-            await Importer.Instance.ImportDirectory(selectedDir, true);
+            var results = await new Importer().ImportDirectory(selectedDir, true);
+            if (results.FailCount > 0)
+            {
+                MessageBox.Show(this,
+                    String.Format(Resources["Dialog-Import-ItemsFailed-Message"].ToString(), results.FailCount),
+                    Resources["Dialog-Common-Warning-Title"].ToString(),
+                    MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
         }
 
         public void RefreshTreeView()

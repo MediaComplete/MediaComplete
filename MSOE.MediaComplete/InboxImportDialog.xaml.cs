@@ -36,7 +36,14 @@ namespace MSOE.MediaComplete
             //apply to settings if they choose to not show again
             SettingWrapper.SetShowInputDialog(!StopShowingCheckBox.IsChecked.GetValueOrDefault(false));
             //Do the move
-            await Importer.Instance.ImportFiles(_files.Select(f => f.FullName).ToArray(), false);
+            var results = await new Importer().ImportFiles(_files.Select(f => f.FullName).ToArray(), false);
+            if (results.FailCount > 0)
+            {
+                MessageBox.Show(this,
+                    String.Format(Resources["Dialog-Import-ItemsFailed-Message"].ToString(), results.FailCount),
+                    Resources["Dialog-Common-Warning-Title"].ToString(),
+                    MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
 
             DialogResult = true;
         }

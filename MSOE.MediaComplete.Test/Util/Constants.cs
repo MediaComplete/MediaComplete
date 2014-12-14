@@ -1,4 +1,4 @@
-﻿namespace MSOE.MediaComplete.Test
+﻿namespace MSOE.MediaComplete.Test.Util
 {
     /// <summary>
     /// Test related constant values
@@ -19,5 +19,7 @@
 
         public const string NonMp3FileName = "NonMp3TestFile.txt";
         public const string NonMp3FullPath = ResourceDirName + "/" + NonMp3FileName;
+
+        public const string ReadOnlyFile = @"C:\Windows\notepad.exe";
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib;
 using System.IO;
 using System.Text.RegularExpressions;
+using MSOE.MediaComplete.Test.Util;
 
 namespace MSOE.MediaComplete.Test
 {

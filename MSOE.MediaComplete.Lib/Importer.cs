@@ -2,47 +2,36 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using MSOE.MediaComplete.Lib.Properties;
 using File = System.IO.File;
 
 namespace MSOE.MediaComplete.Lib
 {
     public class Importer
     {
-        public delegate void ImportHandler(List<FileInfo> files, DirectoryInfo homeDir);
+        public delegate void ImportHandler(ImportResults results);
         public static event ImportHandler ImportFinished = delegate {};
 
-        public string HomeDir { get; set; }
-        private static Importer _instance;
-        private Importer()
-        {
-            SettingWrapper.RaiseSettingEvent += HandleSettingChangeEvent;
-        }
-
-        public static Importer Instance
-        {
-            get { return _instance ?? (_instance = new Importer()); }
-        }
-
-        private static void HandleSettingChangeEvent()
-        {
-            Instance.HomeDir = SettingWrapper.GetHomeDir();
-        }
-
-        public async Task ImportDirectory(string directory, bool isCopying)
+        public async Task<ImportResults> ImportDirectory(string directory, bool isCopying)
         {
             var files = await Task.Run(() => Directory.GetFiles(directory, "*.mp3",
             SearchOption.AllDirectories));
-            await ImportFiles(files, isCopying);
+            return await ImportFiles(files, isCopying);
         }
 
-        public async Task ImportFiles(string[] files, bool isCopying)
+        public async Task<ImportResults> ImportFiles(string[] files, bool isCopying)
         {
-            var newFiles = new List<FileInfo>(files.Length);
+            var homeDir = SettingWrapper.GetHomeDir();
+            var results = new ImportResults
+            {
+                FailCount = 0,
+                NewFiles = new List<FileInfo>(files.Length),
+                HomeDir = new DirectoryInfo(homeDir)
+            };
+            
             foreach (var file in files)
             {
                 var myFile = file;
-                var newFile = HomeDir + Path.DirectorySeparatorChar + Path.GetFileName(file);
+                var newFile = homeDir + Path.DirectorySeparatorChar + Path.GetFileName(file);
                 if (!File.Exists(newFile))
                 {
                     try
@@ -56,14 +45,23 @@ namespace MSOE.MediaComplete.Lib
                             await Task.Run(() => File.Move(myFile, newFile));
                         }
                     }
-                    catch (Exception exception)
+                    catch (IOException exception)
                     {
-                        Console.WriteLine(exception);
+                        Console.WriteLine(exception); // TODO log (MC-125)
+                        results.FailCount++;
                     }
-                    newFiles.Add(new FileInfo(newFile));
+                    results.NewFiles.Add(new FileInfo(newFile));
                 }
             }
-            ImportFinished(newFiles, new DirectoryInfo(HomeDir));
+            ImportFinished(results);
+            return results;
         }
+    }
+
+    public class ImportResults
+    {
+        public List<FileInfo> NewFiles { get; set; }
+        public DirectoryInfo HomeDir { get; set; }
+        public int FailCount { get; set; }
     }
 }

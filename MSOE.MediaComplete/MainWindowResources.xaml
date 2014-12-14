@@ -13,6 +13,8 @@
     <system:String x:Key="Dialog-SortLibrary-Title">Confirm</system:String>
     <system:String x:Key="Dialog-SortLibrary-NoSort">No files require sorting. There were {0} file(s) missing metadata that make them impossible to sort.</system:String>
     <system:String x:Key="Dialog-SortLibrary-NoSortTitle">Nothing to Sort</system:String>
+    <system:String x:Key="Dialog-Common-Warning-Title">Warning</system:String>
+    <system:String x:Key="Dialog-Import-ItemsFailed-Message">{0} files could not be imported - they may be in use by another process, or we might not have permission. See the log for more details.</system:String>
 
 
     <!-- Images -->
