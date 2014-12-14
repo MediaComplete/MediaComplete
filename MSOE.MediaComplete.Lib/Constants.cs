@@ -3,7 +3,7 @@
 	///<summary>
 	/// Compiled constants used throughout the application. This should only be used for values we don't want the user to be able to edit.
 	///</summary>
-    public class Constants
+    public static class Constants
     {
 		///<summary>
 		/// The file pattern used to filter for music files. Currently only includes the MP3 file format.
