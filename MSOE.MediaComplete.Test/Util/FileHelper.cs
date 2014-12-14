@@ -31,7 +31,7 @@ namespace MSOE.MediaComplete.Test.Util
 
         public static FileInfo CreateUnknownFile(string location)
         {
-            var destPath = location + Path.DirectorySeparatorChar + Constants.ValidMp3FileName;
+            var destPath = location + Path.DirectorySeparatorChar + Constants.UnknownMp3FileName;
             if (File.Exists(destPath))
             {
                 File.Delete(destPath);

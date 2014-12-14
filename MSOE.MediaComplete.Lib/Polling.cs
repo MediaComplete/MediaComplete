@@ -8,9 +8,9 @@ namespace MSOE.MediaComplete.Lib
 {
     public class Polling
     {
-        private Timer _timer;
+        private readonly Timer _timer;
         public double TimeInMinutes { get; set; }
-        public string inboxDir { get; set; }
+        public string InboxDir { get; set; }
         private static Polling _instance;
 
         public delegate void InboxFilesHandler(IEnumerable<FileInfo> files);
@@ -38,7 +38,7 @@ namespace MSOE.MediaComplete.Lib
 
         public void PollingChanged(double newTimeInMinutes, string dir)
         {
-            inboxDir = dir;
+            InboxDir = dir;
             var timeInMilliseconds = TimeSpan.FromMinutes(newTimeInMinutes).TotalMilliseconds;
             _timer.Enabled = false;
             _timer.Interval = timeInMilliseconds;
@@ -50,10 +50,12 @@ namespace MSOE.MediaComplete.Lib
         {
             var inbox = new DirectoryInfo(SettingWrapper.GetInboxDir());
             var files = inbox.EnumerateFiles("*.mp3");
+            // ReSharper disable PossibleMultipleEnumeration
             if(files.Any())
             {
                 InboxFilesDetected(files);
             }
+            // ReSharper restore PossibleMultipleEnumeration
             
             //await Task.Run(() => Importer.Instance.ImportDirectory(inboxDir, false));
         }

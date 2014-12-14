@@ -29,7 +29,7 @@ namespace MSOE.MediaComplete
             if (SettingWrapper.GetIsPolling())
             {
                 Polling.Instance.TimeInMinutes = SettingWrapper.GetPollingTime();
-                Polling.Instance.inboxDir = SettingWrapper.GetInboxDir();
+                Polling.Instance.InboxDir = SettingWrapper.GetInboxDir();
                 Polling.Instance.Start();
             }
             Polling.InboxFilesDetected += ImportFromInbox;
@@ -71,7 +71,21 @@ namespace MSOE.MediaComplete
             };
 
             if (fileDialog.ShowDialog() != WinForms.DialogResult.OK) return;
-            var results = await new Importer().ImportFiles(fileDialog.FileNames, true);
+
+            ImportResults results;
+            try
+            {
+                results = await new Importer().ImportFiles(fileDialog.FileNames, true);
+            }
+            catch (InvalidImportException)
+            {
+                MessageBox.Show(this,
+                    String.Format(Resources["Dialog-Import-Invalid-Message"].ToString()),
+                    Resources["Dialog-Common-Error-Title"].ToString(),
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             if (results.FailCount > 0)
             {
                 MessageBox.Show(this, 

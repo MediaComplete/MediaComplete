@@ -19,7 +19,5 @@
 
         public const string NonMp3FileName = "NonMp3TestFile.txt";
         public const string NonMp3FullPath = ResourceDirName + "/" + NonMp3FileName;
-
-        public const string ReadOnlyFile = @"C:\Windows\notepad.exe";
     }
 }

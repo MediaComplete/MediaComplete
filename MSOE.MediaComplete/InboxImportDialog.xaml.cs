@@ -2,17 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Permissions;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using MSOE.MediaComplete.Lib;
 
 namespace MSOE.MediaComplete
@@ -20,7 +10,7 @@ namespace MSOE.MediaComplete
     /// <summary>
     /// Interaction logic for InboxImportDialog.xaml
     /// </summary>
-    public partial class InboxImportDialog : Window
+    public partial class InboxImportDialog
     {
         private readonly IEnumerable<FileInfo> _files;
 

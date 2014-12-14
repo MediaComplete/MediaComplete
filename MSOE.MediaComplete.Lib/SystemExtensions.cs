@@ -10,6 +10,22 @@ namespace MSOE.MediaComplete.Lib
     internal static class SystemExtensions
     {
         /// <summary>
+        /// Returns true if the file is located somewhere within the parent's children, recursively.
+        /// </summary>
+        /// <param name="file">The file in question</param>
+        /// <param name="parent">The potential parent we're testing for</param>
+        /// <returns></returns>
+        public static bool HasParent(this FileInfo file, DirectoryInfo parent)
+        {
+            var dir = file.Directory;
+            while (dir != null && !dir.DirectoryEquals(parent))
+            {
+                dir = dir.Parent;
+            }
+            return dir != null;
+        }
+
+        /// <summary>
         /// Returns the 0-indexed parent directory of a given file. 
         /// </summary>
         /// <param name="file">The invoking file.</param>
@@ -71,10 +87,10 @@ namespace MSOE.MediaComplete.Lib
         public static string GetValidFileName(this string fileName)
         {
             //special chars not allowed in filename 
-            string specialChars = @"/:*?""<>|#%&.{}~";
+            const string specialChars = @"/:*?""<>|#%&.{}~";
 
             //Replace special chars in raw filename with empty spaces to make it valid  
-            Array.ForEach(specialChars.ToCharArray(), specialChar => fileName = fileName.Replace(specialChar.ToString(), ""));
+            Array.ForEach(specialChars.ToCharArray(), specialChar => fileName = fileName.Replace(specialChars, ""));
 
             return fileName;
 
