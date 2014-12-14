@@ -8,6 +8,13 @@ namespace MSOE.MediaComplete.Test
     [TestClass]
     public class MetaDataExtensions
     {
+
+        [TestMethod]
+        public void VerifictionFail()
+        {
+            Assert.Fail("This is failig intentionally.");
+        }
+
         /*
         //TODO this was the old metadata test...needs to be refactored -- issues accessing the extension code...
         private Mp3MetadataEditor _mp3;
