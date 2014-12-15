@@ -8,9 +8,9 @@ using File = TagLib.File;
 namespace MSOE.MediaComplete.Lib
 {
     /// <summary>
-    /// Contains various extension methods for throughout the project.
+    /// Contains various extension methods for meta data related operations
     /// </summary>
-    internal static class Extensions
+    public static class MetaDataExtensions
     {
         public static bool ContainsMusicFile(this DirectoryInfo dir, File matchFile)
         {
@@ -46,13 +46,49 @@ namespace MSOE.MediaComplete.Lib
             return fileTag.Album == otherTag.Album && fileTag.Track == otherTag.Track;
         }
 
+        public static void SetMetaAttribute(this File file, MetaAttribute attr, object value)
+        {
+            if (value == null) return;
+            var tag = file.Tag;
+            switch (attr)
+            {
+                case MetaAttribute.Album:
+                    tag.Album = (string)value;
+                    break;
+                case MetaAttribute.Artist:
+                    //tag.FirstAlbumArtist = value; //TODO no setter
+                    break;
+                case MetaAttribute.Genre:
+                    //tag.FirstGenre = value; //TODO no setter
+                    break;
+                case MetaAttribute.Rating:
+                    //TODO
+                    break;
+                case MetaAttribute.SongTitle:
+                    tag.Title = (string)value;
+                    break;
+                case MetaAttribute.SupportingArtist:
+                    //tag.AlbumArtists += value; //TODO no setter
+                    break;
+                case MetaAttribute.TrackNumber:
+                    tag.Track = (uint)value;
+                    break;
+                case MetaAttribute.Year:
+                    tag.Year = (uint)value;
+                    break;
+                default:
+                    return;
+            }
+            file.Save();
+        }
+
         /// <summary>
         /// Retrieves an ID3 tag value corresponding to the MetaAttribute.
         /// </summary>
-        /// <param name="file">The File object derived from a MP3 file</param>
-        /// <param name="attr">The MetaAttribute for the specific ID3 value to be returned</param>
-        /// <returns>The ID3 value from the Tag</returns>
         // TODO add support for more fields?
+        /// <param name="file">The MP3 File</param>
+        /// <param name="attr">The MetaAttribute for the specific ID3 value to be returned</param>
+        /// <returns>The ID3 value from the tag</returns>
         public static string StringForMetaAttribute(this File file, MetaAttribute attr)
         {
             var tag = file.Tag;
@@ -98,6 +134,7 @@ namespace MSOE.MediaComplete.Lib
         /// <returns>An integer representation of the rating</returns>
         private static int RatingFromByte(byte raw)
         {
+            //TODO do a modulus instead
             if (raw > 254)
                 return 5;
             if (raw > 191)

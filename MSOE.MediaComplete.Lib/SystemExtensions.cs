@@ -4,7 +4,10 @@ using System.IO;
 
 namespace MSOE.MediaComplete.Lib
 {
-    static class FileExtensions
+    /// <summary>
+    /// Contains various extension methods for system related calls
+    /// </summary>
+    public static class SystemExtensions
     {
         /// <summary>
         /// Returns the 0-indexed parent directory of a given file. 
@@ -40,7 +43,7 @@ namespace MSOE.MediaComplete.Lib
             List<DirectoryInfo> ret;
             if (top.DirectoryEquals(bottom))
             {
-                ret = new List<DirectoryInfo> { bottom };
+                ret = new List<DirectoryInfo> {bottom};
             }
             else
             {

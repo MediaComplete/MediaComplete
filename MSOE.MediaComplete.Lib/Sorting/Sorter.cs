@@ -134,13 +134,8 @@ namespace MSOE.MediaComplete.Lib.Sorting
             }
 
             var metadataPath = new StringBuilder();
-            foreach (var attr in list)
+            foreach (var metaValue in list.Select(metadata.StringForMetaAttribute).TakeWhile(metaValue => !String.IsNullOrWhiteSpace((metaValue))))
             {
-                var metaValue = metadata.StringForMetaAttribute(attr);
-                if (String.IsNullOrWhiteSpace((metaValue)))
-                {
-                    break;
-                }
                 metadataPath.Append(metaValue);
                 metadataPath.Append(Path.DirectorySeparatorChar);
             }
@@ -151,7 +146,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// Removes empty directories and subdirectories from the given root directory
         /// </summary>
         /// <param name="rootInfo">The root of the tree</param>
-        private void ScrubEmptyDirectories(DirectoryInfo rootInfo)
+        private static void ScrubEmptyDirectories(DirectoryInfo rootInfo)
         {
             foreach (var child in rootInfo.EnumerateDirectories("*", SearchOption.AllDirectories))
             {
