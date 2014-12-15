@@ -30,7 +30,7 @@ namespace MSOE.MediaComplete
             Directory.CreateDirectory(_homeDir);
 
             Polling.Instance.TimeInMinutes = Convert.ToDouble(Properties.Settings.Default["PollingTime"]);
-            Polling.Instance.inboxDir = (string)Properties.Settings.Default["InboxDir"];
+            Polling.Instance.InboxDir = (string)Properties.Settings.Default["InboxDir"];
             Polling.Instance.Start();
 
             StatusBarHandler.Instance.RaiseStatusBarEvent += HandleStatusBarChangeEvent;
@@ -42,9 +42,9 @@ namespace MSOE.MediaComplete
         {
             Dispatcher.Invoke(() =>
             {
-                statusMessage.Text = (message.Length == 0) ? "" : Resources[message].ToString();
+                StatusMessage.Text = (message.Length == 0) ? "" : Resources[message].ToString();
                 var sourceUri = new Uri("./Resources/" + icon + ".png", UriKind.Relative);
-                statusIcon.Source = new BitmapImage(sourceUri);
+                StatusIcon.Source = new BitmapImage(sourceUri);
             });
         }
 
@@ -145,9 +145,10 @@ namespace MSOE.MediaComplete
         {
             // TODO support multi-select
             var node = LibraryTree.SelectedItem;
-            if (node is SongTreeViewItem)
+            var item = node as SongTreeViewItem;
+            if (item != null)
             {
-                await MusicIdentifier.IdentifySong((node as SongTreeViewItem).FilePath());
+                await MusicIdentifier.IdentifySong(item.FilePath());
             }
         }
 

@@ -7,9 +7,10 @@ namespace MSOE.MediaComplete
         public static string FilePath(this TreeViewItem leaf)
         {
             var parentPath = "";
-            if (leaf.Parent is TreeViewItem)
+            var item = leaf.Parent as TreeViewItem;
+            if (item != null)
             {
-                parentPath = (leaf.Parent as TreeViewItem).FilePath();
+                parentPath = item.FilePath();
             }
             return parentPath + leaf.Header;
         }

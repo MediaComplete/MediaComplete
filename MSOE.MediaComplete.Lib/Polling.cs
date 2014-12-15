@@ -6,7 +6,7 @@ namespace MSOE.MediaComplete.Lib
 {
     public class Polling
     {
-        private Timer _timer;
+        private readonly Timer _timer;
         public double TimeInMinutes { get; set; }
         public string InboxDir { get; set; }
         private static Polling _instance;
