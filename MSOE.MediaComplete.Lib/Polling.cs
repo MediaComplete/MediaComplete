@@ -61,9 +61,12 @@ namespace MSOE.MediaComplete.Lib
             _timer.Enabled = true;
         }
 
+        /// <summary>
+        /// resets the interval to start at the current time
+        /// </summary>
         public void Reset()
         {
-            _timer.Interval = _timer.Interval;
+            _timer.Interval = _timer.Interval;//resarts the interval now with the same interval as before
         }
 
         /// <summary>
