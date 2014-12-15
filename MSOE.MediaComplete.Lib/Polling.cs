@@ -6,6 +6,9 @@ using System.Timers;
 
 namespace MSOE.MediaComplete.Lib
 {
+    /// <summary>
+    /// Class used to set up a timed interval to poll a directory for files, and trigger an event when they 
+    /// </summary>
     public class Polling
     {
         private readonly Timer _timer;
@@ -16,26 +19,39 @@ namespace MSOE.MediaComplete.Lib
         public delegate void InboxFilesHandler(IEnumerable<FileInfo> files);
         public static event InboxFilesHandler InboxFilesDetected = delegate {};
 
-
+        /// <summary>
+        /// private constructor to build out a timer object and subscribe to its events
+        /// </summary>
         private Polling()
         {
             _timer = new Timer();
             _timer.Elapsed += OnTimerFinished;
         }
 
+        /// <summary>
+        /// starts the interval
+        /// </summary>
         public void Start()
         {
             var timeInMilliseconds = TimeSpan.FromMinutes(TimeInMinutes).TotalMilliseconds;
             _timer.Interval = timeInMilliseconds;
             _timer.Enabled = true;
-            Console.WriteLine("Timer Started");
+            //Console.WriteLine("Timer Started");
         }
 
+        /// <summary>
+        /// gets the instance of the singleton Polling
+        /// </summary>
         public static Polling Instance
         {
             get { return _instance ?? (_instance = new Polling()); }
         }
 
+        /// <summary>
+        /// sets up the new polling interval and change of directory to watch
+        /// </summary>
+        /// <param name="newTimeInMinutes">new interval time in minutes</param>
+        /// <param name="dir">new directory path</param>
         public void PollingChanged(double newTimeInMinutes, string dir)
         {
             InboxDir = dir;
@@ -45,6 +61,11 @@ namespace MSOE.MediaComplete.Lib
             _timer.Enabled = true;
         }
 
+        /// <summary>
+        /// checks whether files exist in the inbox to check fires the event if they do, passing the IEnumerable of files to the event handler
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         private static void OnTimerFinished(Object sender, ElapsedEventArgs args)
         {
             var inbox = new DirectoryInfo(SettingWrapper.GetInboxDir());
