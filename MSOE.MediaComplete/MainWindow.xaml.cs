@@ -98,7 +98,7 @@ namespace MSOE.MediaComplete
 
             //For each folder in the root Directory
             foreach (var rootChild in rootDirs)
-            {
+            {   
                 //add each child to the root folder
                 firstNode.Children.Add(PopulateFromFolder(rootChild, SongTree, firstNode));
             }
@@ -153,16 +153,27 @@ namespace MSOE.MediaComplete
                 SongTree.Items.Clear();
                 foreach (var folder in FolderTree.SelectedItems)
                 {
-                    var item = (FolderTreeViewItem) folder;
+                    var item = (FolderTreeViewItem)folder;
                     var rootDirInfo = new DirectoryInfo((item.GetPath()));
-
-                    PopulateFromFolder(rootDirInfo, SongTree, (FolderTreeViewItem) folder);
+                    if (!ContainsParent(item))
+                    {
+                        PopulateFromFolder(rootDirInfo, SongTree, item);
+                    }
                 }
             }
             else
             {
                 RefreshTreeView();
             }
+        }
+
+        private Boolean ContainsParent(FolderTreeViewItem folder)
+        {
+            if (!folder.HasParent)
+            {
+                return false;
+            }
+            return (FolderTree.SelectedItems.Contains(folder.ParentItem) || ContainsParent(folder.ParentItem));
         }
 
         private static void OnChanged(object source, FileSystemEventArgs e)
