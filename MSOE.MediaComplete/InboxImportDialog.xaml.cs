@@ -14,12 +14,19 @@ namespace MSOE.MediaComplete
         private static IEnumerable<FileInfo> _files;
         private static InboxImportDialog _instance;
 
-
+        /// <summary>
+        /// initializes the component
+        /// </summary>
         private InboxImportDialog()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// gets the instance of the dialog
+        /// </summary>
+        /// <param name="owner">owner to set on the new dialog so it can be modal</param>
+        /// <returns></returns>
         private static InboxImportDialog Instance(Window owner)
         {
             if (_instance == null || !_instance.IsLoaded)// IsLoaded == false iff dialog not ready to be shown or already closed (so we need to init one)
@@ -29,6 +36,11 @@ namespace MSOE.MediaComplete
             return _instance;
         }
         
+        /// <summary>
+        /// sets the text properly based on the number of files and shows the dialog if it is not already shown
+        /// </summary>
+        /// <param name="newOwner"></param>
+        /// <param name="files"></param>
         public static void Prompt(Window newOwner, IEnumerable<FileInfo> files)
         {
             _files = files;
@@ -40,6 +52,11 @@ namespace MSOE.MediaComplete
             }
         }
 
+        /// <summary>
+        /// sets the user's choice to be shown the pop up or not, then fires the event to move the files into the library
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void okButton_Click(object sender, RoutedEventArgs e)
         {
             SettingWrapper.SetShowInputDialog(!StopShowingCheckBox.IsChecked.GetValueOrDefault(false));
@@ -47,9 +64,15 @@ namespace MSOE.MediaComplete
             DialogResult = true;
         }
 
+        /// <summary>
+        /// sets the application to stop polling if the user elected to not be shown the pop up again
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CancelButton_OnClick(object sender, RoutedEventArgs e)
         {
             SettingWrapper.SetIsPolling(!StopShowingCheckBox.IsChecked.GetValueOrDefault((false)));
+            Polling.Instance.Reset();
             DialogResult = false;
         }
     }

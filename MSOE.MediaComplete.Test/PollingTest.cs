@@ -9,6 +9,8 @@ namespace MSOE.MediaComplete.Test
     public class PollingTest
     {
         private static FileInfo _file;
+        private const string DirectoryPath = "C:\\TESTinboxForLibrary\\";
+        private const string FileName = "file.mp3";
 
         /// <summary>
         /// creates the directory and file to check
@@ -16,8 +18,8 @@ namespace MSOE.MediaComplete.Test
         [TestInitialize]
         public  void Before()
         {
-            Directory.CreateDirectory("C:\\TESTinboxForLibrary");
-            _file = new FileInfo("C:\\TESTinboxForLibrary\\file.mp3");
+            Directory.CreateDirectory(DirectoryPath);
+            _file = new FileInfo(DirectoryPath + FileName);
             File.Create(_file.FullName).Close();
         }
 
@@ -31,9 +33,9 @@ namespace MSOE.MediaComplete.Test
             {
                 File.Delete(_file.FullName);
             }
-            if (Directory.Exists("C:\\TESTinboxForLibrary"))
+            if (Directory.Exists(DirectoryPath))
             {
-                Directory.Delete("C:\\TESTinboxForLibrary");
+                Directory.Delete(DirectoryPath);
             }
         }
 
@@ -45,7 +47,7 @@ namespace MSOE.MediaComplete.Test
         public void OnTimerFinishedTest()
         {
             var pass = false;
-            Polling.Instance.InboxDir = _file.DirectoryName;
+            Polling.Instance.InboxDir = DirectoryPath;
             Polling.Instance.TimeInMinutes = 0.0005;
             Polling.InboxFilesDetected += delegate
             {

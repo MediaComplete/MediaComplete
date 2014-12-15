@@ -61,6 +61,11 @@ namespace MSOE.MediaComplete.Lib
             _timer.Enabled = true;
         }
 
+        public void Reset()
+        {
+            _timer.Interval = _timer.Interval;
+        }
+
         /// <summary>
         /// checks whether files exist in the inbox to check fires the event if they do, passing the IEnumerable of files to the event handler
         /// </summary>
