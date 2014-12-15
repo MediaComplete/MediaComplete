@@ -61,6 +61,7 @@ namespace MSOE.MediaComplete
         {
             SettingWrapper.SetShowInputDialog(!StopShowingCheckBox.IsChecked.GetValueOrDefault(false));
             await Importer.Instance.ImportFiles(_files.Select(f => f.FullName).ToArray(), false);
+            Polling.Instance.Reset();
             DialogResult = true;
         }
 
