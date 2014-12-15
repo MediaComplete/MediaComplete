@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib;
 
@@ -47,7 +46,7 @@ namespace MSOE.MediaComplete.Test
         public void OnTimerFinishedTest()
         {
             var pass = false;
-            Polling.Instance.InboxDir = DirectoryPath;
+            SettingWrapper.SetInboxDir(DirectoryPath);
             Polling.Instance.TimeInMinutes = 0.0005;
             Polling.InboxFilesDetected += delegate
             {

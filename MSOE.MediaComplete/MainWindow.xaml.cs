@@ -30,7 +30,6 @@ namespace MSOE.MediaComplete
             if (SettingWrapper.GetIsPolling())
             {
                 Polling.Instance.TimeInMinutes = SettingWrapper.GetPollingTime();
-                Polling.Instance.InboxDir = SettingWrapper.GetInboxDir();
                 Polling.Instance.Start();
             }
             Polling.InboxFilesDetected += ImportFromInbox;

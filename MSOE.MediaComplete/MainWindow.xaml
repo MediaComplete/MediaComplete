@@ -31,11 +31,11 @@
         <TextBox Grid.Column="1" Height="23" Text="Search" Width="189" HorizontalAlignment="Right"/>
         <ToolBarTray Grid.Row="1">
             <ToolBar Grid.Row="1" Margin="0,0,0,161" Grid.ColumnSpan="2">
-                <Button Name="addFile" ToolTip="Add File" VerticalAlignment="Center" Click="AddFile_Click">
-                    <Image Source="Resources/add_file.png" Name="add_file"></Image>
+                <Button Name="AddFile" ToolTip="Add File" VerticalAlignment="Center" Click="AddFile_Click">
+                    <Image Source="Resources/add_file.png" Name="AddFileImage"></Image>
                 </Button>
-                <Button Name="addFolder" ToolTip="Add Folder" VerticalAlignment="Center" Click="AddFolder_Click">
-                    <Image Source="Resources/add_folder.png" Name="add_folder"></Image>
+                <Button Name="AddFolder" ToolTip="Add Folder" VerticalAlignment="Center" Click="AddFolder_Click">
+                    <Image Source="Resources/add_folder.png" Name="AddFolderImage"></Image>
                 </Button>
             </ToolBar>
         </ToolBarTray>

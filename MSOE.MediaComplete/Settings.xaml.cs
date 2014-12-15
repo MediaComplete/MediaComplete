@@ -106,7 +106,7 @@ namespace MSOE.MediaComplete
             SettingWrapper.SetShowInputDialog(CheckboxShowImportDialog.IsChecked.GetValueOrDefault(false));
             SettingWrapper.Save();
 			
-            Polling.Instance.PollingChanged(Convert.ToDouble(ComboBoxPollingTime.SelectedValue), TxtboxInboxFolder.Text);
+            Polling.Instance.PollingChanged(Convert.ToDouble(ComboBoxPollingTime.SelectedValue));
         }
 
         private void ComboBox_Loaded(object sender, RoutedEventArgs args)
