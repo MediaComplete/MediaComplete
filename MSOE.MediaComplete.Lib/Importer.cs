@@ -19,14 +19,14 @@ namespace MSOE.MediaComplete.Lib
         }
 
 
-        public async Task ImportDirectory(string directory)
+        public async Task ImportDirectory(string directory, bool isCopy)
         {
             var files = await Task.Run(() => Directory.GetFiles(directory, "*.mp3",
             SearchOption.AllDirectories));
-            await Task.Run(() => ImportFiles(files));
+            await Task.Run(() => ImportFiles(files, isCopy));
         }
 
-        public async Task ImportFiles(string[] files)
+        public async Task ImportFiles(string[] files, bool isCopy)
         {
             var newFiles = new List<FileInfo>(files.Length);
             foreach (var file in files)
@@ -37,7 +37,14 @@ namespace MSOE.MediaComplete.Lib
                 {
                     try
                     {
-                        await Task.Run(() => File.Copy(myFile, newFile));
+                        if (isCopy)
+                        {
+                            await Task.Run(() => File.Copy(myFile, newFile));
+                        }
+                        else
+                        {
+                            await Task.Run(() => File.Move(myFile, newFile));
+                        }
                     }
                     catch (Exception exception)
                     {
