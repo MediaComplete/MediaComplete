@@ -211,7 +211,7 @@ namespace MSOE.MediaComplete.Test
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.ValidMp3FileName;
 
             var importer = new Importer(_homeDir.FullName);
-            var task = importer.ImportDirectory(_importDir.FullName);
+            var task = importer.ImportDirectory(_importDir.FullName, true);
             while (!task.IsCompleted)
             {
                 
