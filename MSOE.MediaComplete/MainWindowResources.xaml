@@ -21,6 +21,4 @@
                  UriSource=".\Resources\folder_add.png" />
     <BitmapImage x:Key="Toolbar-AutoIdMusic-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
                  UriSource=".\Resources\wand.png" />
-    <BitmapImage x:Key="Toolbar-SortMusic-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
-                 UriSource=".\Resources\folder_wrench.png" />
 </ResourceDictionary>

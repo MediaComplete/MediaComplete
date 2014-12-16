@@ -14,6 +14,7 @@ namespace MSOE.MediaComplete.Lib
             get { return _instance ?? (_instance = new Importer()); }
         }
 
+
         public async Task ImportDirectory(string directory, bool isCopying)
         {
             var files = await Task.Run(() => Directory.GetFiles(directory, "*.mp3",

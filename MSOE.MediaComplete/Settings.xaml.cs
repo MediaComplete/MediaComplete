@@ -9,23 +9,23 @@ using MSOE.MediaComplete.Lib;
 namespace MSOE.MediaComplete
 {
     /// <summary>
+
     /// Interaction logic for Settings.xaml
     /// </summary>
     public partial class Settings
     {
+
         
         public Settings()
         {
             InitializeComponent();
-
             TxtboxSelectedFolder.Text = SettingWrapper.GetHomeDir();
             TxtboxInboxFolder.Text = SettingWrapper.GetInboxDir();
             ComboBoxPollingTime.SelectedValue = SettingWrapper.GetPollingTime().ToString(CultureInfo.InvariantCulture);
             CheckboxPolling.IsChecked = SettingWrapper.GetIsPolling();
             CheckboxShowImportDialog.IsChecked = SettingWrapper.GetShowInputDialog();
             PollingCheckBoxChanged(CheckboxPolling, null);
-        }
-
+            }
 
 
         /// <summary>
@@ -50,6 +50,7 @@ namespace MSOE.MediaComplete
                         break;
                 }
         }
+
 
         /// <summary>
         /// The handler of the checkbox change event for the setting screen.
@@ -98,7 +99,6 @@ namespace MSOE.MediaComplete
             {
                 homeDir += Path.DirectorySeparatorChar;
             }
-
             var inboxDir = TxtboxInboxFolder.Text;
             if (!inboxDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.CurrentCulture)))
             {
@@ -111,8 +111,8 @@ namespace MSOE.MediaComplete
             SettingWrapper.SetIsPolling(CheckboxPolling.IsChecked.GetValueOrDefault(false));
             SettingWrapper.SetShowInputDialog(CheckboxShowImportDialog.IsChecked.GetValueOrDefault(false));
             SettingWrapper.Save();
-			
-            Polling.Instance.PollingChanged(Convert.ToDouble(ComboBoxPollingTime.SelectedValue));
+			            
+            Close();
         }
 
         private void ComboBox_Loaded(object sender, RoutedEventArgs args)

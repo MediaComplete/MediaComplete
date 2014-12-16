@@ -118,7 +118,6 @@
     <Compile Include="Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Utils.cs" />
     <Page Include="InboxImportDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -172,20 +171,15 @@
       <Project>{9fc3a1a0-f81a-45ba-a8eb-1f4a10f0d3f1}</Project>
       <Name>MSOE.MediaComplete.Lib</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\folder_add.png" />
-    <Resource Include="Resources\page_white_add.png" />
-    <Resource Include="Resources\wand.png" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\MSOE.MediaComplete.Lib\MSOE.MediaComplete.Lib.csproj">
       <Project>{9fc3a1a0-f81a-45ba-a8eb-1f4a10f0d3f1}</Project>
       <Name>MSOE.MediaComplete.Lib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\folder_wrench.png" />
+    <Resource Include="Resources\folder_add.png" />
+    <Resource Include="Resources\page_white_add.png" />
+    <Resource Include="Resources\wand.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">

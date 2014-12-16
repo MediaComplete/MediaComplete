@@ -1,8 +1,10 @@
 ﻿<Window x:Class="MSOE.MediaComplete.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:Controls="clr-namespace:System.Windows.Controls;assembly=TreeViewEx" 
-        Title="Media Complete" Height="339" Width="787">
+        xmlns:controls="clr-namespace:System.Windows.Controls;assembly=TreeViewEx"
+        xmlns:customControls="clr-namespace:MSOE.MediaComplete.CustomControls"
+        Title="Media Complete" Height="339" Width="787"
+        AutomationProperties.Name="Tree">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -10,14 +12,12 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-
     <Grid Margin="0,0,0,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition Width="189" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="24" />
             <RowDefinition Height="24" />
             <RowDefinition />
             <RowDefinition Height="100" />
@@ -43,36 +43,57 @@
                     <Image Source="{StaticResource Toolbar-AddMusicFolder-Icon}" />
                 </Button>
                 <Button Name="AutoIdentifyMusic" ToolTip="{StaticResource Toolbar-AutoIdMusic-Tooltip}"
-                       VerticalAlignment="Center" Click="Toolbar_AutoIDMusic_Click">
+                        VerticalAlignment="Center" Click="Toolbar_AutoIDMusic_Click">
                     <Image Source="{StaticResource Toolbar-AutoIdMusic-Icon}" />
                 </Button>
             </ToolBar>
         </ToolBarTray>
-        <Grid Margin="0,0,0,1" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+        <Grid Margin="0,0,0,1" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="260*" />
                 <ColumnDefinition Width="260*" />
                 <ColumnDefinition Width="260*" />
             </Grid.ColumnDefinitions>
-            <TreeView Name="LibraryTree" Grid.Column="0">
-                <TreeView.Resources>
-                    <!-- Disabling warnings below - these resources are accessed from code, so Resharper doesn't think we're using them. -->
-                    <!-- ReSharper disable once Xaml.RedundantResource -->
-                    <ContextMenu x:Key="SongContextMenu" StaysOpen="True">
+
+            <controls:TreeViewEx x:Name="FolderTree" Grid.Column="0" Margin="0,33,0,0" 
+             AutomationProperties.Name="Tree" 
+             MouseUp="FolderTree_OnMouseUp"
+             ItemsSource="{Binding Children}">
+                <controls:TreeViewEx.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding Children}"  DataType="{x:Type customControls:FolderTreeViewItem}">
+                        <TextBlock Text="{Binding}"/>
+                    </HierarchicalDataTemplate>
+                </controls:TreeViewEx.ItemTemplate>
+
+            </controls:TreeViewEx>
+
+            <controls:TreeViewEx x:Name="SongTree" Grid.Column="1" Margin="0,33,0,0" 
+             AutomationProperties.Name="Tree" 
+             ItemsSource="{Binding}">
+                <controls:TreeViewEx.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding}"  DataType="{x:Type customControls:SongTreeViewItem}">
+                        <TextBlock Text="{Binding}"/>
+                    </HierarchicalDataTemplate>
+                </controls:TreeViewEx.ItemTemplate>
+                <controls:TreeViewEx.ContextMenu>
+                    <ContextMenu StaysOpen="True">
                         <MenuItem Header="{StaticResource ContextMenu-AutoIdMusic-Header}"
                                   Click="ContextMenu_AutoIDMusic_Click" />
                     </ContextMenu>
-                    <!-- ReSharper disable once Xaml.RedundantResource -->
-                    <ContextMenu x:Key="FolderContextMenu" StaysOpen="True" />
-                </TreeView.Resources>
-            </TreeView>
-            <TreeView Grid.Column="1" />
-            <TreeView Grid.Column="2" />
+                </controls:TreeViewEx.ContextMenu>
+            </controls:TreeViewEx>
+
+            <Grid Grid.Column="2" Margin="0,33,0,0" Background="Transparent">
+                <Border BorderThickness="1" BorderBrush="Gray" >
+                    <StackPanel >
+                    </StackPanel>
+                </Border>
+            </Grid>
         </Grid>
 
 
-        <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
-            <Slider/>
+        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+            <Slider />
             <StackPanel Height="64" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Content="Previous" MinWidth="75" Click="Button_Click" />
                 <Button Content="Play" MinWidth="75" />
