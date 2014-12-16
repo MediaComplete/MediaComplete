@@ -42,10 +42,10 @@ namespace MSOE.MediaComplete
             if (button != null)
                 switch (button.Name)
                 {
-                    case "btnSelectFolder":
+                    case "BtnSelectFolder":
                         TxtboxSelectedFolder.Text = folderBrowserDialog1.SelectedPath;
                         break;
-                    case "btnInboxFolder":
+                    case "BtnInboxFolder":
                         TxtboxInboxFolder.Text = folderBrowserDialog1.SelectedPath;
                         break;
                 }
@@ -99,8 +99,14 @@ namespace MSOE.MediaComplete
                 homeDir += Path.DirectorySeparatorChar;
             }
 
+            var inboxDir = TxtboxInboxFolder.Text;
+            if (!inboxDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.CurrentCulture)))
+            {
+                inboxDir += Path.DirectorySeparatorChar;
+            }
+
             SettingWrapper.SetHomeDir(homeDir);
-            SettingWrapper.SetInboxDir(TxtboxInboxFolder.Text);
+            SettingWrapper.SetInboxDir(inboxDir);
             SettingWrapper.SetPollingTime(ComboBoxPollingTime.SelectedValue);
             SettingWrapper.SetIsPolling(CheckboxPolling.IsChecked.GetValueOrDefault(false));
             SettingWrapper.SetShowInputDialog(CheckboxShowImportDialog.IsChecked.GetValueOrDefault(false));
