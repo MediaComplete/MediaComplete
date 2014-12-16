@@ -19,7 +19,7 @@ namespace MSOE.MediaComplete.CustomControls
 
         public string GetPath()
         {
-            return ParentItem.GetPath() + Header + "\\";
+            return ParentItem.GetPath() + Header;
         }
 
     }

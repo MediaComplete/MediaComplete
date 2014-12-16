@@ -257,18 +257,18 @@ namespace MSOE.MediaComplete
             var contextMenu = menuItem.Parent as ContextMenu;
             if (contextMenu == null)
                 return;
-            var treeViewItem = contextMenu.Parent as SongTreeViewItem;
-            if (treeViewItem == null)
-                return;
-
-            try
+            foreach (var item in SongTree.SelectedItems)
             {
-                await MusicIdentifier.IdentifySong(treeViewItem.GetPath());
+                try
+                {
+                    await MusicIdentifier.IdentifySong(((SongTreeViewItem)item).GetPath());
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message); // TODO status bar error message
+                }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message); // TODO status bar error message
-            }
+            
         }
 
         /// <summary>
