@@ -6,11 +6,8 @@ namespace MSOE.MediaComplete.Lib
 {
     public class Importer
     {
-        public string HomeDir { get; set; }
         private static Importer _instance;
-        private Importer()
-        {
-        }
+        private Importer() { }
 
         public static Importer Instance
         {
@@ -18,32 +15,36 @@ namespace MSOE.MediaComplete.Lib
         }
 
 
-        public async Task ImportDirectory(string directory)
+        public async Task ImportDirectory(string directory, bool isCopying)
         {
             var files = await Task.Run(() => Directory.GetFiles(directory, "*.mp3",
             SearchOption.AllDirectories));
-            await Task.Run(() => ImportFiles(files));
+            await ImportFiles(files, isCopying);
         }
 
-        public async Task ImportFiles(string[] files)
+        public async Task ImportFiles(string[] files, bool isCopying)
         {
             foreach (var file in files)
             {
                 var myFile = file;
-                var newFile = HomeDir + Path.GetFileName(file);
-                if (!File.Exists(newFile))
+                var newFile = SettingWrapper.GetHomeDir() + Path.GetFileName(file);
+                if (File.Exists(newFile)) continue;
+                try
                 {
-                    try
+                    if (isCopying)
                     {
                         await Task.Run(() => File.Copy(myFile, newFile));
                     }
-                    catch (Exception exception)
+                    else
                     {
-                        Console.WriteLine(exception);
+                        await Task.Run(() => File.Move(myFile, newFile));
                     }
                 }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception);
+                }
             }
-
         }
     }
 }

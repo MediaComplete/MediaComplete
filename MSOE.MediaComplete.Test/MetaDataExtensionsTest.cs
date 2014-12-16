@@ -1,6 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MSOE.MediaComplete.Lib;
-using TagLib;
 
 namespace MSOE.MediaComplete.Test
 {

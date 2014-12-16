@@ -9,16 +9,15 @@ using MSOE.MediaComplete.Lib;
 namespace MSOE.MediaComplete
 {
     /// <summary>
-
-    /// Interaction logic for Settings.xaml
+    ///     Interaction logic for Settings.xaml
     /// </summary>
     public partial class Settings
     {
-
         
         public Settings()
         {
             InitializeComponent();
+
             TxtboxSelectedFolder.Text = SettingWrapper.GetHomeDir();
             TxtboxInboxFolder.Text = SettingWrapper.GetInboxDir();
             ComboBoxPollingTime.SelectedValue = SettingWrapper.GetPollingTime().ToString(CultureInfo.InvariantCulture);
@@ -26,6 +25,7 @@ namespace MSOE.MediaComplete
             CheckboxShowImportDialog.IsChecked = SettingWrapper.GetShowInputDialog();
             PollingCheckBoxChanged(CheckboxPolling, null);
         }
+
 
 
         /// <summary>
@@ -42,15 +42,14 @@ namespace MSOE.MediaComplete
             if (button != null)
                 switch (button.Name)
                 {
-                    case "BtnSelectFolder":
+                    case "btnSelectFolder":
                         TxtboxSelectedFolder.Text = folderBrowserDialog1.SelectedPath;
                         break;
-                    case "BtnInboxFolder":
+                    case "btnInboxFolder":
                         TxtboxInboxFolder.Text = folderBrowserDialog1.SelectedPath;
                         break;
                 }
         }
-
 
         /// <summary>
         /// The handler of the checkbox change event for the setting screen.
@@ -99,22 +98,15 @@ namespace MSOE.MediaComplete
             {
                 homeDir += Path.DirectorySeparatorChar;
             }
-            var inboxDir = TxtboxInboxFolder.Text;
-            if (!inboxDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.CurrentCulture)))
-            {
-                inboxDir += Path.DirectorySeparatorChar;
-            }
 
             SettingWrapper.SetHomeDir(homeDir);
-            SettingWrapper.SetInboxDir(inboxDir);
+            SettingWrapper.SetInboxDir(TxtboxInboxFolder.Text);
             SettingWrapper.SetPollingTime(ComboBoxPollingTime.SelectedValue);
             SettingWrapper.SetIsPolling(CheckboxPolling.IsChecked.GetValueOrDefault(false));
             SettingWrapper.SetShowInputDialog(CheckboxShowImportDialog.IsChecked.GetValueOrDefault(false));
             SettingWrapper.Save();
 			
             Polling.Instance.PollingChanged(Convert.ToDouble(ComboBoxPollingTime.SelectedValue));
-
-            Close();
         }
 
         private void ComboBox_Loaded(object sender, RoutedEventArgs args)

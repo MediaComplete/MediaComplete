@@ -15,7 +15,7 @@
                     <StackPanel DockPanel.Dock="Top">
                         <Label Content="Select Location of Home Directory:" />
                         <StackPanel Orientation="Horizontal">
-                            <TextBox x:Name="TxtboxSelectedFolder" Width="390" />
+                            <TextBox x:Name="TxtboxSelectedFolder" Width="390" AcceptsReturn="True" />
                             <Button x:Name="BtnSelectFolder" Margin="8, 0, 0, 0" Content="Select File"
                                     Click="BtnSelectFolder_Click" />
                         </StackPanel>
@@ -53,11 +53,12 @@
                         </StackPanel>
                         <Label Name="LblSelectInboxLocation" Content="Select Location of Inbox Directory:" />
                         <StackPanel Orientation="Horizontal">
-                            <TextBox x:Name="TxtboxInboxFolder" Width="380" />
-                            <Button x:Name="BtnInboxFolder" Margin="8, 0, 0, 0" Content="Select Folder"
+                            <TextBox x:Name="TxtboxInboxFolder" Width="390" />
+                            <Button x:Name="BtnInboxFolder" Margin="8, 0, 0, 0" Content="Select File"
                                         Click="BtnSelectFolder_Click" />
                         </StackPanel>
                     </StackPanel>
+
                 </DockPanel>
             </TabItem>
         </TabControl>

@@ -3,9 +3,9 @@ namespace MSOE.MediaComplete.Lib
 {
     public class TreeViewBackend
     {
-        public static FileInfo[] GetFiles(string homeDir)
+        public static FileInfo[] GetFiles()
         {
-            var rootDirInfo = new DirectoryInfo(homeDir);
+            var rootDirInfo = new DirectoryInfo(SettingWrapper.GetHomeDir());
             return GetFiles(rootDirInfo);
         }
 
@@ -13,9 +13,9 @@ namespace MSOE.MediaComplete.Lib
         {
             return rootDirInfo.GetFiles();
         }
-        public static DirectoryInfo[] GetDirectories(string homeDir)
+        public static DirectoryInfo[] GetDirectories()
         {
-            var rootDirInfo = new DirectoryInfo(homeDir);
+            var rootDirInfo = new DirectoryInfo(SettingWrapper.GetHomeDir());
             return GetDirectories(rootDirInfo);
         }
 
