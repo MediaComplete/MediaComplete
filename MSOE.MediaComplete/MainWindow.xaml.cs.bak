@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib.Sorting;
+using Constants = MSOE.MediaComplete.Lib.Constants;
 
 namespace MSOE.MediaComplete
 {
@@ -18,9 +19,6 @@ namespace MSOE.MediaComplete
     public partial class MainWindow
     {
         private readonly string _homeDir;
-
-        private const string Mp3FileFormat = "MP3 Files (*.mp3)|*.mp3";
-        private const string FileDialogTitle = "Select Music File(s)";
 
         public MainWindow()
         {
@@ -41,7 +39,7 @@ namespace MSOE.MediaComplete
             Polling.InboxFilesDetected += ImportFromInbox;
             Directory.CreateDirectory(homeDir);
             _homeDir = homeDir;
-
+			
             InitTreeView();
         }
 
@@ -70,27 +68,26 @@ namespace MSOE.MediaComplete
         {
             var fileDialog = new WinForms.OpenFileDialog
             {
-                Filter = Mp3FileFormat,
-                InitialDirectory = "C:",
-                Title = FileDialogTitle,
+                Filter =
+                    Resources["Dialog-AddFile-FileFilter"] + "" + Constants.FileDialogFilterStringSeparator +
+                    Constants.MusicFilePattern,
+                InitialDirectory = Path.GetPathRoot(Environment.SystemDirectory),
+                Title = Resources["Dialog-AddFile-Title"].ToString(),
                 Multiselect = true
             };
-            if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                await Importer.Instance.ImportFiles(fileDialog.FileNames, true);
-            } 
+
+            if (fileDialog.ShowDialog() != WinForms.DialogResult.OK) return;
+            await Importer.Instance.ImportFiles(fileDialog.FileNames, true);
             RefreshTreeView();
         }
 
-        private async void AddFolder_Click(object sender, RoutedEventArgs e)
+        private void AddFolder_Click(object sender, RoutedEventArgs e)
         {
             var folderDialog = new WinForms.FolderBrowserDialog();
-            if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                var selectedDir = folderDialog.SelectedPath;
-                await Importer.Instance.ImportDirectory(selectedDir, true);
-            }
-            RefreshTreeView();
+            if (folderDialog.ShowDialog() != WinForms.DialogResult.OK) return;
+            var selectedDir = folderDialog.SelectedPath;
+          	await Importer.Instance.ImportDirectory(selectedDir, true);
+			RefreshTreeView();
         }
 
         public void RefreshTreeView()
@@ -220,5 +217,17 @@ namespace MSOE.MediaComplete
                 MessageBox.Show("Encountered an error while sorting files: " + ioe.Message);
             }
         }
+
+        //private static bool CtrlPressed()
+        //{
+        //    return System.Windows.Input.Keyboard.IsKeyDown(Key.LeftCtrl) || System.Windows.Input.Keyboard.IsKeyDown(Key.RightCtrl);
+        //}
+
+        //private void LibraryTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        //{
+        //    Console.WriteLine("Sender: " + sender);
+
+        //    TreeViewItem selectedItem = (TreeViewItem) e.NewValue;
+        //}
     }
 }

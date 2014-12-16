@@ -1,0 +1,26 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib" x:Class="MainWindow">
+
+    <!-- Put strings up here - this is where internationalization would occur. -->
+    <system:String x:Key="Toolbar-AutoIdMusic-Tooltip">Restore Metadata</system:String>
+    <system:String x:Key="Toolbar-SortMusic-Tooltip">Refresh the sorting of your library</system:String>
+    <system:String x:Key="ContextMenu-AutoIdMusic-Header">Restore Metadata</system:String>
+    <system:String x:Key="Dialog-AddFile-FileFilter">MP3 Files (*.mp3)</system:String>
+    <system:String x:Key="Dialog-AddFile-Title">Select Music File(s)</system:String>
+    <system:String x:Key="Dialog-SortLibrary-Confirm">{0} file(s) will be moved, {1} file(s) cannot be sorted, do you want to perform this operation?</system:String>
+    <system:String x:Key="Dialog-SortLibrary-Title">Confirm</system:String>
+    <system:String x:Key="Dialog-SortLibrary-NoSort">No files require sorting. There were {0} file(s) missing metadata that make them impossible to sort.</system:String>
+    <system:String x:Key="Dialog-SortLibrary-NoSortTitle">Nothing to Sort</system:String>
+
+
+    <!-- Images -->
+    <BitmapImage x:Key="Toolbar-AddMusicFile-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
+                 UriSource=".\Resources\page_white_add.png" />
+    <BitmapImage x:Key="Toolbar-AddMusicFolder-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
+                 UriSource=".\Resources\folder_add.png" />
+    <BitmapImage x:Key="Toolbar-AutoIdMusic-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
+                 UriSource=".\Resources\wand.png" />
+    <BitmapImage x:Key="Toolbar-SortMusic-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
+                 UriSource=".\Resources\folder_wrench.png" />
+</ResourceDictionary>

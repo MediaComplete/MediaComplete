@@ -9,7 +9,7 @@ using MSOE.MediaComplete.Lib;
 namespace MSOE.MediaComplete
 {
     /// <summary>
-    /// Interaction logic for Settings.xaml
+    ///     Interaction logic for Settings.xaml
     /// </summary>
     public partial class Settings
     {

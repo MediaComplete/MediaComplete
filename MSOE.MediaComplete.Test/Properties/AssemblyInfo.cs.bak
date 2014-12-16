@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("MSOE.MediaComplete.Lib")]
+[assembly: AssemblyTitle("MSOE.MediaComplete.Test")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("MSOE.MediaComplete.Lib")]
+[assembly: AssemblyProduct("MSOE.MediaComplete.Test")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 
-[assembly: Guid("a2730f73-f376-4bf9-93de-04d0f68e13cc")]
+[assembly: Guid("19e7a93b-b961-408c-abcd-3537fc6e6d8e")]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -1,0 +1,66 @@
+﻿<Window x:Class="MSOE.MediaComplete.Settings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Settings" Height="372" Width="482"
+        ResizeMode="NoResize">
+    <DockPanel Margin="0,0,0,0" LastChildFill="True">
+        <StackPanel DockPanel.Dock="Bottom">
+            <StackPanel HorizontalAlignment="Right" Margin="0,0,0,4" Orientation="Horizontal">
+                <Button Name="BtnSave" Margin="4" Content="Save Settings" Click="BtnSave_Click" />
+            </StackPanel>
+        </StackPanel>
+        <TabControl DockPanel.Dock="Top" HorizontalAlignment="Left" VerticalAlignment="Top" Width="476" Height="305">
+            <TabItem Header="TabItem">
+                <DockPanel LastChildFill="True">
+                    <StackPanel DockPanel.Dock="Top">
+                        <Label Content="Select Location of Home Directory:" />
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox x:Name="TxtboxSelectedFolder" Width="390" AcceptsReturn="True" />
+                            <Button x:Name="BtnSelectFolder" Margin="8, 0, 0, 0" Content="Select File"
+                                    Click="BtnSelectFolder_Click" />
+                        </StackPanel>
+                       
+                    </StackPanel>
+
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="Automated Import">
+                <DockPanel LastChildFill="True">
+                    <StackPanel DockPanel.Dock="Top">
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <Label Content="Polling" VerticalAlignment="Center" FontWeight="ExtraBold" />
+                            <CheckBox Name="CheckboxPolling" VerticalAlignment="Center"
+                                          VerticalContentAlignment="Center" Checked="PollingCheckBoxChanged"
+                                          Unchecked="PollingCheckBoxChanged" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <Label Name="LblPromptBeforeImport" Content="Prompt before Importing" VerticalAlignment="Center" FontWeight="ExtraBold" />
+                            <CheckBox Name="CheckboxShowImportDialog" VerticalAlignment="Center"
+                                          VerticalContentAlignment="Center" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Name="LblPollTime" Content="Polling Time: " VerticalAlignment="Center"
+                                       HorizontalAlignment="Left" />
+                            <ComboBox
+                                    Name="ComboBoxPollingTime"
+                                    HorizontalAlignment="Left"
+                                    Margin="10,10,0,0"
+	                                VerticalAlignment="Top"
+	                                Width="120"
+	                                Loaded="ComboBox_Loaded"/>
+                            <Label Name="LblMin" Content="(min)" VerticalAlignment="Center" HorizontalAlignment="Left"
+                                       FontWeight="Light" />
+                        </StackPanel>
+                        <Label Name="LblSelectInboxLocation" Content="Select Location of Inbox Directory:" />
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox x:Name="TxtboxInboxFolder" Width="390" />
+                            <Button x:Name="BtnInboxFolder" Margin="8, 0, 0, 0" Content="Select File"
+                                        Click="BtnSelectFolder_Click" />
+                        </StackPanel>
+                    </StackPanel>
+
+                </DockPanel>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>
