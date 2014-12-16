@@ -49,7 +49,7 @@ namespace MSOE.MediaComplete.Lib
         private void SetTimer()
         {
             _timer.Stop();
-            _timer.Interval = 1000 * 60 * .1;
+            _timer.Interval = 1000 * 60 * Interval;
             _timer.Start();
 
         }
