@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Sorting;
@@ -200,7 +199,7 @@ namespace MSOE.MediaComplete.Test
         /// <summary>
         /// Make sure that imports trigger sorting operations on the new files.
         /// </summary>
-        [TestMethod]
+        [TestMethod, Timeout(30000)]
         public void Import_CausesSort_IgnoresOldFiles()
         {
             // ReSharper disable once ObjectCreationAsStatement
@@ -211,23 +210,15 @@ namespace MSOE.MediaComplete.Test
             var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.ValidMp3FileName;
 
-            var importer = Importer.Instance;
-            importer.HomeDir = _homeDir.FullName;
+            var importer = new Importer(_homeDir.FullName);
             var task = importer.ImportDirectory(_importDir.FullName, true);
             while (!task.IsCompleted)
             {
                 
             }
-            var targetFile = new FileInfo(normalFileDest);
             // Need to poll for the file, since we don't have a way of monitoring the sorter directly.
-            var i = 0;
-            while (!targetFile.Exists)
+            while (!new FileInfo(normalFileDest).Exists)
             {
-                Thread.Sleep(100);
-                if (i++ > 20)
-                {
-                    Assert.Fail("Post-import event didn't sort the file (timeout)!");
-                }
             }
 
             Assert.IsTrue(decoyFile.Exists);
