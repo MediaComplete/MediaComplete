@@ -25,7 +25,7 @@ namespace MSOE.MediaComplete
             CheckboxPolling.IsChecked = SettingWrapper.GetIsPolling();
             CheckboxShowImportDialog.IsChecked = SettingWrapper.GetShowInputDialog();
             PollingCheckBoxChanged(CheckboxPolling, null);
-        }
+            }
 
 
         /// <summary>
@@ -111,9 +111,7 @@ namespace MSOE.MediaComplete
             SettingWrapper.SetIsPolling(CheckboxPolling.IsChecked.GetValueOrDefault(false));
             SettingWrapper.SetShowInputDialog(CheckboxShowImportDialog.IsChecked.GetValueOrDefault(false));
             SettingWrapper.Save();
-			
-            Polling.Instance.PollingChanged(Convert.ToDouble(ComboBoxPollingTime.SelectedValue));
-
+			            
             Close();
         }
 

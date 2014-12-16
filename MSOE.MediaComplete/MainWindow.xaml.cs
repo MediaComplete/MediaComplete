@@ -1,6 +1,7 @@
 ﻿using System;
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -26,17 +27,18 @@ namespace MSOE.MediaComplete
 
         private const string Mp3FileFormat = "MP3 Files (*.mp3)|*.mp3";
         private const string FileDialogTitle = "Select Music File(s)";
-
+        private Settings _settings;
         public MainWindow()
         {
             InitializeComponent();
 
+            _settings = new Settings();
 
             var homeDir = SettingWrapper.GetHomeDir() ??
                           Path.GetPathRoot(Environment.SystemDirectory);
             if (!homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
             {
-
+                homeDir += Path.DirectorySeparatorChar;
             }
 
             if (SettingWrapper.GetIsPolling())
@@ -48,6 +50,12 @@ namespace MSOE.MediaComplete
             Directory.CreateDirectory(homeDir);
 
             InitTreeView();
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            Application.Current.Shutdown();
         }
 
         private async void ImportFromInbox(IEnumerable<FileInfo> files)
@@ -69,7 +77,9 @@ namespace MSOE.MediaComplete
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            new Settings().Show();
+            if (_settings.IsLoaded) return;
+            _settings = new Settings();
+            _settings.ShowDialog();
         }
 
         private async void AddFile_Click(object sender, RoutedEventArgs e)

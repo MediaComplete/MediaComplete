@@ -25,6 +25,7 @@ namespace MSOE.MediaComplete.Lib
         {
             _timer = new Timer();
             _timer.Elapsed += OnTimerFinished;
+            SettingWrapper.RaiseSettingEvent += OnSettingChanged;
         }
 
         /// <summary>
@@ -49,13 +50,12 @@ namespace MSOE.MediaComplete.Lib
         /// <summary>
         /// sets up the new polling interval and change of directory to watch
         /// </summary>
-        /// <param name="newTimeInMinutes">new interval time in minutes</param>
-        public void PollingChanged(double newTimeInMinutes)
+        public void OnSettingChanged()
         {
-            var timeInMilliseconds = TimeSpan.FromMinutes(newTimeInMinutes).TotalMilliseconds;
+            var timeInMilliseconds = TimeSpan.FromMinutes(SettingWrapper.GetPollingTime()).TotalMilliseconds;
             _timer.Enabled = false;
             _timer.Interval = timeInMilliseconds;
-            _timer.Enabled = true;
+            _timer.Enabled = SettingWrapper.GetIsPolling();
         }
 
         /// <summary>
