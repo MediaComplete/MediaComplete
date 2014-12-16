@@ -24,7 +24,6 @@
                  UriSource=".\Resources\wand.png" />
     <BitmapImage x:Key="Toolbar-SortMusic-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
                  UriSource=".\Resources\folder_wrench.png" />
-
     <!-- Shared XAML objects-->
     <Style TargetType="controls:TreeViewExItem">
         <Setter Property="IsExpanded" Value="{Binding IsExpandedValue}"/>

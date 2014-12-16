@@ -1,51 +1,86 @@
 ﻿using System;
+
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using MSOE.MediaComplete.Lib;
-using WinForms = System.Windows.Forms;
+
+
 using System.Windows;
+using System.Windows.Input;
 using MSOE.MediaComplete.CustomControls;
+using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Sorting;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
+using WinForms = System.Windows.Forms;
+
 namespace MSOE.MediaComplete
 {
     /// <summary>
-    ///     Interaction logic for MainWindow.xaml
+
+    /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow
     {
-        private readonly string _homeDir;
+        private Settings _settings;
+
         private readonly Importer _importer;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            var homeDir = Properties.Settings.Default["HomeDir"] as string ??
+            _settings = new Settings();
+
+            var homeDir = SettingWrapper.GetHomeDir() ??
                           Path.GetPathRoot(Environment.SystemDirectory);
             if (!homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
             {
                 homeDir += Path.DirectorySeparatorChar;
             }
-            homeDir += Lib.Constants.LibraryDirName + Path.DirectorySeparatorChar;
 
+            if (SettingWrapper.GetIsPolling())
+            {
+                Polling.Instance.TimeInMinutes = SettingWrapper.GetPollingTime();
+                Polling.Instance.Start();
+            }
+            Polling.InboxFilesDetected += ImportFromInbox;
             Directory.CreateDirectory(homeDir);
-            _homeDir = homeDir;
-            _importer = new Importer(_homeDir);
+
+            _importer = new Importer(SettingWrapper.GetHomeDir());
             InitTreeView();
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            Application.Current.Shutdown();
+        }
+
+        private async void ImportFromInbox(IEnumerable<FileInfo> files)
+        {
+            if (SettingWrapper.GetShowInputDialog())
+            {
+                Dispatcher.BeginInvoke(new Action(() => InboxImportDialog.Prompt(this, files)));
+            }
+            else
+            {
+                await _importer.ImportFiles(files.Select(f => f.FullName).ToArray(), false);
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            new Settings().Show();
+            if (_settings.IsLoaded) return;
+            _settings = new Settings();
+            _settings.ShowDialog();
         }
 
         private async void AddFile_Click(object sender, RoutedEventArgs e)
@@ -61,7 +96,8 @@ namespace MSOE.MediaComplete
             };
 
             if (fileDialog.ShowDialog() != WinForms.DialogResult.OK) return;
-            await Task.Run(() => _importer.ImportFiles(fileDialog.FileNames));
+            await Task.Run(() => _importer.ImportFiles(fileDialog.FileNames, true));
+            RefreshTreeView();
         }
 
         private async void AddFolder_Click(object sender, RoutedEventArgs e)
@@ -70,27 +106,48 @@ namespace MSOE.MediaComplete
             if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 var selectedDir = folderDialog.SelectedPath;
-                await Task.Run(() => _importer.ImportDirectory(selectedDir));
+                await Task.Run(() => _importer.ImportDirectory(selectedDir, true));
             }
+            RefreshTreeView();
         }
 
+        /// <summary>
+        /// populates the treeviews with all valid elements within the home directory
+        /// </summary>
         public void RefreshTreeView()
         {
-            // TODO this will cause ugly flickering when we have a ton of files
-            LibraryTree.Items.Clear();
+            //Create Parent node
+            var firstNode = new FolderTreeViewItem { Header = SettingWrapper.GetHomeDir(), ParentItem = null, HasParent = false };
 
-            var rootDirInfo = new DirectoryInfo(_homeDir);
+            SongTree.Items.Clear();
 
-            LibraryTree.Items.Add(CreateDirectoryItem(rootDirInfo));
+            var rootFiles = TreeViewBackend.GetFiles();
+            var rootDirs = TreeViewBackend.GetDirectories();
+
+            //For each folder in the root Directory
+            foreach (var rootChild in rootDirs)
+            {   
+                //add each child to the root folder
+                firstNode.Children.Add(PopulateFromFolder(rootChild, SongTree, firstNode));
+            }
+            foreach (var rootChild in rootFiles)
+            {
+                if (rootChild.Name.EndsWith(".mp3"))
+                {
+                    SongTree.Items.Add(new SongTreeViewItem { Header = rootChild.Name, ParentItem = firstNode });
+                }
+            }
+
+            DataContext = firstNode;
         }
 
         private void InitTreeView()
         {
             RefreshTreeView();
 
-            var watcher = new FileSystemWatcher(_homeDir)
+            var watcher = new FileSystemWatcher(SettingWrapper.GetHomeDir())
             {
-                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
+                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName
             };
             watcher.Changed += OnChanged;
             watcher.Created += OnChanged;
@@ -100,24 +157,64 @@ namespace MSOE.MediaComplete
             watcher.EnableRaisingEvents = true;
         }
 
-        private TreeViewItem CreateDirectoryItem(DirectoryInfo dirInfo)
+        /// <summary>
+        /// Recursively populates foldertree and songtree with elements
+        /// </summary>
+        /// <param name="dirInfo"></param>
+        /// <param name="songTree"></param>
+        /// <param name="parent"></param>
+        /// <returns></returns>
+        private static FolderTreeViewItem PopulateFromFolder(DirectoryInfo dirInfo, TreeViewEx songTree, FolderTreeViewItem parent)
         {
-            var dirItem = new FolderTreeViewItem {Header = dirInfo.Name};
-            foreach (var dir in dirInfo.GetDirectories())
+            var dirItem = new FolderTreeViewItem { Header = dirInfo.Name, ParentItem = parent };
+            foreach (var dir in TreeViewBackend.GetDirectories(dirInfo))
             {
-                dirItem.Items.Add(CreateDirectoryItem(dir));
+                dirItem.Children.Add(PopulateFromFolder(dir, songTree, dirItem));
             }
 
-            foreach (var file in dirInfo.GetFiles())
+            foreach (var file in TreeViewBackend.GetFiles(dirInfo))
             {
-                dirItem.Items.Add(new SongTreeViewItem
+                if (file.Name.EndsWith(".mp3"))
                 {
-                    Header = file.Name,
-                    ContextMenu = LibraryTree.Resources["SongContextMenu"] as ContextMenu
-                });
+                    songTree.Items.Add(new SongTreeViewItem { Header = file.Name, ParentItem = dirItem });
+                }
             }
-
             return dirItem;
+        }
+
+        /// <summary>
+        /// MouseClick Listener for the FolderTree
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FolderTree_OnMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (FolderTree.SelectedItems != null && FolderTree.SelectedItems.Count > 0)
+            {
+                SongTree.Items.Clear();
+                foreach (var folder in FolderTree.SelectedItems)
+                {
+                    var item = (FolderTreeViewItem)folder;
+                    var rootDirInfo = new DirectoryInfo((item.GetPath()));
+                    if (!ContainsParent(item))
+                    {
+                        PopulateFromFolder(rootDirInfo, SongTree, item);
+                    }
+                }
+            }
+            else
+            {
+                RefreshTreeView();
+            }
+        }
+
+        private Boolean ContainsParent(FolderTreeViewItem folder)
+        {
+            if (!folder.HasParent)
+            {
+                return false;
+            }
+            return (FolderTree.SelectedItems.Contains(folder.ParentItem) || ContainsParent(folder.ParentItem));
         }
 
         private static void OnChanged(object source, FileSystemEventArgs e)
@@ -132,38 +229,48 @@ namespace MSOE.MediaComplete
             });
         }
 
+
         private async void Toolbar_AutoIDMusic_Click(object sender, RoutedEventArgs e)
         {
-            // TODO support multi-select
-            var selection = LibraryTree.SelectedItems;
-            foreach (var node in selection)
+            // TODO mass ID of multi-selected songs or folders
+            foreach (var item in SongTree.SelectedItems)
             {
-                if (node is SongTreeViewItem)
+                var selection = item as SongTreeViewItem;
+                try
                 {
-                    string result = await MusicIdentifier.IdentifySong((node as SongTreeViewItem).FilePath());
-                    MessageBox.Show(result);
-                }   
+                    if (selection != null) { 
+                        await MusicIdentifier.IdentifySong(selection.GetPath());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message); // TODO status bar error message
+                }
             }
         }
-
         private async void ContextMenu_AutoIDMusic_Click(object sender, RoutedEventArgs e)
         {
-            // TODO support multi-select
+            // Access the targetted song 
+            // TODO mass ID of multi-selected songs
+            // TODO provide this context menu item for folders
             var menuItem = sender as MenuItem;
             if (menuItem == null)
                 return;
             var contextMenu = menuItem.Parent as ContextMenu;
             if (contextMenu == null)
                 return;
-            var selection = contextMenu.PlacementTarget as TreeViewItem;
-            try
+            foreach (var item in SongTree.SelectedItems)
             {
-                await MusicIdentifier.IdentifySong(selection.FilePath());
+                try
+                {
+                    await MusicIdentifier.IdentifySong(((SongTreeViewItem)item).GetPath());
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message); // TODO status bar error message
+                }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            
         }
 
         /// <summary>
@@ -176,10 +283,10 @@ namespace MSOE.MediaComplete
             // TODO - obtain from settings file, make configurable
             var settings = new SortSettings
             {
-                SortOrder = new List<MetaAttribute> {MetaAttribute.Artist, MetaAttribute.Album}
+                SortOrder = new List<MetaAttribute> { MetaAttribute.Artist, MetaAttribute.Album }
             };
 
-            var sorter = new Sorter(new DirectoryInfo(_homeDir), settings);
+            var sorter = new Sorter(new DirectoryInfo(SettingWrapper.GetHomeDir()), settings);
 
             if (sorter.Actions.Count == 0) // Nothing to do! Notify and return.
             {
@@ -206,6 +313,5 @@ namespace MSOE.MediaComplete
                 MessageBox.Show("Encountered an error while sorting files: " + ioe.Message);
             }
         }
-        
     }
 }
