@@ -7,7 +7,7 @@ namespace MSOE.MediaComplete.Lib
     /// <summary>
     /// Contains various extension methods for system related calls
     /// </summary>
-    internal static class SystemExtensions
+    public static class SystemExtensions
     {
         /// <summary>
         /// Returns the 0-indexed parent directory of a given file. 

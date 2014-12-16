@@ -11,7 +11,7 @@ namespace MSOE.MediaComplete.Lib
     /// <summary>
     /// Contains various extension methods for meta data related operations
     /// </summary>
-    internal static class MetaDataExtensions
+    public static class MetaDataExtensions
     {
         public static bool ContainsMusicFile(this DirectoryInfo dir, File matchFile)
         {
