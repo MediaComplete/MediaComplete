@@ -67,4 +67,17 @@ namespace MSOE.MediaComplete.Lib
             return firstName.Equals(secondName, StringComparison.CurrentCultureIgnoreCase);
         }
     }
+
+    public class DirectoryEqualityComparer : IEqualityComparer<DirectoryInfo>
+    {
+        public bool Equals(DirectoryInfo x, DirectoryInfo y)
+        {
+            return x.DirectoryEquals(y);
+        }
+
+        public int GetHashCode(DirectoryInfo obj)
+        {
+            return obj.FullName.TrimEnd(new[] { Path.DirectorySeparatorChar }).ToLower().GetHashCode();
+        }
+    }
 }

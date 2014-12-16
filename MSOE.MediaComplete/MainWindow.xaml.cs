@@ -1,18 +1,18 @@
 ﻿using System;
 
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 
 
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Sorting;
+using System.Threading.Tasks;
+using System.Windows.Controls;
 
 using WinForms = System.Windows.Forms;
 
@@ -24,10 +24,10 @@ namespace MSOE.MediaComplete
     /// </summary>
     public partial class MainWindow
     {
-
-        private const string Mp3FileFormat = "MP3 Files (*.mp3)|*.mp3";
-        private const string FileDialogTitle = "Select Music File(s)";
         private Settings _settings;
+
+        private readonly Importer _importer;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -49,6 +49,7 @@ namespace MSOE.MediaComplete
             Polling.InboxFilesDetected += ImportFromInbox;
             Directory.CreateDirectory(homeDir);
 
+            _importer = new Importer(SettingWrapper.GetHomeDir());
             InitTreeView();
         }
 
@@ -66,7 +67,7 @@ namespace MSOE.MediaComplete
             }
             else
             {
-                await Importer.Instance.ImportFiles(files.Select(f => f.FullName).ToArray(), false);
+                await _importer.ImportFiles(files.Select(f => f.FullName).ToArray(), false);
             }
         }
 
@@ -84,17 +85,18 @@ namespace MSOE.MediaComplete
 
         private async void AddFile_Click(object sender, RoutedEventArgs e)
         {
-			var fileDialog = new WinForms.OpenFileDialog
+            var fileDialog = new WinForms.OpenFileDialog
             {
-                Filter = Mp3FileFormat,
-                InitialDirectory = "C:",
-                Title = FileDialogTitle,
+                Filter =
+                    Resources["Dialog-AddFile-FileFilter"] + "" + Lib.Constants.FileDialogFilterStringSeparator +
+                    Lib.Constants.MusicFilePattern,
+                InitialDirectory = Path.GetPathRoot(Environment.SystemDirectory),
+                Title = Resources["Dialog-AddFile-Title"].ToString(),
                 Multiselect = true
             };
-            if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                await Importer.Instance.ImportFiles(fileDialog.FileNames, true);
-            } 
+
+            if (fileDialog.ShowDialog() != WinForms.DialogResult.OK) return;
+            await Task.Run(() => _importer.ImportFiles(fileDialog.FileNames, true));
             RefreshTreeView();
         }
 
@@ -104,7 +106,7 @@ namespace MSOE.MediaComplete
             if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 var selectedDir = folderDialog.SelectedPath;
-                await Importer.Instance.ImportDirectory(selectedDir, true);
+                await Task.Run(() => _importer.ImportDirectory(selectedDir, true));
             }
             RefreshTreeView();
         }
@@ -286,7 +288,7 @@ namespace MSOE.MediaComplete
 
             var sorter = new Sorter(new DirectoryInfo(SettingWrapper.GetHomeDir()), settings);
 
-            if (sorter.MoveActions.Count == 0) // Nothing to sort! Notify and return.
+            if (sorter.Actions.Count == 0) // Nothing to do! Notify and return.
             {
                 MessageBox.Show(this,
                     String.Format(Resources["Dialog-SortLibrary-NoSort"].ToString(), sorter.UnsortableCount),
@@ -296,7 +298,7 @@ namespace MSOE.MediaComplete
             }
 
             var result = MessageBox.Show(this,
-                String.Format(Resources["Dialog-SortLibrary-Confirm"].ToString(), sorter.MoveActions.Count,
+                String.Format(Resources["Dialog-SortLibrary-Confirm"].ToString(), sorter.MoveCount, sorter.DupCount,
                     sorter.UnsortableCount),
                 Resources["Dialog-SortLibrary-Title"].ToString(), MessageBoxButton.YesNo, MessageBoxImage.Question);
 

@@ -46,6 +46,10 @@
                         VerticalAlignment="Center" Click="Toolbar_AutoIDMusic_Click">
                     <Image Source="{StaticResource Toolbar-AutoIdMusic-Icon}" />
                 </Button>
+                <Button Name="SortMusic" ToolTip="{StaticResource Toolbar-SortMusic-Tooltip}"
+                        VerticalAlignment="Center" Click="Toolbar_SortMusic_Click">
+                    <Image Source="{StaticResource Toolbar-SortMusic-Icon}" />
+                </Button>
             </ToolBar>
         </ToolBarTray>
         <Grid Margin="0,0,0,1" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">

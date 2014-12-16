@@ -12,8 +12,10 @@ namespace MSOE.MediaComplete.Lib.Sorting
     /// </summary>
     public class Sorter
     {
-        public List<MoveAction> MoveActions { get; private set; }
+        public List<IAction> Actions { get; private set; }
         public int UnsortableCount { get; private set; }
+        public int MoveCount { get { return Actions.Count(a => a is MoveAction); } }
+        public int DupCount { get { return Actions.Count(a => a is DeleteAction); } }
 
         private readonly DirectoryInfo _root;
 
@@ -21,17 +23,25 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// Creates a sorter with the specified library root and sort settings.
         /// 
         /// This constructor automatically calculates all the necessary changes to file locations, so 
-        /// <see cref="MoveActions">MoveActions</see> can be accessed directly after to anticipate the
+        /// <see cref="Actions">MoveActions</see> can be accessed directly after to anticipate the
         /// magnitude and specifics of the move.
         /// </summary>
         /// <param name="root">The root of the library</param>
         /// <param name="settings">Sort settings</param>
-        public Sorter(DirectoryInfo root, SortSettings settings)
+        public Sorter(DirectoryInfo root, SortSettings settings) : this(root)
+        {
+            // TODO investigation - could this lock up the GUI?
+            if (_root != null)
+            {
+                CalculateActions(_root.EnumerateFiles(Constants.MusicFilePattern, SearchOption.AllDirectories), settings);    
+            }
+        }
+
+        private Sorter(DirectoryInfo root)
         {
             _root = root;
-            MoveActions = new List<MoveAction>();
             UnsortableCount = 0;
-            CalculateActions(root, settings); // TODO investigation - could this lock up the GUI?
+            Actions = new List<IAction>();
         }
 
         /// <summary>
@@ -42,18 +52,11 @@ namespace MSOE.MediaComplete.Lib.Sorting
         {
             await Task.Run(() =>
             {
-                foreach (var action in MoveActions.Where(action => action.Dest.Directory != null))
+                foreach (var action in Actions)
                 {
-                    if (action.Dest.Exists) // If there's duplicate files in the collection. 
-                    {
-                        // Delete source, let the older one take precedence.
-                        // TODO perhaps we should try comparing quality?
-                        // TODO This should be a "recycle" delete. Not implemented yet.
-                        action.Source.Delete();
-                        continue;
-                    }
-                    if (action.Dest.Directory != null) Directory.CreateDirectory(action.Dest.Directory.FullName);
-                    File.Move(action.Source.FullName, action.Dest.FullName);
+                    action.Do();
+
+                    // TODO post timed updates to the status bar
                 }
                 ScrubEmptyDirectories(_root);
             });
@@ -62,38 +65,51 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <summary>
         /// Private function to determine what movements need to occur to put the library in order
         /// </summary>
-        /// <param name="rootDir">The root of the library</param>
         /// <param name="settings">The sorting settings</param>
-        private void CalculateActions(DirectoryInfo rootDir, SortSettings settings)
+        /// <param name="files">The files to consider taking action upon</param>
+        private void CalculateActions(IEnumerable<FileInfo> files, SortSettings settings)
         {
-            foreach (var file in rootDir.EnumerateFiles(Constants.MusicFilePattern, SearchOption.AllDirectories))
+            var fileInfos = files as IList<FileInfo> ?? files.ToList();
+            if (!fileInfos.Any() || settings == null)
             {
-                var path = rootDir.PathSegment(file.Directory);
-                var idealPath = GetNewLocation(rootDir, file, settings.SortOrder);
+                return;
+            }
 
-                // If there's just a different number of directories/MetaAttributes, we know it's wrong
-                if (path.Count != settings.SortOrder.Count + 1)
+            foreach (var file in fileInfos)
+            {
+                var path = _root.PathSegment(file.Directory);
+                var targetFile = GetNewLocation(file, settings.SortOrder);
+                var targetPath = _root.PathSegment(targetFile.Directory);
+
+                // If the current and target paths are different, we know we need to move.
+                if (!path.SequenceEqual(targetPath, new DirectoryEqualityComparer()))
                 {
-                    if (!idealPath.Directory.DirectoryEquals(file.Directory))
+                    // Check to see if the file already exists
+                    var srcMp3File = TagLib.File.Create(file.FullName);
+                    var destDir = targetFile.Directory;
+                    if (destDir.ContainsMusicFile(srcMp3File)) // If the file is already there
                     {
-                        MoveActions.Add(new MoveAction
+                        // Delete source, let the older file take precedence.
+                        // TODO perhaps we should try comparing audio quality and pick the better one?
+                        Actions.Add(new DeleteAction
+                        {
+                            Target = file
+                        });
+                    }
+                    else
+                    {
+                        Actions.Add(new MoveAction
                         {
                             Source = file,
-                            Dest = idealPath
-                        });
-                        continue;
+                            Dest = targetFile
+                        });   
                     }
-                        UnsortableCount++;
                 }
-                
-                // Otherwise, calculate the appropriate path from the tags, and compare to the actual path.
-                if (path.Where((t, i) => !t.DirectoryEquals(idealPath.Parent(path.Count - i - 1))).Any())
+
+                // If the target path doesn't fulfill the sort settings, bump the counter.
+                if (targetPath.Count != settings.SortOrder.Count + 1)
                 {
-                    MoveActions.Add(new MoveAction
-                    {
-                        Source = file,
-                        Dest = idealPath
-                    });
+                    UnsortableCount++;
                 }
             }
         }
@@ -101,20 +117,29 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <summary>
         /// Calculate the correct location for a file given an ordering of MetaAttributes to sort by.
         /// </summary>
-        /// <param name="root">Root of the metadata folder pathing</param>
         /// <param name="file">The source file to analyze</param>
         /// <param name="list">The sort-order of meta attributes</param>
         /// <returns>A new FileInfo describing where the source file should be moved to</returns>
-        private static FileInfo GetNewLocation(FileSystemInfo root, FileSystemInfo file, IEnumerable<MetaAttribute> list)
+        private FileInfo GetNewLocation(FileInfo file, IEnumerable<MetaAttribute> list)
         {
-            var metadata = TagLib.File.Create(file.FullName);
+            TagLib.File metadata;
+            try
+            {
+                metadata = TagLib.File.Create(file.FullName);
+            }
+            catch (TagLib.CorruptFileException)
+            {
+                // TODO log
+                return file; // Bad MP3 - just have it stay in the same place
+            }
+
             var metadataPath = new StringBuilder();
             foreach (var metaValue in list.Select(metadata.StringForMetaAttribute).TakeWhile(metaValue => !String.IsNullOrWhiteSpace((metaValue))))
             {
                 metadataPath.Append(metaValue);
                 metadataPath.Append(Path.DirectorySeparatorChar);
             }
-            return new FileInfo(root.FullName + Path.DirectorySeparatorChar + metadataPath + file.Name);
+            return new FileInfo(_root.FullName + Path.DirectorySeparatorChar + metadataPath + file.Name);
         }
 
         /// <summary>
@@ -123,7 +148,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <param name="rootInfo">The root of the tree</param>
         private static void ScrubEmptyDirectories(DirectoryInfo rootInfo)
         {
-            foreach (var child in rootInfo.EnumerateDirectories())
+            foreach (var child in rootInfo.EnumerateDirectories("*", SearchOption.AllDirectories))
             {
                 ScrubEmptyDirectories(child);
                 if (!child.EnumerateFileSystemInfos().Any())
@@ -133,13 +158,71 @@ namespace MSOE.MediaComplete.Lib.Sorting
             }
         }
 
+        #region Import Event Handling
+
+        static Sorter()
+        {
+            Importer.ImportFinished += SortNewImports;   
+        }
+
         /// <summary>
-        /// Small, simple class that contains a source and destination file. 
+        /// Sorts incoming files that have just been imported.
         /// </summary>
-        public class MoveAction
+        /// <param name="files">The new files</param>
+        /// <param name="homeDir">The library root</param>
+        public static async void SortNewImports (List<FileInfo> files, DirectoryInfo homeDir)
+        {
+            // TODO get settings from configuration
+            var settings = new SortSettings
+            {
+                SortOrder = new List<MetaAttribute> {MetaAttribute.Artist, MetaAttribute.Album}
+            };
+            var sorter = new Sorter(homeDir);
+            sorter.CalculateActions(files, settings);
+            await sorter.PerformSort();
+        }
+
+        #endregion
+
+        #region Actions
+
+        public interface IAction
+        {
+            void Do();
+        }
+        
+        public class MoveAction : IAction
         {
             public FileInfo Source { get; set; }
             public FileInfo Dest { get; set; }
+
+            public void Do()
+            {
+                if (Dest.Directory == null) // Will happen if something goes wrong in the calculation
+                {
+                    return;
+                }
+
+                Directory.CreateDirectory(Dest.Directory.FullName);
+                File.Move(Source.FullName, Dest.FullName);
+            }
         }
+
+        public class DeleteAction : IAction
+        {
+            public FileInfo Target { get; set; }
+
+            public void Do()
+            {
+                if (Target == null || !Target.Exists) // Will happen if something goes wrong in the calculation
+                {
+                    return;
+                }
+
+                Target.Delete(); // TODO This should be a "recycle" delete. Not implemented yet.
+            }
+        }
+
+        #endregion
     }
 }
