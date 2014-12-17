@@ -1,10 +1,8 @@
 ﻿using System;
-
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
+using WinForms = System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using MSOE.MediaComplete.Lib;
 using System.Windows;
@@ -13,8 +11,7 @@ using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib.Sorting;
 using System.Windows.Controls;
 using Application = System.Windows.Application;
-
-using WinForms = System.Windows.Forms;
+using System.Globalization;
 
 namespace MSOE.MediaComplete
 {
@@ -25,8 +22,6 @@ namespace MSOE.MediaComplete
     public partial class MainWindow
     {
         private Settings _settings;
-
-        private readonly Importer _importer;
 
         public MainWindow()
         {
@@ -45,12 +40,12 @@ namespace MSOE.MediaComplete
             if (SettingWrapper.GetIsPolling())
             {
                 Polling.Instance.TimeInMinutes = SettingWrapper.GetPollingTime();
+
                 Polling.Instance.Start();
             }
             Polling.InboxFilesDetected += ImportFromInbox;
             Directory.CreateDirectory(homeDir);
 
-            _importer = new Importer(SettingWrapper.GetHomeDir());
             InitTreeView();
         }
 
@@ -78,7 +73,7 @@ namespace MSOE.MediaComplete
             }
             else
             {
-                await _importer.ImportFiles(files.Select(f => f.FullName).ToArray(), false);
+                await new Importer(SettingWrapper.GetHomeDir()).ImportFiles(files.Select(f => f.FullName).ToArray(), false);
             }
         }
 
@@ -107,17 +102,43 @@ namespace MSOE.MediaComplete
             };
 
             if (fileDialog.ShowDialog() != WinForms.DialogResult.OK) return;
-            await Task.Run(() => _importer.ImportFiles(fileDialog.FileNames, true));
-            RefreshTreeView();
+
+            ImportResults results;
+            try
+            {
+                results = await new Importer(SettingWrapper.GetHomeDir()).ImportFiles(fileDialog.FileNames, true);
+            }
+            catch (InvalidImportException)
+            {
+                MessageBox.Show(this,
+                    String.Format(Resources["Dialog-Import-Invalid-Message"].ToString()),
+                    Resources["Dialog-Common-Error-Title"].ToString(),
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (results.FailCount > 0)
+            {
+                MessageBox.Show(this, 
+                    String.Format(Resources["Dialog-Import-ItemsFailed-Message"].ToString(), results.FailCount), 
+                    Resources["Dialog-Common-Warning-Title"].ToString(), 
+                    MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
         }
 
         private async void AddFolder_Click(object sender, RoutedEventArgs e)
         {
             var folderDialog = new WinForms.FolderBrowserDialog();
-            if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+
+            if (folderDialog.ShowDialog() != WinForms.DialogResult.OK) return;
+            var selectedDir = folderDialog.SelectedPath;
+            var results = await new Importer(SettingWrapper.GetHomeDir()).ImportDirectory(selectedDir, true);
+            if (results.FailCount > 0)
             {
-                var selectedDir = folderDialog.SelectedPath;
-                await Task.Run(() => _importer.ImportDirectory(selectedDir, true));
+                MessageBox.Show(this,
+                    String.Format(Resources["Dialog-Import-ItemsFailed-Message"].ToString(), results.FailCount),
+                    Resources["Dialog-Common-Warning-Title"].ToString(),
+                    MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
             RefreshTreeView();
         }

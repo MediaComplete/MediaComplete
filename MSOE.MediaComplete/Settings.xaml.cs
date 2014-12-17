@@ -25,7 +25,7 @@ namespace MSOE.MediaComplete
             CheckboxPolling.IsChecked = SettingWrapper.GetIsPolling();
             CheckboxShowImportDialog.IsChecked = SettingWrapper.GetShowInputDialog();
             PollingCheckBoxChanged(CheckboxPolling, null);
-            }
+        }
 
 
         /// <summary>
@@ -39,6 +39,7 @@ namespace MSOE.MediaComplete
             var folderBrowserDialog1 = new FolderBrowserDialog();
             var button = sender as System.Windows.Controls.Button;
             if (folderBrowserDialog1.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+
             if (button == null) return;
             switch (button.Name)
             {
@@ -106,6 +107,7 @@ namespace MSOE.MediaComplete
             }
 
             SettingWrapper.SetHomeDir(homeDir);
+
             SettingWrapper.SetInboxDir(inboxDir);
             SettingWrapper.SetPollingTime(ComboBoxPollingTime.SelectedValue);
             SettingWrapper.SetIsPolling(CheckboxPolling.IsChecked.GetValueOrDefault(false));

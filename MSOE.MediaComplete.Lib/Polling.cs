@@ -75,6 +75,7 @@ namespace MSOE.MediaComplete.Lib
         {
             var inbox = new DirectoryInfo(SettingWrapper.GetInboxDir());
             var files = inbox.EnumerateFiles("*.mp3");
+
             var fileInfos = files as FileInfo[] ?? files.ToArray();
             if(fileInfos.Any())
             {

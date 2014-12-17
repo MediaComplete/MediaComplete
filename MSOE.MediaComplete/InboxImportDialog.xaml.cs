@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using MSOE.MediaComplete.Lib;
+using System;
 
 namespace MSOE.MediaComplete
 {
@@ -60,8 +61,17 @@ namespace MSOE.MediaComplete
         private async void okButton_Click(object sender, RoutedEventArgs e)
         {
             SettingWrapper.SetShowInputDialog(!StopShowingCheckBox.IsChecked.GetValueOrDefault(false));
-            var importer = new Importer(SettingWrapper.GetHomeDir());
-            await importer.ImportFiles(_files.Select(f => f.FullName).ToArray(), false);
+
+            //Do the move
+            var results = await new Importer(SettingWrapper.GetHomeDir()).ImportFiles(_files.Select(f => f.FullName).ToArray(), false);
+            if (results.FailCount > 0)
+            {
+                MessageBox.Show(this,
+                    String.Format(Resources["Dialog-Import-ItemsFailed-Message"].ToString(), results.FailCount),
+                    Resources["Dialog-Common-Warning-Title"].ToString(),
+                    MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+
             Polling.Instance.Reset();
             DialogResult = true;
         }

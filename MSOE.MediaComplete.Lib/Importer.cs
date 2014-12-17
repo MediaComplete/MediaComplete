@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using File = System.IO.File;
 
@@ -8,35 +9,48 @@ namespace MSOE.MediaComplete.Lib
 {
     public class Importer
     {
-        public delegate void ImportHandler(List<FileInfo> files, DirectoryInfo homeDir);
+        public delegate void ImportHandler(ImportResults results);
         public static event ImportHandler ImportFinished = delegate {};
 
-        private readonly string _homeDir;
+
+        private readonly DirectoryInfo _homeDir;
 
         public Importer(string dir)
         {
-            _homeDir = dir;
+            _homeDir = new DirectoryInfo(dir);
         }
 
 
-        public async Task ImportDirectory(string directory, bool isCopy)
+        public async Task<ImportResults> ImportDirectory(string directory, bool isCopy)
         {
             StatusBarHandler.Instance.ChangeStatusBarMessage("Import-Started", StatusBarHandler.StatusIcon.Working);
-            var files = await Task.Run(() => Directory.GetFiles(directory, "*.mp3",
-            SearchOption.AllDirectories));
-            await Task.Run(() => ImportFiles(files, isCopy));
+            var files = Array.FindAll(Directory.GetFiles(directory, "*.mp3", SearchOption.AllDirectories),
+                s => !new FileInfo(s).HasParent(_homeDir));
+            var results = await ImportFiles(files, isCopy);
             StatusBarHandler.Instance.ChangeStatusBarMessage("Import-Success", StatusBarHandler.StatusIcon.Success);
+            return results;
         }
 
-        public async Task ImportFiles(string[] files, bool isCopy)
+        public async Task<ImportResults> ImportFiles(string[] files, bool isCopy)
         {
-
             StatusBarHandler.Instance.ChangeStatusBarMessage("Import-Started", StatusBarHandler.StatusIcon.Working);
-            var newFiles = new List<FileInfo>(files.Length);
+            
+            if (files.Any(f => new FileInfo(f).HasParent(_homeDir)))
+            {
+                throw new InvalidImportException();
+            }
+
+            var results = new ImportResults
+            {
+                FailCount = 0,
+                NewFiles = new List<FileInfo>(files.Length),
+                HomeDir = _homeDir
+            };
+
             foreach (var file in files)
             {
                 var myFile = file;
-                var newFile = _homeDir + Path.DirectorySeparatorChar + Path.GetFileName(file);
+                var newFile = _homeDir.FullName + Path.DirectorySeparatorChar + Path.GetFileName(file);
                 if (File.Exists(newFile)) continue;
                 try
                 {
@@ -48,17 +62,40 @@ namespace MSOE.MediaComplete.Lib
                     {
                         await Task.Run(() => File.Move(myFile, newFile));
                     }
+                    results.NewFiles.Add(new FileInfo(newFile));
                 }
-                catch (Exception exception)
+                catch (IOException exception)
                 {
-                    Console.WriteLine(exception);
+                    Console.WriteLine(exception); // TODO log (MC-125)
+                    results.FailCount++;
                     StatusBarHandler.Instance.ChangeStatusBarMessage("Importing-Error",
                         StatusBarHandler.StatusIcon.Error);
                 }
-                newFiles.Add(new FileInfo(newFile));
             }
-            ImportFinished(newFiles, new DirectoryInfo(_homeDir));
+            ImportFinished(results);
             StatusBarHandler.Instance.ChangeStatusBarMessage("Import-Success", StatusBarHandler.StatusIcon.Success);
+            return results;
+        }
+    }
+
+    /// <summary>
+    /// A struct-class containing post-mortem data on an import operation.
+    /// </summary>
+    public class ImportResults
+    {
+        public List<FileInfo> NewFiles { get; set; } 
+        public DirectoryInfo HomeDir { get; set; }
+        public int FailCount { get; set; }
+    }
+
+    /// <summary>
+    /// Thrown when an import is attempted on files in the library directory. 
+    /// </summary>
+    public class InvalidImportException : Exception
+    {
+        public InvalidImportException() : base("Cannot import a file already located in the library directory tree!")
+        {
+        
         }
     }
 }

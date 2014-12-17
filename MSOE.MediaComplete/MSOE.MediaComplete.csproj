@@ -180,7 +180,7 @@
     <Resource Include="Resources\folder_add.png" />
     <Resource Include="Resources\page_white_add.png" />
     <Resource Include="Resources\wand.png" />
-	<Resource Include="Resources\Error.png" />
+    <Resource Include="Resources\Error.png" />
     <Resource Include="Resources\Information.png" />
     <Resource Include="Resources\Success.png" />
     <Resource Include="Resources\Warning.png" />

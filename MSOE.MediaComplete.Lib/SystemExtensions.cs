@@ -11,6 +11,22 @@ namespace MSOE.MediaComplete.Lib
     public static class SystemExtensions
     {
         /// <summary>
+        /// Returns true if the file is located somewhere within the parent's children, recursively.
+        /// </summary>
+        /// <param name="file">The file in question</param>
+        /// <param name="parent">The potential parent we're testing for</param>
+        /// <returns></returns>
+        public static bool HasParent(this FileInfo file, DirectoryInfo parent)
+        {
+            var dir = file.Directory;
+            while (dir != null && !dir.DirectoryEquals(parent))
+            {
+                dir = dir.Parent;
+            }
+            return dir != null;
+        }
+
+        /// <summary>
         /// Returns the 0-indexed parent directory of a given file. 
         /// </summary>
         /// <param name="file">The invoking file.</param>
