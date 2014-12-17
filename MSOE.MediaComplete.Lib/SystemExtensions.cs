@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 
 namespace MSOE.MediaComplete.Lib
@@ -74,7 +75,7 @@ namespace MSOE.MediaComplete.Lib
             const string specialChars = @"/:*?""<>|#%&.{}~";
 
             //Replace special chars in raw filename with empty spaces to make it valid  
-            Array.ForEach(specialChars.ToCharArray(), specialChar => fileName = fileName.Replace(specialChar.ToString(), ""));
+            Array.ForEach(specialChars.ToCharArray(), specialChar => fileName = fileName.Replace(specialChar.ToString(CultureInfo.CurrentCulture), ""));
 
             return fileName;
 
