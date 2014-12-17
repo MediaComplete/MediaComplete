@@ -60,7 +60,7 @@ namespace MSOE.MediaComplete
         private async void okButton_Click(object sender, RoutedEventArgs e)
         {
             SettingWrapper.SetShowInputDialog(!StopShowingCheckBox.IsChecked.GetValueOrDefault(false));
-            Importer importer = new Importer(SettingWrapper.GetHomeDir());
+            var importer = new Importer(SettingWrapper.GetHomeDir());
             await importer.ImportFiles(_files.Select(f => f.FullName).ToArray(), false);
             Polling.Instance.Reset();
             DialogResult = true;

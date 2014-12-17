@@ -39,16 +39,16 @@ namespace MSOE.MediaComplete
             var folderBrowserDialog1 = new FolderBrowserDialog();
             var button = sender as System.Windows.Controls.Button;
             if (folderBrowserDialog1.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
-            if (button != null)
-                switch (button.Name)
-                {
-                    case "BtnSelectFolder":
-                        TxtboxSelectedFolder.Text = folderBrowserDialog1.SelectedPath;
-                        break;
-                    case "BtnInboxFolder":
-                        TxtboxInboxFolder.Text = folderBrowserDialog1.SelectedPath;
-                        break;
-                }
+            if (button == null) return;
+            switch (button.Name)
+            {
+                case "BtnSelectFolder":
+                    TxtboxSelectedFolder.Text = folderBrowserDialog1.SelectedPath;
+                    break;
+                case "BtnInboxFolder":
+                    TxtboxInboxFolder.Text = folderBrowserDialog1.SelectedPath;
+                    break;
+            }
         }
 
 
