@@ -13,6 +13,10 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid Margin="0,0,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="189" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="24" />
             <RowDefinition />
@@ -101,7 +105,7 @@
                 <Button Content="Skip" MinWidth="75" />
             </StackPanel>
         </StackPanel>
-        <StackPanel Grid.Row="3">
+        <StackPanel Grid.Row="3" Grid.Column="0">
             <StatusBar>
                 <StatusBar.ItemsPanel>
                     <ItemsPanelTemplate>
