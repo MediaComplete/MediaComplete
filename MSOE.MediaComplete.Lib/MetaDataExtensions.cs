@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Principal;
+using TagLib.Id3v2;
 using File = TagLib.File;
 
 namespace MSOE.MediaComplete.Lib
@@ -85,7 +86,6 @@ namespace MSOE.MediaComplete.Lib
         /// <summary>
         /// Retrieves an ID3 tag value corresponding to the MetaAttribute.
         /// </summary>
-        // TODO add support for more fields?
         /// <param name="file">The MP3 File</param>
         /// <param name="attr">The MetaAttribute for the specific ID3 value to be returned</param>
         /// <returns>The ID3 value from the tag</returns>
@@ -101,13 +101,14 @@ namespace MSOE.MediaComplete.Lib
                 case MetaAttribute.Genre:
                     return tag.FirstGenre;
                 case MetaAttribute.Rating:
-                    if (tag is TagLib.Id3v2.Tag)
+                    var tag1 = tag as Tag;
+                    if (tag1 != null)
                     {
                         var winId = WindowsIdentity.GetCurrent() ?? WindowsIdentity.GetAnonymous();
                         return
                             RatingFromByte(
-                                TagLib.Id3v2.PopularimeterFrame.Get(
-                                    tag as TagLib.Id3v2.Tag, winId.Name, true
+                                PopularimeterFrame.Get(
+                                    tag1, winId.Name, true
                                     ).Rating
                                 ).ToString(CultureInfo.InvariantCulture);
                     }

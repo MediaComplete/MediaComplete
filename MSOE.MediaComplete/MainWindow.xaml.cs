@@ -4,15 +4,15 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-
-
+using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
+using MSOE.MediaComplete.Lib;
 using System.Windows;
 using System.Windows.Input;
 using MSOE.MediaComplete.CustomControls;
-using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Sorting;
-using System.Threading.Tasks;
 using System.Windows.Controls;
+using Application = System.Windows.Application;
 
 using WinForms = System.Windows.Forms;
 
@@ -36,6 +36,7 @@ namespace MSOE.MediaComplete
 
             var homeDir = SettingWrapper.GetHomeDir() ??
                           Path.GetPathRoot(Environment.SystemDirectory);
+            StatusBarHandler.Instance.RaiseStatusBarEvent += HandleStatusBarChangeEvent;
             if (!homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
             {
                 homeDir += Path.DirectorySeparatorChar;
@@ -51,6 +52,16 @@ namespace MSOE.MediaComplete
 
             _importer = new Importer(SettingWrapper.GetHomeDir());
             InitTreeView();
+        }
+
+        private void HandleStatusBarChangeEvent(string message, StatusBarHandler.StatusIcon icon)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                StatusMessage.Text = (message.Length == 0) ? "" : Resources[message].ToString();
+                var sourceUri = new Uri("./Resources/" + icon + ".png", UriKind.Relative);
+                StatusIcon.Source = new BitmapImage(sourceUri);
+            });
         }
 
         protected override void OnClosed(EventArgs e)
@@ -130,12 +141,9 @@ namespace MSOE.MediaComplete
                 //add each child to the root folder
                 firstNode.Children.Add(PopulateFromFolder(rootChild, SongTree, firstNode));
             }
-            foreach (var rootChild in rootFiles)
+            foreach (var rootChild in rootFiles.Where(rootChild => rootChild.Name.EndsWith(".mp3")))
             {
-                if (rootChild.Name.EndsWith(".mp3"))
-                {
-                    SongTree.Items.Add(new SongTreeViewItem { Header = rootChild.Name, ParentItem = firstNode });
-                }
+                SongTree.Items.Add(new SongTreeViewItem { Header = rootChild.Name, ParentItem = firstNode });
             }
 
             DataContext = firstNode;
@@ -164,7 +172,7 @@ namespace MSOE.MediaComplete
         /// <param name="songTree"></param>
         /// <param name="parent"></param>
         /// <returns></returns>
-        private static FolderTreeViewItem PopulateFromFolder(DirectoryInfo dirInfo, TreeViewEx songTree, FolderTreeViewItem parent)
+        private static FolderTreeViewItem PopulateFromFolder(DirectoryInfo dirInfo, ItemsControl songTree, FolderTreeViewItem parent)
         {
             var dirItem = new FolderTreeViewItem { Header = dirInfo.Name, ParentItem = parent };
             foreach (var dir in TreeViewBackend.GetDirectories(dirInfo))
@@ -172,12 +180,9 @@ namespace MSOE.MediaComplete
                 dirItem.Children.Add(PopulateFromFolder(dir, songTree, dirItem));
             }
 
-            foreach (var file in TreeViewBackend.GetFiles(dirInfo))
+            foreach (var file in TreeViewBackend.GetFiles(dirInfo).Where(file => file.Name.EndsWith(".mp3")))
             {
-                if (file.Name.EndsWith(".mp3"))
-                {
-                    songTree.Items.Add(new SongTreeViewItem { Header = file.Name, ParentItem = dirItem });
-                }
+                songTree.Items.Add(new SongTreeViewItem { Header = file.Name, ParentItem = dirItem });
             }
             return dirItem;
         }
@@ -233,9 +238,8 @@ namespace MSOE.MediaComplete
         private async void Toolbar_AutoIDMusic_Click(object sender, RoutedEventArgs e)
         {
             // TODO mass ID of multi-selected songs or folders
-            foreach (var item in SongTree.SelectedItems)
+            foreach (var selection in from object item in SongTree.SelectedItems select item as SongTreeViewItem)
             {
-                var selection = item as SongTreeViewItem;
                 try
                 {
                     if (selection != null) { 
@@ -248,6 +252,7 @@ namespace MSOE.MediaComplete
                 }
             }
         }
+
         private async void ContextMenu_AutoIDMusic_Click(object sender, RoutedEventArgs e)
         {
             // Access the targetted song 

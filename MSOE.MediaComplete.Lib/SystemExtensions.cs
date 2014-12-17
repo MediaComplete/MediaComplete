@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 
 namespace MSOE.MediaComplete.Lib
@@ -53,6 +54,7 @@ namespace MSOE.MediaComplete.Lib
             return ret;
         }
 
+
         /// <summary>
         /// Performs an equality test using Windows conventions for directory equality. 
         /// Case insensitive, trailing slashes ignored
@@ -62,10 +64,22 @@ namespace MSOE.MediaComplete.Lib
         /// <returns></returns>
         public static bool DirectoryEquals(this DirectoryInfo first, DirectoryInfo second)
         {
-            var firstName = first.FullName.TrimEnd(new[] { Path.DirectorySeparatorChar });
-            var secondName = second.FullName.TrimEnd(new[] { Path.DirectorySeparatorChar });
+            var firstName = first.FullName.TrimEnd(Path.DirectorySeparatorChar);
+            var secondName = second.FullName.TrimEnd(Path.DirectorySeparatorChar);
             return firstName.Equals(secondName, StringComparison.CurrentCultureIgnoreCase);
         }
+
+        public static string GetValidFileName(this string fileName)
+        {
+            //special chars not allowed in filename 
+            const string specialChars = @"/:*?""<>|#%&.{}~";
+
+            //Replace special chars in raw filename with empty spaces to make it valid  
+            Array.ForEach(specialChars.ToCharArray(), specialChar => fileName = fileName.Replace(specialChar.ToString(CultureInfo.CurrentCulture), ""));
+
+            return fileName;
+
+        }  
     }
 
     public class DirectoryEqualityComparer : IEqualityComparer<DirectoryInfo>
@@ -77,7 +91,7 @@ namespace MSOE.MediaComplete.Lib
 
         public int GetHashCode(DirectoryInfo obj)
         {
-            return obj.FullName.TrimEnd(new[] { Path.DirectorySeparatorChar }).ToLower().GetHashCode();
+            return obj.FullName.TrimEnd(Path.DirectorySeparatorChar).ToLower().GetHashCode();
         }
     }
 }

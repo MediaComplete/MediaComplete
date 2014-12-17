@@ -23,11 +23,20 @@ namespace MSOE.MediaComplete.Lib
 
         public static async Task<string> IdentifySong(string filename)
         {
+            StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Started", StatusBarHandler.StatusIcon.Working);
             // We have to force "SampleAudio" onto a new thread, otherwise the main thread 
             // will lock while doing the expensive file reading and audio manipulation.
-            if (!System.IO.File.Exists(filename)) return null;
+            if (!System.IO.File.Exists(filename))
+            {
+                StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error", StatusBarHandler.StatusIcon.Error);
+                return null;
+            }
             var audioData = await Task.Run(() => SampleAudio(filename));
-            if (audioData == null) return null;
+            if (audioData == null)
+            {
+                StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error", StatusBarHandler.StatusIcon.Error);
+                return null;
+            }
             var codegen = new FingerprintGenerator(audioData, 0);
             var code = codegen.GetFingerprintCode().Code;
 
@@ -44,6 +53,7 @@ namespace MSOE.MediaComplete.Lib
             UpdateFileWithJson(json, File.Create(filename));
 
             var resp = json.SelectToken("response").ToString();
+            StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Success", StatusBarHandler.StatusIcon.Success);
             return resp;
         }
 

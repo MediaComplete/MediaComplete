@@ -76,6 +76,7 @@
     <Compile Include="MetaDataExtensions.cs" />
     <Compile Include="SystemExtensions.cs" />
     <Compile Include="TreeViewBackend.cs" />
+    <Compile Include="StatusBarHandler.cs" />
     <Compile Include="Importer.cs" />
     <Compile Include="MusicIdentifier.cs">
       <SubType>Code</SubType>
