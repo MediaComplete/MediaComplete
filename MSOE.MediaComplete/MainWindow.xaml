@@ -13,30 +13,29 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid Margin="0,0,0,0">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="189" />
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="24" />
             <RowDefinition Height="24" />
             <RowDefinition />
             <RowDefinition Height="100" />
             <RowDefinition Height="24"/>
         </Grid.RowDefinitions>
 
-        <Menu Grid.Row="0" Grid.Column="0" Margin="0,0,0,0" >
-            <MenuItem Header="_File">
-                <MenuItem Header="_Exit" />
-            </MenuItem>
-            <MenuItem Header="_Edit" Click="MenuItem_Click">
-                <MenuItem Header="_Settings" />
-            </MenuItem>
-            <MenuItem Header="_Playlists" />
-            <MenuItem Header="_MetaDataFinderThing" />
-        </Menu>
-        <TextBox Grid.Row="0" Grid.Column="1" Height="23" Text="Search" Width="189" HorizontalAlignment="Right" />
-        <ToolBarTray Grid.Row="1" Grid.Column="0">
-            <ToolBar Margin="0,0,0,161">
+        <Grid Grid.Row="0">
+            <Menu>
+                <MenuItem Header="_File">
+                    <MenuItem Header="_Exit" />
+                </MenuItem>
+                <MenuItem Header="_Edit" Click="MenuItem_Click">
+                    <MenuItem Header="_Settings" />
+                </MenuItem>
+                <MenuItem Header="_Playlists" />
+                <MenuItem Header="_MetaDataFinderThing" />
+            </Menu>
+            <TextBox Text="Search" Height="22" Width="180" HorizontalAlignment="Right"/>
+        </Grid>
+        <ToolBarTray Grid.Row="1">
+            <ToolBar Margin="0,0,0,0">
                 <Button Name="AddFile" ToolTip="Add File" VerticalAlignment="Center" Click="AddFile_Click">
                     <Image Source="{StaticResource Toolbar-AddMusicFile-Icon}" />
                 </Button>
@@ -53,14 +52,14 @@
                 </Button>
             </ToolBar>
         </ToolBarTray>
-        <Grid Margin="0,0,0,1" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+        <Grid Margin="0,0,0,0" Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="260*" />
                 <ColumnDefinition Width="260*" />
                 <ColumnDefinition Width="260*" />
             </Grid.ColumnDefinitions>
 
-            <controls:TreeViewEx x:Name="FolderTree" Grid.Column="0" Margin="0,33,0,0" 
+            <controls:TreeViewEx x:Name="FolderTree" Grid.Column="0" Margin="0,0,0,0" 
              AutomationProperties.Name="Tree" 
              MouseUp="FolderTree_OnMouseUp"
              ItemsSource="{Binding Children}">
@@ -72,7 +71,7 @@
 
             </controls:TreeViewEx>
 
-            <controls:TreeViewEx x:Name="SongTree" Grid.Column="1" Margin="0,33,0,0" 
+            <controls:TreeViewEx x:Name="SongTree" Grid.Column="1" Margin="0,0,0,0" 
              AutomationProperties.Name="Tree" 
              ItemsSource="{Binding}">
                 <controls:TreeViewEx.ItemTemplate>
@@ -88,7 +87,7 @@
                 </controls:TreeViewEx.ContextMenu>
             </controls:TreeViewEx>
 
-            <Grid Grid.Column="2" Margin="0,33,0,0" Background="Transparent">
+            <Grid Grid.Column="2" Margin="0,0,0,0" Background="Transparent">
                 <Border BorderThickness="1" BorderBrush="Gray" >
                     <StackPanel >
                     </StackPanel>
@@ -96,8 +95,7 @@
             </Grid>
         </Grid>
 
-
-        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+        <StackPanel Grid.Row="3" Grid.Column="0">
             <Slider />
             <StackPanel Height="64" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Content="Previous" MinWidth="75" Click="Button_Click" />
@@ -105,7 +103,7 @@
                 <Button Content="Skip" MinWidth="75" />
             </StackPanel>
         </StackPanel>
-        <StackPanel Grid.Row="3" Grid.Column="0">
+        <StackPanel Grid.Row="4" Grid.Column="0">
             <StatusBar>
                 <StatusBar.ItemsPanel>
                     <ItemsPanelTemplate>
