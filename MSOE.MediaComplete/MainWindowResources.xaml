@@ -18,6 +18,16 @@
     <system:String x:Key="Dialog-Common-Warning-Title">Warning</system:String>
     <system:String x:Key="Dialog-Common-Error-Title">Error!</system:String>
 
+    <system:String x:Key="Import-Started">Import Started</system:String>
+    <system:String x:Key="Import-Success">Import Finished</system:String>
+    <system:String x:Key="Import-Error">Import Error</system:String>
+    <system:String x:Key="Sorting-Started">Sorting Started</system:String>
+    <system:String x:Key="Sorting-Success">Sorting Finished</system:String>
+    <system:String x:Key="MusicIdentification-Started">Music Identification Started</system:String>
+    <system:String x:Key="MusicIdentification-Success">Music Identification Finished</system:String>
+    <system:String x:Key="MusicIdentification-Error">Music Identification Error</system:String>
+
+
     <!-- Images -->
     <BitmapImage x:Key="Toolbar-AddMusicFile-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
                  UriSource=".\Resources\page_white_add.png" />
@@ -27,7 +37,6 @@
                  UriSource=".\Resources\wand.png" />
     <BitmapImage x:Key="Toolbar-SortMusic-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
                  UriSource=".\Resources\folder_wrench.png" />
-
     <!-- Shared XAML objects-->
     <Style TargetType="controls:TreeViewExItem">
         <Setter Property="IsExpanded" Value="{Binding IsExpandedValue}"/>

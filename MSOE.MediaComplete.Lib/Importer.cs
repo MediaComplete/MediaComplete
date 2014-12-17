@@ -12,21 +12,30 @@ namespace MSOE.MediaComplete.Lib
         public delegate void ImportHandler(ImportResults results);
         public static event ImportHandler ImportFinished = delegate {};
 
-        public async Task<ImportResults> ImportDirectory(string directory, bool isCopying)
+
+        private readonly DirectoryInfo _homeDir;
+
+        public Importer(string dir)
         {
-            var homeDir = new DirectoryInfo(SettingWrapper.GetHomeDir());
-            var files = Array.FindAll(Directory.GetFiles(directory, "*.mp3", SearchOption.AllDirectories),
-                s => !new FileInfo(s).HasParent(homeDir));
-            
-            return await ImportFiles(files, isCopying);
+            _homeDir = new DirectoryInfo(dir);
         }
 
-        public async Task<ImportResults> ImportFiles(string[] files, bool isCopying)
-        {
-            // First validate that we're not to trying to do a circular import (from library to library)
-            var homeDir = SettingWrapper.GetHomeDir();
 
-            if (files.Any(f => new FileInfo(f).HasParent(new DirectoryInfo(homeDir))))
+        public async Task<ImportResults> ImportDirectory(string directory, bool isCopy)
+        {
+            StatusBarHandler.Instance.ChangeStatusBarMessage("Import-Started", StatusBarHandler.StatusIcon.Working);
+            var files = Array.FindAll(Directory.GetFiles(directory, "*.mp3", SearchOption.AllDirectories),
+                s => !new FileInfo(s).HasParent(_homeDir));
+            var results = await ImportFiles(files, isCopy);
+            StatusBarHandler.Instance.ChangeStatusBarMessage("Import-Success", StatusBarHandler.StatusIcon.Success);
+            return results;
+        }
+
+        public async Task<ImportResults> ImportFiles(string[] files, bool isCopy)
+        {
+            StatusBarHandler.Instance.ChangeStatusBarMessage("Import-Started", StatusBarHandler.StatusIcon.Working);
+            
+            if (files.Any(f => new FileInfo(f).HasParent(_homeDir)))
             {
                 throw new InvalidImportException();
             }
@@ -35,35 +44,36 @@ namespace MSOE.MediaComplete.Lib
             {
                 FailCount = 0,
                 NewFiles = new List<FileInfo>(files.Length),
-                HomeDir = new DirectoryInfo(homeDir)
+                HomeDir = _homeDir
             };
-            
+
             foreach (var file in files)
             {
                 var myFile = file;
-                var newFile = homeDir + Path.DirectorySeparatorChar + Path.GetFileName(file);
-                if (!File.Exists(newFile))
+                var newFile = _homeDir.FullName + Path.DirectorySeparatorChar + Path.GetFileName(file);
+                if (File.Exists(newFile)) continue;
+                try
                 {
-                    try
+                    if (isCopy)
                     {
-                        if (isCopying)
-                        {
-                            await Task.Run(() => File.Copy(myFile, newFile));
-                        }
-                        else
-                        {
-                            await Task.Run(() => File.Move(myFile, newFile));
-                        }
-                        results.NewFiles.Add(new FileInfo(newFile));
+                        await Task.Run(() => File.Copy(myFile, newFile));
                     }
-                    catch (IOException exception)
+                    else
                     {
-                        Console.WriteLine(exception); // TODO log (MC-125)
-                        results.FailCount++;
+                        await Task.Run(() => File.Move(myFile, newFile));
                     }
+                    results.NewFiles.Add(new FileInfo(newFile));
+                }
+                catch (IOException exception)
+                {
+                    Console.WriteLine(exception); // TODO log (MC-125)
+                    results.FailCount++;
+                    StatusBarHandler.Instance.ChangeStatusBarMessage("Importing-Error",
+                        StatusBarHandler.StatusIcon.Error);
                 }
             }
             ImportFinished(results);
+            StatusBarHandler.Instance.ChangeStatusBarMessage("Import-Success", StatusBarHandler.StatusIcon.Success);
             return results;
         }
     }
@@ -73,7 +83,7 @@ namespace MSOE.MediaComplete.Lib
     /// </summary>
     public class ImportResults
     {
-        public List<FileInfo> NewFiles { get; set; }
+        public List<FileInfo> NewFiles { get; set; } 
         public DirectoryInfo HomeDir { get; set; }
         public int FailCount { get; set; }
     }
@@ -85,7 +95,7 @@ namespace MSOE.MediaComplete.Lib
     {
         public InvalidImportException() : base("Cannot import a file already located in the library directory tree!")
         {
-            
+        
         }
     }
 }

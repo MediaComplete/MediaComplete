@@ -10,5 +10,18 @@ namespace MSOE.MediaComplete.CustomControls
             IsSelected = true;
             base.OnPreviewMouseRightButtonDown(e);
         }
+        public FolderTreeViewItem ParentItem { get; set; }
+
+        public override string ToString()
+        {
+            return (string)Header;
+        }
+
+        public string GetPath()
+        {
+            return ParentItem.GetPath() + Header;
+        }
+
     }
+
 }

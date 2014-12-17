@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web;
 using ENMFPdotNet;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
@@ -16,23 +17,37 @@ namespace MSOE.MediaComplete.Lib
         private const int Freq = 22050;
         private const int SampleSeconds = 30;
         private const int SampleSize = Freq*SampleSeconds;
-        private const string Url = "http://developer.echonest.com";
+        private static readonly UriBuilder Uri = new UriBuilder("http", "developer.echonest.com");
         private const string Path = "/api/v4/song/identify";
         private const string ApiKey = "MUIGA58IV1VQUOEJ5";
 
         public static async Task<string> IdentifySong(string filename)
         {
+            StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Started", StatusBarHandler.StatusIcon.Working);
+
+            if (!System.IO.File.Exists(filename))
+            {
+                StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error", StatusBarHandler.StatusIcon.Error);
+                return null;
+            }
             // We have to force "SampleAudio" onto a new thread, otherwise the main thread 
             // will lock while doing the expensive file reading and audio manipulation.
-            if (!System.IO.File.Exists(filename)) return null;
-            var audioData = SampleAudio(filename);
-            if (audioData == null) return null;
+            var audioData = await Task.Run(() => SampleAudio(filename));
+            if (audioData == null)
+            {
+                StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error", StatusBarHandler.StatusIcon.Error);
+                return null;
+            }
+
             var codegen = new FingerprintGenerator(audioData, 0);
             var code = codegen.GetFingerprintCode().Code;
 
-            var client = new HttpClient {BaseAddress = new Uri(Url)};
-            // TODO lookup and add any metadata fields already on the file
-            var response = await client.GetAsync(Path + "?api_key=" + ApiKey + "&code=" + code);
+            var client = new HttpClient {BaseAddress = new Uri(Uri.ToString())};
+
+            var query = HttpUtility.ParseQueryString(string.Empty);
+            query["api_key"] = ApiKey;
+            query["code"] = code;
+            var response = await client.GetAsync(Path + "?" + query);
 
             // Parse the response body.
             var json = JObject.Parse(await response.Content.ReadAsStringAsync());
@@ -40,6 +55,7 @@ namespace MSOE.MediaComplete.Lib
             UpdateFileWithJson(json, File.Create(filename));
 
             var resp = json.SelectToken("response").ToString();
+            StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Success", StatusBarHandler.StatusIcon.Success);
             return resp;
         }
 

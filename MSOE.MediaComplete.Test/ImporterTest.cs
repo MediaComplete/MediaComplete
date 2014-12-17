@@ -36,7 +36,7 @@ namespace MSOE.MediaComplete.Test
             Task<ImportResults> task;
             using (fileInUse.OpenWrite())
             {
-                task = new Importer().ImportFiles(new[] { fileInUse.FullName }, true);
+                task = new Importer(_homeDir.FullName).ImportFiles(new[] { fileInUse.FullName }, true);
                 while (!task.IsCompleted)
                 {
                 }
@@ -52,7 +52,7 @@ namespace MSOE.MediaComplete.Test
         public void Import_FromLibrary_Exception()
         {
             var fileInLib = FileHelper.CreateTestFile(_homeDir.FullName);
-            var task = new Importer().ImportFiles(new[] { fileInLib.FullName }, true);
+            var task = new Importer(_homeDir.FullName).ImportFiles(new[] { fileInLib.FullName }, true);
             while (!task.IsCompleted)
             {
             }
@@ -70,7 +70,7 @@ namespace MSOE.MediaComplete.Test
         {
             var newFile = FileHelper.CreateTestFile(_importDir.FullName);
             var oldFile = FileHelper.CreateMissingAlbumTestFile(_homeDir.FullName);
-            var task = new Importer().ImportDirectory(_testDir.FullName, false);
+            var task = new Importer(_homeDir.FullName).ImportDirectory(_testDir.FullName, false);
             while (!task.IsCompleted)
             {
             }
@@ -87,7 +87,7 @@ namespace MSOE.MediaComplete.Test
         {
             var childFile = FileHelper.CreateTestFile(_importDir.FullName);
             var parentFile = FileHelper.CreateMissingAlbumTestFile(_testDir.FullName);
-            var task = new Importer().ImportDirectory(_testDir.FullName, false);
+            var task = new Importer(_homeDir.FullName).ImportDirectory(_testDir.FullName, false);
             while (!task.IsCompleted)
             {
             }

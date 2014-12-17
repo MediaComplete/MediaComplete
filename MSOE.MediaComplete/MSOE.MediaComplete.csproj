@@ -13,6 +13,8 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -108,11 +110,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CustomControls\FolderTreeViewItem.cs" />
+    <Compile Include="CustomControls\SongTreeViewItem.cs" />
     <Compile Include="InboxImportDialog.xaml.cs">
       <DependentUpon>InboxImportDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControls\FolderTreeViewItem.cs" />
-    <Compile Include="CustomControls\SongTreeViewItem.cs" />
     <Compile Include="Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
@@ -120,7 +122,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Compile Include="Utils.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -170,19 +171,20 @@
       <Project>{9fc3a1a0-f81a-45ba-a8eb-1f4a10f0d3f1}</Project>
       <Name>MSOE.MediaComplete.Lib</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\folder_add.png" />
-    <Resource Include="Resources\page_white_add.png" />
-    <Resource Include="Resources\wand.png" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\MSOE.MediaComplete.Lib\MSOE.MediaComplete.Lib.csproj">
       <Project>{9fc3a1a0-f81a-45ba-a8eb-1f4a10f0d3f1}</Project>
       <Name>MSOE.MediaComplete.Lib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\folder_add.png" />
+    <Resource Include="Resources\page_white_add.png" />
+    <Resource Include="Resources\wand.png" />
+    <Resource Include="Resources\Error.png" />
+    <Resource Include="Resources\Information.png" />
+    <Resource Include="Resources\Success.png" />
+    <Resource Include="Resources\Warning.png" />
+    <Resource Include="Resources\Working.png" />
     <Resource Include="Resources\folder_wrench.png" />
   </ItemGroup>
   <ItemGroup>

@@ -50,6 +50,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <returns>A task on completion of the sort. Currently no value is returned.</returns>
         public async Task PerformSort()
         {
+            StatusBarHandler.Instance.ChangeStatusBarMessage("Sorting-Started", StatusBarHandler.StatusIcon.Working);
             await Task.Run(() =>
             {
                 foreach (var action in Actions)
@@ -60,6 +61,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                 }
                 ScrubEmptyDirectories(_root);
             });
+            StatusBarHandler.Instance.ChangeStatusBarMessage("Sorting-Success", StatusBarHandler.StatusIcon.Success);
         }
 
         /// <summary>
