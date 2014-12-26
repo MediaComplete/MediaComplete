@@ -224,7 +224,7 @@ namespace MSOE.MediaComplete
                     var rootDirInfo = new DirectoryInfo((item.GetPath()));
                     if (!ContainsParent(item))
                     {
-                        PopulateFromFolder(rootDirInfo, SongTree, item);
+                        PopulateFromFolder(rootDirInfo, SongTree, new FolderTreeViewItem { Header = SettingWrapper.GetHomeDir(), ParentItem = null, HasParent = false });
                     }
                 }
             }
@@ -263,9 +263,8 @@ namespace MSOE.MediaComplete
             {
                 try
                 {
-                    if (selection != null) { 
-                        await MusicIdentifier.IdentifySong(selection.GetPath());
-                    }
+                    if (selection == null) continue;
+                    await MusicIdentifier.IdentifySong(selection.GetPath());
                 }
                 catch (Exception ex)
                 {

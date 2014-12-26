@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Controls;
+using MSOE.MediaComplete.Lib;
 
 namespace MSOE.MediaComplete.CustomControls
 {
@@ -32,28 +33,17 @@ namespace MSOE.MediaComplete.CustomControls
         /// <summary>
         /// Used to recursively determine the folder's path
         /// </summary>
-        /// <param name="path"></param>
-        /// <returns>string representation of path</returns>
-        private string GetPath(string path)
-        {
-            if (HasParent)
-            {
-                path = ParentItem.GetPath(path) + Header + "\\";
-            }
-            else
-            {
-                path = Header + path;
-            }
-            return path;
-        }
-
-        /// <summary>
-        /// Used to get the absolute path of the Folder
-        /// </summary>
         /// <returns>string representation of path</returns>
         public string GetPath()
         {
-            return GetPath("");
+            if (HasParent)
+            {
+                return ParentItem.GetPath() + Header + "\\";
+            }
+            else
+            {
+                return SettingWrapper.GetHomeDir();
+            }
         }
     }
 }
