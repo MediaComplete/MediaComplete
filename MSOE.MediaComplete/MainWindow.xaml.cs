@@ -234,6 +234,124 @@ namespace MSOE.MediaComplete
             }
         }
 
+
+        /// <summary>
+        /// MouseClick Listener for the FolderTree
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SongTree_OnMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (SongTree.SelectedItems.Count == 1)
+            {
+                var song = TagLib.File.Create(((SongTreeViewItem) SongTree.SelectedItems[0]).GetPath());
+                SongTitle.Text = song.StringForMetaAttribute(MetaAttribute.SongTitle);
+                Album.Text = song.StringForMetaAttribute(MetaAttribute.Album);
+                Artist.Text = song.StringForMetaAttribute(MetaAttribute.Artist);
+                SuppArtist.Text = song.StringForMetaAttribute(MetaAttribute.SupportingArtist);
+                Genre.Text = song.StringForMetaAttribute(MetaAttribute.Genre);
+                Track.Text = song.StringForMetaAttribute(MetaAttribute.TrackNumber);
+                Year.Text = song.StringForMetaAttribute(MetaAttribute.Year);
+                Rating.Text = song.StringForMetaAttribute(MetaAttribute.Rating);
+            }
+            else
+            {
+                var attributes = new Dictionary<MetaAttribute, string>
+                {
+                    {MetaAttribute.SongTitle, null},
+                    {MetaAttribute.Album, null},
+                    {MetaAttribute.Artist, null},
+                    {MetaAttribute.SupportingArtist, null},
+                    {MetaAttribute.Genre, null},
+                    {MetaAttribute.TrackNumber, null},
+                    {MetaAttribute.Year, null},
+                    {MetaAttribute.Rating, null}
+                };
+                foreach (var song in from SongTreeViewItem item in SongTree.SelectedItems select TagLib.File.Create(item.GetPath()))
+                {
+                    if (attributes[MetaAttribute.SongTitle] == null)
+                    {
+                        attributes[MetaAttribute.SongTitle] = song.StringForMetaAttribute(MetaAttribute.SongTitle);
+                    }
+                    else if (attributes[MetaAttribute.SongTitle] != song.StringForMetaAttribute(MetaAttribute.SongTitle))
+                    {
+                        attributes[MetaAttribute.SongTitle] = "-1";
+                    }
+
+                    if (attributes[MetaAttribute.Album] == null)
+                    {
+                        attributes[MetaAttribute.Album] = song.StringForMetaAttribute(MetaAttribute.Album);
+                    }
+                    else if (attributes[MetaAttribute.Album] != song.StringForMetaAttribute(MetaAttribute.Album))
+                    {
+                        attributes[MetaAttribute.Album] = "-1";
+                    }
+
+                    if (attributes[MetaAttribute.Artist] == null)
+                    {
+                        attributes[MetaAttribute.Artist] = song.StringForMetaAttribute(MetaAttribute.Artist);
+                    }
+                    else if (attributes[MetaAttribute.Artist] != song.StringForMetaAttribute(MetaAttribute.Artist))
+                    {
+                        attributes[MetaAttribute.Artist] = "-1";
+                    }
+
+                    if (attributes[MetaAttribute.SupportingArtist] == null)
+                    {
+                        attributes[MetaAttribute.SupportingArtist] = song.StringForMetaAttribute(MetaAttribute.SupportingArtist);
+                    }
+                    else if (attributes[MetaAttribute.SupportingArtist] != song.StringForMetaAttribute(MetaAttribute.SupportingArtist))
+                    {
+                        attributes[MetaAttribute.SupportingArtist] = "-1";
+                    }
+
+                    if (attributes[MetaAttribute.Genre] == null)
+                    {
+                        attributes[MetaAttribute.Genre] = song.StringForMetaAttribute(MetaAttribute.Genre);
+                    }
+                    else if (attributes[MetaAttribute.Genre] != song.StringForMetaAttribute(MetaAttribute.Genre))
+                    {
+                        attributes[MetaAttribute.Genre] = "-1";
+                    }
+
+                    if (attributes[MetaAttribute.TrackNumber] == null)
+                    {
+                        attributes[MetaAttribute.TrackNumber] = song.StringForMetaAttribute(MetaAttribute.TrackNumber);
+                    }
+                    else if (attributes[MetaAttribute.TrackNumber] != song.StringForMetaAttribute(MetaAttribute.TrackNumber))
+                    {
+                        attributes[MetaAttribute.TrackNumber] = "-1";
+                    }
+
+                    if (attributes[MetaAttribute.Year] == null)
+                    {
+                        attributes[MetaAttribute.Year] = song.StringForMetaAttribute(MetaAttribute.Year);
+                    }
+                    else if (attributes[MetaAttribute.Year] != song.StringForMetaAttribute(MetaAttribute.Year))
+                    {
+                        attributes[MetaAttribute.Year] = "-1";
+                    }
+
+                    if (attributes[MetaAttribute.Rating] == null)
+                    {
+                        attributes[MetaAttribute.Rating] = song.StringForMetaAttribute(MetaAttribute.Rating);
+                    }
+                    else if (attributes[MetaAttribute.Rating] != song.StringForMetaAttribute(MetaAttribute.Rating))
+                    {
+                        attributes[MetaAttribute.Rating] = "-1";
+                    }
+                }
+                SongTitle.Text = attributes[MetaAttribute.SongTitle] == "-1" ? "Various Songs" : attributes[MetaAttribute.SongTitle];
+                Album.Text = attributes[MetaAttribute.Album] == "-1" ? "Various Albums" : attributes[MetaAttribute.Album];
+                Artist.Text = attributes[MetaAttribute.Artist] == "-1" ? "Various Artists" : attributes[MetaAttribute.Artist];
+                SuppArtist.Text = attributes[MetaAttribute.SupportingArtist] == "-1" ? "Various Artists" : attributes[MetaAttribute.SupportingArtist];
+                Genre.Text = attributes[MetaAttribute.Genre] == "-1" ? "Various Genres" : attributes[MetaAttribute.Genre];
+                Track.Text = attributes[MetaAttribute.TrackNumber] == "-1" ? "--" : attributes[MetaAttribute.TrackNumber];
+                Year.Text = attributes[MetaAttribute.Year] == "-1" ? "Various Years" : attributes[MetaAttribute.Year];
+                Rating.Text = attributes[MetaAttribute.Rating] == "-1" ? "Various Ratings" : attributes[MetaAttribute.Rating];
+            }
+        }
+
         private Boolean ContainsParent(FolderTreeViewItem folder)
         {
             if (!folder.HasParent)
