@@ -49,11 +49,11 @@ namespace MSOE.MediaComplete
             InitTreeView();
         }
 
-        private void HandleStatusBarChangeEvent(string message, StatusBarHandler.StatusIcon icon)
+        private void HandleStatusBarChangeEvent(string format, string message, StatusBarHandler.StatusIcon icon, params object[] extraArgs)
         {
             Dispatcher.Invoke(() =>
             {
-                StatusMessage.Text = (message.Length == 0) ? "" : Resources[message].ToString();
+                StatusMessage.Text = String.Format(format, message == null ? "" : Resources[message], extraArgs);
                 var sourceUri = new Uri("./Resources/" + icon + ".png", UriKind.Relative);
                 StatusIcon.Source = new BitmapImage(sourceUri);
             });

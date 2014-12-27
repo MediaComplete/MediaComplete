@@ -23,7 +23,7 @@ namespace MSOE.MediaComplete.Lib
 
         private void OnTimerFinished(object sender, EventArgs eventArgs)
         {
-            ChangeStatusBarMessage("", StatusIcon.None);
+            ChangeStatusBarMessage(null, StatusIcon.None);
             _timer.Stop();
         }
 
@@ -36,14 +36,19 @@ namespace MSOE.MediaComplete.Lib
             Error,
             Success
         }
-        public delegate void StatusBarChanged(string message, StatusIcon icon);
+        public delegate void StatusBarChanged(string format, string messageKey, StatusIcon icon, params object[] extraArgs);
 
         public event StatusBarChanged RaiseStatusBarEvent = delegate { };
 
         public void ChangeStatusBarMessage(string message, StatusIcon icon)
         {
+            RaiseStatusBarEvent("{0}", message, icon);
+        }
+
+        public void ChangeStatusBarMessage(string format, string messageKey, StatusIcon icon, params object[] extraArgs)
+        {
             SetTimer();
-            RaiseStatusBarEvent(message, icon);
+            RaiseStatusBarEvent(format, messageKey, icon, extraArgs);
         }
 
         private void SetTimer()
@@ -51,7 +56,6 @@ namespace MSOE.MediaComplete.Lib
             _timer.Stop();
             _timer.Interval = 1000 * 60 * Interval;
             _timer.Start();
-
         }
     }
 }
