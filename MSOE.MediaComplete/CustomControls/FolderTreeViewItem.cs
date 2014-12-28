@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using MSOE.MediaComplete.Lib;
+using consts = MSOE.MediaComplete.Lib.Constants;
 
 namespace MSOE.MediaComplete.CustomControls
 {
@@ -38,12 +39,10 @@ namespace MSOE.MediaComplete.CustomControls
         {
             if (HasParent)
             {
-                return ParentItem.GetPath() + Header + "\\";
+                return ParentItem.GetPath() + Header + consts.PathSeparator;
             }
-            else
-            {
-                return SettingWrapper.GetHomeDir();
-            }
+            return SettingWrapper.GetHomeDir();
+            
         }
     }
 }
