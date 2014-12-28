@@ -10,7 +10,6 @@ namespace MSOE.MediaComplete.CustomControls
         public FolderTreeViewItem()
 		{
             Children = new ObservableCollection<FolderTreeViewItem>();
-            HasParent = true;
 		}
         
         /// <summary>
@@ -23,8 +22,6 @@ namespace MSOE.MediaComplete.CustomControls
         /// This value is null if it is the root
         /// </summary>
         public FolderTreeViewItem ParentItem { get; set; }
-
-        public bool HasParent { get; set; }
        
         public override string ToString()
         {
@@ -37,7 +34,7 @@ namespace MSOE.MediaComplete.CustomControls
         /// <returns>string representation of path</returns>
         public string GetPath()
         {
-            if (HasParent)
+            if (ParentItem != null)
             {
                 return ParentItem.GetPath() + Header + consts.PathSeparator;
             }
