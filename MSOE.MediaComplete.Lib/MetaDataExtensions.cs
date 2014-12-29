@@ -47,35 +47,42 @@ namespace MSOE.MediaComplete.Lib
             return fileTag.Album == otherTag.Album && fileTag.Track == otherTag.Track;
         }
 
-        public static void SetMetaAttribute(this File file, MetaAttribute attr, object value)
+        internal static void SetMetaAttribute(this File file, MetaAttribute attr, object value)
         {
             if (value == null) return;
             var tag = file.Tag;
             switch (attr)
             {
                 case MetaAttribute.Album:
-                    tag.Album = (string)value;
+                    tag.Album = (string) value;
                     break;
                 case MetaAttribute.Artist:
-                    //tag.FirstAlbumArtist = value; //TODO no setter
+                    tag.AlbumArtists.SetValue(value,0);
                     break;
                 case MetaAttribute.Genre:
-                    //tag.FirstGenre = value; //TODO no setter
+                    tag.Genres[0] = (string) value;
                     break;
                 case MetaAttribute.Rating:
-                    //TODO
+                    var tag1 = tag as Tag;
+                    if (tag1 != null)
+                    {
+                        var winId = WindowsIdentity.GetCurrent() ?? WindowsIdentity.GetAnonymous();
+                        PopularimeterFrame.Get(tag1, winId.Name, true).Rating = RatingToByte((int) value);
+                    }
                     break;
                 case MetaAttribute.SongTitle:
-                    tag.Title = (string)value;
+                    tag.Title = (string) value;
                     break;
                 case MetaAttribute.SupportingArtist:
-                    //tag.AlbumArtists += value; //TODO no setter
+                    var all = tag.AlbumArtists[0] + ',' + value;
+                    tag.AlbumArtists = all.Split(',');
                     break;
                 case MetaAttribute.TrackNumber:
-                    tag.Track = (uint)value;
+
+                    tag.Track = (uint) value;
                     break;
                 case MetaAttribute.Year:
-                    tag.Year = (uint)value;
+                    tag.Year = (uint) value;
                     break;
                 default:
                     return;
@@ -89,7 +96,7 @@ namespace MSOE.MediaComplete.Lib
         /// <param name="file">The MP3 File</param>
         /// <param name="attr">The MetaAttribute for the specific ID3 value to be returned</param>
         /// <returns>The ID3 value from the tag</returns>
-        public static string StringForMetaAttribute(this File file, MetaAttribute attr)
+        internal static string StringForMetaAttribute(this File file, MetaAttribute attr)
         {
             var tag = file.Tag;
             switch (attr)
@@ -106,11 +113,8 @@ namespace MSOE.MediaComplete.Lib
                     {
                         var winId = WindowsIdentity.GetCurrent() ?? WindowsIdentity.GetAnonymous();
                         return
-                            RatingFromByte(
-                                PopularimeterFrame.Get(
-                                    tag1, winId.Name, true
-                                    ).Rating
-                                ).ToString(CultureInfo.InvariantCulture);
+                            RatingFromByte(PopularimeterFrame.Get(tag1, winId.Name, true).Rating)
+                                .ToString(CultureInfo.InvariantCulture);
                     }
                     return RatingFromByte(0).ToString(CultureInfo.InvariantCulture);
                 case MetaAttribute.SongTitle:
@@ -135,18 +139,30 @@ namespace MSOE.MediaComplete.Lib
         /// <returns>An integer representation of the rating</returns>
         private static int RatingFromByte(byte raw)
         {
-            //TODO do a modulus instead
-            if (raw > 254)
-                return 5;
-            if (raw > 191)
-                return 4;
-            if (raw > 127)
-                return 3;
-            if (raw > 63)
-                return 2;
             if (raw > 0)
-                return 1;
+            {
+                return (int) Math.Ceiling((double) raw / 64) + 1;
+            }
             return -1; // unrated
         }
-    }
+
+        private static byte RatingToByte(int rating)
+        {
+            switch (rating)
+            {
+                case 1:
+                    return 1;
+                case 2:
+                    return 64;
+                case 3:
+                    return 128;
+                case 4:
+                    return 192;
+                case 5:
+                    return 255;
+                default:
+                    return 0;
+            }
+        }
+}
 }

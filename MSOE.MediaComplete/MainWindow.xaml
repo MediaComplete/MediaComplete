@@ -57,7 +57,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="260*" MinWidth="100"/>
                 <ColumnDefinition Width="260*" MinWidth="200"/>
-                <ColumnDefinition Width="260*" MinWidth="250" />
+                <ColumnDefinition Width="260*" MinWidth="220" />
             </Grid.ColumnDefinitions>
 
             <controls:TreeViewEx x:Name="FolderTree" Grid.Column="0" Margin="0,0,0,0" 
@@ -109,31 +109,41 @@
                             <RowDefinition Height="26"/>
                         </Grid.RowDefinitions>
                         <Label Grid.Column="0" Grid.Row="0" Content="Song Title" />
-                        <TextBox Name="SongTitle" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="3" />
+                        <TextBox Name="SongTitle" IsReadOnly="True" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="3" TextChanged="TextChanged"/>
+                        
                         <Label Grid.Column="0" Grid.Row="1" Content="Album" />
-                        <TextBox Name="Album"  Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" />
+                        <TextBox Name="Album"  IsReadOnly="True" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" TextChanged="TextChanged"/>
+                        
                         <Label Grid.Column="0" Grid.Row="2" Content="Artist" />
-                        <TextBox Name="Artist"  Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" />
+                        <TextBox Name="Artist" IsReadOnly="True" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" TextChanged="TextChanged"/>
+                        
                         <Label Grid.Column="0" Grid.Row="3" Content="Supporting Artist" />
-                        <TextBox Name="SuppArtist" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="3" />
+                        <TextBox Name="SuppArtist" IsReadOnly="True" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="3" TextChanged="TextChanged"/>
+                        
                         <Label Grid.Column="0" Grid.Row="4" Content="Genre" />
-                        <TextBox Name="Genre"  Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="3" />
+                        <TextBox Name="Genre" IsReadOnly="True" Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="3" TextChanged="TextChanged"/>
+                        
                         <Label Grid.Column="0" Grid.Row="5" Content="Track Number" />
-                        <TextBox Name="Track" Grid.Column="1" Grid.Row="5" />
+                        <TextBox Name="Track" IsReadOnly="True" Grid.Column="1" Grid.Row="5" TextChanged="TextChanged"/>
+                        
                         <Label Grid.Column="2" Grid.Row="5" Content="Year"/>
-                        <TextBox Name="Year"  Grid.Column="3" Grid.Row="5" />
+                        <TextBox Name="Year" IsReadOnly="True" Grid.Column="3" Grid.Row="5" TextChanged="TextChanged"/>
+                        
                         <Label Grid.Column="0" Grid.Row="6"  Content="Rating" />
-                        <TextBox Name="Rating" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="3" />
+                        <TextBox Name="Rating" IsReadOnly="True" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="3" TextChanged="TextChanged"/>
+                      
                         <Grid Grid.Row="7" Grid.ColumnSpan="4" Grid.Column="0" Grid.RowSpan="2">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="160*"/>
+                                <ColumnDefinition Width="14*"/>
+                                <ColumnDefinition Width="110"/>
                                 <ColumnDefinition Width="110"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="1*"/>
                                 <RowDefinition Height="26"/>
                             </Grid.RowDefinitions>
-                            <Button Content="Save" Grid.Column="1" Grid.Row="8"/>
+                            <Button Content="Edit/Cancel" Grid.Column="1" Grid.Row="1" Click="Edit_OnClick"/>
+                            <Button Content="Save" Grid.Column="2" Grid.Row="1" Click="Save_OnClick"/>
                         </Grid>
                     </Grid>
                 </DockPanel>
@@ -143,7 +153,7 @@
         <StackPanel Grid.Row="3" Grid.Column="0">
             <Slider />
             <StackPanel Height="64" Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="Previous" MinWidth="75" Click="Button_Click" />
+                <Button Content="Previous" MinWidth="75" />
                 <Button Content="Play" MinWidth="75" />
                 <Button Content="Skip" MinWidth="75" />
             </StackPanel>

@@ -21,6 +21,7 @@ namespace MSOE.MediaComplete
     /// </summary>
     public partial class MainWindow
     {
+        private List<TextBox>_changedBoxes;
         private Settings _settings;
 
         public MainWindow()
@@ -28,6 +29,7 @@ namespace MSOE.MediaComplete
             InitializeComponent();
 
             _settings = new Settings();
+            _changedBoxes = new List<TextBox>();
 
             var homeDir = SettingWrapper.GetHomeDir() ??
                           Path.GetPathRoot(Environment.SystemDirectory);
@@ -75,11 +77,6 @@ namespace MSOE.MediaComplete
             {
                 await new Importer(SettingWrapper.GetHomeDir()).ImportFiles(files.Select(f => f.FullName).ToArray(), false);
             }
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
@@ -234,7 +231,6 @@ namespace MSOE.MediaComplete
             }
         }
 
-
         /// <summary>
         /// MouseClick Listener for the FolderTree
         /// </summary>
@@ -242,9 +238,30 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void SongTree_OnMouseUp(object sender, MouseButtonEventArgs e)
         {
+            PopulateMetadataForm();
+        }
+
+        private void PopulateMetadataForm()
+        {
+            //Clear undo stack of each box
+            var boxes = new TextBox[8];
+            boxes[0] = SongTitle;
+            boxes[1] = Album;
+            boxes[2] = Artist;
+            boxes[3] = SuppArtist;
+            boxes[4] = Genre;
+            boxes[5] = Track;
+            boxes[6] = Year;
+            boxes[7] = Rating;
+
+            foreach (var box in boxes)
+            {
+                while (box.CanUndo)
+                    box.Undo();
+            }
             if (SongTree.SelectedItems.Count == 1)
             {
-                var song = TagLib.File.Create(((SongTreeViewItem) SongTree.SelectedItems[0]).GetPath());
+                var song = TagLib.File.Create(((SongTreeViewItem)SongTree.SelectedItems[0]).GetPath());
                 SongTitle.Text = song.GetSongTitle();
                 Album.Text = song.GetAlbum();
                 Artist.Text = song.GetArtist();
@@ -419,7 +436,6 @@ namespace MSOE.MediaComplete
             });
         }
 
-
         private async void Toolbar_AutoIDMusic_Click(object sender, RoutedEventArgs e)
         {
             // TODO mass ID of multi-selected songs or folders
@@ -502,6 +518,102 @@ namespace MSOE.MediaComplete
                 // TODO - This should get localized and put in the application status bar (TBD)
                 MessageBox.Show("Encountered an error while sorting files: " + ioe.Message);
             }
+        }
+
+        private void Edit_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (SongTitle.IsReadOnly)
+            {
+                ToggleReadOnlyFields(false);
+            }
+            else if(_changedBoxes.Count > 0)
+            {
+                foreach (var changedBox in _changedBoxes)
+                {
+                    Console.Out.WriteLine(changedBox);
+                    while (changedBox.CanUndo) { 
+                        changedBox.Undo();
+                    }
+                    changedBox.Redo();
+                    changedBox.LockCurrentUndoUnit();
+                }
+                _changedBoxes.Clear();
+                ToggleReadOnlyFields(true);
+            }
+        }
+
+        private void Save_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (SongTitle.IsReadOnly) return;
+            ToggleReadOnlyFields(true);
+            var attributes = new Dictionary<MetaAttribute, TextBox>
+                {
+                    {MetaAttribute.SongTitle, SongTitle},
+                    {MetaAttribute.Album, Album},
+                    {MetaAttribute.Artist, Artist},
+                    {MetaAttribute.SupportingArtist, SuppArtist},
+                    {MetaAttribute.Genre, Genre},
+                    {MetaAttribute.TrackNumber, Track},
+                    {MetaAttribute.Year, Year},
+                    {MetaAttribute.Rating, Rating}
+                };
+            foreach (var song in from SongTreeViewItem item in SongTree.SelectedItems select TagLib.File.Create(item.GetPath()))
+            {
+                foreach (var changedBox in _changedBoxes)
+                {
+                    if (changedBox.Equals(SongTitle))
+                    {
+                        song.SetSongTitle(changedBox.Text);
+                    }
+                    else if (changedBox.Equals(Album))
+                    {
+                        song.SetAlbum(changedBox.Text);
+                    }
+                    else if (changedBox.Equals(Artist))
+                    {
+                        song.SetArtist(changedBox.Text);
+                    }
+                    else if (changedBox.Equals(Genre))
+                    {
+                        song.SetGenre(changedBox.Text);
+                    }
+                    else if (changedBox.Equals(Track))
+                    {
+                        song.SetTrack(changedBox.Text);   
+                    }
+                    else if (changedBox.Equals(Year))
+                    {
+                        song.SetYear(changedBox.Text);
+                    }
+                    else if (changedBox.Equals(Rating))
+                    {
+                        song.SetRating(changedBox.Text);
+                    }
+                    else if (changedBox.Equals(SuppArtist))
+                    {
+                        song.SetSupportingArtists(changedBox.Text);
+                    }
+                }
+            }
+            _changedBoxes.Clear();
+        }
+
+        private void ToggleReadOnlyFields(Boolean toggle)
+        {
+            SongTitle.IsReadOnly = toggle;
+            Album.IsReadOnly = toggle;
+            SuppArtist.IsReadOnly = toggle;
+            Artist.IsReadOnly = toggle;
+            Genre.IsReadOnly = toggle;
+            Year.IsReadOnly = toggle;
+            Rating.IsReadOnly = toggle;
+            Track.IsReadOnly = toggle;
+        }
+
+        private void TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!_changedBoxes.Contains((TextBox) e.OriginalSource) && !SongTitle.IsReadOnly)
+                _changedBoxes.Add((TextBox) e.OriginalSource);
         }
     }
 }
