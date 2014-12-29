@@ -16,9 +16,8 @@
 	    public const string FileDialogFilterStringSeparator = "|";
 
         /// <summary>
-        /// The name of the library directory where everything is stored
+        /// Used for backslashes in folder paths
         /// </summary>
-        // TODO we should be able to get rid of this
-        public const string LibraryDirName = "library";
+	    public const string PathSeparator = "\\";
     }
 }

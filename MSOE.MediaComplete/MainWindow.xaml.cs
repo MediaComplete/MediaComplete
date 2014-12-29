@@ -149,7 +149,7 @@ namespace MSOE.MediaComplete
         public void RefreshTreeView()
         {
             //Create Parent node
-            var firstNode = new FolderTreeViewItem { Header = SettingWrapper.GetHomeDir(), ParentItem = null, HasParent = false };
+            var firstNode = new FolderTreeViewItem { Header = SettingWrapper.GetHomeDir(), ParentItem = null};
 
             SongTree.Items.Clear();
 
@@ -224,7 +224,7 @@ namespace MSOE.MediaComplete
                     var rootDirInfo = new DirectoryInfo((item.GetPath()));
                     if (!ContainsParent(item))
                     {
-                        PopulateFromFolder(rootDirInfo, SongTree, item);
+                        PopulateFromFolder(rootDirInfo, SongTree, new FolderTreeViewItem { Header = SettingWrapper.GetHomeDir(), ParentItem = null});
                     }
                 }
             }
@@ -236,7 +236,7 @@ namespace MSOE.MediaComplete
 
         private Boolean ContainsParent(FolderTreeViewItem folder)
         {
-            if (!folder.HasParent)
+            if (folder.ParentItem==null)
             {
                 return false;
             }
@@ -263,9 +263,8 @@ namespace MSOE.MediaComplete
             {
                 try
                 {
-                    if (selection != null) { 
-                        await MusicIdentifier.IdentifySong(selection.GetPath());
-                    }
+                    if (selection == null) continue;
+                    await MusicIdentifier.IdentifySong(selection.GetPath());
                 }
                 catch (Exception ex)
                 {
