@@ -15,7 +15,13 @@ namespace MSOE.MediaComplete
     public partial class Settings
     {
 
-        
+        private readonly Dictionary<LayoutType, string> _layoutsDict = new Dictionary<LayoutType, string>()
+        {
+            {LayoutType.Dark, "layout\\Dark.xaml"},
+            {LayoutType.Pink, "layout\\Pink.xaml"}
+        };
+        private LayoutType _changedType;
+        private bool _layoutHasChanged;
         public Settings()
         {
             InitializeComponent();
@@ -25,6 +31,14 @@ namespace MSOE.MediaComplete
             CheckboxPolling.IsChecked = SettingWrapper.GetIsPolling();
             CheckboxShowImportDialog.IsChecked = SettingWrapper.GetShowInputDialog();
             PollingCheckBoxChanged(CheckboxPolling, null);
+            if (SettingWrapper.GetLayout().Equals(_layoutsDict[LayoutType.Pink]))
+            {
+                PinkCheck.IsChecked = true;
+            }
+            else if (SettingWrapper.GetLayout().Equals(_layoutsDict[LayoutType.Dark]))
+            {
+                DarkCheck.IsChecked = true;
+            }
         }
 
 
@@ -106,7 +120,16 @@ namespace MSOE.MediaComplete
                 inboxDir += Path.DirectorySeparatorChar;
             }
 
-            SettingWrapper.SetHomeDir(homeDir);
+            if (_layoutHasChanged)
+            {
+                var dictUri = new Uri(_layoutsDict[_changedType], UriKind.Relative);
+                var resourceDict = System.Windows.Application.LoadComponent(dictUri) as ResourceDictionary;
+                System.Windows.Application.Current.Resources.MergedDictionaries.Clear();
+                System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDict);
+                SettingWrapper.SetLayout(_layoutsDict[_changedType]);
+
+                _layoutHasChanged = false;
+            }SettingWrapper.SetHomeDir(homeDir);
 
             SettingWrapper.SetInboxDir(inboxDir);
             SettingWrapper.SetPollingTime(ComboBoxPollingTime.SelectedValue);
@@ -123,6 +146,23 @@ namespace MSOE.MediaComplete
 
             var box = sender as System.Windows.Controls.ComboBox;
             if (box != null) box.ItemsSource = dataList;
+        }
+
+        private void Skins_Checked(object sender, RoutedEventArgs e)
+        {
+            var checkbox = (sender as System.Windows.Controls.RadioButton);
+            if (checkbox == null) return;
+            
+            if (checkbox.Equals(PinkCheck))
+            {
+                _changedType = LayoutType.Pink;
+                _layoutHasChanged = true;
+            }
+            else if (checkbox.Equals(DarkCheck))
+            {
+                _changedType = LayoutType.Dark;
+                _layoutHasChanged = true;
+            }
         }
     }
 }

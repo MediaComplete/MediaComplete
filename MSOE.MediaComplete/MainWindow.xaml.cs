@@ -32,10 +32,17 @@ namespace MSOE.MediaComplete
             var homeDir = SettingWrapper.GetHomeDir() ??
                           Path.GetPathRoot(Environment.SystemDirectory);
             StatusBarHandler.Instance.RaiseStatusBarEvent += HandleStatusBarChangeEvent;
+
             if (!homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
             {
                 homeDir += Path.DirectorySeparatorChar;
             }
+            
+            var dictUri  = new Uri(SettingWrapper.GetLayout(), UriKind.Relative);
+            
+            var resourceDict = Application.LoadComponent(dictUri) as ResourceDictionary;
+            Application.Current.Resources.MergedDictionaries.Clear();
+            Application.Current.Resources.MergedDictionaries.Add(resourceDict);
 
             if (SettingWrapper.GetIsPolling())
             {
@@ -76,6 +83,7 @@ namespace MSOE.MediaComplete
                 await new Importer(SettingWrapper.GetHomeDir()).ImportFiles(files.Select(f => f.FullName).ToArray(), false);
             }
         }
+        
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {

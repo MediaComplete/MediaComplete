@@ -1,68 +1,78 @@
-﻿<Window x:Class="MSOE.MediaComplete.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:System.Windows.Controls;assembly=TreeViewEx"
         xmlns:customControls="clr-namespace:MSOE.MediaComplete.CustomControls"
-        Title="Media Complete" Height="339" Width="787"
-        AutomationProperties.Name="Tree">
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="MSOE.MediaComplete.MainWindow"
+        Title="Media Complete" MinHeight="425" Width="695.731" MinWidth="613"
+        AutomationProperties.Name="Tree" d:DesignHeight="502.905">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="MainWindowResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
+           
         </ResourceDictionary>
     </Window.Resources>
     <Grid Margin="0,0,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="24" />
             <RowDefinition Height="24" />
-            <RowDefinition />
+            <RowDefinition Height="1*"/>
             <RowDefinition Height="100" />
             <RowDefinition Height="24"/>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
-            <Menu>
+            <Menu Style="{DynamicResource MenuStyle}">
+                <Menu.Resources>
+                    <Style TargetType="MenuItem">
+                        <Setter Property="BorderThickness" Value="0"></Setter>
+                    </Style>
+                </Menu.Resources>
                 <MenuItem Header="_File">
-                    <MenuItem Header="_Exit" />
+                    <MenuItem Header="_Exit" Style="{DynamicResource MenuItemStyle}"/>
                 </MenuItem>
                 <MenuItem Header="_Edit" Click="MenuItem_Click">
-                    <MenuItem Header="_Settings" />
+                    <MenuItem.Resources></MenuItem.Resources>
+                    <MenuItem Header="_Settings" Style="{DynamicResource MenuItemStyle}"/>
                 </MenuItem>
                 <MenuItem Header="_Playlists" />
                 <MenuItem Header="_MetaDataFinderThing" />
             </Menu>
             <TextBox Text="Search" Height="22" Width="180" HorizontalAlignment="Right"/>
         </Grid>
-        <ToolBarTray Grid.Row="1">
-            <ToolBar Margin="0,0,0,0">
-                <Button Name="AddFile" ToolTip="Add File" VerticalAlignment="Center" Click="AddFile_Click">
+        <ToolBarTray Grid.Row="1" Style="{DynamicResource ToolBarTrayStyle}">
+            <ToolBar Margin="0,0,0,0" Style="{DynamicResource ToolBarStyle}">
+                <Button x:Name="AddFile" ToolTip="Add File" VerticalAlignment="Center" Click="AddFile_Click">
                     <Image Source="{StaticResource Toolbar-AddMusicFile-Icon}" />
                 </Button>
-                <Button Name="AddFolder" ToolTip="Add Folder" VerticalAlignment="Center" Click="AddFolder_Click">
+                <Button x:Name="AddFolder" ToolTip="Add Folder" VerticalAlignment="Center" Click="AddFolder_Click">
                     <Image Source="{StaticResource Toolbar-AddMusicFolder-Icon}" />
                 </Button>
-                <Button Name="AutoIdentifyMusic" ToolTip="{StaticResource Toolbar-AutoIdMusic-Tooltip}"
-                        VerticalAlignment="Center" Click="Toolbar_AutoIDMusic_Click">
+                <Button x:Name="AutoIdentifyMusic" ToolTip="{StaticResource Toolbar-AutoIdMusic-Tooltip}"
+					VerticalAlignment="Center" Click="Toolbar_AutoIDMusic_Click">
                     <Image Source="{StaticResource Toolbar-AutoIdMusic-Icon}" />
                 </Button>
-                <Button Name="SortMusic" ToolTip="{StaticResource Toolbar-SortMusic-Tooltip}"
-                        VerticalAlignment="Center" Click="Toolbar_SortMusic_Click">
+                <Button x:Name="SortMusic" ToolTip="{StaticResource Toolbar-SortMusic-Tooltip}"
+					VerticalAlignment="Center" Click="Toolbar_SortMusic_Click">
                     <Image Source="{StaticResource Toolbar-SortMusic-Icon}" />
                 </Button>
             </ToolBar>
         </ToolBarTray>
-        <Grid Margin="0,0,0,0" Grid.Row="2">
+        <Grid Margin="0,0,0,0" Grid.Row="2" >
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="260*" />
-                <ColumnDefinition Width="260*" />
-                <ColumnDefinition Width="260*" />
+                <ColumnDefinition Width="260*" MinWidth="100"/>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="260*" MinWidth="200"/>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="260*" MinWidth="250" />
             </Grid.ColumnDefinitions>
 
             <controls:TreeViewEx x:Name="FolderTree" Grid.Column="0" Margin="0,0,0,0" 
-             AutomationProperties.Name="Tree" 
-             MouseUp="FolderTree_OnMouseUp"
-             ItemsSource="{Binding Children}">
+				AutomationProperties.Name="Tree" 
+				MouseUp="FolderTree_OnMouseUp"
+				ItemsSource="{Binding Children}" >
                 <controls:TreeViewEx.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding Children}"  DataType="{x:Type customControls:FolderTreeViewItem}">
                         <TextBlock Text="{Binding}"/>
@@ -70,10 +80,15 @@
                 </controls:TreeViewEx.ItemTemplate>
 
             </controls:TreeViewEx>
-
-            <controls:TreeViewEx x:Name="SongTree" Grid.Column="1" Margin="0,0,0,0" 
-             AutomationProperties.Name="Tree" 
-             ItemsSource="{Binding}">
+            <GridSplitter Grid.Column="1" 
+              HorizontalAlignment="Center" 
+              VerticalAlignment="Stretch"
+              ShowsPreview="true"
+              Width="2"
+              Style="{DynamicResource SplitterStyle}"/>
+            <controls:TreeViewEx x:Name="SongTree" Grid.Column="2" Margin="0,0,0,0" 
+				AutomationProperties.Name="Tree" 
+				ItemsSource="{Binding}" >
                 <controls:TreeViewEx.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding}"  DataType="{x:Type customControls:SongTreeViewItem}">
                         <TextBlock Text="{Binding}"/>
@@ -82,29 +97,78 @@
                 <controls:TreeViewEx.ContextMenu>
                     <ContextMenu StaysOpen="True">
                         <MenuItem Header="{StaticResource ContextMenu-AutoIdMusic-Header}"
-                                  Click="ContextMenu_AutoIDMusic_Click" />
+							Click="ContextMenu_AutoIDMusic_Click" />
                     </ContextMenu>
                 </controls:TreeViewEx.ContextMenu>
             </controls:TreeViewEx>
-
-            <Grid Grid.Column="2" Margin="0,0,0,0" Background="Transparent">
-                <Border BorderThickness="1" BorderBrush="Gray" >
-                    <StackPanel >
-                    </StackPanel>
-                </Border>
-            </Grid>
+            <GridSplitter Grid.Column="3" 
+              HorizontalAlignment="Center" 
+              VerticalAlignment="Stretch"
+              ShowsPreview="true"
+              Width="2"
+              Style="{DynamicResource SplitterStyle}"/>
+            <Border Grid.Column="4" BorderThickness="0" Height="Auto">
+                <DockPanel Height="Auto">
+                    <Grid Margin="0,0,0,0"  Height="Auto" Style="{DynamicResource DetailGridStyle}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="35" />
+                            <ColumnDefinition Width="35"/>
+                            <ColumnDefinition Width="84*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="26"/>
+                            <RowDefinition Height="26"/>
+                            <RowDefinition Height="26"/>
+                            <RowDefinition Height="26"/>
+                            <RowDefinition Height="26"/>
+                            <RowDefinition Height="26"/>
+                            <RowDefinition Height="26"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="26"/>
+                        </Grid.RowDefinitions>
+                        <Label Grid.Column="0" Grid.Row="0" Content="Song Title" />
+                        <TextBox Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="3" />
+                        <Label Grid.Column="0" Grid.Row="1" Content="Album" />
+                        <TextBox Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" />
+                        <Label Grid.Column="0" Grid.Row="2" Content="Artist" />
+                        <TextBox Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" />
+                        <Label Grid.Column="0" Grid.Row="3" Content="Supporting Artist" />
+                        <TextBox Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="3" />
+                        <Label Grid.Column="0" Grid.Row="4" Content="Genre" />
+                        <TextBox Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="3" />
+                        <Label Grid.Column="0" Grid.Row="5" Content="Track Number" />
+                        <TextBox Grid.Column="1" Grid.Row="5" />
+                        <Label Grid.Column="2" Grid.Row="5" Content="Year"/>
+                        <TextBox Grid.Column="3" Grid.Row="5" />
+                        <Label Grid.Column="0" Grid.Row="6"  Content="Rating" />
+                        <TextBox Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="3" />
+                        <Grid Grid.Row="7" Grid.ColumnSpan="4" Grid.Column="0" Grid.RowSpan="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="160*"/>
+                                <ColumnDefinition Width="110"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="26"/>
+                            </Grid.RowDefinitions>
+                            <Button Content="Save" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Width="110" />
+                        </Grid>
+                    </Grid>
+                </DockPanel>
+            </Border>
         </Grid>
 
-        <StackPanel Grid.Row="3" Grid.Column="0">
+        <StackPanel Grid.Row="3" Grid.Column="0" Style="{DynamicResource StackStyle}">
             <Slider />
-            <StackPanel Height="64" Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="Previous" MinWidth="75" Click="Button_Click" />
-                <Button Content="Play" MinWidth="75" />
-                <Button Content="Skip" MinWidth="75" />
+            <StackPanel Height="75" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Height="60" Width="60" Style="{DynamicResource PreviousButton}" />
+                <Button Height="75" Width="75" Style="{DynamicResource PlayButton}" />
+                <Button Height="60" Width="60" Style="{DynamicResource SkipButton}" />
             </StackPanel>
         </StackPanel>
         <StackPanel Grid.Row="4" Grid.Column="0">
-            <StatusBar>
+            <StatusBar Style="{DynamicResource StatusBarStyle}">
                 <StatusBar.ItemsPanel>
                     <ItemsPanelTemplate>
                         <Grid>
@@ -117,10 +181,10 @@
                     </ItemsPanelTemplate>
                 </StatusBar.ItemsPanel>
                 <StatusBarItem Grid.Column="1">
-                    <TextBlock Name="StatusMessage"></TextBlock>
+                    <TextBlock x:Name="StatusMessage"/>
                 </StatusBarItem>
                 <StatusBarItem Grid.Column="2">
-                    <Image Name="StatusIcon"/>
+                    <Image x:Name="StatusIcon"/>
                 </StatusBarItem>
             </StatusBar>
         </StackPanel>
