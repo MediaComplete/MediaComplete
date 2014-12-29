@@ -611,8 +611,8 @@ namespace MSOE.MediaComplete
 
         private void TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!_changedBoxes.Contains((TextBox) e.OriginalSource) && !SongTitle.IsReadOnly)
-                _changedBoxes.Add((TextBox) e.OriginalSource);
+            if (!_changedBoxes.Contains((TextBox)sender) && !SongTitle.IsReadOnly)
+                _changedBoxes.Add((TextBox)sender);
         }
     }
 }
