@@ -1,5 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Controls;
+using MSOE.MediaComplete.Lib;
+using consts = MSOE.MediaComplete.Lib.Constants;
 
 namespace MSOE.MediaComplete.CustomControls
 {
@@ -8,7 +10,6 @@ namespace MSOE.MediaComplete.CustomControls
         public FolderTreeViewItem()
 		{
             Children = new ObservableCollection<FolderTreeViewItem>();
-            HasParent = true;
 		}
         
         /// <summary>
@@ -21,8 +22,6 @@ namespace MSOE.MediaComplete.CustomControls
         /// This value is null if it is the root
         /// </summary>
         public FolderTreeViewItem ParentItem { get; set; }
-
-        public bool HasParent { get; set; }
        
         public override string ToString()
         {
@@ -32,28 +31,15 @@ namespace MSOE.MediaComplete.CustomControls
         /// <summary>
         /// Used to recursively determine the folder's path
         /// </summary>
-        /// <param name="path"></param>
-        /// <returns>string representation of path</returns>
-        private string GetPath(string path)
-        {
-            if (HasParent)
-            {
-                path = ParentItem.GetPath(path) + Header + "\\";
-            }
-            else
-            {
-                path = Header + path;
-            }
-            return path;
-        }
-
-        /// <summary>
-        /// Used to get the absolute path of the Folder
-        /// </summary>
         /// <returns>string representation of path</returns>
         public string GetPath()
         {
-            return GetPath("");
+            if (ParentItem != null)
+            {
+                return ParentItem.GetPath() + Header + consts.PathSeparator;
+            }
+            return SettingWrapper.GetHomeDir();
+            
         }
     }
 }
