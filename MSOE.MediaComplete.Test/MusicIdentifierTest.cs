@@ -4,6 +4,7 @@ using MSOE.MediaComplete.Lib;
 using System.IO;
 using System.Text.RegularExpressions;
 using MSOE.MediaComplete.Test.Util;
+using File = TagLib.File;
 
 namespace MSOE.MediaComplete.Test
 {
@@ -30,14 +31,15 @@ namespace MSOE.MediaComplete.Test
             var file = FileHelper.CreateTestFile(_homeDir.FullName);
             // Mess up the year
             const int year = 1000;
-            var editor = new Mp3MetadataEditor(file.FullName) { Year = year };
+            var editor = File.Create(file.FullName);
+            editor.SetYear(year.ToString());
 
             var task = MusicIdentifier.IdentifySong(file.FullName);
             while (!task.IsCompleted)
             {
             }
 
-            Assert.AreNotEqual(year, editor.Year, "Year was not fixed!");
+            Assert.AreNotEqual(year, Int32.Parse(editor.GetYear()), "Year was not fixed!");
         }
 
         [TestMethod, Timeout(30000)]

@@ -57,10 +57,10 @@ namespace MSOE.MediaComplete.Lib
                     tag.Album = (string) value;
                     break;
                 case MetaAttribute.Artist:
-                    tag.AlbumArtists.SetValue(value,0);
+                    tag.AlbumArtists = ((string) value).Split(',');
                     break;
                 case MetaAttribute.Genre:
-                    tag.Genres[0] = (string) value;
+                    tag.Genres = ((string) value).Split(',');
                     break;
                 case MetaAttribute.Rating:
                     var tag1 = tag as Tag;
@@ -74,15 +74,15 @@ namespace MSOE.MediaComplete.Lib
                     tag.Title = (string) value;
                     break;
                 case MetaAttribute.SupportingArtist:
-                    var all = tag.AlbumArtists[0] + ',' + value;
+                    var all = tag.AlbumArtists.GetValue(0).ToString() + ',' + value;
                     tag.AlbumArtists = all.Split(',');
                     break;
                 case MetaAttribute.TrackNumber:
 
-                    tag.Track = (uint) value;
+                    tag.Track = Convert.ToUInt32(value);
                     break;
                 case MetaAttribute.Year:
-                    tag.Year = (uint) value;
+                    tag.Year = Convert.ToUInt32(value);
                     break;
                 default:
                     return;
