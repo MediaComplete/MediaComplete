@@ -24,7 +24,8 @@ namespace MSOE.MediaComplete.Test.Util
             {
                 File.Delete(destPath);
             }
-            Directory.CreateDirectory(location);
+            if (!Directory.Exists(location))
+                Directory.CreateDirectory(location);
             File.Copy(Constants.ValidMp3FullPath, destPath);
             return new FileInfo(destPath);
         }
