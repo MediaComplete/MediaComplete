@@ -142,7 +142,7 @@
                                 <RowDefinition Height="1*"/>
                                 <RowDefinition Height="26"/>
                             </Grid.RowDefinitions>
-                            <Button Content="Edit/Cancel" Grid.Column="1" Grid.Row="1" Click="Edit_OnClick"/>
+                            <Button Name="EditCancelButton" Content="Edit" Grid.Column="1" Grid.Row="1" Click="Edit_OnClick"/>
                             <Button Content="Save" Grid.Column="2" Grid.Row="1" Click="Save_OnClick"/>
                         </Grid>
                     </Grid>

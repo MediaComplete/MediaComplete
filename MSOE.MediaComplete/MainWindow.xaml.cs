@@ -229,8 +229,23 @@ namespace MSOE.MediaComplete
             {
                 RefreshTreeView();
             }
+            ClearDetailPane();
         }
 
+        private void ClearDetailPane()
+        {
+            SongTitle.Text = "";
+            Album.Text = "";
+            Artist.Text = "";
+            SuppArtist.Text = "";
+            Rating.Text = "";
+            Track.Text = "";
+            Year.Text = "";
+            Genre.Text = "";
+
+            EditCancelButton.Content = "Edit";
+
+        }
         /// <summary>
         /// MouseClick Listener for the FolderTree
         /// </summary>
@@ -238,7 +253,10 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void SongTree_OnMouseUp(object sender, MouseButtonEventArgs e)
         {
-            PopulateMetadataForm();
+            if(SongTree.SelectedItems.Count > 0)
+                PopulateMetadataForm();
+            else
+                ClearDetailPane();
         }
 
         private void PopulateMetadataForm()
@@ -269,7 +287,7 @@ namespace MSOE.MediaComplete
                 Genre.Text = song.GetGenre();
                 Track.Text = song.GetTrack();
                 Year.Text = song.GetYear();
-                Rating.Text = song.GetRating();
+                Rating.Text = song.GetRating().Equals("-1") ? "" : song.GetRating();
             }
             else
             {
@@ -521,15 +539,15 @@ namespace MSOE.MediaComplete
 
         private void Edit_OnClick(object sender, RoutedEventArgs e)
         {
-            if (SongTitle.IsReadOnly)
+            if (EditCancelButton.Content.Equals("Edit") && SongTree.SelectedItems.Count > 0)
             {
+                EditCancelButton.Content = "Cancel";
                 ToggleReadOnlyFields(false);
             }
-            else if(_changedBoxes.Count > 0)
+            else if(EditCancelButton.Content.Equals("Cancel"))
             {
                 foreach (var changedBox in _changedBoxes)
                 {
-                    Console.Out.WriteLine(changedBox);
                     while (changedBox.CanUndo) { 
                         changedBox.Undo();
                     }
@@ -538,6 +556,7 @@ namespace MSOE.MediaComplete
                 }
                 _changedBoxes.Clear();
                 ToggleReadOnlyFields(true);
+                EditCancelButton.Content = "Edit";
             }
         }
 
@@ -545,17 +564,6 @@ namespace MSOE.MediaComplete
         {
             if (SongTitle.IsReadOnly) return;
             ToggleReadOnlyFields(true);
-            var attributes = new Dictionary<MetaAttribute, TextBox>
-                {
-                    {MetaAttribute.SongTitle, SongTitle},
-                    {MetaAttribute.Album, Album},
-                    {MetaAttribute.Artist, Artist},
-                    {MetaAttribute.SupportingArtist, SuppArtist},
-                    {MetaAttribute.Genre, Genre},
-                    {MetaAttribute.TrackNumber, Track},
-                    {MetaAttribute.Year, Year},
-                    {MetaAttribute.Rating, Rating}
-                };
             foreach (var song in from SongTreeViewItem item in SongTree.SelectedItems select TagLib.File.Create(item.GetPath()))
             {
                 foreach (var changedBox in _changedBoxes)
