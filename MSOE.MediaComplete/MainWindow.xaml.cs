@@ -21,7 +21,7 @@ namespace MSOE.MediaComplete
     /// </summary>
     public partial class MainWindow
     {
-        private List<TextBox>_changedBoxes;
+        private readonly List<TextBox>_changedBoxes;
         private Settings _settings;
 
         public MainWindow()
@@ -563,6 +563,7 @@ namespace MSOE.MediaComplete
         private void Save_OnClick(object sender, RoutedEventArgs e)
         {
             if (SongTitle.IsReadOnly) return;
+            EditCancelButton.Content = "Edit";
             ToggleReadOnlyFields(true);
             foreach (var song in from SongTreeViewItem item in SongTree.SelectedItems select TagLib.File.Create(item.GetPath()))
             {
