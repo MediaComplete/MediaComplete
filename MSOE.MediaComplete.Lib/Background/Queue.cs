@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using Sys = System.Threading.Tasks;
 
 namespace MSOE.MediaComplete.Lib.Background
 {
@@ -8,7 +8,7 @@ namespace MSOE.MediaComplete.Lib.Background
     /// Class to manage long-running background operations. Will run tasks in parallel where possible, 
     /// and block otherwise, based on the implemenatation of the tasks passed in. This class is a singleton.
     /// </summary>
-    class Queue
+    public class Queue
     {
         /// <summary>
         /// The singleton instance available to callers.
@@ -20,7 +20,7 @@ namespace MSOE.MediaComplete.Lib.Background
         /// </summary>
         private Queue()
         {
-            _tasks = new Dictionary<int, IEnumerable<Task>>();
+            _tasks = new Dictionary<int, List<Task>>();
         }
         static Queue()
         {
@@ -28,7 +28,7 @@ namespace MSOE.MediaComplete.Lib.Background
         }
 
         // The queue of jobs, as integer-index enumurables. This allows groups of tasks to be run in parallel
-        private readonly Dictionary<int, IEnumerable<Task>> _tasks;
+        private readonly Dictionary<int, List<Task>> _tasks;
         // The number of tasks currently active (at the last spawn).
         private int _activeCount;
 
@@ -45,7 +45,7 @@ namespace MSOE.MediaComplete.Lib.Background
 
             if (_activeCount < 1)
             {
-                Run();
+                Sys.Task.Run(() => Run());
             }
         }
 
@@ -67,7 +67,7 @@ namespace MSOE.MediaComplete.Lib.Background
                 _activeCount = tasks.Count;
                 tasks.ForEach(t => t.Update += RouteMessage);
                 
-                Parallel.For(0, tasks.Count, i => tasks[i].Do(i));
+                Sys.Parallel.For(0, tasks.Count, i => tasks[i].Do(i));
             }
             _activeCount = 0;
         }

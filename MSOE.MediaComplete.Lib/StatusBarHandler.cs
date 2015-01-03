@@ -42,7 +42,7 @@ namespace MSOE.MediaComplete.Lib
 
         public void ChangeStatusBarMessage(string message, StatusIcon icon)
         {
-            RaiseStatusBarEvent("{0}", message, icon);
+            ChangeStatusBarMessage("{0}", message, icon);
         }
 
         public void ChangeStatusBarMessage(string format, string messageKey, StatusIcon icon, params object[] extraArgs)

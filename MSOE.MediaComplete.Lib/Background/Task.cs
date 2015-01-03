@@ -4,13 +4,13 @@ using Sys = System.Threading.Tasks;
 namespace MSOE.MediaComplete.Lib.Background
 {
     /// <summary>
-    /// This interface represents the behavior of a background queue task. 
+    /// This abstract class represents a background queue task. 
     /// </summary>
     public abstract class Task
     {
         public delegate void UpdateHandler(Task data);
         /// <summary>
-        /// Called when the task has a new status, so logs, status bar, etc. can be updated by the queue.
+        /// Called by the task when it has a new status, so logs, status bar, etc. can be updated by the queue.
         /// </summary>
         public event UpdateHandler Update = delegate{};
 
@@ -37,7 +37,7 @@ namespace MSOE.MediaComplete.Lib.Background
         /// shifts that need to occur. For more details on how the queue works, see <see cref="Queue"/>
         /// </summary>
         /// <param name="currentQueue">The  work queue</param>
-        public abstract void ResolveConflicts(Dictionary<int, IEnumerable<Task>> currentQueue);
+        public abstract void ResolveConflicts(Dictionary<int, List<Task>> currentQueue);
         /// <summary>
         /// Performs the action of this task, asynchronously. 
         /// </summary>
