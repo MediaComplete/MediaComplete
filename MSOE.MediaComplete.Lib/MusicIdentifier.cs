@@ -65,13 +65,14 @@ namespace MSOE.MediaComplete.Lib
             var title = json.SelectToken(song + "title");
             if (title!=null)
             {
-                create.SetMetaAttribute(MetaAttribute.SongTitle,title.ToString());
+                create.SetSongTitle(title.ToString());
             }
             var artist = json.SelectToken(song + "artist_name");
             if (artist != null)
             {
-                create.SetMetaAttribute(MetaAttribute.Artist,artist.ToString());
+                create.SetArtist(artist.ToString());
             }
+
             //TODO add more - this will require using the ID passed in to access possible other databases...further research needed
         }
 

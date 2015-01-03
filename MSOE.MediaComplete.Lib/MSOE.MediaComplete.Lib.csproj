@@ -71,8 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
-    <Compile Include="Mp3MetadataEditor.cs" />
-    <Compile Include="MetaDataExtensions.cs" />
+    <Compile Include="MetadataExtensions.cs" />
     <Compile Include="SystemExtensions.cs" />
     <Compile Include="TreeViewBackend.cs" />
     <Compile Include="StatusBarHandler.cs" />

@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib;
+using MSOE.MediaComplete.Test.Util;
 using TagLib;
 
 namespace MSOE.MediaComplete.Test
@@ -7,12 +8,26 @@ namespace MSOE.MediaComplete.Test
     [TestClass]
     public class MetaDataExtensions
     {
-        /*
-        //TODO this was the old metadata test...needs to be refactored -- issues accessing the extension code...
-        private Mp3MetadataEditor _mp3;
-        private TagLib.File _mp3File;
+        private File _mp3File;
+        private static File _file;
         private const string InvalidMp3FileName = "Resources/InvalidMp3File.mp3";
+        private const string BlankFile = "Resources/Blanked.mp3";
         private const string ValidMp3FileName = "Resources/ValidMp3File.mp3";
+        private const string ValidYear = "2012";
+        private const string ValidTrack = "1";
+        private const string ValidTitle = "Get Got";
+        private const string ValidAlbum = "The Money Store";
+        private const string ValidArtist = "Death Grips";
+        private const string ValidSupportingArtist = "";
+        private const string ValidGenre = "Rock";
+        private const string BadYear = "2992";
+        private const string BadTrack = "8";
+        private const string BadTitle = "NotTitle!";
+        private const string BadAlbum = "NotAlbum";
+        private const string BadArtist = "NotArtist";
+        private const string BadSupportingArtist = "artist12,artist32";
+        private const string BadGenre = "BadGenre";
+        private const string BadRating = "1";
 
         [TestMethod]
         [ExpectedException(typeof(CorruptFileException))]
@@ -25,19 +40,121 @@ namespace MSOE.MediaComplete.Test
         public void GetYear_ValidMp3_ShouldReturnYear()
         {
             _mp3File = File.Create(ValidMp3FileName);
-            //_mp3File
-            Assert.AreEqual((uint)2012, _mp3.Year);
+            Assert.AreEqual(ValidYear, _mp3File.GetYear());
+        }
+        [TestMethod]
+        public void GetTrack_ValidMp3_ShouldReturnTrack()
+        {
+            _mp3File = File.Create(ValidMp3FileName);
+            Assert.AreEqual(ValidTrack, _mp3File.GetTrack());
+        }
+        [TestMethod]
+        public void GetTitle_ValidMp3_ShouldReturnTitle()
+        {
+            _mp3File = File.Create(ValidMp3FileName);
+            Assert.AreEqual(ValidTitle, _mp3File.GetSongTitle());
+        }
+        [TestMethod]
+        public void GetAlbum_ValidMp3_ShouldReturnAlbum()
+        {
+            _mp3File = File.Create(ValidMp3FileName);
+            Assert.AreEqual(ValidAlbum, _mp3File.GetAlbum());
+        }
+        [TestMethod]
+        public void GetArtist_ValidMp3_ShouldReturnArtist()
+        {
+            _mp3File = File.Create(ValidMp3FileName);
+            Assert.AreEqual(ValidArtist, _mp3File.GetArtist());
+        }
+        [TestMethod]
+        public void GetSupportingArtist_ValidMp3_ShouldReturnSuppArtist()
+        {
+            _mp3File = File.Create(ValidMp3FileName);
+            Assert.AreEqual(ValidSupportingArtist, _mp3File.GetSupportingArtist());
+        }
+        [TestMethod]
+        public void GetGenre_ValidMp3_ShouldReturnGenre()
+        {
+            _mp3File = File.Create(ValidMp3FileName);
+            Assert.AreEqual(ValidGenre, _mp3File.GetGenre());
         }
 
-        [TestMethod]
-        public void SetYear_ValidMp3_ShouldChangeYear()
+
+        [ClassCleanup]
+        public static void CleanUp()
         {
-            _mp3 = new Mp3MetadataEditor(ValidMp3FileName);
-            Assert.AreEqual((uint)2012, _mp3.Year);
-            _mp3.Year = 1985;
-            Assert.AreEqual((uint)1985, _mp3.Year);
+            _file.SetYear("");
+            _file.SetAlbum("");
+            _file.SetArtist("");
+            _file.SetGenre("");
+            _file.SetRating("");
+            _file.SetSongTitle("");
+            _file.SetSupportingArtists("");
+            _file.SetTrack("");
+
         }
-         */
+        [ClassInitialize]
+        public static void Initialize(TestContext tc)
+        {
+            _file = File.Create(BlankFile);
+
+        }
+        [TestMethod]
+        public void SetYear_BlankMp3_ShouldChangeYear()
+        {
+            _file.SetYear(ValidYear);
+            Assert.AreNotEqual(BadYear, _file.GetYear());
+            _file.SetYear(BadYear);
+            Assert.AreEqual(BadYear, _file.GetYear());
+        }
+        [TestMethod]
+        public void SetTrack_BlankMp3_ShouldChangeTrack()
+        {
+            _file.SetTrack(ValidTrack);
+            Assert.AreNotEqual(BadTrack, _file.GetTrack());
+            _file.SetTrack(BadTrack);
+            Assert.AreEqual(BadTrack, _file.GetTrack());
+        }
+        [TestMethod]
+        public void SetTitle_BlankMp3_ShouldChangeTitle()
+        {
+            _file.SetSongTitle(ValidTitle);
+            Assert.AreNotEqual(BadTitle, _file.GetSongTitle());
+            _file.SetSongTitle(BadTitle);
+            Assert.AreEqual(BadTitle, _file.GetSongTitle());
+        }
+        [TestMethod]
+        public void SetAlbum_BlankMp3_ShouldChangeAlbum()
+        {
+            _file.SetAlbum(ValidAlbum);
+            Assert.AreNotEqual(BadAlbum, _file.GetAlbum());
+            _file.SetAlbum(BadAlbum);
+            Assert.AreEqual(BadAlbum, _file.GetAlbum());
+        }
+        [TestMethod]
+        public void SetArtist_BlankMp3_ShouldChangeArtist()
+        {
+            _file.SetArtist(ValidArtist);
+            Assert.AreNotEqual(BadArtist, _file.GetArtist());
+            _file.SetArtist(BadArtist);
+            Assert.AreEqual(BadArtist, _file.GetArtist());
+        }
+        [TestMethod]
+        public void SetSupportingArtist_BlankMp3_ShouldChangeSuppArtist()
+        {
+            _file.SetSupportingArtists(ValidSupportingArtist);
+            Assert.AreNotEqual(BadSupportingArtist, _file.GetSupportingArtist());
+            _file.SetSupportingArtists(BadSupportingArtist);
+            Assert.AreEqual(BadSupportingArtist, _file.GetSupportingArtist());
+        }
+        [TestMethod]
+        public void SetGenre_BlankMp3_ShouldChangeGenre()
+        {
+            _file.SetGenre(ValidGenre);
+            Assert.AreNotEqual(BadGenre, _file.GetGenre());
+            _file.SetGenre(BadGenre);
+            Assert.AreEqual(BadGenre, _file.GetGenre());
+        }
     }
         
 
