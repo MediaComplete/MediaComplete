@@ -134,8 +134,18 @@
         <Setter Property="Foreground" Value="#FFF0EFF1"/>
     </Style>
     <Style TargetType="{x:Type TextBox}">
-        <Setter Property="Background" Value="#FF686868"/>
-        <Setter Property="Foreground" Value="#FFF0EFF1"/>
+        <Style.Triggers>
+            <Trigger Property="IsReadOnly" Value="True">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Foreground" Value="#FFF0EFF1"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+            </Trigger>
+            <Trigger Property="IsReadOnly" Value="False">
+                <Setter Property="BorderBrush" Value="#FFE3E9EF"/>
+                <Setter Property="Background" Value="#FF686868"/>
+                <Setter Property="Foreground" Value="#FFF0EFF1"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
     <Style TargetType="{x:Type GridSplitter}" x:Key="SplitterStyle">
         <Setter Property="Background" Value="#FF686868"></Setter>

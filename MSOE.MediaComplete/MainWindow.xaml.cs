@@ -436,7 +436,7 @@ namespace MSOE.MediaComplete
                 SuppArtist.Text = attributes[MetaAttribute.SupportingArtist] == "-1" ? "Various Artists" : attributes[MetaAttribute.SupportingArtist];
                 Genre.Text = attributes[MetaAttribute.Genre] == "-1" ? "Various Genres" : attributes[MetaAttribute.Genre];
                 Track.Text = attributes[MetaAttribute.TrackNumber] == "-1" ? "--" : attributes[MetaAttribute.TrackNumber];
-                Year.Text = attributes[MetaAttribute.Year] == "-1" ? "Various Years" : attributes[MetaAttribute.Year];
+                Year.Text = attributes[MetaAttribute.Year] == "-1" ? "----" : attributes[MetaAttribute.Year];
                 Rating.Text = attributes[MetaAttribute.Rating] == "-1" ? "Various Ratings" : attributes[MetaAttribute.Rating];
             }
         }
