@@ -28,19 +28,18 @@ namespace MSOE.MediaComplete.Test
         }
 
         [TestMethod]
-        public void Identify_KnownSong_RestoresYear()
+        public void Identify_KnownSong_RestoresName()
         {
             _mp3File = File.Create(ValidMp3FileName);
             const string artist = "Not an Artist";
             _mp3File.SetArtist(artist);
-            // Mess up the year
             var task = MusicIdentifier.IdentifySong(_mp3File.Name);
             while (!task.IsCompleted)
             {
             }
 
             _mp3File = File.Create(ValidMp3FileName);
-            Assert.AreNotEqual(artist, _mp3File.GetArtist(), "Year was not fixed!");
+            Assert.AreNotEqual(artist, _mp3File.GetArtist(), "Name was not fixed!");
         }
 
         [TestMethod, Timeout(30000)]
