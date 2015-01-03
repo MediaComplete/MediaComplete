@@ -70,7 +70,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Background\ITask.cs" />
+    <Compile Include="Background\Task.cs" />
     <Compile Include="Background\Queue.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Mp3MetadataEditor.cs" />
