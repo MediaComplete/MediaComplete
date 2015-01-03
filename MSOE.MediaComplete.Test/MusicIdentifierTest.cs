@@ -4,6 +4,7 @@ using MSOE.MediaComplete.Lib;
 using System.IO;
 using System.Text.RegularExpressions;
 using MSOE.MediaComplete.Test.Util;
+using File = TagLib.File;
 
 namespace MSOE.MediaComplete.Test
 {
@@ -11,6 +12,8 @@ namespace MSOE.MediaComplete.Test
     public class MusicIdentifierTest
     {
         private DirectoryInfo _homeDir;
+        private File _mp3File;
+        private const string ValidMp3FileName = "Resources/ValidMp3File.mp3";
 
         [TestInitialize]
         public void Setup()
@@ -24,20 +27,19 @@ namespace MSOE.MediaComplete.Test
             Directory.Delete(_homeDir.FullName, true);
         }
 
-        [TestMethod, Timeout(30000)]
-        public void Identify_KnownSong_RestoresYear()
+        [TestMethod]
+        public void Identify_KnownSong_RestoresName()
         {
-            var file = FileHelper.CreateTestFile(_homeDir.FullName);
-            // Mess up the year
-            const int year = 1000;
-            var editor = new Mp3MetadataEditor(file.FullName) { Year = year };
-
-            var task = MusicIdentifier.IdentifySong(file.FullName);
+            _mp3File = File.Create(ValidMp3FileName);
+            const string artist = "Not an Artist";
+            _mp3File.SetArtist(artist);
+            var task = MusicIdentifier.IdentifySong(_mp3File.Name);
             while (!task.IsCompleted)
             {
             }
 
-            Assert.AreNotEqual(year, editor.Year, "Year was not fixed!");
+            _mp3File = File.Create(ValidMp3FileName);
+            Assert.AreNotEqual(artist, _mp3File.GetArtist(), "Name was not fixed!");
         }
 
         [TestMethod, Timeout(30000)]

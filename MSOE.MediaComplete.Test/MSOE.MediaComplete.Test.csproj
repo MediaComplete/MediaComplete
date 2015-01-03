@@ -76,9 +76,12 @@
     <Compile Include="Util\Constants.cs" />
     <Compile Include="Util\FileHelper.cs" />
     <Compile Include="StatusBarTest.cs" />
-    <Compile Include="MetaDataExtensionsTest.cs" />
+    <Compile Include="MetadataExtensionsTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\Blanked.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\InvalidMp3File.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
