@@ -122,11 +122,6 @@ namespace MSOE.MediaComplete.Lib
             return (string)Settings.Default[Layout];
         }
 
-        public static string GetLayoutType()
-        {
-            return (string)Settings.Default[Layout];
-        }
-
         public static void SetLayout(string layout)
         {
             Settings.Default[Layout] = layout;
