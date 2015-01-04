@@ -46,11 +46,18 @@ namespace MSOE.MediaComplete
 
                 Polling.Instance.Start();
             }
-            Polling.InboxFilesDetected += ImportFromInbox;
-            SettingWrapper.RaiseSettingEvent += HandleSettingEvent;
             Directory.CreateDirectory(homeDir);
+            InitEvents();
 
             InitTreeView();
+        }
+
+        private void InitEvents()
+        {
+            Polling.InboxFilesDetected += ImportFromInbox;
+            SettingWrapper.RaiseSettingEvent += HandleSettingEvent;
+            // ReSharper disable once ObjectCreationAsStatement
+            new Sorter(null, null);
         }
 
         private void HandleStatusBarChangeEvent(string message, StatusBarHandler.StatusIcon icon)
