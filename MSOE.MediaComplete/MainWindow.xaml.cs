@@ -92,6 +92,7 @@ namespace MSOE.MediaComplete
             if (_settings.IsLoaded) return;
             _settings = new Settings();
             _settings.ShowDialog();
+            RefreshTreeView();
         }
 
         private async void AddFile_Click(object sender, RoutedEventArgs e)
