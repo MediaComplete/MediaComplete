@@ -204,8 +204,9 @@ namespace MSOE.MediaComplete.Test
         [TestMethod, Timeout(30000)]
         public void Import_CausesSort_IgnoresOldFiles()
         {
+            SettingWrapper.SetIsSorting(true);
             // ReSharper disable once ObjectCreationAsStatement
-            new Sorter(null, null); // Force the static initializer to fire.
+            new Sorter(null, null);
             var decoyFile = FileHelper.CreateTestFile(_homeDir.FullName); // Deliberately put an unsorted file in
             decoyFile.MoveTo(decoyFile.FullName + ".decoy.mp3");
             FileHelper.CreateTestFile(_importDir.FullName);
@@ -216,6 +217,33 @@ namespace MSOE.MediaComplete.Test
             while (!task.IsCompleted)
             {
                 
+            }
+            // Need to poll for the file, since we don't have a way of monitoring the sorter directly.
+            while (!new FileInfo(normalFileDest).Exists)
+            {
+            }
+
+            Assert.IsTrue(decoyFile.Exists);
+        }
+
+        /// <summary>
+        /// Make sure that imports trigger sorting operations on the new files.
+        /// </summary>
+        [TestMethod, Timeout(30000)]
+        public void Import_NoSort_IgnoresOldFiles()
+        {
+            SettingWrapper.SetIsSorting(false);
+            // ReSharper disable once ObjectCreationAsStatement
+            new Sorter(null, null);
+            var decoyFile = FileHelper.CreateTestFile(_homeDir.FullName); // Deliberately put an unsorted file in
+            decoyFile.MoveTo(decoyFile.FullName + ".decoy.mp3");
+            FileHelper.CreateTestFile(_importDir.FullName);
+            var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName;
+
+            var task = new Importer(_homeDir.FullName).ImportDirectory(_importDir.FullName, true);
+            while (!task.IsCompleted)
+            {
+
             }
             // Need to poll for the file, since we don't have a way of monitoring the sorter directly.
             while (!new FileInfo(normalFileDest).Exists)
