@@ -164,5 +164,21 @@ namespace MSOE.MediaComplete
                 _layoutHasChanged = true;
             }
         }
+
+        private void BtnCancel_OnClick(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void Apply_OnClick(object sender, RoutedEventArgs e)
+        {
+            var dictUri = new Uri(_layoutsDict[_changedType], UriKind.Relative);
+            var resourceDict = System.Windows.Application.LoadComponent(dictUri) as ResourceDictionary;
+            System.Windows.Application.Current.Resources.MergedDictionaries.Clear();
+            System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDict);
+            SettingWrapper.SetLayout(_layoutsDict[_changedType]);
+
+            _layoutHasChanged = false;
+        }
     }
 }

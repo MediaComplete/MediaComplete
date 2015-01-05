@@ -15,7 +15,7 @@
                                     <ColumnDefinition Width="1*"/>
                                     <ColumnDefinition Width="100"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBox x:Name="TxtboxSelectedFolder" Grid.Column="0" />
+                                <TextBox x:Name="TxtboxSelectedFolder" Grid.Column="0" IsReadOnly="True" />
                                 <Button x:Name="BtnSelectFolder" Grid.Column="1" Content="Select Directory"
                             	Click="BtnSelectFolder_Click" HorizontalAlignment="Right" Width="100"/>
                             </Grid>
@@ -54,7 +54,7 @@
                         </StackPanel>
                         <Label Name="LblSelectInboxLocation" Content="Select Location of Inbox Directory:" />
                         <StackPanel Orientation="Horizontal">
-                            <TextBox x:Name="TxtboxInboxFolder" Width="380" />
+                            <TextBox x:Name="TxtboxInboxFolder" Width="380" IsReadOnly="True" />
                             <Button x:Name="BtnInboxFolder" Margin="8, 0, 0, 0" Content="Select Folder"
                                         Click="BtnSelectFolder_Click" />
                         </StackPanel>
@@ -62,16 +62,21 @@
                 </DockPanel>
             </TabItem>
             <TabItem Header ="Appearance">
-                <StackPanel>
-                    <Label Content="Skins:"/>
-                    <RadioButton x:Name="DarkCheck" Content="Dark" Margin="10,0,0,0" Checked="Skins_Checked" IsChecked="True" Style="{DynamicResource RadioStyle}"/>
-                    <RadioButton x:Name="PinkCheck" Content="Pink" Margin="10,0,0,0" Checked="Skins_Checked" Style="{DynamicResource RadioStyle}"/>
-                </StackPanel>
+                
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top" Height="248">
+                        <Label Content="Skins:"/>
+                        <RadioButton x:Name="DarkCheck" Content="Dark" Margin="10,0,0,0" Checked="Skins_Checked" IsChecked="True" Style="{DynamicResource RadioStyle}"/>
+                        <RadioButton x:Name="PinkCheck" Content="Pink" Margin="10,0,0,0" Checked="Skins_Checked" Style="{DynamicResource RadioStyle}"/>
+                    </StackPanel>
+                    <Button Content="Apply" DockPanel.Dock="Bottom" Height="22" Width="90" Margin="370,0,0,0" Click="Apply_OnClick"/>
+                </DockPanel>
             </TabItem>
         </TabControl>
         <StackPanel DockPanel.Dock="Bottom">
-            <StackPanel HorizontalAlignment="Right" Margin="0,0,0,4" Orientation="Horizontal">
-                <Button Name="BtnSave" Margin="4" Content="Save Settings" Click="BtnSave_Click" Width="90" Height="22"/>
+            <StackPanel HorizontalAlignment="Right" Margin="0,0,0,5" Orientation="Horizontal">
+                <Button Name="BtnCancel" Margin="4" Content="Cancel" Click="BtnCancel_OnClick" Width="90" Height="22"/>
+                <Button Name="BtnSave" Margin="4" Content="Save" Click="BtnSave_Click" Width="90" Height="22"/>
             </StackPanel>
         </StackPanel>
     </StackPanel>
