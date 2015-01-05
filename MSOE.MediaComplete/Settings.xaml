@@ -54,9 +54,8 @@
                         </StackPanel>
                         <Label Name="LblSelectInboxLocation" Content="Select Location of Inbox Directory:" />
                         <StackPanel Orientation="Horizontal">
-                            <TextBox x:Name="TxtboxInboxFolder" Width="380" IsReadOnly="True" />
-                            <Button x:Name="BtnInboxFolder" Margin="8, 0, 0, 0" Content="Select Folder"
-                                        Click="BtnSelectFolder_Click" />
+                            <Label x:Name="LblInboxFolder" Width="370" />
+                            <Button x:Name="BtnInboxFolder" Margin="4, 0, 0, 0" Content="Select Folder" Click="BtnSelectFolder_Click" Width="88" />
                         </StackPanel>
                     </StackPanel>
                 </DockPanel>

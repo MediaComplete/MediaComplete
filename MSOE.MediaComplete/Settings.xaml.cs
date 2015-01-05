@@ -26,7 +26,7 @@ namespace MSOE.MediaComplete
         {
             InitializeComponent();
             TxtboxSelectedFolder.Text = SettingWrapper.GetHomeDir();
-            TxtboxInboxFolder.Text = SettingWrapper.GetInboxDir();
+            LblInboxFolder.Content = SettingWrapper.GetInboxDir();
             ComboBoxPollingTime.SelectedValue = SettingWrapper.GetPollingTime().ToString(CultureInfo.InvariantCulture);
             CheckboxPolling.IsChecked = SettingWrapper.GetIsPolling();
             CheckboxShowImportDialog.IsChecked = SettingWrapper.GetShowInputDialog();
@@ -61,7 +61,7 @@ namespace MSOE.MediaComplete
                     TxtboxSelectedFolder.Text = folderBrowserDialog1.SelectedPath;
                     break;
                 case "BtnInboxFolder":
-                    TxtboxInboxFolder.Text = folderBrowserDialog1.SelectedPath;
+                    LblInboxFolder.Content = folderBrowserDialog1.SelectedPath;
                     break;
             }
         }
@@ -81,7 +81,7 @@ namespace MSOE.MediaComplete
             {
                 CheckboxShowImportDialog.IsEnabled = true;
                 
-                TxtboxInboxFolder.IsEnabled = true;
+                LblInboxFolder.IsEnabled = true;
                 ComboBoxPollingTime.IsEnabled = true;
                 BtnInboxFolder.IsEnabled = true;
                 LblPollTime.IsEnabled = true;
@@ -91,7 +91,7 @@ namespace MSOE.MediaComplete
             else
             {
                 CheckboxShowImportDialog.IsEnabled = false;
-                TxtboxInboxFolder.IsEnabled = false;
+                LblInboxFolder.IsEnabled = false;
                 ComboBoxPollingTime.IsEnabled = false;
                 BtnInboxFolder.IsEnabled = false;
                 LblPollTime.IsEnabled = false;
@@ -114,7 +114,7 @@ namespace MSOE.MediaComplete
             {
                 homeDir += Path.DirectorySeparatorChar;
             }
-            var inboxDir = TxtboxInboxFolder.Text;
+            var inboxDir = (string) LblInboxFolder.Content;
             if (!inboxDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.CurrentCulture)))
             {
                 inboxDir += Path.DirectorySeparatorChar;
@@ -178,7 +178,7 @@ namespace MSOE.MediaComplete
             System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDict);
             SettingWrapper.SetLayout(_layoutsDict[_changedType]);
 
-            _layoutHasChanged = false;
+            SettingWrapper.Save();
         }
     }
 }
