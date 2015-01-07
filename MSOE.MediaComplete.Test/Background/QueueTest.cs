@@ -16,7 +16,8 @@ namespace MSOE.MediaComplete.Test.Background
             Queue.Inst.Add(mock);
 
             Assert.IsTrue(mock.ResolveConflictsCalled, "Mock didn't have its conflicts resolved!");
-            Assert.IsTrue(mock.DoCalled, "Mock wasn't run!");
+            
+            SpinWait.SpinUntil(() => !mock.DoCalled, 30000);
         }
 
         [TestMethod]
@@ -50,7 +51,7 @@ namespace MSOE.MediaComplete.Test.Background
                 _doDelay = doDelay;
             }
 
-            public override void ResolveConflicts(Dictionary<int, List<Task>> currentQueue)
+            public override void ResolveConflicts(List<List<Task>> currentQueue)
             {
                 ResolveConflictsCalled = true;
                 currentQueue[0] = new List<Task> { this };
