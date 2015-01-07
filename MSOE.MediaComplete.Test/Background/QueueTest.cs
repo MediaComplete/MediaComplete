@@ -16,8 +16,7 @@ namespace MSOE.MediaComplete.Test.Background
             Queue.Inst.Add(mock);
 
             Assert.IsTrue(mock.ResolveConflictsCalled, "Mock didn't have its conflicts resolved!");
-            
-            SpinWait.SpinUntil(() => !mock.DoCalled, 30000);
+            SpinWait.SpinUntil(() => mock.DoCalled, 30000);
         }
 
         [TestMethod]
@@ -33,7 +32,7 @@ namespace MSOE.MediaComplete.Test.Background
             Assert.IsFalse(secondMock.DoCalled, "Second mock started too early!");
 
             // Wait for the second task to run
-            SpinWait.SpinUntil(() => !secondMock.DoCalled, 30000);
+            SpinWait.SpinUntil(() => secondMock.DoCalled, 30000);
         }
 
         private class MockTask : Task
@@ -54,7 +53,7 @@ namespace MSOE.MediaComplete.Test.Background
             public override void ResolveConflicts(List<List<Task>> currentQueue)
             {
                 ResolveConflictsCalled = true;
-                currentQueue[0] = new List<Task> { this };
+                currentQueue.Add(new List<Task> { this });
                 Thread.Sleep(_resolveConflictsDelay);
             }
 
