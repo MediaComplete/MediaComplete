@@ -20,7 +20,7 @@ namespace MSOE.MediaComplete.Test.Util
         public static FileInfo CreateTestFile(string location)
         {
             var destPath = location + Path.DirectorySeparatorChar + Constants.ValidMp3FileName;
-            if (File.Exists(destPath)) 
+            if (File.Exists(destPath))
             {
                 File.Delete(destPath);
             }
@@ -28,6 +28,19 @@ namespace MSOE.MediaComplete.Test.Util
                 Directory.CreateDirectory(location);
             File.Copy(Constants.ValidMp3FullPath, destPath);
             return new FileInfo(destPath);
+        }
+
+        public static TagLib.File CreateTagLibTestFile(string location)
+        {
+            var destPath = location + Path.DirectorySeparatorChar + Constants.ValidMp3FileName;
+            if (File.Exists(destPath))
+            {
+                File.Delete(destPath);
+            }
+            if (!Directory.Exists(location))
+                Directory.CreateDirectory(location);
+            File.Copy(Constants.ValidMp3FullPath, destPath);
+            return TagLib.File.Create(destPath);
         }
 
         public static FileInfo CreateUnknownFile(string location)
