@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using MSOE.MediaComplete.Lib.Import;
+using MSOE.MediaComplete.Lib.Metadata;
 using WinForms = System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using MSOE.MediaComplete.Lib;
@@ -504,12 +506,15 @@ namespace MSOE.MediaComplete
         private async void Toolbar_SortMusic_Click(object sender, RoutedEventArgs e)
         {
             // TODO - obtain from settings file, make configurable
+            var root = new DirectoryInfo(SettingWrapper.GetHomeDir());
             var settings = new SortSettings
             {
-                SortOrder = new List<MetaAttribute> { MetaAttribute.Artist, MetaAttribute.Album }
+                SortOrder = new List<MetaAttribute> { MetaAttribute.Artist, MetaAttribute.Album },
+                Root = root
             };
 
-            var sorter = new Sorter(new DirectoryInfo(SettingWrapper.GetHomeDir()), settings);
+            var sorter = new Sorter(settings);
+            await sorter.CalculateActions();    
 
             if (sorter.Actions.Count == 0) // Nothing to do! Notify and return.
             {
@@ -526,14 +531,14 @@ namespace MSOE.MediaComplete
                 Resources["Dialog-SortLibrary-Title"].ToString(), MessageBoxButton.YesNo, MessageBoxImage.Question);
 
             if (result != MessageBoxResult.Yes) return;
-            try
+            
+            var task = sorter.PerformSort();
+            
+            // Status bar the error, if we had one
+            if (task.Error != null)
             {
-                await sorter.PerformSort();
-            }
-            catch (IOException ioe)
-            {
-                // TODO - This should get localized and put in the application status bar (TBD)
-                MessageBox.Show("Encountered an error while sorting files: " + ioe.Message);
+                StatusBarHandler.Instance.ChangeStatusBarMessage(Resources["Sorting-HadError"] as string, 
+                    task.Error.Message, StatusBarHandler.StatusIcon.Error);
             }
         }
 

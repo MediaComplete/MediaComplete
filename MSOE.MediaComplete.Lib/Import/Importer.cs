@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using File = System.IO.File;
 
-namespace MSOE.MediaComplete.Lib
+namespace MSOE.MediaComplete.Lib.Import
 {
     public class Importer
     {

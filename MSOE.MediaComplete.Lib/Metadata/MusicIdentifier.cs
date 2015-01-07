@@ -8,9 +8,9 @@ using ENMFPdotNet;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using Newtonsoft.Json.Linq;
-using File = TagLib.File;
+using TagLib;
 
-namespace MSOE.MediaComplete.Lib
+namespace MSOE.MediaComplete.Lib.Metadata
 {
     public class MusicIdentifier
     {
@@ -50,7 +50,8 @@ namespace MSOE.MediaComplete.Lib
             var response = await client.GetAsync(Path + "?" + query);
 
             // Parse the response body.
-            var json = JObject.Parse(await response.Content.ReadAsStringAsync());
+            var strResponse = await response.Content.ReadAsStringAsync();
+            var json = JObject.Parse(strResponse);
 
             UpdateFileWithJson(json, File.Create(filename));
 

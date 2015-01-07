@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MSOE.MediaComplete.Lib;
-using MSOE.MediaComplete.Test.Util;
+using MSOE.MediaComplete.Lib.Metadata;
 using TagLib;
 
 namespace MSOE.MediaComplete.Test
@@ -27,7 +26,6 @@ namespace MSOE.MediaComplete.Test
         private const string BadArtist = "NotArtist";
         private const string BadSupportingArtist = "artist12,artist32";
         private const string BadGenre = "BadGenre";
-        private const string BadRating = "1";
 
         [TestMethod]
         [ExpectedException(typeof(CorruptFileException))]

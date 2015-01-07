@@ -30,19 +30,6 @@ namespace MSOE.MediaComplete.Test.Util
             return new FileInfo(destPath);
         }
 
-        public static TagLib.File CreateTagLibTestFile(string location)
-        {
-            var destPath = location + Path.DirectorySeparatorChar + Constants.ValidMp3FileName;
-            if (File.Exists(destPath))
-            {
-                File.Delete(destPath);
-            }
-            if (!Directory.Exists(location))
-                Directory.CreateDirectory(location);
-            File.Copy(Constants.ValidMp3FullPath, destPath);
-            return TagLib.File.Create(destPath);
-        }
-
         public static FileInfo CreateUnknownFile(string location)
         {
             var destPath = location + Path.DirectorySeparatorChar + Constants.UnknownMp3FileName;

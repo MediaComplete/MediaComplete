@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Sys = System.Threading.Tasks;
 
 namespace MSOE.MediaComplete.Lib.Background
@@ -9,10 +10,19 @@ namespace MSOE.MediaComplete.Lib.Background
     public abstract class Task
     {
         public delegate void UpdateHandler(Task data);
+        
+        /// <summary>
+        /// Creators of a task may subscribe to it to receive updates when the task chooses to trigger them.
+        /// </summary>
+        public event UpdateHandler Update = delegate{};
+
         /// <summary>
         /// Called by the task when it has a new status, so logs, status bar, etc. can be updated by the queue.
         /// </summary>
-        public event UpdateHandler Update = delegate{};
+        protected void TriggerUpdate(Task data)
+        {
+            Update(data);
+        }
 
         /// <summary>
         /// The index of this task, as assigned by the work queue.
@@ -30,6 +40,14 @@ namespace MSOE.MediaComplete.Lib.Background
         /// The icon reflecting the current status of the task
         /// </summary>
         public StatusBarHandler.StatusIcon Icon { get; set; }
+        /// <summary>
+        /// Set to true when the task has completed execution
+        /// </summary>
+        public bool IsDone { get; set; }
+        /// <summary>
+        /// Contains the most recent exception encountered while running the task.
+        /// </summary>
+        public Exception Error { get; set; }
 
         /// <summary>
         /// Handles the resolution of redundant or blocking jobs. The argument is the current state of the queue,
@@ -37,7 +55,7 @@ namespace MSOE.MediaComplete.Lib.Background
         /// shifts that need to occur. For more details on how the queue works, see <see cref="Queue"/>
         /// </summary>
         /// <param name="currentQueue">The  work queue</param>
-        public abstract void ResolveConflicts(Dictionary<int, List<Task>> currentQueue);
+        public abstract void ResolveConflicts(List<List<Task>> currentQueue);
         /// <summary>
         /// Performs the action of this task, asynchronously. 
         /// </summary>

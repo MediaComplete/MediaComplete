@@ -20,7 +20,7 @@ namespace MSOE.MediaComplete.Lib.Background
         /// </summary>
         private Queue()
         {
-            _tasks = new Dictionary<int, List<Task>>();
+            _tasks = new List<List<Task>>();
         }
         static Queue()
         {
@@ -28,7 +28,7 @@ namespace MSOE.MediaComplete.Lib.Background
         }
 
         // The queue of jobs, as integer-index enumurables. This allows groups of tasks to be run in parallel
-        private readonly Dictionary<int, List<Task>> _tasks;
+        private readonly List<List<Task>> _tasks;
         // The number of tasks currently active (at the last spawn).
         private int _activeCount;
 
@@ -60,9 +60,8 @@ namespace MSOE.MediaComplete.Lib.Background
                 List<Task> tasks;
                 lock (_tasks)
                 {
-                    var lowestNum = _tasks.Keys.Min();
-                    tasks = _tasks[lowestNum].ToList();
-                    _tasks.Remove(lowestNum);
+                    tasks = _tasks.First();
+                    _tasks.Remove(tasks);
                 }
                 _activeCount = tasks.Count;
                 tasks.ForEach(t => t.Update += RouteMessage);

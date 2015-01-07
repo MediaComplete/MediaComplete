@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib;
+using MSOE.MediaComplete.Lib.Import;
 using MSOE.MediaComplete.Test.Util;
 using System.IO;
 

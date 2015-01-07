@@ -21,7 +21,9 @@
     <system:String x:Key="Import-Success">Import Finished</system:String>
     <system:String x:Key="Import-Error">Import Error</system:String>
     <system:String x:Key="Sorting-Started">Sorting Started</system:String>
+    <system:String x:Key="Sorting-InProgress">Sorting....</system:String>
     <system:String x:Key="Sorting-Success">Sorting Finished</system:String>
+    <system:String x:Key="Sorting-HadError">Encountered an error while sorting files: {0}</system:String>
     <system:String x:Key="MusicIdentification-Started">Music Identification Started</system:String>
     <system:String x:Key="MusicIdentification-Success">Music Identification Finished</system:String>
     <system:String x:Key="MusicIdentification-Error">Music Identification Error</system:String>
