@@ -30,7 +30,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void Identify_KnownSong_RestoresName()
         {
-            _mp3File = File.Create(ValidMp3FileName);
+            _mp3File = FileHelper.CreateTagLibTestFile(ValidMp3FileName);
             const string artist = "Not an Artist";
             _mp3File.SetArtist(artist);
             var task = MusicIdentifier.IdentifySong(_mp3File.Name);
