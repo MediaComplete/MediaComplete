@@ -175,10 +175,21 @@
     <Style TargetType="{x:Type Grid}" x:Key="DetailGridStyle">
         <Setter Property="Background" Value="#FF3E3E42"/>
     </Style>
+    <Style TargetType="{x:Type Grid}" x:Key="GridStyle">
+        <Setter Property="Background" Value="#FF3E3E42"/>
+    </Style>
     <Style TargetType="{x:Type StatusBar}" x:Key="StatusBarStyle">
         <Setter Property="Background" Value="#FF686868"/>
     </Style>
     <Style TargetType="{x:Type RadioButton}" x:Key="RadioStyle">
         <Setter Property="Foreground" Value="#FFF0EFF1"/>
+    </Style>
+    <Style TargetType="{x:Type TextBlock}" x:Key="TextBlockStyle">
+        <Setter Property="Foreground" Value="#FFF0EFF1"/>
+        <Setter Property="Background" Value="#FF3E3E42"/>
+    </Style>
+    <Style TargetType="{x:Type CheckBox}" x:Key="CheckBoxStyle">
+        <Setter Property="Foreground" Value="#FFF0EFF1"/>
+        <Setter Property="Background" Value="#FF3E3E42"/>
     </Style>
 </ResourceDictionary>

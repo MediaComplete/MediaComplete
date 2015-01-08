@@ -167,4 +167,15 @@
     <Style TargetType="{x:Type StatusBar}" x:Key="StatusBarStyle">
         <Setter Property="Background" Value="#FFFFEBF7"></Setter>
     </Style>
+    <Style TargetType="{x:Type Grid}" x:Key="GridStyle">
+        <Setter Property="Background" Value="#FFFFD6EE"/>
+    </Style>
+    <Style TargetType="{x:Type TextBlock}" x:Key="TextBlockStyle">
+        <Setter Property="Foreground" Value="#FF8F1454"/>
+        <Setter Property="Background" Value="#FFFFD6EE"/>
+    </Style>
+    <Style TargetType="{x:Type CheckBox}" x:Key="CheckBoxStyle">
+        <Setter Property="Foreground" Value="#FF8F1454"/>
+        <Setter Property="Background" Value="#FFFFD6EE"/>
+    </Style>
 </ResourceDictionary>
