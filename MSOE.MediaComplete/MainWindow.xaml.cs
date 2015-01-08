@@ -214,6 +214,22 @@ namespace MSOE.MediaComplete
             return dirItem;
         }
 
+        private static void PopulateSongTree(DirectoryInfo dirInfo, ItemsControl songTree, FolderTreeViewItem parent, bool root)
+        {
+            Console.Out.WriteLine(parent);
+            var dirItem = root ? parent : new FolderTreeViewItem { Header = dirInfo.Name, ParentItem = parent };
+            foreach (var dir in TreeViewBackend.GetDirectories(dirInfo))
+            {
+                PopulateSongTree(dir, songTree, dirItem, false);
+            }
+
+            foreach (var file in TreeViewBackend.GetFiles(dirInfo).Where(file => file.Name.EndsWith(".mp3")))
+            {
+                var x = new SongTreeViewItem { Header = file.Name, ParentItem = dirItem };
+                songTree.Items.Add(x);
+            }
+        }
+
         /// <summary>
         /// MouseClick Listener for the FolderTree
         /// </summary>
@@ -226,11 +242,13 @@ namespace MSOE.MediaComplete
                 SongTree.Items.Clear();
                 foreach (var folder in FolderTree.SelectedItems)
                 {
+                    //current file
                     var item = (FolderTreeViewItem)folder;
-                    var rootDirInfo = new DirectoryInfo((item.GetPath()));
+                    //dirinfo of current file
+                    var dirInfo = new DirectoryInfo((item.GetPath()));
                     if (!ContainsParent(item))
                     {
-                        PopulateFromFolder(rootDirInfo, SongTree, new FolderTreeViewItem { Header = SettingWrapper.GetHomeDir(), ParentItem = null});
+                        PopulateSongTree(dirInfo, SongTree, item, true);
                     }
                 }
             }
@@ -288,6 +306,9 @@ namespace MSOE.MediaComplete
             }
             if (SongTree.SelectedItems.Count == 1)
             {
+                Console.Out.WriteLine(((SongTreeViewItem)SongTree.SelectedItems[0]).GetPath());
+                Console.Out.WriteLine(((SongTreeViewItem)SongTree.SelectedItems[0]).GetPath());
+                Console.Out.WriteLine(((SongTreeViewItem)SongTree.SelectedItems[0]).GetPath());
                 var song = TagLib.File.Create(((SongTreeViewItem)SongTree.SelectedItems[0]).GetPath());
                 SongTitle.Text = song.GetSongTitle();
                 Album.Text = song.GetAlbum();
