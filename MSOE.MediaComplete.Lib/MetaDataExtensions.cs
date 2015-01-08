@@ -78,7 +78,6 @@ namespace MSOE.MediaComplete.Lib
                     tag.AlbumArtists = all.Split(',');
                     break;
                 case MetaAttribute.TrackNumber:
-
                     tag.Track = Convert.ToUInt32(value);
                     break;
                 case MetaAttribute.Year:
@@ -215,7 +214,14 @@ namespace MSOE.MediaComplete.Lib
         }
         public static void SetYear(this File file, string value)
         {
-            file.SetMetaAttribute(MetaAttribute.Year, value);
+            try
+            {
+                file.SetMetaAttribute(MetaAttribute.Year, value);
+            }
+            catch (FormatException)
+            {
+                StatusBarHandler.Instance.ChangeStatusBarMessage("InvalidTrackNumber", StatusBarHandler.StatusIcon.Error);
+            }
         }
         public static void SetSupportingArtists(this File file, string value)
         {
@@ -227,7 +233,14 @@ namespace MSOE.MediaComplete.Lib
         }
         public static void SetTrack(this File file, string value)
         {
-            file.SetMetaAttribute(MetaAttribute.TrackNumber, value);
+            try
+            {
+                file.SetMetaAttribute(MetaAttribute.TrackNumber, value);
+            }
+            catch (FormatException)
+            {
+                StatusBarHandler.Instance.ChangeStatusBarMessage("InvalidTrackNumber", StatusBarHandler.StatusIcon.Error);
+            }
         }
 }
 }

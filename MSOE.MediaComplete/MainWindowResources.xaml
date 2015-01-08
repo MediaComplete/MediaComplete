@@ -25,6 +25,8 @@
     <system:String x:Key="MusicIdentification-Started">Music Identification Started</system:String>
     <system:String x:Key="MusicIdentification-Success">Music Identification Finished</system:String>
     <system:String x:Key="MusicIdentification-Error">Music Identification Error</system:String>
+    
+    <system:String x:Key="InvalidTrackNumber">Invalid Track Number Entered</system:String>
 
 
     <!-- Images -->

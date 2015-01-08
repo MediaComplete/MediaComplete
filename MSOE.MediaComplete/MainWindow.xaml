@@ -144,7 +144,7 @@
                         <TextBox Name="Genre" IsReadOnly="True" Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="3" TextChanged="TextChanged"/>
 
                         <Label Grid.Column="0" Grid.Row="5" Content="Track Number" />
-                        <TextBox Name="Track" IsReadOnly="True" Grid.Column="1" Grid.Row="5" TextChanged="TextChanged"/>
+                        <TextBox Name="Track" IsReadOnly="True" Grid.Column="1" Grid.Row="5" TextChanged="TextChanged" HorizontalAlignment="Left" Width="35"/>
 
                         <Label Grid.Column="2" Grid.Row="5" Content="Year"/>
                         <TextBox Name="Year" IsReadOnly="True" Grid.Column="3" Grid.Row="5" TextChanged="TextChanged"/>
@@ -178,7 +178,7 @@
                 <Button Height="60" Width="60" Style="{DynamicResource SkipButton}" />
             </StackPanel>
         </StackPanel>
-        <StackPanel Grid.Row="4" Grid.Column="0">
+        <StackPanel Grid.Row="4" Grid.Column="0" Height="22">
             <StatusBar Style="{DynamicResource StatusBarStyle}">
                 <StatusBar.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -191,7 +191,7 @@
                         </Grid>
                     </ItemsPanelTemplate>
                 </StatusBar.ItemsPanel>
-                <StatusBarItem Grid.Column="1">
+                <StatusBarItem Grid.Column="1" Style="{DynamicResource StatusBarItemStyle}">
                     <TextBlock x:Name="StatusMessage"/>
                 </StatusBarItem>
                 <StatusBarItem Grid.Column="2">

@@ -192,4 +192,7 @@
         <Setter Property="Foreground" Value="#FFF0EFF1"/>
         <Setter Property="Background" Value="#FF3E3E42"/>
     </Style>
+    <Style TargetType="{x:Type StatusBarItem}" x:Key="StatusBarItemStyle">
+        <Setter Property="Foreground" Value="#FFF0EFF1"/>
+    </Style>
 </ResourceDictionary>

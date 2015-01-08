@@ -110,6 +110,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="MainWindowMetadata.cs" />
     <Compile Include="CustomControls\FolderTreeViewItem.cs" />
     <Compile Include="CustomControls\SongTreeViewItem.cs" />
     <Compile Include="InboxImportDialog.xaml.cs">
