@@ -206,7 +206,7 @@ namespace MSOE.MediaComplete.Test
         {
             SettingWrapper.SetIsSorting(true);
             // ReSharper disable once ObjectCreationAsStatement
-            new Sorter(null, null);
+            new Sorter(null, null);// Force the static initializer to fire.
             var decoyFile = FileHelper.CreateTestFile(_homeDir.FullName); // Deliberately put an unsorted file in
             decoyFile.MoveTo(decoyFile.FullName + ".decoy.mp3");
             FileHelper.CreateTestFile(_importDir.FullName);
@@ -230,11 +230,11 @@ namespace MSOE.MediaComplete.Test
         /// Make sure that imports trigger sorting operations on the new files.
         /// </summary>
         [TestMethod, Timeout(30000)]
-        public void Import_NoSort_IgnoresOldFiles()
+        public void Import_NoSort_IgnoresNewFiles()
         {
             SettingWrapper.SetIsSorting(false);
             // ReSharper disable once ObjectCreationAsStatement
-            new Sorter(null, null);
+            new Sorter(null, null); // Force the static initializer to fire.
             var decoyFile = FileHelper.CreateTestFile(_homeDir.FullName); // Deliberately put an unsorted file in
             decoyFile.MoveTo(decoyFile.FullName + ".decoy.mp3");
             FileHelper.CreateTestFile(_importDir.FullName);
