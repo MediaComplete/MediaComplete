@@ -195,4 +195,14 @@
     <Style TargetType="{x:Type StatusBarItem}" x:Key="StatusBarItemStyle">
         <Setter Property="Foreground" Value="#FFF0EFF1"/>
     </Style>
+    <Style TargetType="{x:Type Border}" x:Key="BorderStyle">
+        <Setter Property="BorderBrush">
+            <Setter.Value>
+                <RadialGradientBrush>
+                    <GradientStop Color="#FF3E3E42" Offset="0"/>
+                    <GradientStop Color="#FF707070" Offset="1"/>
+                </RadialGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

@@ -178,4 +178,14 @@
         <Setter Property="Foreground" Value="#FF8F1454"/>
         <Setter Property="Background" Value="#FFFFD6EE"/>
     </Style>
+    <Style TargetType="{x:Type Border}" x:Key="BorderStyle">
+        <Setter Property="BorderBrush">
+            <Setter.Value>
+                <RadialGradientBrush>
+                    <GradientStop Color="#FFCD6AA5" Offset="0"/>
+                    <GradientStop Color="#FFFFD0EC" Offset="1"/>
+                </RadialGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

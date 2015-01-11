@@ -108,7 +108,7 @@
               ShowsPreview="true"
               Width="3"
               Style="{DynamicResource SplitterStyle}"/>
-            <Border Grid.Column="4" BorderThickness="0" Height="Auto">
+            <Border Grid.Column="4" BorderThickness="1" Height="Auto" Style="{DynamicResource BorderStyle}">
                 <DockPanel Height="Auto">
                     <Grid Margin="0,0,0,0"  Height="Auto" Style="{DynamicResource DetailGridStyle}">
                         <Grid.ColumnDefinitions>
