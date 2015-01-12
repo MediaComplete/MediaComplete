@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
 using MSOE.MediaComplete.Lib.Properties;
 
 namespace MSOE.MediaComplete.Lib
@@ -14,6 +17,7 @@ namespace MSOE.MediaComplete.Lib
         private const string IsPolling = "IsPolling";
         private const string ShowInputDialog = "ShowInputDialog";
         private const string IsSorting = "IsSorting";
+        private const string SortingOrder = "SortingOrder";
 
         public static event SettingsChangedListener RaiseSettingEvent = delegate {};
         public delegate void SettingsChangedListener();
@@ -123,6 +127,26 @@ namespace MSOE.MediaComplete.Lib
         public static void SetIsSorting(bool isSorting)
         {
             Settings.Default[IsSorting] = isSorting;
+        }
+
+        /// <summary>
+        /// gets the SortOrder list from settings
+        /// </summary>
+        /// <returns>The order the sort will perform in</returns>
+        public static List<String> GetSortOrder()
+        {
+            return ((StringCollection)Settings.Default[SortingOrder]).Cast<string>().ToList();
+        }
+
+        /// <summary>
+        /// Sets the order of the sort
+        /// </summary>
+        /// <param name="sortOrder">list to set</param>
+        public static void SetSortOrder(List<String> sortOrder)
+        {
+            var collection = new StringCollection();
+            collection.AddRange(sortOrder.ToArray());
+            Settings.Default[SortingOrder] = collection;
         }
 
         /// <summary>

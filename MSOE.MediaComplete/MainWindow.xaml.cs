@@ -527,7 +527,7 @@ namespace MSOE.MediaComplete
             // TODO - obtain from settings file, make configurable
             var settings = new SortSettings
             {
-                SortOrder = new List<MetaAttribute> { MetaAttribute.Artist, MetaAttribute.Album }
+                SortOrder = SortHelper.MetaAttributesFromString(SettingWrapper.GetSortOrder())
             };
 
             var sorter = new Sorter(new DirectoryInfo(SettingWrapper.GetHomeDir()), settings);
