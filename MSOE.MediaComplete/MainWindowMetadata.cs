@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
 using TagLib;
@@ -219,6 +220,12 @@ namespace MSOE.MediaComplete
 
         private void Edit_OnClick(object sender, RoutedEventArgs e)
         {
+            FormCheck();
+        }
+
+        private void FormCheck()
+        {
+
             if (EditCancelButton.Content.Equals("Edit") && SongTree.SelectedItems.Count > 0)
             {
                 EditCancelButton.Content = "Cancel";
@@ -247,42 +254,50 @@ namespace MSOE.MediaComplete
             if (SongTitle.IsReadOnly) return;
             EditCancelButton.Content = "Edit";
             ToggleReadOnlyFields(true);
-            foreach (var song in from SongTreeViewItem item in SongTree.SelectedItems select File.Create(item.GetPath()))
+            foreach (SongTreeViewItem item in SongTree.SelectedItems)
             {
-                foreach (var changedBox in _changedBoxes)
+                try
                 {
-                    if (changedBox.Equals(SongTitle))
+                    var song = File.Create(item.GetPath());
+                    foreach (var changedBox in _changedBoxes)
                     {
-                        song.SetSongTitle(changedBox.Text);
+                        if (changedBox.Equals(SongTitle))
+                        {
+                            song.SetSongTitle(changedBox.Text);
+                        }
+                        else if (changedBox.Equals(Album))
+                        {
+                            song.SetAlbum(changedBox.Text);
+                        }
+                        else if (changedBox.Equals(Artist))
+                        {
+                            song.SetArtist(changedBox.Text);
+                        }
+                        else if (changedBox.Equals(Genre))
+                        {
+                            song.SetGenre(changedBox.Text);
+                        }
+                        else if (changedBox.Equals(Track))
+                        {
+                            song.SetTrack(changedBox.Text);
+                        }
+                        else if (changedBox.Equals(Year))
+                        {
+                            song.SetYear(changedBox.Text);
+                        }
+                        else if (changedBox.Equals(Rating))
+                        {
+                            song.SetRating(changedBox.Text);
+                        }
+                        else if (changedBox.Equals(SuppArtist))
+                        {
+                            song.SetSupportingArtists(changedBox.Text);
+                        }
                     }
-                    else if (changedBox.Equals(Album))
-                    {
-                        song.SetAlbum(changedBox.Text);
-                    }
-                    else if (changedBox.Equals(Artist))
-                    {
-                        song.SetArtist(changedBox.Text);
-                    }
-                    else if (changedBox.Equals(Genre))
-                    {
-                        song.SetGenre(changedBox.Text);
-                    }
-                    else if (changedBox.Equals(Track))
-                    {
-                        song.SetTrack(changedBox.Text);
-                    }
-                    else if (changedBox.Equals(Year))
-                    {
-                        song.SetYear(changedBox.Text);
-                    }
-                    else if (changedBox.Equals(Rating))
-                    {
-                        song.SetRating(changedBox.Text);
-                    }
-                    else if (changedBox.Equals(SuppArtist))
-                    {
-                        song.SetSupportingArtists(changedBox.Text);
-                    }
+                }
+                catch (CorruptFileException)
+                {
+                    StatusBarHandler.Instance.ChangeStatusBarMessage("Save-Error", StatusBarHandler.StatusIcon.Error);
                 }
             }
             _changedBoxes.Clear();

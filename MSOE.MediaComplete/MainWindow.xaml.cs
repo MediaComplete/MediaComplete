@@ -237,6 +237,7 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void FolderTree_OnMouseUp(object sender, MouseButtonEventArgs e)
         {
+            FormCheck();
             if (FolderTree.SelectedItems != null && FolderTree.SelectedItems.Count > 0)
             {
                 SongTree.Items.Clear();
@@ -266,6 +267,7 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void SongTree_OnMouseUp(object sender, MouseButtonEventArgs e)
         {
+            FormCheck();
             if(SongTree.SelectedItems.Count > 0)
                 PopulateMetadataForm();
             else
