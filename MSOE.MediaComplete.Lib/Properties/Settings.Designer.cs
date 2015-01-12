@@ -82,5 +82,17 @@ namespace MSOE.MediaComplete.Lib.Properties {
                 this["ShowInputDialog"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsSorting {
+            get {
+                return ((bool)(this["IsSorting"]));
+            }
+            set {
+                this["IsSorting"] = value;
+            }
+        }
     }
 }

@@ -33,6 +33,7 @@ namespace MSOE.MediaComplete
 
             var homeDir = SettingWrapper.GetHomeDir() ??
                           Path.GetPathRoot(Environment.SystemDirectory);
+            ChangeSortMusic();
             StatusBarHandler.Instance.RaiseStatusBarEvent += HandleStatusBarChangeEvent;
             if (!homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
             {
@@ -45,10 +46,18 @@ namespace MSOE.MediaComplete
 
                 Polling.Instance.Start();
             }
-            Polling.InboxFilesDetected += ImportFromInbox;
             Directory.CreateDirectory(homeDir);
+            InitEvents();
 
             InitTreeView();
+        }
+
+        private void InitEvents()
+        {
+            Polling.InboxFilesDetected += ImportFromInbox;
+            SettingWrapper.RaiseSettingEvent += HandleSettingEvent;
+            // ReSharper disable once ObjectCreationAsStatement
+            new Sorter(null, null);
         }
 
         private void HandleStatusBarChangeEvent(string message, StatusBarHandler.StatusIcon icon)
@@ -59,6 +68,18 @@ namespace MSOE.MediaComplete
                 var sourceUri = new Uri("./Resources/" + icon + ".png", UriKind.Relative);
                 StatusIcon.Source = new BitmapImage(sourceUri);
             });
+        }
+
+        private void HandleSettingEvent()
+        {
+            ChangeSortMusic();
+        }
+
+        private void ChangeSortMusic()
+        {
+            var content = SettingWrapper.GetIsSorting() ? Resources["Toolbar-SortMusic-Tooltip"].ToString() : Resources["Toolbar-SortMusicDisabled-Tooltip"].ToString();
+            SortMusic.ToolTip = content;
+            SortMusic.IsEnabled = SettingWrapper.GetIsSorting();
         }
 
         protected override void OnClosed(EventArgs e)

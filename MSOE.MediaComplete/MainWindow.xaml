@@ -48,6 +48,7 @@
                     <Image Source="{StaticResource Toolbar-AutoIdMusic-Icon}" />
                 </Button>
                 <Button x:Name="SortMusic" ToolTip="{StaticResource Toolbar-SortMusic-Tooltip}"
+                    ToolTipService.ShowOnDisabled='true'
 					VerticalAlignment="Center" Click="Toolbar_SortMusic_Click">
                     <Image Source="{StaticResource Toolbar-SortMusic-Icon}" />
                 </Button>
