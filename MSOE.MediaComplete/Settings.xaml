@@ -35,7 +35,7 @@
                         <StackPanel Orientation="Vertical" Margin="0,10,0,0">
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Sort Order" VerticalAlignment="Center" FontWeight="ExtraBold"/>
-                                <Button Content="Reset Default"></Button>
+                                <Button Content="Reset Default" Click="ResetDefault"></Button>
                             </StackPanel>
                             <ScrollViewer HorizontalScrollBarVisibility="auto"    VerticalScrollBarVisibility="auto" Width="auto" Height="200">
                                 <StackPanel  x:Name="SortConfig" Orientation="Vertical"/>

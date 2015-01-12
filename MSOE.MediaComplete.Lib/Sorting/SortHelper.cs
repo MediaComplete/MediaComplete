@@ -8,6 +8,14 @@ namespace MSOE.MediaComplete.Lib.Sorting
 {
     public class SortHelper
     {
+        public static List<string> GetDefault()
+        {
+            return new List<string>
+            {
+                MetaAttribute.Artist.ToString(), 
+                MetaAttribute.Album.ToString()
+            };
+        } 
         public static List<String> GetAllMetaAttributes(List<String> valueList)
         {
             return Enum.GetNames(typeof (MetaAttribute)).ToList().Except(valueList).ToList();

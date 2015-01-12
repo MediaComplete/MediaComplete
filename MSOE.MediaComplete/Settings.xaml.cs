@@ -19,11 +19,11 @@ namespace MSOE.MediaComplete
     /// </summary>
     public partial class Settings
     {
-        private SortSettings _sortSettings;
-        private bool _hasBeenSelected;
+        private readonly SortSettings _sortSettings;
+        private readonly bool _hasBeenSelected;
         private Button _plusButton;
         private Button _minusButton;
-        private List<Label> _lables;
+        private readonly List<Label> _labels;
         private ComboBox _comboBox;
         private List<String> _sortOrderList; 
 
@@ -39,7 +39,7 @@ namespace MSOE.MediaComplete
             PollingCheckBoxChanged(CheckboxPolling, null);
 
             _hasBeenSelected = false;
-            _lables = new List<Label>();
+            _labels = new List<Label>();
             _sortOrderList = SettingWrapper.GetSortOrder();
             _sortSettings = new SortSettings();
             LoadSortListBox();
@@ -57,8 +57,8 @@ namespace MSOE.MediaComplete
 
             columnDefinition1.Width = new GridLength((_sortOrderList.Count + 1) * 8);
             columnDefinition2.Width = new GridLength(100);
-            columnDefinition3.Width = new GridLength(25);
-            columnDefinition4.Width = new GridLength(25);
+            columnDefinition3.Width = new GridLength(50);
+            columnDefinition4.Width = new GridLength(50);
 
             grid.ColumnDefinitions.Add(columnDefinition1);
             grid.ColumnDefinitions.Add(columnDefinition2);
@@ -76,7 +76,7 @@ namespace MSOE.MediaComplete
                         Name = _sortOrderList[i]
                         
                     };
-                    _lables.Add(label);
+                    _labels.Add(label);
                     SortConfig.Children.Add(label);
                 }
                 _comboBox.ItemsSource = SortHelper.GetAllMetaAttributes(_sortOrderList);
@@ -93,8 +93,7 @@ namespace MSOE.MediaComplete
 
                 _minusButton = new Button
                 {
-                    Content = "Minus",
-                    Visibility = Visibility.Hidden
+                    Content = "Minus"
                 };
                 _minusButton.Click += MinusClicked;
 
@@ -117,10 +116,10 @@ namespace MSOE.MediaComplete
 
         private void MinusClicked(object sender, RoutedEventArgs e)
         {
-            SortConfig.Children.Remove(_lables[_lables.Count - 1]);
+            SortConfig.Children.Remove(_labels[_labels.Count - 1]);
             _sortOrderList.RemoveAt(_sortOrderList.Count - 1);
             _comboBox.ItemsSource = SortHelper.GetAllMetaAttributes(_sortOrderList);
-            _lables.RemoveAt(_lables.Count - 1);
+            _labels.RemoveAt(_labels.Count - 1);
             _comboBox.SelectedIndex = -1;
 
         }
@@ -128,19 +127,16 @@ namespace MSOE.MediaComplete
         private void PlusClicked(object sender, RoutedEventArgs e)
         {
             SortConfig.Children.Clear();
-            _lables.Clear();
+            _labels.Clear();
             _sortOrderList.Add(_comboBox.SelectedValue.ToString());
             LoadSortListBox();
         }
 
         private void SelectChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!_hasBeenSelected)
-            {
-                _plusButton.Visibility = Visibility.Visible;
-                _minusButton.Visibility = Visibility.Visible;
-            }
-
+            if (_hasBeenSelected) return;
+            _plusButton.Visibility = Visibility.Visible;
+            _minusButton.Visibility = Visibility.Visible;
         }
 
 
@@ -153,7 +149,7 @@ namespace MSOE.MediaComplete
         private void BtnSelectFolder_Click(object sender, EventArgs e)
         {
             var folderBrowserDialog1 = new FolderBrowserDialog();
-            var button = sender as System.Windows.Controls.Button;
+            var button = sender as Button;
             if (folderBrowserDialog1.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
 
             if (button == null) return;
@@ -230,6 +226,7 @@ namespace MSOE.MediaComplete
             SettingWrapper.SetShowInputDialog(CheckboxShowImportDialog.IsChecked.GetValueOrDefault(false));
             SettingWrapper.SetIsSorting(CheckBoxSorting.IsChecked.GetValueOrDefault(false));
             SettingWrapper.SetSortOrder(_sortOrderList);
+            _sortSettings.SortOrder = SortHelper.MetaAttributesFromString(_sortOrderList);
             SettingWrapper.Save();
 
             Close();
@@ -241,6 +238,14 @@ namespace MSOE.MediaComplete
 
             var box = sender as ComboBox;
             if (box != null) box.ItemsSource = dataList;
+        }
+
+        private void ResetDefault(object sender, RoutedEventArgs e)
+        {
+            _sortOrderList = SortHelper.GetDefault();
+            SortConfig.Children.Clear();
+            LoadSortListBox();
+
         }
     }
 }
