@@ -30,6 +30,7 @@ namespace MSOE.MediaComplete
             ComboBoxPollingTime.SelectedValue = SettingWrapper.GetPollingTime().ToString(CultureInfo.InvariantCulture);
             CheckboxPolling.IsChecked = SettingWrapper.GetIsPolling();
             CheckboxShowImportDialog.IsChecked = SettingWrapper.GetShowInputDialog();
+            CheckBoxSorting.IsChecked = SettingWrapper.GetIsSorting();
             PollingCheckBoxChanged(CheckboxPolling, null);
             if (SettingWrapper.GetLayout().Equals(_layoutsDict[LayoutType.Pink]))
             {
@@ -135,8 +136,9 @@ namespace MSOE.MediaComplete
             SettingWrapper.SetPollingTime(ComboBoxPollingTime.SelectedValue);
             SettingWrapper.SetIsPolling(CheckboxPolling.IsChecked.GetValueOrDefault(false));
             SettingWrapper.SetShowInputDialog(CheckboxShowImportDialog.IsChecked.GetValueOrDefault(false));
+            SettingWrapper.SetIsSorting(CheckBoxSorting.IsChecked.GetValueOrDefault(false));
             SettingWrapper.Save();
-			            
+
             Close();
         }
 

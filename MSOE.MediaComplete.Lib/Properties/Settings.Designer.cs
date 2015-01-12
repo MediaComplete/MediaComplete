@@ -86,7 +86,7 @@ namespace MSOE.MediaComplete.Lib.Properties {
             }
         }
         [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("layout\\Dark.xaml")]
         public string Layout
         {
@@ -97,6 +97,17 @@ namespace MSOE.MediaComplete.Lib.Properties {
             set
             {
                 this["Layout"] = value;
+            }
+        }
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsSorting {
+            get {
+                return ((bool)(this["IsSorting"]));
+            }
+            set {
+                this["IsSorting"] = value;
             }
         }
     }

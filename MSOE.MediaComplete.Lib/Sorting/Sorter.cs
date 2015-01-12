@@ -174,10 +174,11 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <param name="results">The results of the triggering import</param>
         public static async void SortNewImports (ImportResults results)
         {
+            if (!SettingWrapper.GetIsSorting()) return;
             // TODO get settings from configuration
             var settings = new SortSettings
             {
-                SortOrder = new List<MetaAttribute> {MetaAttribute.Artist, MetaAttribute.Album}
+                SortOrder = new List<MetaAttribute> { MetaAttribute.Artist, MetaAttribute.Album }
             };
             var sorter = new Sorter(results.HomeDir);
             sorter.CalculateActions(results.NewFiles, settings);
