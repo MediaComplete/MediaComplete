@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using MSOE.MediaComplete.Lib.Background;
@@ -33,8 +32,9 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <param name="currentQueue"></param>
         public override void ResolveConflicts(List<List<Task>> currentQueue)
         {
-            var maxIndex = 0;
-            for (var i = 0; i < currentQueue.Count; i++)
+            var maxIndex = currentQueue.Count;
+            var foundIndex = false;
+            for (var i = currentQueue.Count - 1; i >= 0; i--)
             {
                 var group = currentQueue[i];
 
@@ -43,10 +43,12 @@ namespace MSOE.MediaComplete.Lib.Sorting
                 if (group.Count == 0)
                 {
                     currentQueue.Remove(group);
-                } 
-                else if (group.Any(t => t is ImportTask || t is IdentifierTask))
+                    maxIndex--;
+                }
+                else if (!foundIndex && group.Any(t => t is ImportTask || t is IdentifierTask))
                 {
-                    maxIndex = i;
+                    maxIndex = i + 1;
+                    foundIndex = true;
                 }
             }
             // Insert into the group after the last group with imports or identifies
@@ -72,7 +74,6 @@ namespace MSOE.MediaComplete.Lib.Sorting
                 await Sorter.CalculateActions();
             }
 
-            Debug.Assert(Sorter.Actions != null, "Actions != null");
             var counter = 0;
             var max = (Sorter.Actions.Count > 100 ? Sorter.Actions.Count / 100 : 1);
             var total = 0;

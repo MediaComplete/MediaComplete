@@ -4,7 +4,7 @@ using Sys = System.Threading.Tasks;
 
 namespace MSOE.MediaComplete.Lib.Metadata
 {
-    class IdentifierTask : Task
+    public class IdentifierTask : Task
     {
         public override void ResolveConflicts(List<List<Task>> currentQueue)
         {
