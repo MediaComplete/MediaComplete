@@ -229,6 +229,7 @@ namespace MSOE.MediaComplete
             SettingWrapper.SetIsPolling(CheckboxPolling.IsChecked.GetValueOrDefault(false));
             SettingWrapper.SetShowInputDialog(CheckboxShowImportDialog.IsChecked.GetValueOrDefault(false));
             SettingWrapper.SetIsSorting(CheckBoxSorting.IsChecked.GetValueOrDefault(false));
+            SettingWrapper.SetSortOrder(_sortOrderList);
             SettingWrapper.Save();
 
             Close();
