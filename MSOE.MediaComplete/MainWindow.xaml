@@ -75,7 +75,7 @@
             <controls:TreeViewEx x:Name="SongTree" Grid.Column="1" Margin="0,0,0,0" 
 				AutomationProperties.Name="Tree" 
 				ItemsSource="{Binding}"
-                MouseUp="SongTree_OnMouseUp">
+                MouseUp="SongTree_OnMouseUp" MouseDoubleClick="SongTree_OnMouseDoubleClick">
                 <controls:TreeViewEx.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding}"  DataType="{x:Type customControls:SongTreeViewItem}">
                         <TextBlock Text="{Binding}"/>
@@ -153,9 +153,9 @@
         <StackPanel Grid.Row="3" Grid.Column="0">
             <Slider />
             <StackPanel Height="64" Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="Previous" MinWidth="75" />
-                <Button Content="Play" MinWidth="75" />
-                <Button Content="Skip" MinWidth="75" />
+                <Button Name="PreviousButton" Content="Previous" MinWidth="75" />
+                <Button Name="PlayPauseButton" Content="Play" MinWidth="75" Click="PlayPauseButton_OnClick"/>
+                <Button Name="SkipButton" Content="Skip" MinWidth="75" Click="SkipButton_OnClick"/>
             </StackPanel>
         </StackPanel>
         <StackPanel Grid.Row="4" Grid.Column="0">
