@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Sys = System.Threading.Tasks;
 
 namespace MSOE.MediaComplete.Lib.Background
@@ -9,12 +10,18 @@ namespace MSOE.MediaComplete.Lib.Background
     /// </summary>
     public abstract class Task
     {
+        protected Task()
+        {
+            Lock = new SemaphoreSlim(1);
+            Lock.Wait();
+        }
+
         public delegate void UpdateHandler(Task data);
         
         /// <summary>
         /// Creators of a task may subscribe to it to receive updates when the task chooses to trigger them.
         /// </summary>
-        public event UpdateHandler Update = delegate{};
+        public event UpdateHandler Update = delegate { };
 
         /// <summary>
         /// Called by the task when it has a new status, so logs, status bar, etc. can be updated by the queue.
@@ -24,6 +31,25 @@ namespace MSOE.MediaComplete.Lib.Background
             Update(data);
         }
 
+        /// <summary>
+        /// Is fired on task completion
+        /// </summary>
+        public event UpdateHandler Done = delegate { };
+
+        /// <summary>
+        /// Called by the task when it has completed.
+        /// </summary>
+        protected void TriggerDone(Task data)
+        {
+            Lock.Release();
+            Done(data);
+        }
+
+        /// <summary>
+        /// Readonly semaphore. Locks on construction, and releases when "Do" 
+        /// completes (successfully or unsuccessfully)
+        /// </summary>
+        public SemaphoreSlim Lock { get; private set; }
         /// <summary>
         /// The index of this task, as assigned by the work queue.
         /// </summary>
@@ -40,10 +66,6 @@ namespace MSOE.MediaComplete.Lib.Background
         /// The icon reflecting the current status of the task
         /// </summary>
         public StatusBarHandler.StatusIcon Icon { get; set; }
-        /// <summary>
-        /// Set to true when the task has completed execution
-        /// </summary>
-        public bool IsDone { get; set; }
         /// <summary>
         /// Contains the most recent exception encountered while running the task.
         /// </summary>

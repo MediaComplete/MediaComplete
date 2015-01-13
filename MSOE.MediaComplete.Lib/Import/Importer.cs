@@ -1,79 +1,81 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
+using MSOE.MediaComplete.Lib.Background;
 
 namespace MSOE.MediaComplete.Lib.Import
 {
+    /// <summary>
+    /// Provides methods for adding new files into the application's library.
+    /// </summary>
     public class Importer
     {
-        public delegate void ImportHandler(ImportResults results);
+        /// <summary>
+        /// This event is fired whenever any import completes. It is intended to be used for any 
+        /// sorting, identification, etc. that takes places on new files.
+        /// </summary>
         public static event ImportHandler ImportFinished = delegate {};
-
+        public delegate void ImportHandler(ImportResults results);
 
         private readonly DirectoryInfo _homeDir;
 
+        /// <summary>
+        /// Constructs an Importer with the given library home directory.
+        /// </summary>
+        /// <param name="dir">The full path to the library home directory.</param>
         public Importer(string dir)
         {
             _homeDir = new DirectoryInfo(dir);
         }
 
-
+        /// <summary>
+        /// Helper method to import all the files in a given directory, recursively. If the recursion 
+        /// would delve into this Importer's homedir, those files are ignored.
+        /// </summary>
+        /// <param name="directory">The full path to the target directory</param>
+        /// <param name="isCopy">If true, files are copies and the original files remain in the source location. 
+        /// Otherwise, files are "cut" and removed from the source directory.</param>
+        /// <returns>An awaitable task of ImportResults</returns>
         public async Task<ImportResults> ImportDirectory(string directory, bool isCopy)
         {
-            StatusBarHandler.Instance.ChangeStatusBarMessage("Import-Started", StatusBarHandler.StatusIcon.Working);
             var files = Array.FindAll(Directory.GetFiles(directory, "*.mp3", SearchOption.AllDirectories),
                 s => !new FileInfo(s).HasParent(_homeDir));
             var results = await ImportFiles(files, isCopy);
-            StatusBarHandler.Instance.ChangeStatusBarMessage("Import-Success", StatusBarHandler.StatusIcon.Success);
             return results;
         }
 
+        /// <summary>
+        /// Performs an asynchronous import operation.
+        /// </summary>
+        /// <param name="files">A list of full file paths to be imported</param>
+        /// <param name="isCopy">If true, files are copies and the original files remain in the source location. 
+        /// Otherwise, files are "cut" and removed from the source directory.</param>
+        /// <returns>An awaitable task of ImportResults</returns>
+        /// <exception cref="InvalidImportException">Thrown when files includes a file in the current home directory</exception>
         public async Task<ImportResults> ImportFiles(string[] files, bool isCopy)
         {
+            // TODO pipe through queue (MC-115)
             StatusBarHandler.Instance.ChangeStatusBarMessage("Import-Started", StatusBarHandler.StatusIcon.Working);
+
+            var task = new ImportTask(_homeDir, files, isCopy);
+            Queue.Inst.Add(task);
+
+            await task.Lock.WaitAsync();
+
+            if (task.Error != null)
+            {
+                throw task.Error;
+            } 
             
-            if (files.Any(f => new FileInfo(f).HasParent(_homeDir)))
+            if (task.Results != null)
             {
-                throw new InvalidImportException();
+                ImportFinished(task.Results);
             }
 
-            var results = new ImportResults
-            {
-                FailCount = 0,
-                NewFiles = new List<FileInfo>(files.Length),
-                HomeDir = _homeDir
-            };
-
-            foreach (var file in files)
-            {
-                var myFile = file;
-                var newFile = _homeDir.FullName + Path.DirectorySeparatorChar + Path.GetFileName(file);
-                if (File.Exists(newFile)) continue;
-                try
-                {
-                    if (isCopy)
-                    {
-                        await Task.Run(() => File.Copy(myFile, newFile));
-                    }
-                    else
-                    {
-                        await Task.Run(() => File.Move(myFile, newFile));
-                    }
-                    results.NewFiles.Add(new FileInfo(newFile));
-                }
-                catch (IOException exception)
-                {
-                    Console.WriteLine(exception); // TODO log (MC-125)
-                    results.FailCount++;
-                    StatusBarHandler.Instance.ChangeStatusBarMessage("Importing-Error",
-                        StatusBarHandler.StatusIcon.Error);
-                }
-            }
-            ImportFinished(results);
+            // TODO pipe through queue (MC-115)
             StatusBarHandler.Instance.ChangeStatusBarMessage("Import-Success", StatusBarHandler.StatusIcon.Success);
-            return results;
+            return task.Results;
         }
     }
 

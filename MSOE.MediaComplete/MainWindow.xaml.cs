@@ -57,7 +57,8 @@ namespace MSOE.MediaComplete
         {
             Dispatcher.Invoke(() =>
             {
-                StatusMessage.Text = String.Format(format, message == null ? "" : Resources[message], extraArgs);
+                var args = (new[] {message == null ? "" : Resources[message]}).Concat(extraArgs);
+                StatusMessage.Text = String.Format(format, args.ToArray());
                 var sourceUri = new Uri("./Resources/" + icon + ".png", UriKind.Relative);
                 StatusIcon.Source = new BitmapImage(sourceUri);
             });

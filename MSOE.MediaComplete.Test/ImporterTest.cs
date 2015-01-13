@@ -58,6 +58,7 @@ namespace MSOE.MediaComplete.Test
             {
             }
 
+            
             if (task.Exception == null)
                 Assert.Fail("No exception occured!");
 

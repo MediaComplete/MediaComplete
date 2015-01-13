@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Import;
@@ -57,7 +58,9 @@ namespace MSOE.MediaComplete.Test
                 ((Sorter.DeleteAction) subject.Actions[0]).Target.FullName, "Didn't plan to delete the right file.");
 
             var sortTask = subject.PerformSort();
-            SpinWait.SpinUntil(() => sortTask.IsDone);
+
+            var sysTask = Task.Run(() => sortTask.Lock.WaitAsync());
+            sysTask.Wait();
 
             Assert.IsFalse(sourceFile.Exists, "Source file wasn't cleaned up!");
             Assert.IsFalse(new FileInfo(normalFilePath + Path.DirectorySeparatorChar + sourceFile.Name).Exists, "Source file shouldn't have been copied!");
@@ -76,7 +79,7 @@ namespace MSOE.MediaComplete.Test
 
             var subject = new Sorter(GetNormalSettings());
             var task = subject.CalculateActions();
-            SpinWait.SpinUntil(() => task.IsCompleted);
+            task.Wait();
 
             Assert.AreEqual(1, subject.UnsortableCount, "Sorter didn't count up the invalid file!");
             Assert.AreEqual(1, subject.MoveCount, "Sorter didn't plan to move the valid file!");
@@ -169,7 +172,8 @@ namespace MSOE.MediaComplete.Test
                 "Didn't plan to move normal file to the right destination.");
 
             var sortTask = subject.PerformSort();
-            SpinWait.SpinUntil(() => sortTask.IsDone);
+            var sysTask = Task.Run(() => sortTask.Lock.WaitAsync());
+            sysTask.Wait();
 
             Assert.IsFalse(oldDir.Exists, "Old directory didn't get cleaned up!");
             Assert.IsTrue(new FileInfo(normalFileDest).Exists, "File wasn't moved!");
@@ -201,7 +205,8 @@ namespace MSOE.MediaComplete.Test
                 "Didn't plan to move normal file to the right destination.");
 
             var sortTask = subject.PerformSort();
-            SpinWait.SpinUntil(() => sortTask.IsDone);
+            var sysTask = Task.Run(() => sortTask.Lock.WaitAsync());
+            sysTask.Wait();
 
             Assert.IsTrue(oldDir.Exists, "Old directory should still exist!");
             Assert.IsTrue(new FileInfo(normalFileDest).Exists, "File wasn't moved!");

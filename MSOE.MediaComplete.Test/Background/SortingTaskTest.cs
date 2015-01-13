@@ -37,9 +37,9 @@ namespace MSOE.MediaComplete.Test.Background
         {
             var queue = new List<List<Task>>
             {
-                new List<Task> {new ImportTask()},
+                new List<Task> {new ImportTask(null, null, false)},
                 new List<Task> {new IdentifierTask(), new IdentifierTask()},
-                new List<Task> {new IdentifierTask(), new ImportTask()},
+                new List<Task> {new IdentifierTask(), new ImportTask(null, null, false)},
                 new List<Task>()
             };
 
@@ -67,10 +67,10 @@ namespace MSOE.MediaComplete.Test.Background
         {
             var queue = new List<List<Task>>
             {
-                new List<Task> {new ImportTask()},
+                new List<Task> {new ImportTask(null, null, false)},
                 new List<Task> {new IdentifierTask(), new IdentifierTask()},
                 new List<Task> {new SortingTask(null)},
-                new List<Task> {new IdentifierTask(), new ImportTask()}
+                new List<Task> {new IdentifierTask(), new ImportTask(null, null, false)}
             };
 
             var subject = new SortingTask(null);

@@ -22,7 +22,6 @@ namespace MSOE.MediaComplete.Lib.Sorting
         public SortingTask(Sorter sorter)
         {
             Sorter = sorter;
-            IsDone = false;
         }
 
         /// <summary>
@@ -66,38 +65,44 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <returns>An awaitable task</returns>
         public async override Sys.Task Do(int i)
         {
-            Index = i;
-            Message = "Sorting-InProgress";
-
-            if (Sorter.Actions.Count == 0)
+            try
             {
-                await Sorter.CalculateActions();
-            }
+                Index = i;
+                Message = "Sorting-InProgress";
 
-            var counter = 0;
-            var max = (Sorter.Actions.Count > 100 ? Sorter.Actions.Count / 100 : 1);
-            var total = 0;
-            foreach (var action in Sorter.Actions)
+                if (Sorter.Actions.Count == 0)
+                {
+                    await Sorter.CalculateActions();
+                }
+
+                var counter = 0;
+                var max = (Sorter.Actions.Count > 100 ? Sorter.Actions.Count/100 : 1);
+                var total = 0;
+                foreach (var action in Sorter.Actions)
+                {
+                    try
+                    {
+                        action.Do();
+                    }
+                    catch (IOException e)
+                    {
+                        Error = e;
+                    }
+                    total++;
+
+                    if (counter++ >= max)
+                    {
+                        counter = 0;
+                        PercentComplete = ((double) total)/Sorter.Actions.Count;
+                        TriggerUpdate(this);
+                    }
+                }
+                Sorter.Settings.Root.ScrubEmptyDirectories();
+            }
+            finally
             {
-                try
-                {
-                    action.Do();
-                }
-                catch (IOException e)
-                {
-                    Error = e;
-                }
-                total++;
-
-                if (counter++ >= max)
-                {
-                    counter = 0;
-                    PercentComplete = ((double)total)/Sorter.Actions.Count;
-                    TriggerUpdate(this);
-                }
+                TriggerDone(this);
             }
-            Sorter.Settings.Root.ScrubEmptyDirectories();
-            IsDone = true;
         }
     }
 }

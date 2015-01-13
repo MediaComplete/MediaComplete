@@ -6,7 +6,7 @@ using System.Text;
 using MSOE.MediaComplete.Lib.Background;
 using MSOE.MediaComplete.Lib.Import;
 using MSOE.MediaComplete.Lib.Metadata;
-using Task = System.Threading.Tasks.Task;
+using Sys = System.Threading.Tasks;
 
 namespace MSOE.MediaComplete.Lib.Sorting
 {
@@ -42,6 +42,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <returns>The background queue tasks, so the status may be observed.</returns>
         public SortingTask PerformSort()
         {
+            // TODO pipe through queue (MC-115)
             StatusBarHandler.Instance.ChangeStatusBarMessage("Sorting-Started", StatusBarHandler.StatusIcon.Working);
             var task = new SortingTask(this);
             Queue.Inst.Add(task);
@@ -51,9 +52,9 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <summary>
         /// Private function to determine what movements need to occur to put the library in order
         /// </summary>
-        public async Task CalculateActions()
+        public async Sys.Task CalculateActions()
         {
-            await Task.Run(() =>
+            await Sys.Task.Run(() =>
             {
                 var fileInfos = Settings.Files ??
                                 Settings.Root.EnumerateFiles(Constants.MusicFilePattern, SearchOption.AllDirectories);
