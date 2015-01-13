@@ -24,6 +24,19 @@
 
                 </DockPanel>
             </TabItem>
+            <TabItem Header="Sorting Options">
+                <DockPanel LastChildFill="True">
+                    <StackPanel DockPanel.Dock="Top">
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Sort Automatically?" VerticalAlignment="Center" FontWeight="ExtraBold" />
+                            <CheckBox Name="CheckBoxSorting" VerticalAlignment="Center"
+                                          VerticalContentAlignment="Center" />
+                        </StackPanel>
+
+                    </StackPanel>
+
+                </DockPanel>
+            </TabItem>
             <TabItem Header="Automated Import">
                 <DockPanel LastChildFill="True">
                     <StackPanel DockPanel.Dock="Top">
