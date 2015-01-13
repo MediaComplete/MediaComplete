@@ -35,6 +35,7 @@ namespace MSOE.MediaComplete
 
             var homeDir = SettingWrapper.GetHomeDir() ??
                           Path.GetPathRoot(Environment.SystemDirectory);
+            ChangeSortMusic();
             StatusBarHandler.Instance.RaiseStatusBarEvent += HandleStatusBarChangeEvent;
             if (!homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
             {
@@ -47,10 +48,18 @@ namespace MSOE.MediaComplete
 
                 Polling.Instance.Start();
             }
-            Polling.InboxFilesDetected += ImportFromInbox;
             Directory.CreateDirectory(homeDir);
+            InitEvents();
 
             InitTreeView();
+        }
+
+        private void InitEvents()
+        {
+            Polling.InboxFilesDetected += ImportFromInbox;
+            SettingWrapper.RaiseSettingEvent += HandleSettingEvent;
+            // ReSharper disable once ObjectCreationAsStatement
+            new Sorter(null);
         }
 
         private void HandleStatusBarChangeEvent(string format, string message, StatusBarHandler.StatusIcon icon, params object[] extraArgs)
@@ -62,6 +71,18 @@ namespace MSOE.MediaComplete
                 var sourceUri = new Uri("./Resources/" + icon + ".png", UriKind.Relative);
                 StatusIcon.Source = new BitmapImage(sourceUri);
             });
+        }
+
+        private void HandleSettingEvent()
+        {
+            ChangeSortMusic();
+        }
+
+        private void ChangeSortMusic()
+        {
+            var content = SettingWrapper.GetIsSorting() ? Resources["Toolbar-SortMusic-Tooltip"].ToString() : Resources["Toolbar-SortMusicDisabled-Tooltip"].ToString();
+            SortMusic.ToolTip = content;
+            SortMusic.IsEnabled = SettingWrapper.GetIsSorting();
         }
 
         protected override void OnClosed(EventArgs e)
@@ -132,6 +153,7 @@ namespace MSOE.MediaComplete
 
             if (folderDialog.ShowDialog() != WinForms.DialogResult.OK) return;
             var selectedDir = folderDialog.SelectedPath;
+
             var results = await new Importer(SettingWrapper.GetHomeDir()).ImportDirectory(selectedDir, true);
             if (results.FailCount > 0)
             {

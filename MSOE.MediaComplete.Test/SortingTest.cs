@@ -55,7 +55,7 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(0, subject.MoveCount, "Sorter shouldn't move any files!");
             Assert.AreEqual(1, subject.DupCount, "Sorter didn't plan to delete dup file!");
             Assert.AreEqual(_homeDir.FullName + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName + ".test.mp3",
-                ((Sorter.DeleteAction) subject.Actions[0]).Target.FullName, "Didn't plan to delete the right file.");
+                ((Sorter.DeleteAction)subject.Actions[0]).Target.FullName, "Didn't plan to delete the right file.");
 
             var sortTask = subject.PerformSort();
 
@@ -74,7 +74,7 @@ namespace MSOE.MediaComplete.Test
         {
             FileHelper.CreateInvalidTestFile(_homeDir.FullName);
             FileHelper.CreateTestFile(_homeDir.FullName);
-            var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" + 
+            var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName;
 
             var subject = new Sorter(GetNormalSettings());
@@ -84,9 +84,9 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(1, subject.UnsortableCount, "Sorter didn't count up the invalid file!");
             Assert.AreEqual(1, subject.MoveCount, "Sorter didn't plan to move the valid file!");
             Assert.AreEqual(0, subject.DupCount, "Sorter didn't plan to move the valid file!");
-            Assert.AreEqual(_homeDir.FullName + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName, 
+            Assert.AreEqual(_homeDir.FullName + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName,
                 ((Sorter.MoveAction)subject.Actions[0]).Source.FullName, "Didn't plan to move the right file.");
-            Assert.AreEqual(normalFileDest, ((Sorter.MoveAction)subject.Actions[0]).Dest.FullName, 
+            Assert.AreEqual(normalFileDest, ((Sorter.MoveAction)subject.Actions[0]).Dest.FullName,
                 "Didn't plan to move to the right destination.");
         }
 
@@ -97,7 +97,7 @@ namespace MSOE.MediaComplete.Test
         public void Sort_NoAlbum_MovesDown1()
         {
             FileHelper.CreateMissingAlbumTestFile(_homeDir.FullName);
-            var noAblbumDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" + 
+            var noAblbumDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
                 Path.DirectorySeparatorChar + Util.Constants.MissingAlbumMp3FileName;
             FileHelper.CreateTestFile(_homeDir.FullName);
             var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
@@ -113,12 +113,12 @@ namespace MSOE.MediaComplete.Test
 
             Assert.AreEqual(_homeDir.FullName + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName,
                 ((Sorter.MoveAction)subject.Actions[1]).Source.FullName, "Didn't plan to move the normal file.");
-            Assert.AreEqual(normalFileDest, ((Sorter.MoveAction)subject.Actions[1]).Dest.FullName, 
+            Assert.AreEqual(normalFileDest, ((Sorter.MoveAction)subject.Actions[1]).Dest.FullName,
                 "Didn't plan to move normal file to the right destination.");
 
             Assert.AreEqual(_homeDir.FullName + Path.DirectorySeparatorChar + Util.Constants.MissingAlbumMp3FileName,
                 ((Sorter.MoveAction)subject.Actions[0]).Source.FullName, "Didn't plan to move the missing album file.");
-            Assert.AreEqual(noAblbumDest, ((Sorter.MoveAction)subject.Actions[0]).Dest.FullName, 
+            Assert.AreEqual(noAblbumDest, ((Sorter.MoveAction)subject.Actions[0]).Dest.FullName,
                 "Didn't plan to move missing album file to the right destination.");
         }
 
@@ -143,7 +143,7 @@ namespace MSOE.MediaComplete.Test
 
             Assert.AreEqual(_homeDir.FullName + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName,
                 ((Sorter.MoveAction)subject.Actions[0]).Source.FullName, "Didn't plan to move the normal file.");
-            Assert.AreEqual(normalFileDest, ((Sorter.MoveAction)subject.Actions[0]).Dest.FullName, 
+            Assert.AreEqual(normalFileDest, ((Sorter.MoveAction)subject.Actions[0]).Dest.FullName,
                 "Didn't plan to move normal file to the right destination.");
         }
 
@@ -168,7 +168,7 @@ namespace MSOE.MediaComplete.Test
 
             Assert.AreEqual(oldDir.FullName + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName,
                 ((Sorter.MoveAction)subject.Actions[0]).Source.FullName, "Didn't plan to move the normal file.");
-            Assert.AreEqual(normalFileDest, ((Sorter.MoveAction)subject.Actions[0]).Dest.FullName, 
+            Assert.AreEqual(normalFileDest, ((Sorter.MoveAction)subject.Actions[0]).Dest.FullName,
                 "Didn't plan to move normal file to the right destination.");
 
             var sortTask = subject.PerformSort();
@@ -218,6 +218,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod, Timeout(30000)]
         public void Import_CausesSort_IgnoresOldFiles()
         {
+            SettingWrapper.SetIsSorting(true);
             // ReSharper disable once ObjectCreationAsStatement
             new Sorter(null); // Force the static initializer to fire.
             var decoyFile = FileHelper.CreateTestFile(_homeDir.FullName); // Deliberately put an unsorted file in
@@ -226,10 +227,10 @@ namespace MSOE.MediaComplete.Test
             var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName;
 
-            var task = new Importer(_homeDir.FullName ).ImportDirectory(_importDir.FullName, true);
+            var task = new Importer(_homeDir.FullName).ImportDirectory(_importDir.FullName, true);
             while (!task.IsCompleted)
             {
-                
+
             }
             // Need to poll for the file, since we don't have a way of monitoring the sorter directly.
             while (!new FileInfo(normalFileDest).Exists)
@@ -237,6 +238,28 @@ namespace MSOE.MediaComplete.Test
             }
 
             Assert.IsTrue(decoyFile.Exists);
+        }
+
+        /// <summary>
+        /// Make sure that imports trigger does not trigger a sort.
+        /// </summary>
+        [TestMethod, Timeout(30000)]
+        public void Import_NoSort_IgnoresNewFiles()
+        {
+            SettingWrapper.SetIsSorting(false);
+            // ReSharper disable once ObjectCreationAsStatement
+            new Sorter(null); // Force the static initializer to fire.
+            FileHelper.CreateTestFile(_importDir.FullName);
+            var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName;
+
+            var task = new Importer(_homeDir.FullName).ImportDirectory(_importDir.FullName, true);
+            while (!task.IsCompleted)
+            {
+
+            }
+            Thread.Sleep(200);
+
+            Assert.IsTrue(new FileInfo(normalFileDest).Exists);
         }
 
         public SortSettings GetNormalSettings()

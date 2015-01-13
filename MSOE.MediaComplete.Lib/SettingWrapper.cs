@@ -13,6 +13,7 @@ namespace MSOE.MediaComplete.Lib
         private const string PollingTime = "PollingTime";
         private const string IsPolling = "IsPolling";
         private const string ShowInputDialog = "ShowInputDialog";
+        private const string IsSorting = "IsSorting";
 
         public static event SettingsChangedListener RaiseSettingEvent = delegate {};
         public delegate void SettingsChangedListener();
@@ -105,6 +106,23 @@ namespace MSOE.MediaComplete.Lib
         public static void SetShowInputDialog(bool showInputDialog)
         {
             Settings.Default[ShowInputDialog] = showInputDialog;
+        }
+        /// <summary>
+        /// gets the IsSorting boolean from settings
+        /// </summary>
+        /// <returns>IsSorting is true if automatically sorting is desired, false if not desired</returns>
+        public static bool GetIsSorting()
+        {
+            return (bool)Settings.Default[IsSorting];
+        }
+
+        /// <summary>
+        /// sets whether the application should sort automatically
+        /// </summary>
+        /// <param name="isSorting">boolean to set</param>
+        public static void SetIsSorting(bool isSorting)
+        {
+            Settings.Default[IsSorting] = isSorting;
         }
 
         /// <summary>
