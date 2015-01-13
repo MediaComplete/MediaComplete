@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib;
-using MSOE.MediaComplete.Test.Util;
 using TagLib;
 
 namespace MSOE.MediaComplete.Test
@@ -8,11 +7,16 @@ namespace MSOE.MediaComplete.Test
     [TestClass]
     public class MetaDataExtensions
     {
+        #region Files
         private File _mp3File;
+        private File _wmaFile;
         private static File _file;
-        private const string InvalidMp3FileName = "Resources/InvalidMp3File.mp3";
         private const string BlankFile = "Resources/Blanked.mp3";
         private const string ValidMp3FileName = "Resources/ValidMp3File.mp3";
+        private const string ValidWmaFileName = "Resources/ValidWmaFile.wma";
+        #endregion
+
+        #region Attributes
         private const string ValidYear = "2012";
         private const string ValidTrack = "1";
         private const string ValidTitle = "Get Got";
@@ -27,15 +31,30 @@ namespace MSOE.MediaComplete.Test
         private const string BadArtist = "NotArtist";
         private const string BadSupportingArtist = "artist12,artist32";
         private const string BadGenre = "BadGenre";
-        private const string BadRating = "1";
+        #endregion
 
-        [TestMethod]
-        [ExpectedException(typeof(CorruptFileException))]
-        public void Mp3MetadataEditor_InvalidFileType_ShouldThrowCorruptFileException()
+        #region Initialization
+        [ClassCleanup]
+        public static void CleanUp()
         {
-            _mp3File = File.Create(InvalidMp3FileName);
-        }
+            _file.SetYear("");
+            _file.SetAlbum("");
+            _file.SetArtist("");
+            _file.SetGenre("");
+            _file.SetRating("");
+            _file.SetSongTitle("");
+            _file.SetSupportingArtists("");
+            _file.SetTrack("");
 
+        }
+        [ClassInitialize]
+        public static void Initialize(TestContext tc)
+        {
+            _file = File.Create(BlankFile);
+        }
+        #endregion
+
+        #region MP3 Getters
         [TestMethod]
         public void GetYear_ValidMp3_ShouldReturnYear()
         {
@@ -78,27 +97,9 @@ namespace MSOE.MediaComplete.Test
             _mp3File = File.Create(ValidMp3FileName);
             Assert.AreEqual(ValidGenre, _mp3File.GetGenre());
         }
+        #endregion
 
-
-        [ClassCleanup]
-        public static void CleanUp()
-        {
-            _file.SetYear("");
-            _file.SetAlbum("");
-            _file.SetArtist("");
-            _file.SetGenre("");
-            _file.SetRating("");
-            _file.SetSongTitle("");
-            _file.SetSupportingArtists("");
-            _file.SetTrack("");
-
-        }
-        [ClassInitialize]
-        public static void Initialize(TestContext tc)
-        {
-            _file = File.Create(BlankFile);
-
-        }
+        #region MP3 Setters
         [TestMethod]
         public void SetYear_BlankMp3_ShouldChangeYear()
         {
@@ -155,7 +156,117 @@ namespace MSOE.MediaComplete.Test
             _file.SetGenre(BadGenre);
             Assert.AreEqual(BadGenre, _file.GetGenre());
         }
-    }
-        
+        #endregion
 
+        #region WMA Getters
+        [TestMethod]
+        public void GetYear_ValidWma_ShouldReturnYear()
+        {
+            _wmaFile = File.Create(ValidWmaFileName);
+            Assert.AreEqual(ValidYear, _wmaFile.GetYear());
+        }
+        [TestMethod]
+        public void GetTrack_ValidWma_ShouldReturnTrack()
+        {
+            _wmaFile = File.Create(ValidWmaFileName);
+            Assert.AreEqual(ValidTrack, _wmaFile.GetTrack());
+        }
+        [TestMethod]
+        public void GetTitle_ValidWma_ShouldReturnTitle()
+        {
+            _wmaFile = File.Create(ValidWmaFileName);
+            Assert.AreEqual(ValidTitle, _wmaFile.GetSongTitle());
+        }
+        [TestMethod]
+        public void GetAlbum_ValidWma_ShouldReturnAlbum()
+        {
+            _wmaFile = File.Create(ValidWmaFileName);
+            Assert.AreEqual(ValidAlbum, _wmaFile.GetAlbum());
+        }
+        [TestMethod]
+        public void GetArtist_ValidWma_ShouldReturnArtist()
+        {
+            _wmaFile = File.Create(ValidWmaFileName);
+            Assert.AreEqual(ValidArtist, _wmaFile.GetArtist());
+        }
+        [TestMethod]
+        public void GetSupportingArtist_ValidWma_ShouldReturnSuppArtist()
+        {
+            _wmaFile = File.Create(ValidWmaFileName);
+            Assert.AreEqual(ValidSupportingArtist, _wmaFile.GetSupportingArtist());
+        }
+        [TestMethod]
+        public void GetGenre_ValidWma_ShouldReturnGenre()
+        {
+            _wmaFile = File.Create(ValidWmaFileName);
+            Assert.AreEqual(ValidGenre, _wmaFile.GetGenre());
+        }
+        #endregion
+
+        #region WMA Setters
+        [TestMethod]
+        public void SetYear_BlankWma_ShouldChangeYear()
+        {
+            _wmaFile = File.Create(ValidWmaFileName);
+            _wmaFile.SetYear(ValidYear);
+            Assert.AreNotEqual(BadYear, _wmaFile.GetYear());
+            _wmaFile.SetYear(BadYear);
+            Assert.AreEqual(BadYear, _wmaFile.GetYear());
+        }
+        [TestMethod]
+        public void SetTrack_BlankWma_ShouldChangeTrack()
+        {
+            _wmaFile = File.Create(ValidWmaFileName);
+            _wmaFile.SetTrack(ValidTrack);
+            Assert.AreNotEqual(BadTrack, _wmaFile.GetTrack());
+            _wmaFile.SetTrack(BadTrack);
+            Assert.AreEqual(BadTrack, _wmaFile.GetTrack());
+        }
+        [TestMethod]
+        public void SetTitle_BlankWma_ShouldChangeTitle()
+        {
+            _wmaFile = File.Create(ValidWmaFileName);
+            _wmaFile.SetSongTitle(ValidTitle);
+            Assert.AreNotEqual(BadTitle, _wmaFile.GetSongTitle());
+            _wmaFile.SetSongTitle(BadTitle);
+            Assert.AreEqual(BadTitle, _wmaFile.GetSongTitle());
+        }
+        [TestMethod]
+        public void SetAlbum_BlankWma_ShouldChangeAlbum()
+        {
+            _wmaFile = File.Create(ValidWmaFileName);
+            _wmaFile.SetAlbum(ValidAlbum);
+            Assert.AreNotEqual(BadAlbum, _wmaFile.GetAlbum());
+            _wmaFile.SetAlbum(BadAlbum);
+            Assert.AreEqual(BadAlbum, _wmaFile.GetAlbum());
+        }
+        [TestMethod]
+        public void SetArtist_BlankWma_ShouldChangeArtist()
+        {
+            _wmaFile = File.Create(ValidWmaFileName);
+            _wmaFile.SetArtist(ValidArtist);
+            Assert.AreNotEqual(BadArtist, _wmaFile.GetArtist());
+            _wmaFile.SetArtist(BadArtist);
+            Assert.AreEqual(BadArtist, _wmaFile.GetArtist());
+        }
+        [TestMethod]
+        public void SetSupportingArtist_BlankWma_ShouldChangeSuppArtist()
+        {
+            _wmaFile = File.Create(ValidWmaFileName);
+            _wmaFile.SetSupportingArtists(ValidSupportingArtist);
+            Assert.AreNotEqual(BadSupportingArtist, _wmaFile.GetSupportingArtist());
+            _wmaFile.SetSupportingArtists(BadSupportingArtist);
+            Assert.AreEqual(BadSupportingArtist, _wmaFile.GetSupportingArtist());
+        }
+        [TestMethod]
+        public void SetGenre_BlankWma_ShouldChangeGenre()
+        {
+            _wmaFile = File.Create(ValidWmaFileName);
+            _wmaFile.SetGenre(ValidGenre);
+            Assert.AreNotEqual(BadGenre, _wmaFile.GetGenre());
+            _wmaFile.SetGenre(BadGenre);
+            Assert.AreEqual(BadGenre, _wmaFile.GetGenre());
+        }
+        #endregion
+    }
 }

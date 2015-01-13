@@ -98,6 +98,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="ReadMe.txt" />
+    <Content Include="Resources\ValidWmaFile.wma">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

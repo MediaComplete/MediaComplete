@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -20,11 +21,17 @@ namespace MSOE.MediaComplete.Lib
                 return false;
             }
 
-            return dir.EnumerateFiles(Constants.MusicFilePattern).Any(f =>
-            {
-                var file = File.Create(f.FullName);
-                return matchFile.MusicFileEquals(file);
-            });
+            return dir.EnumerateFiles().GetMusicFiles().Any(f => matchFile.MusicFileEquals(File.Create(f.FullName)));
+        }
+
+        /// <summary>
+        /// This returns all files in the array dir with extensions listed in the Constants.MusicFileExtensions list
+        /// </summary>
+        /// <param name="dir">directory of files</param>
+        /// <returns></returns>
+        public static IEnumerable<FileInfo> GetMusicFiles(this IEnumerable<FileInfo> dir)
+        {
+            return dir.Where(child => Constants.MusicFileExtensions.Any((e => child.Name.EndsWith(e))));
         }
 
         /// <summary>
@@ -32,8 +39,8 @@ namespace MSOE.MediaComplete.Lib
         /// since the actual file names are often different. This could still cause issues if one 
         /// file or the other hasn't had its metadata properly filled out, but this is really the best we can do.
         /// </summary>
-        /// <param name="file">The first MP3 file</param>
-        /// <param name="other">The second MP3 file</param>
+        /// <param name="file">The first music file</param>
+        /// <param name="other">The second music file</param>
         /// <returns>True if the files logically represent the same song.</returns>
         public static bool MusicFileEquals(this File file, File other)
         {
@@ -93,7 +100,7 @@ namespace MSOE.MediaComplete.Lib
         /// <summary>
         /// Retrieves an ID3 tag value corresponding to the MetaAttribute.
         /// </summary>
-        /// <param name="file">The MP3 File</param>
+        /// <param name="file">The Music File</param>
         /// <param name="attr">The MetaAttribute for the specific ID3 value to be returned</param>
         /// <returns>The ID3 value from the tag</returns>
         internal static string StringForMetaAttribute(this File file, MetaAttribute attr)

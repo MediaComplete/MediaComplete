@@ -24,18 +24,20 @@ namespace MSOE.MediaComplete.Lib
         public async Task<ImportResults> ImportDirectory(string directory, bool isCopy)
         {
             StatusBarHandler.Instance.ChangeStatusBarMessage("Import-Started", StatusBarHandler.StatusIcon.Working);
-            var files = Array.FindAll(Directory.GetFiles(directory, "*.mp3", SearchOption.AllDirectories),
-                s => !new FileInfo(s).HasParent(_homeDir));
+            var musicFilesInDirectory =
+                new DirectoryInfo(directory).EnumerateFiles("*", SearchOption.AllDirectories).GetMusicFiles();
+            var files = musicFilesInDirectory.Where(s => !s.HasParent(_homeDir));
             var results = await ImportFiles(files, isCopy);
             StatusBarHandler.Instance.ChangeStatusBarMessage("Import-Success", StatusBarHandler.StatusIcon.Success);
             return results;
         }
 
-        public async Task<ImportResults> ImportFiles(string[] files, bool isCopy)
+        public async Task<ImportResults> ImportFiles(IEnumerable<FileInfo> files, bool isCopy)
         {
             StatusBarHandler.Instance.ChangeStatusBarMessage("Import-Started", StatusBarHandler.StatusIcon.Working);
-            
-            if (files.Any(f => new FileInfo(f).HasParent(_homeDir)))
+
+            var fileInfos = files as FileInfo[] ?? files.ToArray();
+            if (fileInfos.Any(f => f.HasParent(_homeDir)))
             {
                 throw new InvalidImportException();
             }
@@ -43,24 +45,24 @@ namespace MSOE.MediaComplete.Lib
             var results = new ImportResults
             {
                 FailCount = 0,
-                NewFiles = new List<FileInfo>(files.Length),
+                NewFiles = new List<FileInfo>(fileInfos.Length),
                 HomeDir = _homeDir
             };
 
-            foreach (var file in files)
+            foreach (var file in fileInfos)
             {
                 var myFile = file;
-                var newFile = _homeDir.FullName + Path.DirectorySeparatorChar + Path.GetFileName(file);
+                var newFile = _homeDir.FullName + Path.DirectorySeparatorChar + Path.GetFileName(file.Name);
                 if (File.Exists(newFile)) continue;
                 try
                 {
                     if (isCopy)
                     {
-                        await Task.Run(() => File.Copy(myFile, newFile));
+                        await Task.Run(() => File.Copy(myFile.FullName, newFile));
                     }
                     else
                     {
-                        await Task.Run(() => File.Move(myFile, newFile));
+                        await Task.Run(() => File.Move(myFile.FullName, newFile));
                     }
                     results.NewFiles.Add(new FileInfo(newFile));
                 }

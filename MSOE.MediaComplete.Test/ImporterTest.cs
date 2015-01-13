@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Test.Util;
@@ -36,7 +37,7 @@ namespace MSOE.MediaComplete.Test
             Task<ImportResults> task;
             using (fileInUse.OpenWrite())
             {
-                task = new Importer(_homeDir.FullName).ImportFiles(new[] { fileInUse.FullName }, true);
+                task = new Importer(_homeDir.FullName).ImportFiles(new List<FileInfo>{fileInUse}, true);
                 while (!task.IsCompleted)
                 {
                 }
@@ -52,7 +53,7 @@ namespace MSOE.MediaComplete.Test
         public void Import_FromLibrary_Exception()
         {
             var fileInLib = FileHelper.CreateTestFile(_homeDir.FullName);
-            var task = new Importer(_homeDir.FullName).ImportFiles(new[] { fileInLib.FullName }, true);
+            var task = new Importer(_homeDir.FullName).ImportFiles(new List<FileInfo>{ fileInLib }, true);
             while (!task.IsCompleted)
             {
             }
