@@ -220,11 +220,6 @@ namespace MSOE.MediaComplete
 
         private void Edit_OnClick(object sender, RoutedEventArgs e)
         {
-            FormCheck();
-        }
-
-        private void FormCheck()
-        {
 
             if (EditCancelButton.Content.Equals("Edit") && SongTree.SelectedItems.Count > 0)
             {
@@ -232,6 +227,26 @@ namespace MSOE.MediaComplete
                 ToggleReadOnlyFields(false);
             }
             else if (EditCancelButton.Content.Equals("Cancel"))
+            {
+                foreach (var changedBox in _changedBoxes)
+                {
+                    while (changedBox.CanUndo)
+                    {
+                        changedBox.Undo();
+                    }
+                    changedBox.Redo();
+                    changedBox.LockCurrentUndoUnit();
+                }
+                _changedBoxes.Clear();
+                ToggleReadOnlyFields(true);
+                EditCancelButton.Content = "Edit";
+                PopulateMetadataForm();
+            }
+        }
+
+        private void FormCheck()
+        {
+            if (EditCancelButton.Content.Equals("Cancel"))
             {
                 foreach (var changedBox in _changedBoxes)
                 {

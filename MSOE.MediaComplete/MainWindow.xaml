@@ -37,8 +37,6 @@
                     <MenuItem.Resources></MenuItem.Resources>
                     <MenuItem Header="_Settings" Style="{DynamicResource MenuItemStyle}"/>
                 </MenuItem>
-                <MenuItem Header="_Playlists" />
-                <MenuItem Header="_MetaDataFinderThing" />
             </Menu>
             <TextBox Text="Search" Height="22" Width="180" HorizontalAlignment="Right"/>
         </Grid>
