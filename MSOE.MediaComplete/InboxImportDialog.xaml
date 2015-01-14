@@ -7,11 +7,12 @@
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner">
-    <Grid>
+    <Grid Style="{DynamicResource GridStyle}">
         <TextBlock Margin="10"
             Name="MessageTextBlock"
-            Text="This is the test text." />
-        <CheckBox Name="StopShowingCheckBox" Margin="10,50,0,0">Don't show this message again.</CheckBox>
+            Text="This is the test text."
+            Style="{DynamicResource TextBlockStyle}"/>
+        <CheckBox Name="StopShowingCheckBox" Margin="10,50,0,0" Content="Don't show this message again." Style="{DynamicResource CheckBoxStyle}"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
             <Button Name="OkButton" Click="okButton_Click" IsDefault="True" MinWidth="65" Margin="0,0,0,10">Yes</Button>
             <Button Name="CancelButton" Click="CancelButton_OnClick" IsCancel="True"  MinWidth="65" Margin="10,0,10,10">No</Button>
