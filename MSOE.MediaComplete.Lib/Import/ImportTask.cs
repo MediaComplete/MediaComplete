@@ -71,8 +71,11 @@ namespace MSOE.MediaComplete.Lib.Import
         /// </summary>
         /// <param name="i">The task ID, assigned by the queue</param>
         /// <returns>A system task that can be tracked</returns>
-        public async override Sys.Task Do(int i)
+        public override void Do(int i)
         {
+            Id = i;
+            Message = "Import-InProgress";
+            Icon = StatusBarHandler.StatusIcon.Working;
             var results = new ImportResults
             {
                 FailCount = 0,
@@ -82,11 +85,9 @@ namespace MSOE.MediaComplete.Lib.Import
 
             try
             {
-                if (_files.Any(f => new FileInfo(f).HasParent(_homeDir)))
-                {
-                    throw new InvalidImportException();
-                }
-
+                var counter = 0;
+                var max = (_files.Length > 100 ? _files.Length / 100 : 1);
+                var total = 0;
                 foreach (var file in _files)
                 {
                     var myFile = file;
@@ -96,32 +97,50 @@ namespace MSOE.MediaComplete.Lib.Import
                     {
                         if (_isCopy)
                         {
-                            await Sys.Task.Run(() => File.Copy(myFile, newFile));
+                            File.Copy(myFile, newFile);
                         }
                         else
                         {
-                            await Sys.Task.Run(() => File.Move(myFile, newFile));
+                            File.Move(myFile, newFile);
                         }
                         results.NewFiles.Add(new FileInfo(newFile));
                     }
                     catch (IOException exception)
                     {
-                        Console.WriteLine(exception); // TODO log (MC-125)
+                        Console.WriteLine(exception); // TODO (MC-125) log
                         results.FailCount++;
-                        StatusBarHandler.Instance.ChangeStatusBarMessage("Importing-Error",
-                            StatusBarHandler.StatusIcon.Error); // TODO pipe through queue (MC-115)
+                        Message = "Importing-Error";
+                        Icon = StatusBarHandler.StatusIcon.Error;
+                        Error = exception;
+                        TriggerUpdate(this);
                     }
+
+                    total++;
+                    if (counter++ >= max)
+                    {
+                        counter = 0;
+                        PercentComplete = ((double)total) / _files.Length;
+                        TriggerUpdate(this);
+                    }
+                }
+
+                Results = results;
+                if (Error == null)
+                {
+                    Message = "Import-Success";
+                    Icon = StatusBarHandler.StatusIcon.Success;
                 }
             }
             catch (Exception e)
             {
+                Message = "Importing-Error";
+                Icon = StatusBarHandler.StatusIcon.Error;
                 Error = e;
             }
             finally
             {
                 TriggerDone(this);
             }
-            Results = results;
         }
     }
 }

@@ -12,7 +12,7 @@ namespace MSOE.MediaComplete.Lib.Background
     {
         protected Task()
         {
-            Lock = new SemaphoreSlim(1);
+            Lock = new SemaphoreSlim(1, 1);
             Lock.Wait();
         }
 
@@ -41,6 +41,8 @@ namespace MSOE.MediaComplete.Lib.Background
         /// </summary>
         protected void TriggerDone(Task data)
         {
+            data.PercentComplete = 1;
+            TriggerUpdate(data);
             Lock.Release();
             Done(data);
         }
@@ -51,9 +53,9 @@ namespace MSOE.MediaComplete.Lib.Background
         /// </summary>
         public SemaphoreSlim Lock { get; private set; }
         /// <summary>
-        /// The index of this task, as assigned by the work queue.
+        /// The id of this task, as assigned by the work queue.
         /// </summary>
-        public int Index { get; set; }
+        public int Id { get; set; }
         /// <summary>
         /// The amount of the task that has been finished. 
         /// </summary>
@@ -83,6 +85,6 @@ namespace MSOE.MediaComplete.Lib.Background
         /// </summary>
         /// <param name="i">The index of this task, as assigned by the queue when it's started</param>
         /// <returns>An async Task</returns>
-        public abstract Sys.Task Do(int i);
+        public abstract void Do(int i);
     }
 }

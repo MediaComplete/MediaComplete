@@ -481,7 +481,7 @@ namespace MSOE.MediaComplete
 
         private async void Toolbar_AutoIDMusic_Click(object sender, RoutedEventArgs e)
         {
-            // TODO mass ID of multi-selected songs or folders
+            // TODO (MC-45) mass ID of multi-selected songs and folders
             foreach (var selection in from object item in SongTree.SelectedItems select item as SongTreeViewItem)
             {
                 try
@@ -491,7 +491,10 @@ namespace MSOE.MediaComplete
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message); // TODO status bar error message
+                    // TODO (MC-125) Logging
+                    StatusBarHandler.Instance.ChangeStatusBarMessage(
+                        String.Format(Resources["MusicIdentification-Error"].ToString(), ex.Message),
+                        StatusBarHandler.StatusIcon.Error);
                 }
             }
         }
@@ -499,8 +502,7 @@ namespace MSOE.MediaComplete
         private async void ContextMenu_AutoIDMusic_Click(object sender, RoutedEventArgs e)
         {
             // Access the targetted song 
-            // TODO mass ID of multi-selected songs
-            // TODO provide this context menu item for folders
+            // TODO (MC-45) mass ID of multi-selected songs and folders
             var menuItem = sender as MenuItem;
             if (menuItem == null)
                 return;
@@ -515,7 +517,10 @@ namespace MSOE.MediaComplete
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message); // TODO status bar error message
+                    // TODO (MC-125) Logging
+                    StatusBarHandler.Instance.ChangeStatusBarMessage(
+                        String.Format(Resources["MusicIdentification-Error"].ToString(), ex.Message), 
+                        StatusBarHandler.StatusIcon.Error);
                 }
             }
             
@@ -528,7 +533,7 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private async void Toolbar_SortMusic_Click(object sender, RoutedEventArgs e)
         {
-            // TODO - obtain from settings file, make configurable
+            // TODO (MC-43) obtain from settings file, make configurable
             var root = new DirectoryInfo(SettingWrapper.GetHomeDir());
             var settings = new SortSettings
             {
@@ -555,14 +560,7 @@ namespace MSOE.MediaComplete
 
             if (result != MessageBoxResult.Yes) return;
             
-            var task = sorter.PerformSort();
-            
-            // Status bar the error, if we had one
-            if (task.Error != null)
-            {
-                StatusBarHandler.Instance.ChangeStatusBarMessage(Resources["Sorting-HadError"] as string, 
-                    task.Error.Message, StatusBarHandler.StatusIcon.Error);
-            }
+            sorter.PerformSort();
         }
 
         private void Edit_OnClick(object sender, RoutedEventArgs e)

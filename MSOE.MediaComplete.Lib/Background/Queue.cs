@@ -27,10 +27,16 @@ namespace MSOE.MediaComplete.Lib.Background
             Inst = new Queue();
         }
 
+        #region Privates
         // The queue of jobs, as integer-index enumurables. This allows groups of tasks to be run in parallel
         private readonly List<List<Task>> _tasks;
         // The number of tasks currently active (at the last spawn).
         private int _activeCount;
+        // The highest-importance task received in a session (i.e. the one with the highest-priority icon)
+        private Task _greatestTask;
+        // The total number of tasks in this session
+        private int _sessionCount;
+        #endregion
 
         /// <summary>
         /// Adds a new task to the queue. Queued up tasks are shuffled/updated as necessary.
@@ -47,6 +53,7 @@ namespace MSOE.MediaComplete.Lib.Background
             {
                 Sys.Task.Run(() => Run());
             }
+            _sessionCount++;
         }
 
         /// <summary>
@@ -55,7 +62,9 @@ namespace MSOE.MediaComplete.Lib.Background
         /// </summary>
         private void Run()
         {
-            while (_tasks.Count > 0)
+            var id = 1;
+            var keepGoing = true;
+            while (keepGoing)
             {
                 List<Task> tasks;
                 lock (_tasks)
@@ -66,9 +75,25 @@ namespace MSOE.MediaComplete.Lib.Background
                 _activeCount = tasks.Count;
                 tasks.ForEach(t => t.Update += RouteMessage);
                 
-                Sys.Parallel.For(0, tasks.Count, i => tasks[i].Do(i));
+                Sys.Parallel.For(0, tasks.Count, j => tasks[j].Do(id++));
+
+                lock (_tasks)
+                {
+                    keepGoing = _tasks.Count > 0;
+                }
             }
+
+            ResetSession();
+        }
+
+        /// <summary>
+        /// Resets any variables used over the course of this session.
+        /// </summary>
+        private void ResetSession()
+        {
             _activeCount = 0;
+            _sessionCount = 0;
+            _greatestTask = null;
         }
 
         /// <summary>
@@ -77,8 +102,15 @@ namespace MSOE.MediaComplete.Lib.Background
         /// <param name="task">The task sending the update, which will have all the necessary data</param>
         private void RouteMessage(Task task)
         {
+            if (task.Icon > StatusBarHandler.StatusIcon.Success && (_greatestTask == null || _greatestTask.Icon < task.Icon))
+            {
+                _greatestTask = task;
+            }
+
+            var t = _greatestTask ?? task;
+
             StatusBarHandler.Instance.ChangeStatusBarMessage("[{1}/{2}] {0} ({3}%)",
-                task.Message, task.Icon, task.Index, _tasks.Count + _activeCount, task.PercentComplete);
+                t.Message, t.Icon, t.Id, _sessionCount, (t.PercentComplete * 100).ToString("N1"));
         }
     }
 }

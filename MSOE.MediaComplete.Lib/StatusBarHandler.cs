@@ -27,14 +27,18 @@ namespace MSOE.MediaComplete.Lib
             _timer.Stop();
         }
 
+        /// <summary>
+        /// Icon to represent the status symbol to display. 
+        /// </summary>
         public enum StatusIcon 
         {
+            // The order of this enum should be preserved, as it is used as a priority indicator in Queue.cs
             None,
             Working,
             Info,
+            Success,
             Warning,
-            Error,
-            Success
+            Error
         }
         public delegate void StatusBarChanged(string format, string messageKey, StatusIcon icon, params object[] extraArgs);
 

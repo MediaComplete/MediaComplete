@@ -74,7 +74,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
                 create.SetArtist(artist.ToString());
             }
 
-            //TODO add more - this will require using the ID passed in to access possible other databases...further research needed
+            // TODO (MC-139, MC-45) add more - this will require using the ID passed in to access possible other databases...further research needed
         }
 
         /*
@@ -98,7 +98,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
                         using (var readerStream = new WaveFormatConversionStream(format, pcmStream))
                         {
                             var provider = new Pcm16BitToSampleProvider(readerStream);
-                            // Assumes 16 bit... TODO is this a problem?
+                            // Assumes 16 bit... works with all the fields we've tested, but we might need to enhance this later.
                             // Read blocks of samples until no more available
                             const int blockSize = 2000;
                             var buffer = new float[blockSize];

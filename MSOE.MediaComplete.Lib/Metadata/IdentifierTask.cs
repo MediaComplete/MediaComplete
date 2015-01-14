@@ -11,7 +11,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
             throw new System.NotImplementedException();
         }
 
-        public override Sys.Task Do(int i)
+        public override void Do(int i)
         {
             throw new System.NotImplementedException();
         }

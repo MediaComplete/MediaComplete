@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using MSOE.MediaComplete.Lib.Background;
@@ -63,16 +64,17 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// </summary>
         /// <param name="i">The task identifier</param>
         /// <returns>An awaitable task</returns>
-        public async override Sys.Task Do(int i)
+        public override void Do(int i)
         {
             try
             {
-                Index = i;
+                Id = i;
                 Message = "Sorting-InProgress";
+                Icon = StatusBarHandler.StatusIcon.Working;
 
                 if (Sorter.Actions.Count == 0)
                 {
-                    await Sorter.CalculateActions();
+                    Sys.Task.Run(() => Sorter.CalculateActions()).Wait();
                 }
 
                 var counter = 0;
@@ -87,9 +89,12 @@ namespace MSOE.MediaComplete.Lib.Sorting
                     catch (IOException e)
                     {
                         Error = e;
+                        Message = "Sorting-HadError";
+                        Icon = StatusBarHandler.StatusIcon.Error;
+                        TriggerUpdate(this);
                     }
-                    total++;
 
+                    total++;
                     if (counter++ >= max)
                     {
                         counter = 0;
@@ -98,6 +103,17 @@ namespace MSOE.MediaComplete.Lib.Sorting
                     }
                 }
                 Sorter.Settings.Root.ScrubEmptyDirectories();
+
+                if (Error == null)
+                {
+                    Icon = StatusBarHandler.StatusIcon.Success;
+                }
+            }
+            catch (Exception e)
+            {
+                Message = "Sorting-HadError";
+                Icon = StatusBarHandler.StatusIcon.Error;
+                Error = e;
             }
             finally
             {

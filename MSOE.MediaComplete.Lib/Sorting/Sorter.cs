@@ -42,8 +42,6 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <returns>The background queue tasks, so the status may be observed.</returns>
         public SortingTask PerformSort()
         {
-            // TODO pipe through queue (MC-115)
-            StatusBarHandler.Instance.ChangeStatusBarMessage("Sorting-Started", StatusBarHandler.StatusIcon.Working);
             var task = new SortingTask(this);
             Queue.Inst.Add(task);
             return task;
@@ -74,7 +72,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                         if (destDir.ContainsMusicFile(srcMp3File)) // If the file is already there
                         {
                             // Delete source, let the older file take precedence.
-                            // TODO perhaps we should try comparing audio quality and pick the better one?
+                            // TODO (MC-124) perhaps we should try comparing audio quality and pick the better one?
                             Actions.Add(new DeleteAction
                             {
                                 Target = file
@@ -114,7 +112,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
             }
             catch (TagLib.CorruptFileException)
             {
-                // TODO log
+                // TODO (MC-125) log
                 return file; // Bad MP3 - just have it stay in the same place
             }
 
@@ -141,7 +139,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         public static void SortNewImports (ImportResults results)
         {
             if (!SettingWrapper.GetIsSorting()) return;
-            // TODO get settings from configuration
+            // TODO (MC-43) get settings from configuration
             var settings = new SortSettings
             {
                 SortOrder = new List<MetaAttribute> { MetaAttribute.Artist, MetaAttribute.Album },
@@ -189,7 +187,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                     return;
                 }
 
-                Target.Delete(); // TODO This should be a "recycle" delete. Not implemented yet.
+                Target.Delete(); // TODO (MC-127) This should be a "recycle" delete. Not implemented yet.
             }
         }
 

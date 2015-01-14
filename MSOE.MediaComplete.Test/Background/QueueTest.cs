@@ -57,11 +57,11 @@ namespace MSOE.MediaComplete.Test.Background
                 Thread.Sleep(_resolveConflictsDelay);
             }
 
-            public override Sys.Task Do(int i)
+            public override void Do(int i)
             {
                 DoCalled = true;
 
-                return Sys.Task.Delay(_doDelay);
+                Thread.SpinWait(_doDelay);
             }
         }
     }
