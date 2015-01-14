@@ -64,9 +64,8 @@ namespace MSOE.MediaComplete.Lib
                     }
                     results.NewFiles.Add(new FileInfo(newFile));
                 }
-                catch (IOException exception)
+                catch (IOException)
                 {
-                    Console.WriteLine(exception); // TODO log (MC-125)
                     results.FailCount++;
                     StatusBarHandler.Instance.ChangeStatusBarMessage("Importing-Error", StatusBarHandler.StatusIcon.Error);
                 }
