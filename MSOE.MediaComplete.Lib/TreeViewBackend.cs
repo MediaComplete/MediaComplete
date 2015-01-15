@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 namespace MSOE.MediaComplete.Lib
 {
     public class TreeViewBackend
@@ -11,7 +12,15 @@ namespace MSOE.MediaComplete.Lib
 
         public static FileInfo[] GetFiles(DirectoryInfo rootDirInfo)
         {
-            return rootDirInfo.GetFiles();
+            try
+            {
+                return rootDirInfo.GetFiles();
+            }
+            catch (DirectoryNotFoundException)
+            {
+                Directory.CreateDirectory(rootDirInfo.FullName);
+                return rootDirInfo.GetFiles();
+            }
         }
         public static DirectoryInfo[] GetDirectories()
         {
