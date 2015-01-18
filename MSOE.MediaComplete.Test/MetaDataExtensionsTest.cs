@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Test.Util;
 using TagLib;
+using Constants = MSOE.MediaComplete.Test.Util.Constants;
 using File = TagLib.File;
 
 namespace MSOE.MediaComplete.Test
@@ -34,7 +35,7 @@ namespace MSOE.MediaComplete.Test
         public void Initialize()
         {
             _homeDir = FileHelper.CreateDirectory("MetadataExtensionsTestHomeDir");
-            _file = File.Create(FileHelper.CreateBlankedFile(_homeDir).FullName);
+            _file = File.Create(FileHelper.CreateFile(_homeDir, Constants.FileTypes.Blanked).FullName);
         }
 
         [TestCleanup]

@@ -4,6 +4,7 @@ using MSOE.MediaComplete.Lib;
 using System.IO;
 using System.Text.RegularExpressions;
 using MSOE.MediaComplete.Test.Util;
+using Constants = MSOE.MediaComplete.Test.Util.Constants;
 using File = TagLib.File;
 
 namespace MSOE.MediaComplete.Test
@@ -30,7 +31,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void Identify_KnownSong_RestoresName()
         {
-            var file = FileHelper.CreateTestFile(_homeDir);
+            var file = FileHelper.CreateFile(_homeDir, Constants.FileTypes.Valid);
             _mp3File = File.Create(file.FullName);
             const string artist = "Not an Artist";
             _mp3File.SetArtist(artist);
@@ -46,7 +47,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod, Timeout(30000)]
         public void Identify_UnknownSong_ReturnsNoData()
         {
-            var file = FileHelper.CreateUnknownFile(_homeDir);
+            var file = FileHelper.CreateFile(_homeDir, Constants.FileTypes.Unknown);
 
             var task = MusicIdentifier.IdentifySong(file.FullName);
             while (!task.IsCompleted)
@@ -72,7 +73,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod, Timeout(30000), Ignore] // Test is ignored pending completion of bug MC-107
         public void Identify_CorruptedFile_ThrowsException()
         {
-            var file = FileHelper.CreateInvalidTestFile(_homeDir);
+            var file = FileHelper.CreateFile(_homeDir, Constants.FileTypes.Invalid);
 
             var task = MusicIdentifier.IdentifySong(file.FullName);
             while (!task.IsCompleted && !task.IsFaulted)
@@ -87,7 +88,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod, Timeout(30000), Ignore] // Test is ignored pending completion of bug MC-107
         public void Identify_NonMP3File_ThrowsException()
         {
-            var file = FileHelper.CreateNonMp3TestFile(_homeDir);
+            var file = FileHelper.CreateFile(_homeDir, Constants.FileTypes.NonMusic);
 
             var task = MusicIdentifier.IdentifySong(file.FullName);
             while (!task.IsCompleted && !task.IsFaulted)

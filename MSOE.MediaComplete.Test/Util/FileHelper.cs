@@ -17,50 +17,15 @@ namespace MSOE.MediaComplete.Test.Util
             return Directory.CreateDirectory(fullPath);
         }
 
-        public static FileInfo CreateTestFile(DirectoryInfo location)
+        public static FileInfo CreateFile(DirectoryInfo location, Constants.FileTypes source)
         {
-            return CreateFile(location, new FileInfo(Constants.ValidMp3FullPath));
-        }
-
-        public static FileInfo CreateUnknownFile(DirectoryInfo location)
-        {
-            return CreateFile(location, new FileInfo(Constants.UnknownMp3FullPath));
-        }
-
-        public static FileInfo CreateBlankedFile(DirectoryInfo location)
-        {
-            return CreateFile(location, new FileInfo(Constants.BlankedFullPath));
-        }
-
-        public static FileInfo CreateNonMp3TestFile(DirectoryInfo location)
-        {
-            return CreateFile(location, new FileInfo(Constants.NonMusicFullPath));
-        }
-
-        public static FileInfo CreateInvalidTestFile(DirectoryInfo location)
-        {
-            return CreateFile(location, new FileInfo(Constants.InvalidMp3FullPath));
-        }
-
-        public static FileInfo CreateMissingAlbumTestFile(DirectoryInfo location)
-        {
-            return CreateFile(location, new FileInfo(Constants.MissingAlbumMp3FullPath));
-        }
-
-        public static FileInfo CreateMissingArtistTestFile(DirectoryInfo location)
-        {
-            return CreateFile(location, new FileInfo(Constants.MissingArtistMp3FullPath));
-        }
-
-        private static FileInfo CreateFile(DirectoryInfo location, FileInfo source)
-        {
-            var destPath = location.FullName + Path.DirectorySeparatorChar + source.Name;
+            var destPath = location.FullName + Path.DirectorySeparatorChar + Constants.TestFiles[source].Item1;
             if (File.Exists(destPath))
             {
                 File.Delete(destPath);
             }
             Directory.CreateDirectory(location.FullName);
-            File.Copy(source.FullName, destPath);
+            File.Copy(Constants.TestFiles[source].Item2, destPath);
             return new FileInfo(destPath);
         }
     }
