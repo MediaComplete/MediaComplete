@@ -32,7 +32,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod, Timeout(30000)]
         public void Import_FileInUse_SkipAndNotify()
         {
-            var fileInUse = FileHelper.CreateTestFile(_importDir.FullName);
+            var fileInUse = FileHelper.CreateTestFile(_importDir);
             Task<ImportResults> task;
             using (fileInUse.OpenWrite())
             {
@@ -51,7 +51,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod, Timeout(30000)]
         public void Import_FromLibrary_Exception()
         {
-            var fileInLib = FileHelper.CreateTestFile(_homeDir.FullName);
+            var fileInLib = FileHelper.CreateTestFile(_homeDir);
             var task = new Importer(_homeDir.FullName).ImportFiles(new[] { fileInLib.FullName }, true);
             while (!task.IsCompleted)
             {
@@ -68,8 +68,8 @@ namespace MSOE.MediaComplete.Test
         [TestMethod, Timeout(30000)]
         public void Import_FromAboveLibrary_Skips()
         {
-            var newFile = FileHelper.CreateTestFile(_importDir.FullName);
-            var oldFile = FileHelper.CreateMissingAlbumTestFile(_homeDir.FullName);
+            var newFile = FileHelper.CreateTestFile(_importDir);
+            var oldFile = FileHelper.CreateMissingAlbumTestFile(_homeDir);
             var task = new Importer(_homeDir.FullName).ImportDirectory(_testDir.FullName, false);
             while (!task.IsCompleted)
             {
@@ -85,8 +85,8 @@ namespace MSOE.MediaComplete.Test
         [TestMethod, Timeout(30000)]
         public void Import_FromMultiTieredDirs_GetsAll()
         {
-            var childFile = FileHelper.CreateTestFile(_importDir.FullName);
-            var parentFile = FileHelper.CreateMissingAlbumTestFile(_testDir.FullName);
+            var childFile = FileHelper.CreateTestFile(_importDir);
+            var parentFile = FileHelper.CreateMissingAlbumTestFile(_testDir);
             var task = new Importer(_homeDir.FullName).ImportDirectory(_testDir.FullName, false);
             while (!task.IsCompleted)
             {

@@ -8,12 +8,12 @@ using File = TagLib.File;
 
 namespace MSOE.MediaComplete.Test
 {
-    [TestClass]
+    // TODO MC-139 ignored while we find an Echonest alternative
+    [TestClass, Ignore]
     public class MusicIdentifierTest
     {
         private DirectoryInfo _homeDir;
         private File _mp3File;
-        private const string ValidMp3FileName = "Resources/ValidMp3File.mp3";
 
         [TestInitialize]
         public void Setup()
@@ -30,7 +30,8 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void Identify_KnownSong_RestoresName()
         {
-            _mp3File = File.Create(ValidMp3FileName);
+            var file = FileHelper.CreateTestFile(_homeDir);
+            _mp3File = File.Create(file.FullName);
             const string artist = "Not an Artist";
             _mp3File.SetArtist(artist);
             var task = MusicIdentifier.IdentifySong(_mp3File.Name);
@@ -38,14 +39,14 @@ namespace MSOE.MediaComplete.Test
             {
             }
 
-            _mp3File = File.Create(ValidMp3FileName);
+            _mp3File = File.Create(file.FullName);
             Assert.AreNotEqual(artist, _mp3File.GetArtist(), "Name was not fixed!");
         }
 
         [TestMethod, Timeout(30000)]
         public void Identify_UnknownSong_ReturnsNoData()
         {
-            var file = FileHelper.CreateUnknownFile(_homeDir.FullName);
+            var file = FileHelper.CreateUnknownFile(_homeDir);
 
             var task = MusicIdentifier.IdentifySong(file.FullName);
             while (!task.IsCompleted)
@@ -71,7 +72,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod, Timeout(30000), Ignore] // Test is ignored pending completion of bug MC-107
         public void Identify_CorruptedFile_ThrowsException()
         {
-            var file = FileHelper.CreateInvalidTestFile(_homeDir.FullName);
+            var file = FileHelper.CreateInvalidTestFile(_homeDir);
 
             var task = MusicIdentifier.IdentifySong(file.FullName);
             while (!task.IsCompleted && !task.IsFaulted)
@@ -86,7 +87,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod, Timeout(30000), Ignore] // Test is ignored pending completion of bug MC-107
         public void Identify_NonMP3File_ThrowsException()
         {
-            var file = FileHelper.CreateNonMp3TestFile(_homeDir.FullName);
+            var file = FileHelper.CreateNonMp3TestFile(_homeDir);
 
             var task = MusicIdentifier.IdentifySong(file.FullName);
             while (!task.IsCompleted && !task.IsFaulted)
