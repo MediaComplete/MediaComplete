@@ -91,9 +91,6 @@
     <Content Include="Resources\MissingArtistMp3File.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\NonMusicTestFile.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Resources\UnknownMp3.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

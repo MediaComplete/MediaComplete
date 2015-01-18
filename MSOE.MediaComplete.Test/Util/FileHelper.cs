@@ -17,50 +17,76 @@ namespace MSOE.MediaComplete.Test.Util
             return Directory.CreateDirectory(fullPath);
         }
 
-        public static FileInfo CreateTestFile(DirectoryInfo location)
+        public static FileInfo CreateTestFile(string location)
         {
-            return CreateFile(location, new FileInfo(Constants.ValidMp3FullPath));
+            var destPath = location + Path.DirectorySeparatorChar + Constants.ValidMp3FileName;
+            if (File.Exists(destPath)) 
+            {
+                File.Delete(destPath);
+            }
+            if (!Directory.Exists(location))
+                Directory.CreateDirectory(location);
+            File.Copy(Constants.ValidMp3FullPath, destPath);
+            return new FileInfo(destPath);
         }
 
-        public static FileInfo CreateUnknownFile(DirectoryInfo location)
+        public static FileInfo CreateUnknownFile(string location)
         {
-            return CreateFile(location, new FileInfo(Constants.UnknownMp3FullPath));
-        }
-
-        public static FileInfo CreateBlankedFile(DirectoryInfo location)
-        {
-            return CreateFile(location, new FileInfo(Constants.BlankedFullPath));
-        }
-
-        public static FileInfo CreateNonMp3TestFile(DirectoryInfo location)
-        {
-            return CreateFile(location, new FileInfo(Constants.NonMusicFullPath));
-        }
-
-        public static FileInfo CreateInvalidTestFile(DirectoryInfo location)
-        {
-            return CreateFile(location, new FileInfo(Constants.InvalidMp3FullPath));
-        }
-
-        public static FileInfo CreateMissingAlbumTestFile(DirectoryInfo location)
-        {
-            return CreateFile(location, new FileInfo(Constants.MissingAlbumMp3FullPath));
-        }
-
-        public static FileInfo CreateMissingArtistTestFile(DirectoryInfo location)
-        {
-            return CreateFile(location, new FileInfo(Constants.MissingArtistMp3FullPath));
-        }
-
-        private static FileInfo CreateFile(DirectoryInfo location, FileInfo source)
-        {
-            var destPath = location.FullName + Path.DirectorySeparatorChar + source.Name;
+            var destPath = location + Path.DirectorySeparatorChar + Constants.UnknownMp3FileName;
             if (File.Exists(destPath))
             {
                 File.Delete(destPath);
             }
-            Directory.CreateDirectory(location.FullName);
-            File.Copy(source.FullName, destPath);
+            Directory.CreateDirectory(location);
+            File.Copy(Constants.UnknownMp3FullPath, destPath);
+            return new FileInfo(destPath);
+        }
+
+        public static FileInfo CreateNonMp3TestFile(string location)
+        {
+            var destPath = location + Path.DirectorySeparatorChar + Constants.NonMp3FileName;
+            if (File.Exists(destPath))
+            {
+                File.Delete(destPath);
+            }
+            Directory.CreateDirectory(location);
+            File.Create(destPath).Close();
+            return new FileInfo(destPath);
+        }
+
+        public static FileInfo CreateInvalidTestFile(string location)
+        {
+            var destPath = location + Path.DirectorySeparatorChar + Constants.InvalidMp3FileName;
+            if (File.Exists(destPath))
+            {
+                File.Delete(destPath);
+            }
+            Directory.CreateDirectory(location);
+            File.Copy(Constants.InvalidMp3FullPath, destPath);
+            return new FileInfo(destPath);
+        }
+
+        public static FileInfo CreateMissingAlbumTestFile(string location)
+        {
+            var destPath = location + Path.DirectorySeparatorChar + Constants.MissingAlbumMp3FileName;
+            if (File.Exists(destPath))
+            {
+                File.Delete(destPath);
+            }
+            Directory.CreateDirectory(location);
+            File.Copy(Constants.MissingAlbumMp3FullPath, destPath);
+            return new FileInfo(destPath);
+        }
+
+        public static FileInfo CreateMissingArtistTestFile(string location)
+        {
+            var destPath = location + Path.DirectorySeparatorChar + Constants.MissingArtistMp3FileName;
+            if (File.Exists(destPath))
+            {
+                File.Delete(destPath);
+            }
+            Directory.CreateDirectory(location);
+            File.Copy(Constants.MissingArtistMp3FullPath, destPath);
             return new FileInfo(destPath);
         }
     }

@@ -38,11 +38,11 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void Sort_FileAlreadyExsists_LeavesOld()
         {
-            var sourceFile = FileHelper.CreateTestFile(_homeDir);
+            var sourceFile = FileHelper.CreateTestFile(_homeDir.FullName);
             sourceFile.MoveTo(sourceFile.FullName + ".test.mp3");
             var normalFilePath = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
                                  Path.DirectorySeparatorChar + "The Money Store";
-            FileHelper.CreateTestFile(new DirectoryInfo(normalFilePath));
+            FileHelper.CreateTestFile(normalFilePath);
 
             var subject = new Sorter(_homeDir, GetNormalSettings());
 
@@ -67,8 +67,8 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void Sort_InvalidFile_Skips()
         {
-            FileHelper.CreateInvalidTestFile(_homeDir);
-            FileHelper.CreateTestFile(_homeDir);
+            FileHelper.CreateInvalidTestFile(_homeDir.FullName);
+            FileHelper.CreateTestFile(_homeDir.FullName);
             var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName;
 
@@ -89,10 +89,10 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void Sort_NoAlbum_MovesDown1()
         {
-            FileHelper.CreateMissingAlbumTestFile(_homeDir);
+            FileHelper.CreateMissingAlbumTestFile(_homeDir.FullName);
             var noAblbumDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
                 Path.DirectorySeparatorChar + Util.Constants.MissingAlbumMp3FileName;
-            FileHelper.CreateTestFile(_homeDir);
+            FileHelper.CreateTestFile(_homeDir.FullName);
             var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName;
 
@@ -119,8 +119,8 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void Sort_NoArtist_StaysPut()
         {
-            FileHelper.CreateMissingArtistTestFile(_homeDir);
-            FileHelper.CreateTestFile(_homeDir);
+            FileHelper.CreateMissingArtistTestFile(_homeDir.FullName);
+            FileHelper.CreateTestFile(_homeDir.FullName);
             var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName;
 
@@ -143,7 +143,7 @@ namespace MSOE.MediaComplete.Test
         public void Sort_ChangeDir_OldDirDeleted()
         {
             var oldDir = Directory.CreateDirectory(_homeDir.FullName + Path.DirectorySeparatorChar + "oldDir");
-            FileHelper.CreateTestFile(oldDir);
+            FileHelper.CreateTestFile(oldDir.FullName);
             var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName;
 
@@ -174,8 +174,8 @@ namespace MSOE.MediaComplete.Test
         public void Sort_DirHasTxt_NotDeleted()
         {
             var oldDir = Directory.CreateDirectory(_homeDir.FullName + Path.DirectorySeparatorChar + "oldDir");
-            FileHelper.CreateTestFile(oldDir);
-            FileHelper.CreateNonMp3TestFile(oldDir);
+            FileHelper.CreateTestFile(oldDir.FullName);
+            FileHelper.CreateNonMp3TestFile(oldDir.FullName);
             var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName;
 
@@ -208,9 +208,9 @@ namespace MSOE.MediaComplete.Test
             SettingWrapper.SetIsSorting(true);
             // ReSharper disable once ObjectCreationAsStatement
             new Sorter(null, null);// Force the static initializer to fire.
-            var decoyFile = FileHelper.CreateTestFile(_homeDir); // Deliberately put an unsorted file in
+            var decoyFile = FileHelper.CreateTestFile(_homeDir.FullName); // Deliberately put an unsorted file in
             decoyFile.MoveTo(decoyFile.FullName + ".decoy.mp3");
-            FileHelper.CreateTestFile(_importDir);
+            FileHelper.CreateTestFile(_importDir.FullName);
             var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName;
 
@@ -236,7 +236,7 @@ namespace MSOE.MediaComplete.Test
             SettingWrapper.SetIsSorting(false);
             // ReSharper disable once ObjectCreationAsStatement
             new Sorter(null, null); // Force the static initializer to fire.
-            FileHelper.CreateTestFile(_importDir);
+            FileHelper.CreateTestFile(_importDir.FullName);
             var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName;
 
             var task = new Importer(_homeDir.FullName).ImportDirectory(_importDir.FullName, true);

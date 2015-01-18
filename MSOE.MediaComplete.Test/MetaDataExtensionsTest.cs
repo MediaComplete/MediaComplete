@@ -1,9 +1,7 @@
-﻿using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Test.Util;
 using TagLib;
-using File = TagLib.File;
 
 namespace MSOE.MediaComplete.Test
 {
@@ -11,9 +9,9 @@ namespace MSOE.MediaComplete.Test
     public class MetaDataExtensions
     {
         private File _mp3File;
-        private File _file;
-        private DirectoryInfo _homeDir;
+        private static File _file;
         private const string InvalidMp3FileName = "Resources/InvalidMp3File.mp3";
+        private const string BlankFile = "Resources/Blanked.mp3";
         private const string ValidMp3FileName = "Resources/ValidMp3File.mp3";
         private const string ValidYear = "2012";
         private const string ValidTrack = "1";
@@ -29,19 +27,7 @@ namespace MSOE.MediaComplete.Test
         private const string BadArtist = "NotArtist";
         private const string BadSupportingArtist = "artist12,artist32";
         private const string BadGenre = "BadGenre";
-
-        [TestInitialize]
-        public void Initialize()
-        {
-            _homeDir = FileHelper.CreateDirectory("MetadataExtensionsTestHomeDir");
-            _file = File.Create(FileHelper.CreateBlankedFile(_homeDir).FullName);
-        }
-
-        [TestCleanup]
-        public void TearDown()
-        {
-            Directory.Delete(_homeDir.FullName, true);
-        }
+        private const string BadRating = "1";
 
         [TestMethod]
         [ExpectedException(typeof(CorruptFileException))]
@@ -92,7 +78,27 @@ namespace MSOE.MediaComplete.Test
             _mp3File = File.Create(ValidMp3FileName);
             Assert.AreEqual(ValidGenre, _mp3File.GetGenre());
         }
-        
+
+
+        [ClassCleanup]
+        public static void CleanUp()
+        {
+            _file.SetYear("");
+            _file.SetAlbum("");
+            _file.SetArtist("");
+            _file.SetGenre("");
+            _file.SetRating("");
+            _file.SetSongTitle("");
+            _file.SetSupportingArtists("");
+            _file.SetTrack("");
+
+        }
+        [ClassInitialize]
+        public static void Initialize(TestContext tc)
+        {
+            _file = File.Create(BlankFile);
+
+        }
         [TestMethod]
         public void SetYear_BlankMp3_ShouldChangeYear()
         {
@@ -150,4 +156,6 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(BadGenre, _file.GetGenre());
         }
     }
+        
+
 }
