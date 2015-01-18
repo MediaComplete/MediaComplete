@@ -66,49 +66,47 @@ namespace MSOE.MediaComplete
             grid.ColumnDefinitions.Add(columnDefinition3);
             grid.ColumnDefinitions.Add(columnDefinition4);
 
-            if (_sortOrderList.Count != 0)
+            if (_sortOrderList.Count == 0) return;
+            for (var i = 0; i < _sortOrderList.Count; i++)
             {
-                for (var i = 0; i < _sortOrderList.Count; i++)
+                var label = new Label
                 {
-                    var label = new Label
-                    {
-                        Content = _sortOrderList[i],
-                        Padding = new Thickness(8 * (i + 1), 8, 8, 8)
+                    Content = _sortOrderList[i],
+                    Padding = new Thickness(8 * (i + 1), 8, 8, 8)
                         
-                    };
-                    _labels.Add(label);
-                    SortConfig.Children.Add(label);
-                }
-                _comboBox.ItemsSource = SortHelper.GetAllUnusedMetaAttributes(_sortOrderList);
-
-
-                _plusButton = new Button
-                {
-                    Content = "Add",
-                    Visibility = Visibility.Hidden
                 };
-                _plusButton.Click += PlusClicked;
-
-                _minusButton = new Button
-                {
-                    Content = "Minus",
-                    Visibility = Visibility.Hidden
-                };
-
-                Grid.SetColumn(_comboBox, 1);
-                Grid.SetColumn(_plusButton, 2);
-                Grid.SetColumn(_minusButton, 3);
-
-                grid.Children.Add(_comboBox);
-                grid.Children.Add(_plusButton);
-                grid.Children.Add(_minusButton);
-
-
-                SortConfig.Children.Add(grid);
-
-                _minusButton.Click += MinusClicked;
-                _comboBox.SelectionChanged += SelectChanged;
+                _labels.Add(label);
+                SortConfig.Children.Add(label);
             }
+            _comboBox.ItemsSource = SortHelper.GetAllUnusedMetaAttributes(_sortOrderList);
+
+
+            _plusButton = new Button
+            {
+                Content = "Add",
+                Visibility = Visibility.Hidden
+            };
+            _plusButton.Click += PlusClicked;
+
+            _minusButton = new Button
+            {
+                Content = "Minus",
+                Visibility = Visibility.Hidden
+            };
+
+            Grid.SetColumn(_comboBox, 1);
+            Grid.SetColumn(_plusButton, 2);
+            Grid.SetColumn(_minusButton, 3);
+
+            grid.Children.Add(_comboBox);
+            grid.Children.Add(_plusButton);
+            grid.Children.Add(_minusButton);
+
+
+            SortConfig.Children.Add(grid);
+
+            _minusButton.Click += MinusClicked;
+            _comboBox.SelectionChanged += SelectChanged;
         }
 
         private void MinusClicked(object sender, RoutedEventArgs e)
