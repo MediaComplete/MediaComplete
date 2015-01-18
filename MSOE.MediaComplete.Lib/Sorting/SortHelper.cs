@@ -1,24 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MSOE.MediaComplete.Lib.Sorting
 {
     public class SortHelper
     {
-        public static List<string> GetDefault()
+        public static List<MetaAttribute> GetDefault()
         {
-            return new List<string>
+            return new List<MetaAttribute>
             {
-                MetaAttribute.Artist.ToString(), 
-                MetaAttribute.Album.ToString()
+                MetaAttribute.Artist, 
+                MetaAttribute.Album
             };
         } 
-        public static List<String> GetAllMetaAttributes(List<String> valueList)
+        public static List<MetaAttribute> GetAllUnusedMetaAttributes(List<MetaAttribute> valueList)
         {
-            return Enum.GetNames(typeof (MetaAttribute)).ToList().Except(valueList).ToList();
+            return Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>().ToList().Except(valueList).ToList();
         }
 
         public static List<MetaAttribute> MetaAttributesFromString(List<String> stringList)

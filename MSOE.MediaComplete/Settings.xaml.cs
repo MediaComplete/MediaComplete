@@ -25,7 +25,7 @@ namespace MSOE.MediaComplete
         private Button _minusButton;
         private readonly List<Label> _labels;
         private ComboBox _comboBox;
-        private List<String> _sortOrderList; 
+        private List<MetaAttribute> _sortOrderList; 
 
         public Settings()
         {
@@ -40,7 +40,8 @@ namespace MSOE.MediaComplete
 
             _hasBeenSelected = false;
             _labels = new List<Label>();
-            _sortOrderList = SettingWrapper.GetSortOrder();
+            var list = SettingWrapper.GetSortOrder();
+            _sortOrderList = SortHelper.MetaAttributesFromString(list);
             _sortSettings = new SortSettings();
             LoadSortListBox();
         }
@@ -72,16 +73,13 @@ namespace MSOE.MediaComplete
                     var label = new Label
                     {
                         Content = _sortOrderList[i],
-                        Padding = new Thickness(8 * (i + 1), 8, 8, 8),
-                        Name = _sortOrderList[i]
+                        Padding = new Thickness(8 * (i + 1), 8, 8, 8)
                         
                     };
                     _labels.Add(label);
                     SortConfig.Children.Add(label);
                 }
-                _comboBox.ItemsSource = SortHelper.GetAllMetaAttributes(_sortOrderList);
-                SettingWrapper.GetSortOrder();
-                _comboBox.SelectionChanged += SelectChanged;
+                _comboBox.ItemsSource = SortHelper.GetAllUnusedMetaAttributes(_sortOrderList);
 
 
                 _plusButton = new Button
@@ -93,9 +91,9 @@ namespace MSOE.MediaComplete
 
                 _minusButton = new Button
                 {
-                    Content = "Minus"
+                    Content = "Minus",
+                    Visibility = Visibility.Hidden
                 };
-                _minusButton.Click += MinusClicked;
 
                 Grid.SetColumn(_comboBox, 1);
                 Grid.SetColumn(_plusButton, 2);
@@ -107,19 +105,19 @@ namespace MSOE.MediaComplete
 
 
                 SortConfig.Children.Add(grid);
-            }
-            else
-            {
-                
+
+                _minusButton.Click += MinusClicked;
+                _comboBox.SelectionChanged += SelectChanged;
             }
         }
 
         private void MinusClicked(object sender, RoutedEventArgs e)
         {
-            SortConfig.Children.Remove(_labels[_labels.Count - 1]);
+            var toRemove = _labels.Count - 1;
+            SortConfig.Children.Remove(_labels[toRemove]);
             _sortOrderList.RemoveAt(_sortOrderList.Count - 1);
-            _comboBox.ItemsSource = SortHelper.GetAllMetaAttributes(_sortOrderList);
-            _labels.RemoveAt(_labels.Count - 1);
+            _comboBox.ItemsSource = SortHelper.GetAllUnusedMetaAttributes(_sortOrderList);
+            _labels.RemoveAt(toRemove);
             _comboBox.SelectedIndex = -1;
 
         }
@@ -128,7 +126,7 @@ namespace MSOE.MediaComplete
         {
             SortConfig.Children.Clear();
             _labels.Clear();
-            _sortOrderList.Add(_comboBox.SelectedValue.ToString());
+            _sortOrderList.Add((MetaAttribute)_comboBox.SelectedValue);
             LoadSortListBox();
         }
 
@@ -204,7 +202,7 @@ namespace MSOE.MediaComplete
         /// </summary>
         /// <param name="sender">The sender of the action</param>
         /// <param name="e">Type of event</param>
-        private void BtnSave_Click(object sender, RoutedEventArgs e)
+        private async void BtnSave_Click(object sender, RoutedEventArgs e)
         {
             // add settings here as they are added to the UI
             var homeDir = TxtboxSelectedFolder.Text;
@@ -225,9 +223,20 @@ namespace MSOE.MediaComplete
             SettingWrapper.SetIsPolling(CheckboxPolling.IsChecked.GetValueOrDefault(false));
             SettingWrapper.SetShowInputDialog(CheckboxShowImportDialog.IsChecked.GetValueOrDefault(false));
             SettingWrapper.SetIsSorting(CheckBoxSorting.IsChecked.GetValueOrDefault(false));
+
+            var pastSort = _sortSettings.SortOrder;
             SettingWrapper.SetSortOrder(_sortOrderList);
-            _sortSettings.SortOrder = SortHelper.MetaAttributesFromString(_sortOrderList);
+
             SettingWrapper.Save();
+
+            _sortSettings.SortOrder = _sortOrderList;
+
+            if (pastSort != _sortSettings.SortOrder)
+            {
+
+                var sorter = new Sorter(new DirectoryInfo(SettingWrapper.GetHomeDir()), _sortSettings);
+                await (sorter.PerformSort());
+            }
 
             Close();
         }

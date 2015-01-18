@@ -142,10 +142,10 @@ namespace MSOE.MediaComplete.Lib
         /// Sets the order of the sort
         /// </summary>
         /// <param name="sortOrder">list to set</param>
-        public static void SetSortOrder(List<String> sortOrder)
+        public static void SetSortOrder(List<MetaAttribute> sortOrder)
         {
             var collection = new StringCollection();
-            collection.AddRange(sortOrder.ToArray());
+            collection.AddRange(sortOrder.Select(x => x.ToString()).ToArray());
             Settings.Default[SortingOrder] = collection;
         }
 
