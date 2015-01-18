@@ -33,11 +33,11 @@ namespace MSOE.MediaComplete
         {
             if (_instance == null || !_instance.IsLoaded)// IsLoaded == false iff dialog not ready to be shown or already closed (so we need to init one)
             {
-                _instance = new InboxImportDialog {Owner = owner};
+                _instance = new InboxImportDialog { Owner = owner };
             }
             return _instance;
         }
-        
+
         /// <summary>
         /// sets the text properly based on the number of files and shows the dialog if it is not already shown
         /// </summary>
@@ -48,7 +48,7 @@ namespace MSOE.MediaComplete
             _files = files;
             var inst = Instance(newOwner);
             inst.MessageTextBlock.Text = "Found " + _files.Count() + " file(s).\nWould you like to import them now?";
-            if(!inst.IsVisible)
+            if (!inst.IsVisible)
             {
                 inst.ShowDialog();
             }
@@ -67,10 +67,17 @@ namespace MSOE.MediaComplete
             var results = await new Importer(SettingWrapper.GetHomeDir()).ImportFiles(_files.Select(f => f.FullName).ToArray(), false);
             if (results.FailCount > 0)
             {
-                MessageBox.Show(this,
-                    String.Format(Resources["Dialog-Import-ItemsFailed-Message"].ToString(), results.FailCount),
-                    Resources["Dialog-Common-Warning-Title"].ToString(),
-                    MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                try
+                {
+                    MessageBox.Show(this,
+                        String.Format(Resources["Dialog-Import-ItemsFailed-Message"].ToString(), results.FailCount),
+                        Resources["Dialog-Common-Warning-Title"].ToString(),
+                        MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+                catch (NullReferenceException)
+                {
+                    StatusBarHandler.Instance.ChangeStatusBarMessage("FailedImport-Error", StatusBarHandler.StatusIcon.Error);
+                }
             }
 
             Polling.Instance.Reset();

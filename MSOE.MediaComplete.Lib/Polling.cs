@@ -36,7 +36,6 @@ namespace MSOE.MediaComplete.Lib
             var timeInMilliseconds = TimeSpan.FromMinutes(TimeInMinutes).TotalMilliseconds;
             _timer.Interval = timeInMilliseconds;
             _timer.Enabled = true;
-            //Console.WriteLine("Timer Started");
         }
 
         /// <summary>
@@ -74,7 +73,7 @@ namespace MSOE.MediaComplete.Lib
         private static void OnTimerFinished(Object sender, ElapsedEventArgs args)
         {
             var inbox = new DirectoryInfo(SettingWrapper.GetInboxDir());
-            var files = inbox.EnumerateFiles("*.mp3");
+            var files = inbox.EnumerateFiles("*.mp3"); // TODO MC-172 (need to check subdirectories)
 
             var fileInfos = files as FileInfo[] ?? files.ToArray();
             if(fileInfos.Any())

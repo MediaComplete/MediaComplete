@@ -27,7 +27,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
 
             if (!System.IO.File.Exists(filename))
             {
-                StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error", StatusBarHandler.StatusIcon.Error);
+                StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error-NoException", StatusBarHandler.StatusIcon.Error);
                 return null;
             }
             // We have to force "SampleAudio" onto a new thread, otherwise the main thread 
@@ -35,7 +35,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
             var audioData = await Task.Run(() => SampleAudio(filename));
             if (audioData == null)
             {
-                StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error", StatusBarHandler.StatusIcon.Error);
+                StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error-NoException", StatusBarHandler.StatusIcon.Error);
                 return null;
             }
 

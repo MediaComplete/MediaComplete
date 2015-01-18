@@ -77,6 +77,7 @@
     <Compile Include="Metadata\IdentifierTask.cs" />
     <Compile Include="Metadata\MetadataExtensions.cs" />
     <Compile Include="Sorting\SortingTask.cs" />
+    <Compile Include="LayoutType.cs" />
     <Compile Include="SystemExtensions.cs" />
     <Compile Include="TreeViewBackend.cs" />
     <Compile Include="StatusBarHandler.cs" />
