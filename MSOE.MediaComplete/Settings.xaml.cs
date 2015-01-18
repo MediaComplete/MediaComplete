@@ -56,7 +56,7 @@ namespace MSOE.MediaComplete
             var columnDefinition3 = new ColumnDefinition();
             var columnDefinition4 = new ColumnDefinition();
 
-            columnDefinition1.Width = new GridLength((_sortOrderList.Count + 1) * 8);
+            columnDefinition1.Width = new GridLength((_sortOrderList.Count) * 8);
             columnDefinition2.Width = new GridLength(100);
             columnDefinition3.Width = new GridLength(50);
             columnDefinition4.Width = new GridLength(50);
@@ -66,7 +66,6 @@ namespace MSOE.MediaComplete
             grid.ColumnDefinitions.Add(columnDefinition3);
             grid.ColumnDefinitions.Add(columnDefinition4);
 
-            if (_sortOrderList.Count == 0) return;
             for (var i = 0; i < _sortOrderList.Count; i++)
             {
                 var label = new Label
@@ -90,17 +89,16 @@ namespace MSOE.MediaComplete
 
             _minusButton = new Button
             {
-                Content = "Minus",
-                Visibility = Visibility.Hidden
+                Content = "Minus"
             };
 
             Grid.SetColumn(_comboBox, 1);
-            Grid.SetColumn(_plusButton, 2);
-            Grid.SetColumn(_minusButton, 3);
+            Grid.SetColumn(_minusButton, 2);
+            Grid.SetColumn(_plusButton, 3);
 
             grid.Children.Add(_comboBox);
-            grid.Children.Add(_plusButton);
             grid.Children.Add(_minusButton);
+            grid.Children.Add(_plusButton);
 
 
             SortConfig.Children.Add(grid);
@@ -112,12 +110,18 @@ namespace MSOE.MediaComplete
         private void MinusClicked(object sender, RoutedEventArgs e)
         {
             var toRemove = _labels.Count - 1;
-            SortConfig.Children.Remove(_labels[toRemove]);
-            _sortOrderList.RemoveAt(_sortOrderList.Count - 1);
-            _comboBox.ItemsSource = SortHelper.GetAllUnusedMetaAttributes(_sortOrderList);
-            _labels.RemoveAt(toRemove);
-            _comboBox.SelectedIndex = -1;
 
+            if (toRemove < 0) return;
+            _sortOrderList.RemoveAt(toRemove);
+            _labels.Clear();
+
+            SortConfig.Children.Clear();
+            LoadSortListBox();
+                
+            if(toRemove == 0)
+            {
+                _minusButton.Visibility = Visibility.Hidden;
+            }
         }
 
         private void PlusClicked(object sender, RoutedEventArgs e)
