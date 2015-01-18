@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
-using System.Windows.Controls.Primitives;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
 using TagLib;
