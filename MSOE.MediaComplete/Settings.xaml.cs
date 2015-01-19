@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -38,8 +39,7 @@ namespace MSOE.MediaComplete
 
             _hasBeenSelected = false;
             _labels = new List<Label>();
-            var list = SettingWrapper.GetSortOrder();
-            _sortOrderList = SortHelper.MetaAttributesFromString(list);
+            _sortOrderList= SettingWrapper.GetSortOrder();
             _sortSettings = new SortSettings();
             LoadSortListBox();
 
@@ -187,14 +187,14 @@ namespace MSOE.MediaComplete
             SettingWrapper.SetShowInputDialog(CheckboxShowImportDialog.IsChecked.GetValueOrDefault(false));
             SettingWrapper.SetIsSorting(CheckBoxSorting.IsChecked.GetValueOrDefault(false));
 
-            var pastSort = _sortSettings.SortOrder;
+            var pastSort = SettingWrapper.GetSortOrder();
             SettingWrapper.SetSortOrder(_sortOrderList);
 
             SettingWrapper.Save();
 
             _sortSettings.SortOrder = _sortOrderList;
 
-            if (pastSort != _sortSettings.SortOrder)
+            if (!pastSort.SequenceEqual( _sortOrderList))
             {
 
                 var sorter = new Sorter(new DirectoryInfo(SettingWrapper.GetHomeDir()), _sortSettings);
