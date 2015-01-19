@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
-using System.Windows.Media;
+using System.Text.RegularExpressions;
 using NAudio.Wave;
 using WinForms = System.Windows.Forms;
 using System.Windows.Media.Imaging;
@@ -35,11 +35,19 @@ namespace MSOE.MediaComplete
 
             var homeDir = SettingWrapper.GetHomeDir() ??
                           Path.GetPathRoot(Environment.SystemDirectory);
+            ChangeSortMusic();
             StatusBarHandler.Instance.RaiseStatusBarEvent += HandleStatusBarChangeEvent;
+
             if (!homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
             {
                 homeDir += Path.DirectorySeparatorChar;
             }
+            
+            var dictUri  = new Uri(SettingWrapper.GetLayout(), UriKind.Relative);
+            
+            var resourceDict = Application.LoadComponent(dictUri) as ResourceDictionary;
+            Application.Current.Resources.MergedDictionaries.Clear();
+            Application.Current.Resources.MergedDictionaries.Add(resourceDict);
 
             if (SettingWrapper.GetIsPolling())
             {
@@ -47,10 +55,18 @@ namespace MSOE.MediaComplete
 
                 Polling.Instance.Start();
             }
-            Polling.InboxFilesDetected += ImportFromInbox;
             Directory.CreateDirectory(homeDir);
+            InitEvents();
 
             InitTreeView();
+        }
+
+        private void InitEvents()
+        {
+            Polling.InboxFilesDetected += ImportFromInbox;
+            SettingWrapper.RaiseSettingEvent += HandleSettingEvent;
+            // ReSharper disable once ObjectCreationAsStatement
+            new Sorter(null, null);
         }
 
         private void HandleStatusBarChangeEvent(string message, StatusBarHandler.StatusIcon icon)
@@ -61,6 +77,18 @@ namespace MSOE.MediaComplete
                 var sourceUri = new Uri("./Resources/" + icon + ".png", UriKind.Relative);
                 StatusIcon.Source = new BitmapImage(sourceUri);
             });
+        }
+
+        private void HandleSettingEvent()
+        {
+            ChangeSortMusic();
+        }
+
+        private void ChangeSortMusic()
+        {
+            var content = SettingWrapper.GetIsSorting() ? Resources["Toolbar-SortMusic-Tooltip"].ToString() : Resources["Toolbar-SortMusicDisabled-Tooltip"].ToString();
+            SortMusic.ToolTip = content;
+            SortMusic.IsEnabled = SettingWrapper.GetIsSorting();
         }
 
         protected override void OnClosed(EventArgs e)
@@ -80,12 +108,14 @@ namespace MSOE.MediaComplete
                 await new Importer(SettingWrapper.GetHomeDir()).ImportFiles(files.Select(f => f.FullName).ToArray(), false);
             }
         }
+        
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             if (_settings.IsLoaded) return;
             _settings = new Settings();
             _settings.ShowDialog();
+            RefreshTreeView();
         }
 
         private async void AddFile_Click(object sender, RoutedEventArgs e)
@@ -207,6 +237,21 @@ namespace MSOE.MediaComplete
             return dirItem;
         }
 
+        private static void PopulateSongTree(DirectoryInfo dirInfo, ItemsControl songTree, FolderTreeViewItem parent, bool root)
+        {
+            var dirItem = root ? parent : new FolderTreeViewItem { Header = dirInfo.Name, ParentItem = parent };
+            foreach (var dir in TreeViewBackend.GetDirectories(dirInfo))
+            {
+                PopulateSongTree(dir, songTree, dirItem, false);
+            }
+
+            foreach (var file in TreeViewBackend.GetFiles(dirInfo).Where(file => file.Name.EndsWith(".mp3")))
+            {
+                var x = new SongTreeViewItem { Header = file.Name, ParentItem = dirItem };
+                songTree.Items.Add(x);
+            }
+        }
+
         /// <summary>
         /// MouseClick Listener for the FolderTree
         /// </summary>
@@ -214,16 +259,19 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void FolderTree_OnMouseUp(object sender, MouseButtonEventArgs e)
         {
+            FormCheck();
             if (FolderTree.SelectedItems != null && FolderTree.SelectedItems.Count > 0)
             {
                 SongTree.Items.Clear();
                 foreach (var folder in FolderTree.SelectedItems)
                 {
+                    //current file
                     var item = (FolderTreeViewItem)folder;
-                    var rootDirInfo = new DirectoryInfo((item.GetPath()));
+                    //dirinfo of current file
+                    var dirInfo = new DirectoryInfo((item.GetPath()));
                     if (!ContainsParent(item))
                     {
-                        PopulateFromFolder(rootDirInfo, SongTree, new FolderTreeViewItem { Header = SettingWrapper.GetHomeDir(), ParentItem = null});
+                        PopulateSongTree(dirInfo, SongTree, item, true);
                     }
                 }
             }
@@ -234,20 +282,6 @@ namespace MSOE.MediaComplete
             ClearDetailPane();
         }
 
-        private void ClearDetailPane()
-        {
-            SongTitle.Text = "";
-            Album.Text = "";
-            Artist.Text = "";
-            SuppArtist.Text = "";
-            Rating.Text = "";
-            Track.Text = "";
-            Year.Text = "";
-            Genre.Text = "";
-
-            EditCancelButton.Content = "Edit";
-
-        }
         /// <summary>
         /// MouseClick Listener for the FolderTree
         /// </summary>
@@ -255,184 +289,11 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void SongTree_OnMouseUp(object sender, MouseButtonEventArgs e)
         {
+            FormCheck();
             if(SongTree.SelectedItems.Count > 0)
                 PopulateMetadataForm();
             else
                 ClearDetailPane();
-        }
-
-        private void PopulateMetadataForm()
-        {
-            //Clear undo stack of each box
-            var boxes = new TextBox[8];
-            boxes[0] = SongTitle;
-            boxes[1] = Album;
-            boxes[2] = Artist;
-            boxes[3] = SuppArtist;
-            boxes[4] = Genre;
-            boxes[5] = Track;
-            boxes[6] = Year;
-            boxes[7] = Rating;
-
-            foreach (var box in boxes)
-            {
-                while (box.CanUndo)
-                    box.Undo();
-            }
-            if (SongTree.SelectedItems.Count == 1)
-            {
-                var song = TagLib.File.Create(((SongTreeViewItem)SongTree.SelectedItems[0]).GetPath());
-                SongTitle.Text = song.GetSongTitle();
-                Album.Text = song.GetAlbum();
-                Artist.Text = song.GetArtist();
-                SuppArtist.Text = song.GetSupportingArtist();
-                Genre.Text = song.GetGenre();
-                Track.Text = song.GetTrack();
-                Year.Text = song.GetYear();
-                Rating.Text = song.GetRating().Equals("-1") ? "" : song.GetRating();
-            }
-            else
-            {
-                var attributes = new Dictionary<MetaAttribute, string>
-                {
-                    {MetaAttribute.SongTitle, null},
-                    {MetaAttribute.Album, null},
-                    {MetaAttribute.Artist, null},
-                    {MetaAttribute.SupportingArtist, null},
-                    {MetaAttribute.Genre, null},
-                    {MetaAttribute.TrackNumber, null},
-                    {MetaAttribute.Year, null},
-                    {MetaAttribute.Rating, null}
-                };
-                foreach (var song in from SongTreeViewItem item in SongTree.SelectedItems select TagLib.File.Create(item.GetPath()))
-                {
-                    switch (attributes[MetaAttribute.SongTitle])
-                    {
-                        case "-1":
-                            break;
-                        case null:
-                            attributes[MetaAttribute.SongTitle] = song.GetSongTitle();
-                            break;
-                        default:
-                            if (attributes[MetaAttribute.SongTitle] != song.GetSongTitle())
-                            {
-                                attributes[MetaAttribute.SongTitle] = "-1";
-                            }
-                            break;
-                    }
-                    switch (attributes[MetaAttribute.Album])
-                    {
-                        case "-1":
-                            break;
-                        case null:
-                            attributes[MetaAttribute.Album] = song.GetAlbum();
-                            break;
-                        default:
-                            if (attributes[MetaAttribute.Album] != song.GetAlbum())
-                            {
-                                attributes[MetaAttribute.Album] = "-1";
-                            }
-                            break;
-                    }
-
-                    switch (attributes[MetaAttribute.Artist])
-                    {
-                        case "-1":
-                            break;
-                        case null:
-                            attributes[MetaAttribute.Artist] = song.GetArtist();
-                            break;
-                        default:
-                            if (attributes[MetaAttribute.Artist] != song.GetArtist())
-                            {
-                                attributes[MetaAttribute.Artist] = "-1";
-                            }
-                            break;
-                    }
-                    switch (attributes[MetaAttribute.SupportingArtist])
-                    {
-                        case "-1":
-                            break;
-                        case null:
-                            attributes[MetaAttribute.SupportingArtist] = song.GetSupportingArtist();
-                            break;
-                        default:
-                            if (attributes[MetaAttribute.SupportingArtist] != song.GetSupportingArtist())
-                            {
-                                attributes[MetaAttribute.SupportingArtist] = "-1";
-                            }
-                            break;
-                    }
-
-                    switch (attributes[MetaAttribute.Genre])
-                    {
-                        case "-1":
-                            break;
-                        case null:
-                            attributes[MetaAttribute.Genre] = song.GetGenre();
-                            break;
-                        default:
-                            if (attributes[MetaAttribute.Genre] != song.GetGenre())
-                            {
-                                attributes[MetaAttribute.Genre] = "-1";
-                            }
-                            break;
-                    }
-
-                    switch (attributes[MetaAttribute.TrackNumber])
-                    {
-                        case "-1":
-                            break;
-                        case null:
-                            attributes[MetaAttribute.TrackNumber] = song.GetTrack();
-                            break;
-                        default:
-                            if (attributes[MetaAttribute.TrackNumber] != song.GetTrack())
-                            {
-                                attributes[MetaAttribute.TrackNumber] = "-1";
-                            }
-                            break;
-                    }
-
-                    switch (attributes[MetaAttribute.Year])
-                    {
-                        case "-1":
-                            break;
-                        case null:
-                            attributes[MetaAttribute.Year] = song.GetYear();
-                            break;
-                        default:
-                            if (attributes[MetaAttribute.Year] != song.GetYear())
-                            {
-                                attributes[MetaAttribute.Year] = "-1";
-                            }
-                            break;
-                    }
-
-                    switch (attributes[MetaAttribute.Rating])
-                    {
-                        case "-1":
-                            break;
-                        case null:
-                            attributes[MetaAttribute.Rating] = song.GetRating();
-                            break;
-                        default:
-                            if (attributes[MetaAttribute.Rating] != song.GetRating())
-                            {
-                                attributes[MetaAttribute.Rating] = "-1";
-                            }
-                            break;
-                    }
-                }
-                SongTitle.Text = attributes[MetaAttribute.SongTitle] == "-1" ? "Various Songs" : attributes[MetaAttribute.SongTitle];
-                Album.Text = attributes[MetaAttribute.Album] == "-1" ? "Various Albums" : attributes[MetaAttribute.Album];
-                Artist.Text = attributes[MetaAttribute.Artist] == "-1" ? "Various Artists" : attributes[MetaAttribute.Artist];
-                SuppArtist.Text = attributes[MetaAttribute.SupportingArtist] == "-1" ? "Various Artists" : attributes[MetaAttribute.SupportingArtist];
-                Genre.Text = attributes[MetaAttribute.Genre] == "-1" ? "Various Genres" : attributes[MetaAttribute.Genre];
-                Track.Text = attributes[MetaAttribute.TrackNumber] == "-1" ? "--" : attributes[MetaAttribute.TrackNumber];
-                Year.Text = attributes[MetaAttribute.Year] == "-1" ? "Various Years" : attributes[MetaAttribute.Year];
-                Rating.Text = attributes[MetaAttribute.Rating] == "-1" ? "Various Ratings" : attributes[MetaAttribute.Rating];
-            }
         }
 
         private Boolean ContainsParent(FolderTreeViewItem folder)
@@ -538,92 +399,12 @@ namespace MSOE.MediaComplete
                 MessageBox.Show("Encountered an error while sorting files: " + ioe.Message);
             }
         }
-
-        private void Edit_OnClick(object sender, RoutedEventArgs e)
-        {
-            if (EditCancelButton.Content.Equals("Edit") && SongTree.SelectedItems.Count > 0)
-            {
-                EditCancelButton.Content = "Cancel";
-                ToggleReadOnlyFields(false);
-            }
-            else if(EditCancelButton.Content.Equals("Cancel"))
-            {
-                foreach (var changedBox in _changedBoxes)
-                {
-                    while (changedBox.CanUndo) { 
-                        changedBox.Undo();
-                    }
-                    changedBox.Redo();
-                    changedBox.LockCurrentUndoUnit();
-                }
-                _changedBoxes.Clear();
-                ToggleReadOnlyFields(true);
-                EditCancelButton.Content = "Edit";
-            }
-        }
-
-        private void Save_OnClick(object sender, RoutedEventArgs e)
-        {
-            if (SongTitle.IsReadOnly) return;
-            EditCancelButton.Content = "Edit";
-            ToggleReadOnlyFields(true);
-            foreach (var song in from SongTreeViewItem item in SongTree.SelectedItems select TagLib.File.Create(item.GetPath()))
-            {
-                foreach (var changedBox in _changedBoxes)
-                {
-                    if (changedBox.Equals(SongTitle))
-                    {
-                        song.SetSongTitle(changedBox.Text);
-                    }
-                    else if (changedBox.Equals(Album))
-                    {
-                        song.SetAlbum(changedBox.Text);
-                    }
-                    else if (changedBox.Equals(Artist))
-                    {
-                        song.SetArtist(changedBox.Text);
-                    }
-                    else if (changedBox.Equals(Genre))
-                    {
-                        song.SetGenre(changedBox.Text);
-                    }
-                    else if (changedBox.Equals(Track))
-                    {
-                        song.SetTrack(changedBox.Text);   
-                    }
-                    else if (changedBox.Equals(Year))
-                    {
-                        song.SetYear(changedBox.Text);
-                    }
-                    else if (changedBox.Equals(Rating))
-                    {
-                        song.SetRating(changedBox.Text);
-                    }
-                    else if (changedBox.Equals(SuppArtist))
-                    {
-                        song.SetSupportingArtists(changedBox.Text);
-                    }
-                }
-            }
-            _changedBoxes.Clear();
-        }
-
-        private void ToggleReadOnlyFields(Boolean toggle)
-        {
-            SongTitle.IsReadOnly = toggle;
-            Album.IsReadOnly = toggle;
-            SuppArtist.IsReadOnly = toggle;
-            Artist.IsReadOnly = toggle;
-            Genre.IsReadOnly = toggle;
-            Year.IsReadOnly = toggle;
-            Rating.IsReadOnly = toggle;
-            Track.IsReadOnly = toggle;
-        }
-
         private void TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!_changedBoxes.Contains((TextBox)sender) && !SongTitle.IsReadOnly)
+            if (!_changedBoxes.Contains((TextBox)sender) && !SongTitle.IsReadOnly ) { 
                 _changedBoxes.Add((TextBox)sender);
+                StatusBarHandler.Instance.ChangeStatusBarMessage("", StatusBarHandler.StatusIcon.None);
+            }
         }
 
 
