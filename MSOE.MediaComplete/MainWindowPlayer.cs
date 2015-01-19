@@ -20,7 +20,7 @@ namespace MSOE.MediaComplete
 
         private void PlayPauseButton_OnClick(object sender, RoutedEventArgs e)
         {
-            switch (_player.PlaybackState())
+            switch (_player.PlaybackState)
             {
                 case PlaybackState.Paused:
                     ResumePausedSong();
@@ -39,7 +39,16 @@ namespace MSOE.MediaComplete
             if (SongTree.SelectedItems == null) return;
             var song = SongTree.SelectedItems.First() as SongTreeViewItem;
             if (song == null) return;
-            _player.Play(new FileInfo(song.GetPath()));
+            try
+            {
+                _player.Play(new FileInfo(song.GetPath()));
+            }
+            catch (FileLoadException)
+            {
+                StatusBarHandler.Instance.ChangeStatusBarMessage("CorruptFile-Error", StatusBarHandler.StatusIcon.Error);
+                PlayPauseButton.Style = (Style)FindResource("PlayButton");
+                return;
+            }
             PlayPauseButton.Style = (Style)FindResource("PauseButton");
         }
 
@@ -68,12 +77,12 @@ namespace MSOE.MediaComplete
 
         private void PreviousButton_OnClick(object sender, RoutedEventArgs e)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
 
         private void SkipButton_OnClick(object sender, RoutedEventArgs e)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
     }
 }
