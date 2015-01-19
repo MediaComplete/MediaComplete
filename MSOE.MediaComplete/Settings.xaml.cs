@@ -21,14 +21,12 @@ namespace MSOE.MediaComplete
     {
         private readonly SortSettings _sortSettings;
         private readonly bool _hasBeenSelected;
-        private Button _plusButton;
-        private Button _minusButton;
         private readonly List<Label> _labels;
-        private ComboBox _comboBox;
         private List<MetaAttribute> _sortOrderList; 
 
         public Settings()
         {
+
             InitializeComponent();
             TxtboxSelectedFolder.Text = SettingWrapper.GetHomeDir();
             TxtboxInboxFolder.Text = SettingWrapper.GetInboxDir();
@@ -44,28 +42,14 @@ namespace MSOE.MediaComplete
             _sortOrderList = SortHelper.MetaAttributesFromString(list);
             _sortSettings = new SortSettings();
             LoadSortListBox();
+
+            MinusButton.Click += MinusClicked;
+            PlusButton.Click += PlusClicked;
+            SortOrderComboBox.SelectionChanged += SelectChanged;
         }
 
         private void LoadSortListBox()
         {
-            _comboBox = new ComboBox();
-            var grid = new Grid();
-
-            var columnDefinition1 = new ColumnDefinition();
-            var columnDefinition2 = new ColumnDefinition();
-            var columnDefinition3 = new ColumnDefinition();
-            var columnDefinition4 = new ColumnDefinition();
-
-            columnDefinition1.Width = new GridLength((_sortOrderList.Count) * 8);
-            columnDefinition2.Width = new GridLength(100);
-            columnDefinition3.Width = new GridLength(50);
-            columnDefinition4.Width = new GridLength(50);
-
-            grid.ColumnDefinitions.Add(columnDefinition1);
-            grid.ColumnDefinitions.Add(columnDefinition2);
-            grid.ColumnDefinitions.Add(columnDefinition3);
-            grid.ColumnDefinitions.Add(columnDefinition4);
-
             for (var i = 0; i < _sortOrderList.Count; i++)
             {
                 var label = new Label
@@ -77,34 +61,19 @@ namespace MSOE.MediaComplete
                 _labels.Add(label);
                 SortConfig.Children.Add(label);
             }
-            _comboBox.ItemsSource = SortHelper.GetAllUnusedMetaAttributes(_sortOrderList);
+            SortOrderComboBox.ItemsSource = SortHelper.GetAllUnusedMetaAttributes(_sortOrderList);
+            
+            ChangingColumn.Width = new GridLength(8 *_sortOrderList.Count);
 
+        }
 
-            _plusButton = new Button
-            {
-                Content = "Add",
-                Visibility = Visibility.Hidden
-            };
-            _plusButton.Click += PlusClicked;
-
-            _minusButton = new Button
-            {
-                Content = "Minus"
-            };
-
-            Grid.SetColumn(_comboBox, 1);
-            Grid.SetColumn(_minusButton, 2);
-            Grid.SetColumn(_plusButton, 3);
-
-            grid.Children.Add(_comboBox);
-            grid.Children.Add(_minusButton);
-            grid.Children.Add(_plusButton);
-
-
-            SortConfig.Children.Add(grid);
-
-            _minusButton.Click += MinusClicked;
-            _comboBox.SelectionChanged += SelectChanged;
+        private void PlusClicked(object sender, RoutedEventArgs e)
+        {
+            SortConfig.Children.Clear();
+            _labels.Clear();
+            _sortOrderList.Add((MetaAttribute)SortOrderComboBox.SelectedValue);
+            LoadSortListBox();
+            PlusButton.Visibility = Visibility.Hidden;
         }
 
         private void MinusClicked(object sender, RoutedEventArgs e)
@@ -120,23 +89,15 @@ namespace MSOE.MediaComplete
                 
             if(toRemove == 0)
             {
-                _minusButton.Visibility = Visibility.Hidden;
+                MinusButton.Visibility = Visibility.Hidden;
             }
-        }
-
-        private void PlusClicked(object sender, RoutedEventArgs e)
-        {
-            SortConfig.Children.Clear();
-            _labels.Clear();
-            _sortOrderList.Add((MetaAttribute)_comboBox.SelectedValue);
-            LoadSortListBox();
         }
 
         private void SelectChanged(object sender, SelectionChangedEventArgs e)
         {
             if (_hasBeenSelected) return;
-            _plusButton.Visibility = Visibility.Visible;
-            _minusButton.Visibility = Visibility.Visible;
+            PlusButton.Visibility = Visibility.Visible;
+            MinusButton.Visibility = Visibility.Visible;
         }
 
 

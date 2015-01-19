@@ -37,4 +37,10 @@
                  UriSource=".\Resources\wand.png" />
     <BitmapImage x:Key="Toolbar-SortMusic-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
                  UriSource=".\Resources\folder_wrench.png" />
+    <BitmapImage x:Key="Settings-AddConfig-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
+                 UriSource=".\Resources\add.png" />
+    <BitmapImage x:Key="Settings-MinusConfig-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
+                 UriSource=".\Resources\delete.png" />
+    <BitmapImage x:Key="Settings-RefreshConfig-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
+                 UriSource=".\Resources\arrow_refresh.png" />
 </ResourceDictionary>
