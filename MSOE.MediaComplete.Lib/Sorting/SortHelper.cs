@@ -18,12 +18,5 @@ namespace MSOE.MediaComplete.Lib.Sorting
         {
             return Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>().ToList().Except(valueList).ToList();
         }
-
-        public static List<MetaAttribute> MetaAttributesFromString(List<String> stringList)
-        {
-            return stringList
-                .Select(a => (MetaAttribute)Enum.Parse(typeof(MetaAttribute), a))
-                .ToList();
-        } 
     }
 }
