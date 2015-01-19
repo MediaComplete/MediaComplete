@@ -6,6 +6,16 @@ namespace MSOE.MediaComplete.Lib.Sorting
 {
     public class SortHelper
     {
+        private static readonly List<MetaAttribute> AlbumRule = new List<MetaAttribute>
+        {
+            MetaAttribute.Year,
+            MetaAttribute.AlbumArt
+        };
+        private static readonly List<MetaAttribute> AlbumArtRule = new List<MetaAttribute>
+        {
+            MetaAttribute.Album,
+            MetaAttribute.Year
+        };
         public static List<MetaAttribute> GetDefault()
         {
             return new List<MetaAttribute>
@@ -16,7 +26,18 @@ namespace MSOE.MediaComplete.Lib.Sorting
         } 
         public static List<MetaAttribute> GetAllUnusedMetaAttributes(List<MetaAttribute> valueList)
         {
-            return Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>().ToList().Except(valueList).ToList();
+            
+            var metaList = Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>().ToList().Except(valueList).ToList();
+            if (valueList.Contains(MetaAttribute.Album))
+            {
+                metaList = metaList.Except(AlbumRule).ToList();
+            }
+            if (valueList.Contains(MetaAttribute.AlbumArt))
+            {
+                metaList = metaList.Except(AlbumArtRule).ToList();
+            }
+
+            return metaList;
         }
     }
 }
