@@ -41,6 +41,9 @@
     <OutputPath>bin\x86\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NAudio.WindowsMediaFormat">
+      <HintPath>..\packages\NAudio.Wma.1.0\lib\net20\NAudio.WindowsMediaFormat.dll</HintPath>
+    </Reference>
     <Reference Include="policy.2.0.taglib-sharp">
       <HintPath>..\packages\taglib.2.1.0.0\lib\policy.2.0.taglib-sharp.dll</HintPath>
     </Reference>
@@ -73,6 +76,7 @@
     <Compile Include="Constants.cs" />
     <Compile Include="MetadataExtensions.cs" />
     <Compile Include="LayoutType.cs" />
+    <Compile Include="Player.cs" />
     <Compile Include="SystemExtensions.cs" />
     <Compile Include="TreeViewBackend.cs" />
     <Compile Include="StatusBarHandler.cs" />

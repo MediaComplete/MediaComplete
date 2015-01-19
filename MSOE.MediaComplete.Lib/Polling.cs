@@ -73,6 +73,10 @@ namespace MSOE.MediaComplete.Lib
         private static void OnTimerFinished(Object sender, ElapsedEventArgs args)
         {
             var inbox = new DirectoryInfo(SettingWrapper.GetInboxDir());
+            if (!inbox.Exists)
+            {
+                inbox.Create();
+            }
             var files = inbox.EnumerateFiles("*.mp3");
 
             var fileInfos = files as FileInfo[] ?? files.ToArray();

@@ -59,6 +59,8 @@ namespace MSOE.MediaComplete
             InitEvents();
 
             InitTreeView();
+
+            InitPlayer();
         }
 
         private void InitEvents()
@@ -414,80 +416,6 @@ namespace MSOE.MediaComplete
 
 
 
-        //TODO: separate file with partial class
-        private WaveOut _waveOut;
-        private WaveStream reader;
-        private bool songPlaying = false;
-        private bool songPaused = false;
-
-        private void PlayPauseButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            if (!songPlaying)
-            {
-                PlaySelectedSong();
-            }
-            else
-            {
-                if (songPaused)
-                {
-                    ResumePausedSong();
-                }
-                else
-                {
-                    PauseSong();
-                }
-            }
-        }
-
-        private void PlaySelectedSong()
-        {
-            if (SongTree.SelectedItems == null) return;
-            var song = SongTree.SelectedItems.First() as SongTreeViewItem;
-            if (song == null) return;
-            if (_waveOut != null)
-            {
-                Stop();
-            } 
-            reader = new Mp3FileReader(song.GetPath());//TODO: determine file type and use proper reader
-            _waveOut = new WaveOut();
-            _waveOut.Init(reader);
-            _waveOut.Play();
-            PlayPauseButton.Content = "Pause";//TODO: replace when merging with UI branch
-            songPlaying = true;
-
-        }
-
-        private void PauseSong()
-        {
-            _waveOut.Pause();
-            PlayPauseButton.Content = "Play";//TODO: replace when merging with UI branch
-            songPaused = true;
-        }
-
-        private void ResumePausedSong()
-        {
-            _waveOut.Resume();
-            PlayPauseButton.Content = "Pause";//TODO: replace when merging with UI branch
-            songPaused = false;
-        }
-
-        private void Stop()
-        {
-            _waveOut.Stop();
-            _waveOut.Dispose();
-            reader.Dispose();
-            reader = null;
-            _waveOut = null;
-        }
-
-        private void SongTree_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            PlaySelectedSong();
-        }
-
-        private void SkipButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            //reader.Seek(10000000, SeekOrigin.Current);
-        }
+        
     }
 }
