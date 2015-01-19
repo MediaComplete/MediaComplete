@@ -14,6 +14,7 @@ namespace MSOE.MediaComplete
 
         private void InitPlayer()
         {
+            PlayPauseButton.Style = (Style)FindResource("PlayButton");
             _player = Player.Instance;
         }
 
@@ -39,25 +40,25 @@ namespace MSOE.MediaComplete
             var song = SongTree.SelectedItems.First() as SongTreeViewItem;
             if (song == null) return;
             _player.Play(new FileInfo(song.GetPath()));
-            PlayPauseButton.Content = "Pause";//TODO: replace with proper line to change button to pause icon
+            PlayPauseButton.Style = (Style)FindResource("PauseButton");
         }
 
         private void PauseSong()
         {
             _player.Pause();
-            PlayPauseButton.Content = "Play";//TODO: replace with proper line to change button to play icon
+            PlayPauseButton.Style = (Style)FindResource("PlayButton");
         }
 
         private void ResumePausedSong()
         {
             _player.Resume();
-            PlayPauseButton.Content = "Pause";//TODO: replace with proper line to change button to pause icon
+            PlayPauseButton.Style = (Style)FindResource("PauseButton");
         }
 
         private void StopButton_OnClick()
         {
             _player.Stop();
-            PlayPauseButton.Content = "Play";//TODO: replace with proper line to change button to play icon
+            PlayPauseButton.Style = (Style)FindResource("PlayButton");
         }
 
         private void SongTree_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)

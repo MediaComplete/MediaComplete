@@ -173,7 +173,7 @@
             <Slider />
             <StackPanel Height="75" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Name="PreviousButton" Height="60" Width="60" Style="{DynamicResource PreviousButton}" Click="PreviousButton_OnClick"/>
-                <Button Name="PlayPauseButton" Height="75" Width="75" Style="{DynamicResource PlayButton}" Click="PlayPauseButton_OnClick"/>
+                <Button Name="PlayPauseButton" Height="75" Width="75" Click="PlayPauseButton_OnClick"/>
                 <Button Name="SkipButton" Height="60" Width="60" Style="{DynamicResource SkipButton}" Click="SkipButton_OnClick"/>
             </StackPanel>
         </StackPanel>
