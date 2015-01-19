@@ -133,9 +133,11 @@ namespace MSOE.MediaComplete.Lib
         /// gets the SortOrder list from settings
         /// </summary>
         /// <returns>The order the sort will perform in</returns>
-        public static List<String> GetSortOrder()
+        public static List<MetaAttribute> GetSortOrder()
         {
-            return ((StringCollection)Settings.Default[SortingOrder]).Cast<string>().ToList();
+            var stringList = ((StringCollection) Settings.Default[SortingOrder]).Cast<string>().ToList();
+            var metaAttrList = stringList.Select(x => (MetaAttribute) Enum.Parse(typeof(MetaAttribute), x)).ToList();
+            return metaAttrList;
         }
 
         /// <summary>

@@ -177,7 +177,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
             // TODO get settings from configuration
             var settings = new SortSettings
             {
-                SortOrder = SortHelper.MetaAttributesFromString(SettingWrapper.GetSortOrder())
+                SortOrder = SettingWrapper.GetSortOrder()
             };
             var sorter = new Sorter(results.HomeDir);
             sorter.CalculateActions(results.NewFiles, settings);
