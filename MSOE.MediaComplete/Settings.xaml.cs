@@ -15,7 +15,7 @@ namespace MSOE.MediaComplete
     public partial class Settings
     {
 
-        private readonly Dictionary<LayoutType, string> _layoutsDict = new Dictionary<LayoutType, string>()
+        private readonly Dictionary<LayoutType, string> _layoutsDict = new Dictionary<LayoutType, string>
         {
             {LayoutType.Dark, "layout\\Dark.xaml"},
             {LayoutType.Pink, "layout\\Pink.xaml"}
