@@ -14,7 +14,7 @@ namespace MSOE.MediaComplete
 
         private void InitPlayer()
         {
-            PlayPauseButton.Style = (Style)FindResource("PlayButton");
+            PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
             _player = Player.Instance;
         }
 
@@ -46,28 +46,28 @@ namespace MSOE.MediaComplete
             catch (FileLoadException)
             {
                 StatusBarHandler.Instance.ChangeStatusBarMessage("CorruptFile-Error", StatusBarHandler.StatusIcon.Error);
-                PlayPauseButton.Style = (Style)FindResource("PlayButton");
+                PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
                 return;
             }
-            PlayPauseButton.Style = (Style)FindResource("PauseButton");
+            PlayPauseButton.SetResourceReference(StyleProperty, "PauseButton");
         }
 
         private void PauseSong()
         {
             _player.Pause();
-            PlayPauseButton.Style = (Style)FindResource("PlayButton");
+            PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
         }
 
         private void ResumePausedSong()
         {
             _player.Resume();
-            PlayPauseButton.Style = (Style)FindResource("PauseButton");
+            PlayPauseButton.SetResourceReference(StyleProperty, "PauseButton");
         }
 
         private void StopButton_OnClick()
         {
             _player.Stop();
-            PlayPauseButton.Style = (Style)FindResource("PlayButton");
+            PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
         }
 
         private void SongTree_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
