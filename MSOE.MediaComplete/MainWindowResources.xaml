@@ -7,6 +7,7 @@
     <system:String x:Key="Toolbar-SortMusic-Tooltip">Refresh the sorting of your library</system:String>
     <system:String x:Key="Toolbar-SortMusicDisabled-Tooltip">Sorting is disabled in Settings Menu</system:String>
     <system:String x:Key="ContextMenu-AutoIdMusic-Header">Restore Metadata</system:String>
+    <system:String x:Key="ContextMenu-PlayMusic-Header">Play</system:String>
     <system:String x:Key="Dialog-AddFile-FileFilter">MP3 Files (*.mp3)</system:String>
     <system:String x:Key="Dialog-AddFile-Title">Select Music File(s)</system:String>
     <system:String x:Key="Dialog-SortLibrary-Confirm">{0} file(s) will be moved, {1} duplicate file(s) will be deleted, {2} file(s) cannot be sorted, do you want to perform this operation?</system:String>

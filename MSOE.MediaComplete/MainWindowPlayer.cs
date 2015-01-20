@@ -84,5 +84,10 @@ namespace MSOE.MediaComplete
         {
             //throw new System.NotImplementedException();
         }
+
+        private void ContextMenu_PlayMusic_Click(object sender, RoutedEventArgs e)
+        {
+            PlaySelectedSong();
+        }
     }
 }

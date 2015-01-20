@@ -96,6 +96,8 @@
                 </controls:TreeViewEx.ItemTemplate>
                 <controls:TreeViewEx.ContextMenu>
                     <ContextMenu StaysOpen="True">
+                        <MenuItem Header="{StaticResource ContextMenu-PlayMusic-Header}"
+							Click="ContextMenu_PlayMusic_Click" />
                         <MenuItem Header="{StaticResource ContextMenu-AutoIdMusic-Header}"
 							Click="ContextMenu_AutoIDMusic_Click" />
                     </ContextMenu>
