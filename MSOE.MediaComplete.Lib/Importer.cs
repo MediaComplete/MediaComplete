@@ -10,7 +10,7 @@ namespace MSOE.MediaComplete.Lib
     public class Importer
     {
         public delegate void ImportHandler(ImportResults results);
-        public static event ImportHandler ImportFinished = delegate {};
+        public static event ImportHandler ImportFinished = delegate { };
 
 
         private readonly DirectoryInfo _homeDir;
@@ -66,13 +66,18 @@ namespace MSOE.MediaComplete.Lib
                     }
                     results.NewFiles.Add(new FileInfo(newFile));
                 }
-                catch (IOException exception)
+                catch (IOException)
                 {
-                    Console.WriteLine(exception); // TODO log (MC-125)
                     results.FailCount++;
-                    StatusBarHandler.Instance.ChangeStatusBarMessage("Importing-Error",
-                        StatusBarHandler.StatusIcon.Error);
+                    StatusBarHandler.Instance.ChangeStatusBarMessage("Importing-Error", StatusBarHandler.StatusIcon.Error);
                 }
+
+                catch (UnauthorizedAccessException)
+                {
+                    results.FailCount++;
+                    StatusBarHandler.Instance.ChangeStatusBarMessage("UnauthorizedAccess-Error", StatusBarHandler.StatusIcon.Error);
+                }
+
             }
             ImportFinished(results);
             StatusBarHandler.Instance.ChangeStatusBarMessage("Import-Success", StatusBarHandler.StatusIcon.Success);
@@ -85,7 +90,7 @@ namespace MSOE.MediaComplete.Lib
     /// </summary>
     public class ImportResults
     {
-        public List<FileInfo> NewFiles { get; set; } 
+        public List<FileInfo> NewFiles { get; set; }
         public DirectoryInfo HomeDir { get; set; }
         public int FailCount { get; set; }
     }
@@ -95,9 +100,10 @@ namespace MSOE.MediaComplete.Lib
     /// </summary>
     public class InvalidImportException : Exception
     {
-        public InvalidImportException() : base("Cannot import a file already located in the library directory tree!")
+        public InvalidImportException()
+            : base("Cannot import a file already located in the library directory tree!")
         {
-        
+
         }
     }
 }

@@ -11,6 +11,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="MainWindowResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
+           
         </ResourceDictionary>
     </Window.Resources>
     <Grid Margin="0,0,0,0">
@@ -23,20 +24,24 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
-            <Menu>
+            <Menu Style="{DynamicResource MenuStyle}">
+                <Menu.Resources>
+                    <Style TargetType="MenuItem">
+                        <Setter Property="BorderThickness" Value="0"></Setter>
+                    </Style>
+                </Menu.Resources>
                 <MenuItem Header="_File">
-                    <MenuItem Header="_Exit" />
+                    <MenuItem Header="_Exit" Style="{DynamicResource MenuItemStyle}"/>
                 </MenuItem>
                 <MenuItem Header="_Edit" Click="MenuItem_Click">
-                    <MenuItem Header="_Settings" />
+                    <MenuItem.Resources></MenuItem.Resources>
+                    <MenuItem Header="_Settings" Style="{DynamicResource MenuItemStyle}"/>
                 </MenuItem>
-                <MenuItem Header="_Playlists" />
-                <MenuItem Header="_MetaDataFinderThing" />
             </Menu>
             <TextBox Text="Search" Height="22" Width="180" HorizontalAlignment="Right"/>
         </Grid>
-        <ToolBarTray Grid.Row="1">
-            <ToolBar Margin="0,0,0,0">
+        <ToolBarTray Grid.Row="1" Style="{DynamicResource ToolBarTrayStyle}">
+            <ToolBar Margin="0,0,0,0" Style="{DynamicResource ToolBarStyle}">
                 <Button x:Name="AddFile" ToolTip="Add File" VerticalAlignment="Center" Click="AddFile_Click">
                     <Image Source="{StaticResource Toolbar-AddMusicFile-Icon}" />
                 </Button>
@@ -54,17 +59,19 @@
                 </Button>
             </ToolBar>
         </ToolBarTray>
-        <Grid Margin="0,0,0,0" Grid.Row="2">
+        <Grid Margin="0,0,0,0" Grid.Row="2" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="260*" MinWidth="100"/>
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="260*" MinWidth="200"/>
-                <ColumnDefinition Width="260*" MinWidth="220" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="260*" MinWidth="225" />
             </Grid.ColumnDefinitions>
 
             <controls:TreeViewEx x:Name="FolderTree" Grid.Column="0" Margin="0,0,0,0" 
 				AutomationProperties.Name="Tree" 
 				MouseUp="FolderTree_OnMouseUp"
-				ItemsSource="{Binding Children}">
+				ItemsSource="{Binding Children}" >
                 <controls:TreeViewEx.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding Children}"  DataType="{x:Type customControls:FolderTreeViewItem}">
                         <TextBlock Text="{Binding}"/>
@@ -72,10 +79,15 @@
                 </controls:TreeViewEx.ItemTemplate>
 
             </controls:TreeViewEx>
-
-            <controls:TreeViewEx x:Name="SongTree" Grid.Column="1" Margin="0,0,0,0" 
+            <GridSplitter Grid.Column="1" 
+              HorizontalAlignment="Center" 
+              VerticalAlignment="Stretch"
+              ShowsPreview="true"
+              Width="3"
+              Style="{DynamicResource SplitterStyle}"/>
+            <controls:TreeViewEx x:Name="SongTree" Grid.Column="2" Margin="0,0,0,0" 
 				AutomationProperties.Name="Tree" 
-				ItemsSource="{Binding}"
+				ItemsSource="{Binding}" 
                 MouseUp="SongTree_OnMouseUp">
                 <controls:TreeViewEx.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding}"  DataType="{x:Type customControls:SongTreeViewItem}">
@@ -89,9 +101,15 @@
                     </ContextMenu>
                 </controls:TreeViewEx.ContextMenu>
             </controls:TreeViewEx>
-            <Border Grid.Column="2" BorderThickness="1" BorderBrush="Gray" Height="Auto">
+            <GridSplitter Grid.Column="3" 
+              HorizontalAlignment="Center" 
+              VerticalAlignment="Stretch"
+              ShowsPreview="true"
+              Width="3"
+              Style="{DynamicResource SplitterStyle}"/>
+            <Border Grid.Column="4" BorderThickness="1" Height="Auto" Style="{DynamicResource BorderStyle}">
                 <DockPanel Height="Auto">
-                    <Grid Margin="0,0,0,0" Background="Transparent" Height="Auto">
+                    <Grid Margin="0,0,0,0"  Height="Auto" Style="{DynamicResource DetailGridStyle}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="100" />
                             <ColumnDefinition Width="35" />
@@ -111,32 +129,32 @@
                         </Grid.RowDefinitions>
                         <Label Grid.Column="0" Grid.Row="0" Content="Song Title" />
                         <TextBox Name="SongTitle" IsReadOnly="True" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="3" TextChanged="TextChanged"/>
-                        
+
                         <Label Grid.Column="0" Grid.Row="1" Content="Album" />
                         <TextBox Name="Album"  IsReadOnly="True" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" TextChanged="TextChanged"/>
-                        
+
                         <Label Grid.Column="0" Grid.Row="2" Content="Artist" />
                         <TextBox Name="Artist" IsReadOnly="True" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" TextChanged="TextChanged"/>
-                        
+
                         <Label Grid.Column="0" Grid.Row="3" Content="Supporting Artist" />
                         <TextBox Name="SuppArtist" IsReadOnly="True" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="3" TextChanged="TextChanged"/>
-                        
+
                         <Label Grid.Column="0" Grid.Row="4" Content="Genre" />
                         <TextBox Name="Genre" IsReadOnly="True" Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="3" TextChanged="TextChanged"/>
-                        
+
                         <Label Grid.Column="0" Grid.Row="5" Content="Track Number" />
-                        <TextBox Name="Track" IsReadOnly="True" Grid.Column="1" Grid.Row="5" TextChanged="TextChanged"/>
-                        
+                        <TextBox Name="Track" IsReadOnly="True" Grid.Column="1" Grid.Row="5" TextChanged="TextChanged" HorizontalAlignment="Left" Width="35"/>
+
                         <Label Grid.Column="2" Grid.Row="5" Content="Year"/>
                         <TextBox Name="Year" IsReadOnly="True" Grid.Column="3" Grid.Row="5" TextChanged="TextChanged"/>
-                        
+
                         <Label Grid.Column="0" Grid.Row="6"  Content="Rating" />
                         <TextBox Name="Rating" IsReadOnly="True" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="3" TextChanged="TextChanged"/>
-                      
                         <Grid Grid.Row="7" Grid.ColumnSpan="4" Grid.Column="0" Grid.RowSpan="2">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="14*"/>
                                 <ColumnDefinition Width="110"/>
+                                <ColumnDefinition Width="5"/>
                                 <ColumnDefinition Width="110"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
@@ -144,23 +162,23 @@
                                 <RowDefinition Height="26"/>
                             </Grid.RowDefinitions>
                             <Button Name="EditCancelButton" Content="Edit" Grid.Column="1" Grid.Row="1" Click="Edit_OnClick"/>
-                            <Button Content="Save" Grid.Column="2" Grid.Row="1" Click="Save_OnClick"/>
+                            <Button Content="Save" Grid.Column="3" Grid.Row="1" Click="Save_OnClick"/>
                         </Grid>
                     </Grid>
                 </DockPanel>
             </Border>
         </Grid>
 
-        <StackPanel Grid.Row="3" Grid.Column="0">
+        <StackPanel Grid.Row="3" Grid.Column="0" Style="{DynamicResource StackStyle}">
             <Slider />
-            <StackPanel Height="64" Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="Previous" MinWidth="75" />
-                <Button Content="Play" MinWidth="75" />
-                <Button Content="Skip" MinWidth="75" />
+            <StackPanel Height="75" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Height="60" Width="60" Style="{DynamicResource PreviousButton}" />
+                <Button Height="75" Width="75" Style="{DynamicResource PlayButton}" />
+                <Button Height="60" Width="60" Style="{DynamicResource SkipButton}" />
             </StackPanel>
         </StackPanel>
-        <StackPanel Grid.Row="4" Grid.Column="0">
-            <StatusBar>
+        <StackPanel Grid.Row="4" Grid.Column="0" Height="22">
+            <StatusBar Style="{DynamicResource StatusBarStyle}">
                 <StatusBar.ItemsPanel>
                     <ItemsPanelTemplate>
                         <Grid>
@@ -172,7 +190,7 @@
                         </Grid>
                     </ItemsPanelTemplate>
                 </StatusBar.ItemsPanel>
-                <StatusBarItem Grid.Column="1">
+                <StatusBarItem Grid.Column="1" Style="{DynamicResource StatusBarItemStyle}">
                     <TextBlock x:Name="StatusMessage"/>
                 </StatusBarItem>
                 <StatusBarItem Grid.Column="2">

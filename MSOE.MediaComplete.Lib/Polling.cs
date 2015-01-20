@@ -36,7 +36,6 @@ namespace MSOE.MediaComplete.Lib
             var timeInMilliseconds = TimeSpan.FromMinutes(TimeInMinutes).TotalMilliseconds;
             _timer.Interval = timeInMilliseconds;
             _timer.Enabled = true;
-            //Console.WriteLine("Timer Started");
         }
 
         /// <summary>

@@ -1,6 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib;
+using MSOE.MediaComplete.Test.Util;
 using TagLib;
+using Constants = MSOE.MediaComplete.Test.Util.Constants;
+using File = TagLib.File;
 
 namespace MSOE.MediaComplete.Test
 {
@@ -9,6 +13,12 @@ namespace MSOE.MediaComplete.Test
     {
         #region Files
         private File _mp3File;
+        private static File _file;
+        private const string InvalidMp3FileName = "Resources/InvalidMp3File.mp3";
+        private const string BlankFile = "Resources/Blanked.mp3";
+        private File _file;
+        private DirectoryInfo _homeDir;
+        private const string InvalidMp3FileName = "Resources/InvalidMp3File.mp3";
         private File _wmaFile;
         private static File _file;
         private const string BlankFile = "Resources/Blanked.mp3";
@@ -16,7 +26,7 @@ namespace MSOE.MediaComplete.Test
         private const string ValidWmaFileName = "Resources/ValidWmaFile.wma";
         #endregion
 
-        #region Attributes
+     *   #region Attributes
         private const string ValidYear = "2012";
         private const string ValidTrack = "1";
         private const string ValidTitle = "Get Got";
@@ -33,6 +43,18 @@ namespace MSOE.MediaComplete.Test
         private const string BadGenre = "BadGenre";
         #endregion
 
+        [TestInitialize]
+        public void Initialize()
+        {
+            _homeDir = FileHelper.CreateDirectory("MetadataExtensionsTestHomeDir");
+            _file = File.Create(FileHelper.CreateFile(_homeDir, Constants.FileTypes.Blanked).FullName);
+        }
+
+        [TestCleanup]
+        public void TearDown()
+        {
+            Directory.Delete(_homeDir.FullName, true);
+        }
         #region Initialization
         [ClassCleanup]
         public static void CleanUp()
@@ -97,6 +119,28 @@ namespace MSOE.MediaComplete.Test
             _mp3File = File.Create(ValidMp3FileName);
             Assert.AreEqual(ValidGenre, _mp3File.GetGenre());
         }
+
+
+        [ClassCleanup]
+        public static void CleanUp()
+        {
+            _file.SetYear("");
+            _file.SetAlbum("");
+            _file.SetArtist("");
+            _file.SetGenre("");
+            _file.SetRating("");
+            _file.SetSongTitle("");
+            _file.SetSupportingArtists("");
+            _file.SetTrack("");
+
+        }
+        [ClassInitialize]
+        public static void Initialize(TestContext tc)
+        {
+            _file = File.Create(BlankFile);
+
+        }
+        
         #endregion
 
         #region MP3 Setters

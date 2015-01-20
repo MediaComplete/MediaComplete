@@ -1,0 +1,208 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:System.Windows.Controls;assembly=TreeViewEx">
+    <Style TargetType="{x:Type controls:TreeViewEx}">
+        <Setter Property="Foreground" Value="#FFF0EFF1"/>
+        <Setter Property="Background" Value="#FF3E3E42"/>
+        <Setter Property="BorderBrush">
+            <Setter.Value>
+                <RadialGradientBrush>
+                    <GradientStop Color="#FF3E3E42" Offset="0"/>
+                    <GradientStop Color="#FF707070" Offset="1"/>
+                </RadialGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type TabItem}">
+        <Setter Property="Foreground" Value="#FFF0EFF1"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TabItem}">
+                    <Grid>
+                        <Border  Name="Border" Margin="0,0,-4,0" BorderThickness="1,1,1,1" CornerRadius="2,12,0,0" >
+                            <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center" HorizontalAlignment="Center" ContentSource="Header" Margin="12,2,12,2" RecognizesAccessKey="True"/>
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Panel.ZIndex" Value="100" />
+                            <Setter TargetName="Border" Property="Background" Value="#FF707070" />
+                            <Setter TargetName="Border" Property="BorderThickness" Value="1,1,1,0" />
+                        </Trigger>
+
+                        <Trigger Property="IsSelected" Value="False">
+                            <Setter TargetName="Border" Property="Background" Value="#FF3E3E42" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="#FF707070" />
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type controls:TreeViewExItem}">
+        <Setter Property="BackgroundSelected" Value="LightGray"/>
+        <Setter Property="BackgroundSelectedPreview" Value="LightGray"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseDirectlyOver" Value="True">
+                <Setter Property="Background" Value="LightGray"/>
+                <Setter Property="Foreground" Value="#FF4D4D4D"/>
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="BackgroundFocused" Value="LightGray"/>
+                <Setter Property="Foreground" Value="#FF4D4D4D"/>
+            </Trigger>
+            <Trigger Property="IsSelected" Value="False">
+                <Setter Property="BackgroundFocused" Value="Transparent"/>
+                <Setter Property="Foreground" Value="#FFF0EFF1" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="#FF2D2D30"/>
+        <Setter Property="Foreground" Value="#FFF0EFF1" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="bg" Background="{TemplateBinding Background}" BorderThickness="0">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#FF686868" TargetName="bg" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="EllipseStyle" TargetType="{x:Type Ellipse}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid,AncestorLevel=1}, Path=IsMouseOver}" Value="True">
+                <Setter Property="Fill" Value="#FF686868"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid,AncestorLevel=1}, Path=IsMouseOver}" Value="False">
+                <Setter Property="Fill" Value="#FF2D2D30"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="{x:Type Button}" x:Key="PlayButton" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Ellipse Style="{StaticResource EllipseStyle}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                        <Polygon Points="27,15 27,60 60,37.5" Fill="#FFF0EFF1" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type Button}" x:Key="SkipButton" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Ellipse Style="{StaticResource EllipseStyle}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                        <Polygon Points="18,20 18,40 33,30" Fill="#FFF0EFF1" />
+                        <Polygon Points="33,20 33,40 48,30" Fill="#FFF0EFF1" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type Button}" x:Key="PreviousButton" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Ellipse Style="{StaticResource EllipseStyle}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                        <Polygon Points="27,20 27,40 12,30" Fill="#FFF0EFF1" />
+                        <Polygon Points="42,20 42,40 27,30" Fill="#FFF0EFF1" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type TabControl}">
+        <Setter Property="Background" Value="#FF3E3E42"/>
+    </Style>
+    <Style TargetType="{x:Type Label}">
+        <Setter Property="Foreground" Value="#FFF0EFF1"/>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="#FFF0EFF1"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="{x:Type TextBox}">
+        <Style.Triggers>
+            <Trigger Property="IsReadOnly" Value="False">
+                <Setter Property="BorderBrush" Value="#FFE3E9EF"/>
+                <Setter Property="Background" Value="#FF686868"/>
+                <Setter Property="Foreground" Value="#FFF0EFF1"/>
+            </Trigger>
+            <Trigger Property="IsReadOnly" Value="True">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Foreground" Value="#FFF0EFF1"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="{x:Type GridSplitter}" x:Key="SplitterStyle">
+        <Setter Property="Background" Value="#FF686868"></Setter>
+    </Style>
+    <Style TargetType="{x:Type StackPanel}" x:Key="StackStyle">
+        <Setter Property="Background" Value="#FF3E3E42"/>
+    </Style>
+    <Style TargetType="{x:Type Menu}" x:Key="MenuStyle">
+        <Setter Property="Background" Value="#FF4B4B4B"/>
+        <Setter Property="Foreground" Value="#FFF0EFF1"/>
+    </Style>
+    <Style TargetType="{x:Type MenuItem}" x:Key="MenuItemStyle">
+        <Setter Property="Foreground" Value="Black"/>
+    </Style>
+    <Style TargetType="{x:Type ToolBarTray}" x:Key="ToolBarTrayStyle">
+        <Setter Property="Background" Value="#FF686868"/>
+    </Style>
+    <Style TargetType="{x:Type ToolBar}" x:Key="ToolBarStyle">
+        <Setter Property="Background" Value="#FF686868"/>
+    </Style>
+    <Style TargetType="{x:Type Grid}" x:Key="DetailGridStyle">
+        <Setter Property="Background" Value="#FF3E3E42"/>
+    </Style>
+    <Style TargetType="{x:Type Grid}" x:Key="GridStyle">
+        <Setter Property="Background" Value="#FF3E3E42"/>
+    </Style>
+    <Style TargetType="{x:Type StatusBar}" x:Key="StatusBarStyle">
+        <Setter Property="Background" Value="#FF686868"/>
+    </Style>
+    <Style TargetType="{x:Type RadioButton}" x:Key="RadioStyle">
+        <Setter Property="Foreground" Value="#FFF0EFF1"/>
+    </Style>
+    <Style TargetType="{x:Type TextBlock}" x:Key="TextBlockStyle">
+        <Setter Property="Foreground" Value="#FFF0EFF1"/>
+        <Setter Property="Background" Value="#FF3E3E42"/>
+    </Style>
+    <Style TargetType="{x:Type CheckBox}" x:Key="CheckBoxStyle">
+        <Setter Property="Foreground" Value="#FFF0EFF1"/>
+        <Setter Property="Background" Value="#FF3E3E42"/>
+    </Style>
+    <Style TargetType="{x:Type StatusBarItem}" x:Key="StatusBarItemStyle">
+        <Setter Property="Foreground" Value="#FFF0EFF1"/>
+    </Style>
+    <Style TargetType="{x:Type Border}" x:Key="BorderStyle">
+        <Setter Property="BorderBrush">
+            <Setter.Value>
+                <RadialGradientBrush>
+                    <GradientStop Color="#FF3E3E42" Offset="0"/>
+                    <GradientStop Color="#FF707070" Offset="1"/>
+                </RadialGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

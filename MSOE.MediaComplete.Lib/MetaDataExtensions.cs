@@ -81,11 +81,13 @@ namespace MSOE.MediaComplete.Lib
                     tag.Title = (string) value;
                     break;
                 case MetaAttribute.SupportingArtist:
-                    var all = tag.AlbumArtists.GetValue(0).ToString() + ',' + value;
-                    tag.AlbumArtists = all.Split(',');
+                    if (tag.AlbumArtists.Length > 0)
+                    {
+                        var all = tag.AlbumArtists.GetValue(0).ToString() + ',' + value;
+                        tag.AlbumArtists = all.Split(',');
+                    }
                     break;
                 case MetaAttribute.TrackNumber:
-
                     tag.Track = Convert.ToUInt32(value);
                     break;
                 case MetaAttribute.Year:
@@ -94,7 +96,14 @@ namespace MSOE.MediaComplete.Lib
                 default:
                     return;
             }
-            file.Save();
+            try
+            {
+                file.Save();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                StatusBarHandler.Instance.ChangeStatusBarMessage("Save-Error", StatusBarHandler.StatusIcon.Error);
+            }
         }
 
         /// <summary>
@@ -222,7 +231,14 @@ namespace MSOE.MediaComplete.Lib
         }
         public static void SetYear(this File file, string value)
         {
-            file.SetMetaAttribute(MetaAttribute.Year, value);
+            try
+            {
+                file.SetMetaAttribute(MetaAttribute.Year, value);
+            }
+            catch (FormatException)
+            {
+                StatusBarHandler.Instance.ChangeStatusBarMessage("InvalidTrackNumber", StatusBarHandler.StatusIcon.Error);
+            }
         }
         public static void SetSupportingArtists(this File file, string value)
         {
@@ -234,7 +250,14 @@ namespace MSOE.MediaComplete.Lib
         }
         public static void SetTrack(this File file, string value)
         {
-            file.SetMetaAttribute(MetaAttribute.TrackNumber, value);
+            try
+            {
+                file.SetMetaAttribute(MetaAttribute.TrackNumber, value);
+            }
+            catch (FormatException)
+            {
+                StatusBarHandler.Instance.ChangeStatusBarMessage("InvalidTrackNumber", StatusBarHandler.StatusIcon.Error);
+            }
         }
 }
 }

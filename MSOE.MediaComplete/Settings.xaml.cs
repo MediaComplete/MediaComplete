@@ -15,17 +15,31 @@ namespace MSOE.MediaComplete
     public partial class Settings
     {
 
-        
+        private readonly Dictionary<LayoutType, string> _layoutsDict = new Dictionary<LayoutType, string>
+        {
+            {LayoutType.Dark, "layout\\Dark.xaml"},
+            {LayoutType.Pink, "layout\\Pink.xaml"}
+        };
+        private LayoutType _changedType;
+        private bool _layoutHasChanged;
         public Settings()
         {
             InitializeComponent();
             TxtboxSelectedFolder.Text = SettingWrapper.GetHomeDir();
-            TxtboxInboxFolder.Text = SettingWrapper.GetInboxDir();
+            LblInboxFolder.Content = SettingWrapper.GetInboxDir();
             ComboBoxPollingTime.SelectedValue = SettingWrapper.GetPollingTime().ToString(CultureInfo.InvariantCulture);
             CheckboxPolling.IsChecked = SettingWrapper.GetIsPolling();
             CheckboxShowImportDialog.IsChecked = SettingWrapper.GetShowInputDialog();
             CheckBoxSorting.IsChecked = SettingWrapper.GetIsSorting();
             PollingCheckBoxChanged(CheckboxPolling, null);
+            if (SettingWrapper.GetLayout().Equals(_layoutsDict[LayoutType.Pink]))
+            {
+                PinkCheck.IsChecked = true;
+            }
+            else if (SettingWrapper.GetLayout().Equals(_layoutsDict[LayoutType.Dark]))
+            {
+                DarkCheck.IsChecked = true;
+            }
         }
 
 
@@ -48,7 +62,7 @@ namespace MSOE.MediaComplete
                     TxtboxSelectedFolder.Text = folderBrowserDialog1.SelectedPath;
                     break;
                 case "BtnInboxFolder":
-                    TxtboxInboxFolder.Text = folderBrowserDialog1.SelectedPath;
+                    LblInboxFolder.Content = folderBrowserDialog1.SelectedPath;
                     break;
             }
         }
@@ -68,7 +82,7 @@ namespace MSOE.MediaComplete
             {
                 CheckboxShowImportDialog.IsEnabled = true;
                 
-                TxtboxInboxFolder.IsEnabled = true;
+                LblInboxFolder.IsEnabled = true;
                 ComboBoxPollingTime.IsEnabled = true;
                 BtnInboxFolder.IsEnabled = true;
                 LblPollTime.IsEnabled = true;
@@ -78,7 +92,7 @@ namespace MSOE.MediaComplete
             else
             {
                 CheckboxShowImportDialog.IsEnabled = false;
-                TxtboxInboxFolder.IsEnabled = false;
+                LblInboxFolder.IsEnabled = false;
                 ComboBoxPollingTime.IsEnabled = false;
                 BtnInboxFolder.IsEnabled = false;
                 LblPollTime.IsEnabled = false;
@@ -101,13 +115,22 @@ namespace MSOE.MediaComplete
             {
                 homeDir += Path.DirectorySeparatorChar;
             }
-            var inboxDir = TxtboxInboxFolder.Text;
+            var inboxDir = (string) LblInboxFolder.Content;
             if (!inboxDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.CurrentCulture)))
             {
                 inboxDir += Path.DirectorySeparatorChar;
             }
 
-            SettingWrapper.SetHomeDir(homeDir);
+            if (_layoutHasChanged)
+            {
+                var dictUri = new Uri(_layoutsDict[_changedType], UriKind.Relative);
+                var resourceDict = System.Windows.Application.LoadComponent(dictUri) as ResourceDictionary;
+                System.Windows.Application.Current.Resources.MergedDictionaries.Clear();
+                System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDict);
+                SettingWrapper.SetLayout(_layoutsDict[_changedType]);
+
+                _layoutHasChanged = false;
+            }SettingWrapper.SetHomeDir(homeDir);
 
             SettingWrapper.SetInboxDir(inboxDir);
             SettingWrapper.SetPollingTime(ComboBoxPollingTime.SelectedValue);
@@ -125,6 +148,39 @@ namespace MSOE.MediaComplete
 
             var box = sender as System.Windows.Controls.ComboBox;
             if (box != null) box.ItemsSource = dataList;
+        }
+
+        private void Skins_Checked(object sender, RoutedEventArgs e)
+        {
+            var checkbox = (sender as System.Windows.Controls.RadioButton);
+            if (checkbox == null) return;
+            
+            if (checkbox.Equals(PinkCheck))
+            {
+                _changedType = LayoutType.Pink;
+                _layoutHasChanged = true;
+            }
+            else if (checkbox.Equals(DarkCheck))
+            {
+                _changedType = LayoutType.Dark;
+                _layoutHasChanged = true;
+            }
+        }
+
+        private void BtnCancel_OnClick(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void Apply_OnClick(object sender, RoutedEventArgs e)
+        {
+            var dictUri = new Uri(_layoutsDict[_changedType], UriKind.Relative);
+            var resourceDict = System.Windows.Application.LoadComponent(dictUri) as ResourceDictionary;
+            System.Windows.Application.Current.Resources.MergedDictionaries.Clear();
+            System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDict);
+            SettingWrapper.SetLayout(_layoutsDict[_changedType]);
+
+            SettingWrapper.Save();
         }
     }
 }

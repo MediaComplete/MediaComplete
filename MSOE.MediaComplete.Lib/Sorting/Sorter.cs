@@ -130,6 +130,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
             }
             catch (TagLib.CorruptFileException)
             {
+                Console.Out.WriteLine("asdfdfasdfasdfasdf");
                 // TODO log
                 return file; // Bad music file - just have it stay in the same place
             }
