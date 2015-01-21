@@ -223,9 +223,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="MediaComepleteSmall.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\logo_small.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
