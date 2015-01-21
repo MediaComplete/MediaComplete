@@ -70,19 +70,35 @@ namespace MSOE.MediaComplete.Lib.Properties {
                 this["IsPolling"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowInputDialog {
-            get {
+        public bool ShowInputDialog
+        {
+            get
+            {
                 return ((bool)(this["ShowInputDialog"]));
             }
-            set {
+            set
+            {
                 this["ShowInputDialog"] = value;
             }
         }
-        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("layout\\Dark.xaml")]
+        public string Layout
+        {
+            get
+            {
+                return ((string)(this["Layout"]));
+            }
+            set
+            {
+                this["Layout"] = value;
+            }
+        }
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
