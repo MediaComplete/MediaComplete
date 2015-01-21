@@ -47,6 +47,6 @@
                  UriSource=".\Resources\add.png" />
     <BitmapImage x:Key="Settings-MinusConfig-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
                  UriSource=".\Resources\delete.png" />
-    <BitmapImage x:Key="Settings-RefreshConfig-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
-                 UriSource=".\Resources\arrow_refresh.png" />
+    <BitmapImage x:Key="Settings-Info-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
+                 UriSource=".\Resources\Information.png" />
 </ResourceDictionary>

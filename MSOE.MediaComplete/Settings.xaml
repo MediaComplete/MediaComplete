@@ -43,33 +43,25 @@
                         <StackPanel Orientation="Vertical" Margin="0,10,0,0">
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Sort Order" VerticalAlignment="Center" FontWeight="ExtraBold"/>
-                                <Button Content="Reset Default" Click="ResetDefault">
-                                    <Button.Template>
-                                        <ControlTemplate>
-                                            <Border HorizontalAlignment="Center" VerticalAlignment="Center" >
-                                                <Image Source="{StaticResource Settings-RefreshConfig-Icon}" 
-                                                                               Width="16" 
-                                                                               Height="16"/>
-                                            </Border>
-                                        </ControlTemplate>
-                                    </Button.Template>
-                                    <Button.ToolTip>
+                                <Image Source="{StaticResource Settings-Info-Icon}" Width="16" Height="16">
+                                <Image.ToolTip>
                                         <ToolTip>
                                             <StackPanel>
-                                                <TextBlock>Refresh to the Default Order.</TextBlock>
+                                                <TextBlock>The Sort Order defines the file structure that your library will be sorted into.</TextBlock>
                                             </StackPanel>
                                         </ToolTip>
-                                    </Button.ToolTip>
-                                </Button>
+                                    </Image.ToolTip>
+                                </Image>
                             </StackPanel>
-                            <ScrollViewer Padding="8" HorizontalScrollBarVisibility="auto"    VerticalScrollBarVisibility="auto" Width="auto" Height="200">
+                            <ScrollViewer Padding="0, 8, 0, 0" HorizontalScrollBarVisibility="auto" VerticalScrollBarVisibility="auto" Width="auto" Height="175">
                                 <StackPanel>
                                     <StackPanel  x:Name="SortConfig" Orientation="Vertical">
                                     </StackPanel>
                                     <StackPanel>
                                         <Grid Name="Config">
                                             <Grid.RowDefinitions>
-                                                <RowDefinition Height="26"></RowDefinition>
+                                                <RowDefinition Height="20"></RowDefinition>
+                                                <RowDefinition Height="*"></RowDefinition>
                                             </Grid.RowDefinitions>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Name="ChangingColumn" MinWidth="0" Width="0"/>
@@ -77,8 +69,8 @@
                                                     <ColumnDefinition Width="18"/>
                                                     <ColumnDefinition Width="18"/>
                                                 </Grid.ColumnDefinitions>
-                                            <ComboBox Name="SortOrderComboBox" Grid.Column="1"/>
-                                                <Button x:Name="MinusButton" Grid.Column="2">
+                                            <ComboBox Name="SortOrderComboBox" Grid.Column="1" Grid.Row="0"/>
+                                            <Button x:Name="MinusButton" Grid.Column="2" Grid.Row="0">
                                                     <Button.Template>
                                                         <ControlTemplate>
                                                             <Border HorizontalAlignment="Center" VerticalAlignment="Center" >
@@ -89,22 +81,24 @@
                                                         </ControlTemplate>
                                                     </Button.Template>
                                                 </Button>
-                                                    <Button x:Name="PlusButton" Grid.Column="3" Visibility="Hidden">
-                                                        <Button.Template>
-                                                            <ControlTemplate>
-                                                                <Border HorizontalAlignment="Center" VerticalAlignment="Center" >
-                                                                    <Image Source="{StaticResource Settings-AddConfig-Icon}" 
-                                                                               Width="16" 
-                                                                               Height="16"/>
-                                                                </Border>
-                                                            </ControlTemplate>
-                                                        </Button.Template>
-                                                    </Button>
-
+                                            <Button x:Name="PlusButton" Grid.Column="3" Visibility="Hidden" Grid.Row="0">
+                                                <Button.Template>
+                                                    <ControlTemplate>
+                                                        <Border HorizontalAlignment="Center" VerticalAlignment="Center" >
+                                                            <Image Source="{StaticResource Settings-AddConfig-Icon}" 
+                                                                        Width="16" 
+                                                                        Height="16"/>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Button.Template>
+                                            </Button>
                                         </Grid>
                                     </StackPanel>
                                 </StackPanel>
                             </ScrollViewer>
+                            <DockPanel Dock="Bottom">
+                                <Button Content="Restore Default Order" Width="150" Height="22" HorizontalAlignment="Right" Margin="8" Click="ResetDefault"></Button>
+                            </DockPanel>
                         </StackPanel>
                     </StackPanel>
                 </DockPanel>

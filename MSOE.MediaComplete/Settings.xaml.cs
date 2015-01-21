@@ -227,6 +227,8 @@ namespace MSOE.MediaComplete
             _sortOrderList = SortHelper.GetDefault();
             SortConfig.Children.Clear();
             LoadSortListBox();
+            SortOrderComboBox.SelectedValue = -1;
+            PlusButton.Visibility = Visibility.Hidden;
 
         }
 
