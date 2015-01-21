@@ -21,5 +21,10 @@ namespace MSOE.MediaComplete.Lib
         /// User to filter music files
         /// </summary>
         public static readonly List<string> MusicFileExtensions = new List<string> { ".mp3", ".wma" };
+
+        /// <summary>
+        /// The file dialog's wild card for extensions
+        /// </summary>
+	    public const string Wildcard = "*";
     }
 }

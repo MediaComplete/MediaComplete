@@ -121,12 +121,12 @@ namespace MSOE.MediaComplete
             var fileDialog = new WinForms.OpenFileDialog
             {
                 Filter =
-                    Resources["Dialog-AddFile-Mp3Filter"] + "" + Lib.Constants.FileDialogFilterStringSeparator +
-                    Lib.Constants.MusicFileExtensions[0] + Lib.Constants.FileDialogFilterStringSeparator + Resources["Dialog-AddFile-WmaFilter"] + "" + Lib.Constants.FileDialogFilterStringSeparator +
-                    Lib.Constants.MusicFileExtensions[1],
-                InitialDirectory = Path.GetPathRoot(Environment.SystemDirectory),
-                Title = Resources["Dialog-AddFile-Title"].ToString(),
-                Multiselect = true
+                    Resources["Dialog-AddFile-MusicFilter"] + "" + Lib.Constants.FileDialogFilterStringSeparator + string.Join<string>(";",Lib.Constants.MusicFileExtensions.Select(s => Lib.Constants.Wildcard+s)) + Lib.Constants.FileDialogFilterStringSeparator +
+                    Resources["Dialog-AddFile-Mp3Filter"] + "" + Lib.Constants.FileDialogFilterStringSeparator + Lib.Constants.Wildcard + Lib.Constants.MusicFileExtensions[0] + Lib.Constants.FileDialogFilterStringSeparator +
+                    Resources["Dialog-AddFile-WmaFilter"] + "" + Lib.Constants.FileDialogFilterStringSeparator + Lib.Constants.Wildcard + Lib.Constants.MusicFileExtensions[1],
+                    InitialDirectory = Path.GetPathRoot(Environment.SystemDirectory),
+                    Title = Resources["Dialog-AddFile-Title"].ToString(),
+                    Multiselect = true
             };
 
             if (fileDialog.ShowDialog() != WinForms.DialogResult.OK) return;
@@ -245,7 +245,7 @@ namespace MSOE.MediaComplete
                 PopulateSongTree(dir, songTree, dirItem, false);
             }
 
-            foreach (var file in TreeViewBackend.GetFiles(dirInfo).Where(file => file.Name.EndsWith(".mp3")))
+            foreach (var file in TreeViewBackend.GetFiles(dirInfo).GetMusicFiles())
             {
                 var x = new SongTreeViewItem { Header = file.Name, ParentItem = dirItem };
                 songTree.Items.Add(x);

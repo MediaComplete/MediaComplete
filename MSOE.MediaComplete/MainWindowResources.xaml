@@ -7,6 +7,7 @@
     <system:String x:Key="Toolbar-SortMusic-Tooltip">Refresh the sorting of your library</system:String>
     <system:String x:Key="Toolbar-SortMusicDisabled-Tooltip">Sorting is disabled in Settings Menu</system:String>
     <system:String x:Key="ContextMenu-AutoIdMusic-Header">Restore Metadata</system:String>
+    <system:String x:Key="Dialog-AddFile-MusicFilter">All Music Files (*.mp3, *.wma)</system:String>
     <system:String x:Key="Dialog-AddFile-Mp3Filter">MP3 Files (*.mp3)</system:String>
     <system:String x:Key="Dialog-AddFile-WmaFilter">WMA Files (*.wma)</system:String>
     <system:String x:Key="Dialog-AddFile-Title">Select Music File(s)</system:String>
