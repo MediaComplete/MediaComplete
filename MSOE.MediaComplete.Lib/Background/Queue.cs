@@ -46,7 +46,7 @@ namespace MSOE.MediaComplete.Lib.Background
         {
             lock (_tasks)
             {
-                newTask.ResolveConflicts(_tasks);
+                TaskAdder.ResolveConflicts(newTask, _tasks);
             }
 
             if (_activeCount < 1)

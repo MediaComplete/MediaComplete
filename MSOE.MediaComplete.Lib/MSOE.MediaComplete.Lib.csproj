@@ -70,8 +70,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Background\InvalidQueueStateException.cs" />
     <Compile Include="Background\Task.cs" />
     <Compile Include="Background\Queue.cs" />
+    <Compile Include="Background\TaskAdder.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Import\ImportTask.cs" />
     <Compile Include="Metadata\IdentifierTask.cs" />

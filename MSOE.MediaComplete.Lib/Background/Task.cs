@@ -73,18 +73,37 @@ namespace MSOE.MediaComplete.Lib.Background
         /// </summary>
         public Exception Error { get; set; }
 
+#region Abstract
+
         /// <summary>
-        /// Handles the resolution of redundant or blocking jobs. The argument is the current state of the queue,
-        /// which is then edited in-place to include this task at the appropriate location, as well as any other 
-        /// shifts that need to occur. For more details on how the queue works, see <see cref="Queue"/>
+        /// Contains any subclass types that cannot appear before this task in the execution queue. 
+        /// Used by <see cref="Queue.ResolveConflicts"/> to re-order the queue after adding this task.
         /// </summary>
-        /// <param name="currentQueue">The  work queue</param>
-        public abstract void ResolveConflicts(List<List<Task>> currentQueue);
+        public abstract IReadOnlyCollection<Type> InvalidBeforeTypes { get; }
+        /// <summary>
+        /// Contains any subclass types that cannot appear after this task in the execution queue. 
+        /// Used by <see cref="Queue.ResolveConflicts"/> to re-order the queue after adding this task.
+        /// </summary>
+        public abstract IReadOnlyCollection<Type> InvalidAfterTypes { get; }
+        /// <summary>
+        /// Contains any subclass types that cannot appear in the same parallel block in the execution queue. 
+        /// Used by <see cref="Queue.ResolveConflicts"/> to re-order the queue after adding this task.
+        /// </summary>
+        public abstract IReadOnlyCollection<Type> InvalidDuringTypes { get; }
+        /// <summary>
+        /// Used by subclasses to determine if the task should be removed before adding this one.
+        /// </summary>
+        /// <param name="t">The other task to consider</param>
+        /// <returns>true if t should be removed, false otherwise</returns>
+        public abstract bool RemoveOther(Task t);
+
         /// <summary>
         /// Performs the action of this task, asynchronously. 
         /// </summary>
         /// <param name="i">The index of this task, as assigned by the queue when it's started</param>
         /// <returns>An async Task</returns>
         public abstract void Do(int i);
+
+#endregion
     }
 }

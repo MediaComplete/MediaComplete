@@ -22,7 +22,7 @@ namespace MSOE.MediaComplete.Test.Background
         {
             var queue = new List<List<Task>>();
             var subject = new ImportTask(null, null, false);
-            subject.ResolveConflicts(queue);
+            TaskAdder.ResolveConflicts(subject, queue);
 
             Assert.AreEqual(1, queue.Count, "Queue doesn't have the right number of stages!");
             Assert.AreEqual(1, queue[0].Count, "Stage 1 doesn't have the new task!");
@@ -44,7 +44,7 @@ namespace MSOE.MediaComplete.Test.Background
             };
 
             var subject = new ImportTask(null, null, false);
-            subject.ResolveConflicts(queue);
+            TaskAdder.ResolveConflicts(subject, queue);
 
             Assert.AreEqual(4, queue.Count, "Queue doesn't have the right number of stages!");
 
@@ -65,7 +65,7 @@ namespace MSOE.MediaComplete.Test.Background
         /// Test that an import will run in parallel with other imports
         /// </summary>
         [TestMethod]
-        public void Test_AddSorter_RemovesSortAndGoesLast()
+        public void Test_AddImport_GoesWithOtherImport()
         {
             var queue = new List<List<Task>>
             {
@@ -74,7 +74,7 @@ namespace MSOE.MediaComplete.Test.Background
             };
 
             var subject = new ImportTask(null, null, false);
-            subject.ResolveConflicts(queue);
+            TaskAdder.ResolveConflicts(subject, queue);
 
             Assert.AreEqual(2, queue.Count, "Queue doesn't have the right number of stages!");
 

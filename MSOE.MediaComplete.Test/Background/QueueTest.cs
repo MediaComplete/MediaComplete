@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using Sys = System.Threading.Tasks;
 using MSOE.MediaComplete.Lib.Background;
@@ -9,52 +10,42 @@ namespace MSOE.MediaComplete.Test.Background
     [TestClass]
     public class QueueTest
     {
-        [TestMethod]
+        private const int Timeout = 30000;
+        private const int Delay = 20000;
+
+        [TestMethod, Timeout(Timeout)]
         public void Add_Task_CallsResolveConflicts()
         {
             var mock = new MockTask();
             Queue.Inst.Add(mock);
 
-            Assert.IsTrue(mock.ResolveConflictsCalled, "Mock didn't have its conflicts resolved!");
-            SpinWait.SpinUntil(() => mock.DoCalled, 30000);
+            SpinWait.SpinUntil(() => mock.DoCalled);
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(Timeout)]
         public void Add_QueueAlreadyRunning_NewTaskRuns()
         {
-            var longMock = new MockTask(0, 25000);
+            var longMock = new MockTask(Delay);
             Queue.Inst.Add(longMock);
 
             var secondMock = new MockTask();
             Queue.Inst.Add(secondMock);
 
-            Assert.IsTrue(secondMock.ResolveConflictsCalled, "Second mock didn't have its conflicts resolved!");
             Assert.IsFalse(secondMock.DoCalled, "Second mock started too early!");
 
             // Wait for the second task to run
-            SpinWait.SpinUntil(() => secondMock.DoCalled, 30000);
+            SpinWait.SpinUntil(() => secondMock.DoCalled);
         }
 
         private class MockTask : Task
         {
-            public bool ResolveConflictsCalled { get; private set; }
             public bool DoCalled { get; private set; }
-            private readonly int _resolveConflictsDelay;
             private readonly int _doDelay;
 
-            public MockTask(int resolveConflictsDelay = 0, int doDelay = 0)
+            public MockTask(int doDelay = 0)
             {
-                ResolveConflictsCalled = false;
                 DoCalled = false;
-                _resolveConflictsDelay = resolveConflictsDelay;
                 _doDelay = doDelay;
-            }
-
-            public override void ResolveConflicts(List<List<Task>> currentQueue)
-            {
-                ResolveConflictsCalled = true;
-                currentQueue.Add(new List<Task> { this });
-                Thread.Sleep(_resolveConflictsDelay);
             }
 
             public override void Do(int i)
@@ -62,6 +53,26 @@ namespace MSOE.MediaComplete.Test.Background
                 DoCalled = true;
 
                 Thread.SpinWait(_doDelay);
+            }
+
+            public override IReadOnlyCollection<Type> InvalidBeforeTypes
+            {
+                get { return new List<Type>().AsReadOnly(); }
+            }
+
+            public override IReadOnlyCollection<Type> InvalidAfterTypes
+            {
+                get { return new List<Type>().AsReadOnly(); }
+            }
+
+            public override IReadOnlyCollection<Type> InvalidDuringTypes
+            {
+                get { return new List<Type>().AsReadOnly(); }
+            }
+
+            public override bool RemoveOther(Task t)
+            {
+                return false;
             }
         }
     }

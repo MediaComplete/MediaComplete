@@ -22,7 +22,7 @@ namespace MSOE.MediaComplete.Test.Background
         {
             var queue = new List<List<Task>>();
             var subject = new SortingTask(null);
-            subject.ResolveConflicts(queue);
+            TaskAdder.ResolveConflicts(subject, queue);
 
             Assert.AreEqual(1, queue.Count, "Queue doesn't have the right number of stages!");
             Assert.AreEqual(1, queue[0].Count, "Stage 1 doesn't have the new task!");
@@ -44,7 +44,7 @@ namespace MSOE.MediaComplete.Test.Background
             };
 
             var subject = new SortingTask(null);
-            subject.ResolveConflicts(queue);
+            TaskAdder.ResolveConflicts(subject, queue);
 
             Assert.AreEqual(4, queue.Count, "Queue doesn't have the right number of stages!");
             Assert.AreEqual(1, queue[0].Count, "Stage 1 isn't the same size!");
@@ -74,7 +74,7 @@ namespace MSOE.MediaComplete.Test.Background
             };
 
             var subject = new SortingTask(null);
-            subject.ResolveConflicts(queue);
+            TaskAdder.ResolveConflicts(subject, queue);
 
             Assert.AreEqual(4, queue.Count, "Queue doesn't have the right number of stages!");
             Assert.AreEqual(1, queue[0].Count, "Stage 1 isn't the same size!");

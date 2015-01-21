@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using MSOE.MediaComplete.Lib.Background;
 using MSOE.MediaComplete.Lib.Import;
 using MSOE.MediaComplete.Lib.Metadata;
@@ -23,40 +22,6 @@ namespace MSOE.MediaComplete.Lib.Sorting
         public SortingTask(Sorter sorter)
         {
             Sorter = sorter;
-        }
-
-        /// <summary>
-        /// Adds this sorting task into the given queue, after any pending Import or Identify tasks. 
-        /// If there are any other sorts queued up, they are removed.
-        /// </summary>
-        /// <param name="currentQueue"></param>
-        public override void ResolveConflicts(List<List<Task>> currentQueue)
-        {
-            var maxIndex = currentQueue.Count;
-            var foundIndex = false;
-            for (var i = currentQueue.Count - 1; i >= 0; i--)
-            {
-                var group = currentQueue[i];
-
-                group.RemoveAll(t => t is SortingTask);
-
-                if (group.Count == 0)
-                {
-                    currentQueue.Remove(group);
-                    maxIndex--;
-                }
-                else if (!foundIndex && group.Any(t => t is ImportTask || t is IdentifierTask))
-                {
-                    maxIndex = i + 1;
-                    foundIndex = true;
-                }
-            }
-            // Insert into the group after the last group with imports or identifies
-            if (maxIndex >= currentQueue.Count)
-            {
-                currentQueue.Add(new List<Task>());
-            }
-            currentQueue[maxIndex].Add(this);
         }
 
         /// <summary>
@@ -120,5 +85,27 @@ namespace MSOE.MediaComplete.Lib.Sorting
                 TriggerDone(this);
             }
         }
+
+        #region Task Overrides
+        public override IReadOnlyCollection<Type> InvalidBeforeTypes
+        {
+            get { return new List<Type> { typeof(IdentifierTask), typeof(ImportTask) }.AsReadOnly(); }
+        }
+
+        public override IReadOnlyCollection<Type> InvalidAfterTypes
+        {
+            get { return new List<Type>().AsReadOnly(); }
+        }
+
+        public override IReadOnlyCollection<Type> InvalidDuringTypes
+        {
+            get { return new List<Type>().AsReadOnly(); }
+        }
+
+        public override bool RemoveOther(Task t)
+        {
+            return t is SortingTask;
+        }
+        #endregion
     }
 }
