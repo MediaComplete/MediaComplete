@@ -34,7 +34,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod, Timeout(30000)]
         public void Import_FileInUse_SkipAndNotify()
         {
-            var fileInUse = FileHelper.CreateFile(_importDir, Constants.FileTypes.Valid);
+            var fileInUse = FileHelper.CreateFile(_importDir, Constants.FileTypes.ValidMp3);
             Task<ImportResults> task;
             using (fileInUse.OpenWrite())
             {
@@ -53,7 +53,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod, Timeout(30000)]
         public void Import_FromLibrary_Exception()
         {
-            var fileInLib = FileHelper.CreateFile(_homeDir, Constants.FileTypes.Valid);
+            var fileInLib = FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidMp3);
             var task = new Importer(_homeDir.FullName).ImportFiles(new List<FileInfo>{ fileInLib }, true);
             while (!task.IsCompleted)
             {
@@ -70,7 +70,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod, Timeout(30000)]
         public void Import_FromAboveLibrary_Skips()
         {
-            var newFile = FileHelper.CreateFile(_importDir, Constants.FileTypes.Valid);
+            var newFile = FileHelper.CreateFile(_importDir, Constants.FileTypes.ValidMp3);
             var oldFile = FileHelper.CreateFile(_homeDir, Constants.FileTypes.MissingAlbum);
             var task = new Importer(_homeDir.FullName).ImportDirectory(_testDir.FullName, false);
             while (!task.IsCompleted)
@@ -87,7 +87,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod, Timeout(30000)]
         public void Import_FromMultiTieredDirs_GetsAll()
         {
-            var childFile = FileHelper.CreateFile(_importDir, Constants.FileTypes.Valid);
+            var childFile = FileHelper.CreateFile(_importDir, Constants.FileTypes.ValidMp3);
             var parentFile = FileHelper.CreateFile(_testDir, Constants.FileTypes.MissingAlbum);
             var task = new Importer(_homeDir.FullName).ImportDirectory(_testDir.FullName, false);
             while (!task.IsCompleted)

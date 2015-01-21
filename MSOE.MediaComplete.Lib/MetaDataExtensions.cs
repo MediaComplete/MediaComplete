@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.Principal;
 using TagLib.Id3v2;
 using File = TagLib.File;
@@ -64,7 +65,9 @@ namespace MSOE.MediaComplete.Lib
                     tag.Album = (string) value;
                     break;
                 case MetaAttribute.Artist:
-                    tag.AlbumArtists = ((string) value).Split(',');
+                    var aa = new List<String> {((string) value)};
+                    aa.AddRange(tag.AlbumArtists.Skip(1));
+                    tag.AlbumArtists = aa.ToArray();
                     break;
                 case MetaAttribute.Genre:
                     tag.Genres = ((string) value).Split(',');
@@ -81,11 +84,9 @@ namespace MSOE.MediaComplete.Lib
                     tag.Title = (string) value;
                     break;
                 case MetaAttribute.SupportingArtist:
-                    if (tag.AlbumArtists.Length > 0)
-                    {
-                        var all = tag.AlbumArtists.GetValue(0).ToString() + ',' + value;
-                        tag.AlbumArtists = all.Split(',');
-                    }
+                    var aa2 = new List<String> {tag.AlbumArtists.Length < 1 ? "" : tag.AlbumArtists[0]};
+                    aa2.AddRange(((string)value).Split(','));
+                    tag.AlbumArtists = aa2.ToArray();
                     break;
                 case MetaAttribute.TrackNumber:
                     tag.Track = Convert.ToUInt32(value);
