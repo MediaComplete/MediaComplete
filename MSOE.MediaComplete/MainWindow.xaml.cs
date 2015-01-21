@@ -103,7 +103,7 @@ namespace MSOE.MediaComplete
             }
             else
             {
-                await new Importer(SettingWrapper.GetHomeDir()).ImportFiles(files.Select(f => f.FullName).ToArray(), false);
+                await new Importer(SettingWrapper.GetHomeDir()).ImportFiles(files, false);
             }
         }
         
@@ -121,11 +121,12 @@ namespace MSOE.MediaComplete
             var fileDialog = new WinForms.OpenFileDialog
             {
                 Filter =
-                    Resources["Dialog-AddFile-FileFilter"] + "" + Lib.Constants.FileDialogFilterStringSeparator +
-                    Lib.Constants.MusicFilePattern,
-                InitialDirectory = Path.GetPathRoot(Environment.SystemDirectory),
-                Title = Resources["Dialog-AddFile-Title"].ToString(),
-                Multiselect = true
+                    Resources["Dialog-AddFile-MusicFilter"] + "" + Lib.Constants.FileDialogFilterStringSeparator + string.Join<string>(";",Lib.Constants.MusicFileExtensions.Select(s => Lib.Constants.Wildcard+s)) + Lib.Constants.FileDialogFilterStringSeparator +
+                    Resources["Dialog-AddFile-Mp3Filter"] + "" + Lib.Constants.FileDialogFilterStringSeparator + Lib.Constants.Wildcard + Lib.Constants.MusicFileExtensions[0] + Lib.Constants.FileDialogFilterStringSeparator +
+                    Resources["Dialog-AddFile-WmaFilter"] + "" + Lib.Constants.FileDialogFilterStringSeparator + Lib.Constants.Wildcard + Lib.Constants.MusicFileExtensions[1],
+                    InitialDirectory = Path.GetPathRoot(Environment.SystemDirectory),
+                    Title = Resources["Dialog-AddFile-Title"].ToString(),
+                    Multiselect = true
             };
 
             if (fileDialog.ShowDialog() != WinForms.DialogResult.OK) return;
@@ -133,7 +134,7 @@ namespace MSOE.MediaComplete
             ImportResults results;
             try
             {
-                results = await new Importer(SettingWrapper.GetHomeDir()).ImportFiles(fileDialog.FileNames, true);
+                results = await new Importer(SettingWrapper.GetHomeDir()).ImportFiles(fileDialog.FileNames.Select(p => new FileInfo(p)).ToList(), true);
             }
             catch (InvalidImportException)
             {
@@ -189,7 +190,8 @@ namespace MSOE.MediaComplete
                 //add each child to the root folder
                 firstNode.Children.Add(PopulateFromFolder(rootChild, SongTree, firstNode));
             }
-            foreach (var rootChild in rootFiles.Where(rootChild => rootChild.Name.EndsWith(".mp3")))
+
+            foreach (var rootChild in rootFiles.GetMusicFiles())
             {
                 SongTree.Items.Add(new SongTreeViewItem { Header = rootChild.Name, ParentItem = firstNode });
             }
@@ -227,8 +229,8 @@ namespace MSOE.MediaComplete
             {
                 dirItem.Children.Add(PopulateFromFolder(dir, songTree, dirItem));
             }
-
-            foreach (var file in TreeViewBackend.GetFiles(dirInfo).Where(file => file.Name.EndsWith(".mp3")))
+            
+            foreach (var file in TreeViewBackend.GetFiles(dirInfo).GetMusicFiles())
             {
                 songTree.Items.Add(new SongTreeViewItem { Header = file.Name, ParentItem = dirItem });
             }
@@ -243,7 +245,7 @@ namespace MSOE.MediaComplete
                 PopulateSongTree(dir, songTree, dirItem, false);
             }
 
-            foreach (var file in TreeViewBackend.GetFiles(dirInfo).Where(file => file.Name.EndsWith(".mp3")))
+            foreach (var file in TreeViewBackend.GetFiles(dirInfo).GetMusicFiles())
             {
                 var x = new SongTreeViewItem { Header = file.Name, ParentItem = dirItem };
                 songTree.Items.Add(x);

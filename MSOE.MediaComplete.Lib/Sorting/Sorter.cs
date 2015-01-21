@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace MSOE.MediaComplete.Lib.Sorting
 {
     /// <summary>
-    /// Provides the implementation for sorting the library of MP3 files by metadata
+    /// Provides the implementation for sorting the library of music files by metadata
     /// </summary>
     public class Sorter
     {
@@ -30,10 +30,9 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <param name="settings">Sort settings</param>
         public Sorter(DirectoryInfo root, SortSettings settings) : this(root)
         {
-            // TODO investigation - could this lock up the GUI?
             if (_root != null)
             {
-                CalculateActions(_root.EnumerateFiles(Constants.MusicFilePattern, SearchOption.AllDirectories), settings);    
+                CalculateActions(_root.EnumerateFiles("*",SearchOption.AllDirectories).GetMusicFiles(),settings);
             }
         }
 
@@ -87,9 +86,9 @@ namespace MSOE.MediaComplete.Lib.Sorting
                 if (!path.SequenceEqual(targetPath, new DirectoryEqualityComparer()))
                 {
                     // Check to see if the file already exists
-                    var srcMp3File = TagLib.File.Create(file.FullName);
+                    var srcMusicFile = TagLib.File.Create(file.FullName);
                     var destDir = targetFile.Directory;
-                    if (destDir.ContainsMusicFile(srcMp3File)) // If the file is already there
+                    if (destDir.ContainsMusicFile(srcMusicFile)) // If the file is already there
                     {
                         // Delete source, let the older file take precedence.
                         // TODO perhaps we should try comparing audio quality and pick the better one?
@@ -133,7 +132,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
             {
                 Console.Out.WriteLine("asdfdfasdfasdfasdf");
                 // TODO log
-                return file; // Bad MP3 - just have it stay in the same place
+                return file; // Bad music file - just have it stay in the same place
             }
 
             var metadataPath = new StringBuilder();
