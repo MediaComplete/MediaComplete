@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using MSOE.MediaComplete.Lib.Properties;
+using MSOE.MediaComplete.Lib.Sorting;
 
 namespace MSOE.MediaComplete.Lib
 {
@@ -146,6 +147,8 @@ namespace MSOE.MediaComplete.Lib
         /// <param name="sortOrder">list to set</param>
         public static void SetSortOrder(List<MetaAttribute> sortOrder)
         {
+
+            SortHelper.SetSorting(GetSortOrder(), sortOrder);
             var collection = new StringCollection();
             collection.AddRange(sortOrder.Select(x => x.ToString()).ToArray());
             Settings.Default[SortingOrder] = collection;

@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -20,7 +19,6 @@ namespace MSOE.MediaComplete
     /// </summary>
     public partial class Settings
     {
-        private readonly SortSettings _sortSettings;
         private readonly bool _hasBeenSelected;
         private readonly List<Label> _labels;
         private List<MetaAttribute> _sortOrderList; 
@@ -40,7 +38,6 @@ namespace MSOE.MediaComplete
             _hasBeenSelected = false;
             _labels = new List<Label>();
             _sortOrderList= SettingWrapper.GetSortOrder();
-            _sortSettings = new SortSettings();
             LoadSortListBox();
 
             MinusButton.Click += MinusClicked;
@@ -165,7 +162,7 @@ namespace MSOE.MediaComplete
         /// </summary>
         /// <param name="sender">The sender of the action</param>
         /// <param name="e">Type of event</param>
-        private async void BtnSave_Click(object sender, RoutedEventArgs e)
+        private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
             // add settings here as they are added to the UI
             var homeDir = TxtboxSelectedFolder.Text;
@@ -187,19 +184,8 @@ namespace MSOE.MediaComplete
             SettingWrapper.SetShowInputDialog(CheckboxShowImportDialog.IsChecked.GetValueOrDefault(false));
             SettingWrapper.SetIsSorting(CheckBoxSorting.IsChecked.GetValueOrDefault(false));
 
-            var pastSort = SettingWrapper.GetSortOrder();
             SettingWrapper.SetSortOrder(_sortOrderList);
-
             SettingWrapper.Save();
-
-            _sortSettings.SortOrder = _sortOrderList;
-
-            if (!pastSort.SequenceEqual( _sortOrderList))
-            {
-
-                var sorter = new Sorter(new DirectoryInfo(SettingWrapper.GetHomeDir()), _sortSettings);
-                await (sorter.PerformSort());
-            }
 
             Close();
         }

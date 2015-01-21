@@ -76,7 +76,7 @@
                                                     <ColumnDefinition Width="18"/>
                                                     <ColumnDefinition Width="18"/>
                                                 </Grid.ColumnDefinitions>
-                                                <ComboBox Name="SortOrderComboBox" Grid.Column="1"></ComboBox>
+                                            <ComboBox Name="SortOrderComboBox" Grid.Column="1"/>
                                                 <Button x:Name="MinusButton" Grid.Column="2">
                                                     <Button.Template>
                                                         <ControlTemplate>

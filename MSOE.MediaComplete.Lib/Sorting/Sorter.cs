@@ -164,7 +164,20 @@ namespace MSOE.MediaComplete.Lib.Sorting
 
         static Sorter()
         {
-            Importer.ImportFinished += SortNewImports;   
+            Importer.ImportFinished += SortNewImports;
+            SettingWrapper.RaiseSettingEvent += Resort;
+        }
+
+        private static async void Resort()
+        {
+            if (!SortHelper.GetSorting()) return;
+            
+            var settings = new SortSettings
+            {
+                SortOrder = SettingWrapper.GetSortOrder()
+            };
+            var sorter = new Sorter(new DirectoryInfo(SettingWrapper.GetHomeDir()), settings);
+            await sorter.PerformSort();
         }
 
         /// <summary>

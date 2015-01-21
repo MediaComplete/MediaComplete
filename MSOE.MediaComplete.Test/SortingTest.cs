@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Sorting;
@@ -224,6 +225,92 @@ namespace MSOE.MediaComplete.Test
             }
 
             Assert.IsTrue(decoyFile.Exists);
+        }
+
+        /// <summary>
+        /// Make sure that the sort happens successfully
+        /// </summary>
+        [TestMethod, Timeout(30000)]
+        public void Sort_SortConfigSettingChanged_SortHappens()
+        {
+            var defaultSortOrder = SortHelper.GetDefault();
+            var newSortOrder = new List<MetaAttribute> {MetaAttribute.Album, MetaAttribute.Artist};
+            SettingWrapper.SetIsSorting(true);
+            SettingWrapper.SetSortOrder(defaultSortOrder);
+            // ReSharper disable once ObjectCreationAsStatement
+            new Sorter(null, null); // Force the static initializer to fire.
+            FileHelper.CreateTestFile(_homeDir.FullName);
+            var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "The Money Store" +
+                Path.DirectorySeparatorChar + "Death Grips" + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName;
+
+            SettingWrapper.SetSortOrder(newSortOrder);
+            SettingWrapper.Save();
+
+            while (!new FileInfo(normalFileDest).Exists)
+            {
+            }
+            Assert.IsTrue(new FileInfo(normalFileDest).Exists);
+        }
+
+        /// <summary>
+        /// Make sure that the sort happens successfully
+        /// </summary>
+        [TestMethod, Timeout(30000)]
+        public void Sort_SortConfigSettingChangedButIsSortingFalse_SortDoesNotHappen()
+        {
+            var defaultSortOrder = SortHelper.GetDefault();
+            var newSortOrder = new List<MetaAttribute> { MetaAttribute.Album, MetaAttribute.Artist };
+            SettingWrapper.SetIsSorting(false);
+            SettingWrapper.SetSortOrder(defaultSortOrder);
+            // ReSharper disable once ObjectCreationAsStatement
+            new Sorter(null, null); // Force the static initializer to fire.
+            FileHelper.CreateTestFile(_homeDir.FullName);
+            var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName;
+
+            SettingWrapper.SetSortOrder(newSortOrder);
+            SettingWrapper.Save();
+
+            Thread.Sleep(3000);
+
+            Assert.IsTrue(new FileInfo(normalFileDest).Exists);
+        }
+
+        /// <summary>
+        /// Make sure that sort happens successfully when sorted twice
+        /// </summary>
+        [TestMethod, Timeout(30000)]
+        public void Sort_SortConfigSettingChangedTwice_SortHappens()
+        {
+            var defaultSortOrder = SortHelper.GetDefault();
+            var newSortOrder = new List<MetaAttribute> { MetaAttribute.Album, MetaAttribute.Artist };
+            SettingWrapper.SetIsSorting(true);
+            SettingWrapper.SetSortOrder(defaultSortOrder);
+            // ReSharper disable once ObjectCreationAsStatement
+            new Sorter(null, null); // Force the static initializer to fire.
+            FileHelper.CreateTestFile(_homeDir.FullName);
+            var firstFileDestination = _homeDir.FullName + Path.DirectorySeparatorChar + "The Money Store" +
+                Path.DirectorySeparatorChar + "Death Grips" + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName;
+
+            var secondFileDestination = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
+                Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName;
+
+            SettingWrapper.SetSortOrder(newSortOrder);
+            SettingWrapper.Save();
+
+            while (!new FileInfo(firstFileDestination).Exists)
+            {
+            }
+
+            SettingWrapper.SetSortOrder(defaultSortOrder);
+            SettingWrapper.Save();
+
+            while (!new FileInfo(secondFileDestination).Exists)
+            {
+            }
+            
+            Assert.IsTrue(new FileInfo(secondFileDestination).Exists);
+            //Currently Fails because the folders are not being cleaned up properly
+            Assert.IsTrue(new DirectoryInfo(_homeDir.FullName).GetDirectories().Length == 1);
         }
 
         /// <summary>
