@@ -40,7 +40,7 @@ namespace MSOE.MediaComplete.Test.Util
                 { FileTypes.Unknown, new Tuple<string, string>(UnknownMp3FileName, UnknownMp3FullPath)},
                 { FileTypes.Blanked, new Tuple<string, string>(BlankedFileName, BlankedFullPath)},
                 { FileTypes.MissingAlbum, new Tuple<string, string>(MissingAlbumMp3FileName, MissingAlbumMp3FullPath)},
-                { FileTypes.MissingArtist, new Tuple<string, string>(MissingArtistMp3FileName, MissingArtistMp3FullPath)},
+                { FileTypes.MissingArtist, new Tuple<string, string>(MissingArtistMp3FileName, MissingArtistMp3FullPath)}
             });
     }
 }

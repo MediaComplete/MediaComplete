@@ -244,22 +244,20 @@ namespace MSOE.MediaComplete
 
         private void FormCheck()
         {
-            if (EditCancelButton.Content.Equals("Cancel"))
+            if (!EditCancelButton.Content.Equals("Cancel")) return;
+            foreach (var changedBox in _changedBoxes)
             {
-                foreach (var changedBox in _changedBoxes)
+                while (changedBox.CanUndo)
                 {
-                    while (changedBox.CanUndo)
-                    {
-                        changedBox.Undo();
-                    }
-                    changedBox.Redo();
-                    changedBox.LockCurrentUndoUnit();
+                    changedBox.Undo();
                 }
-                _changedBoxes.Clear();
-                ToggleReadOnlyFields(true);
-                EditCancelButton.Content = "Edit";
-                PopulateMetadataForm();
+                changedBox.Redo();
+                changedBox.LockCurrentUndoUnit();
             }
+            _changedBoxes.Clear();
+            ToggleReadOnlyFields(true);
+            EditCancelButton.Content = "Edit";
+            PopulateMetadataForm();
         }
 
         private void Save_OnClick(object sender, RoutedEventArgs e)

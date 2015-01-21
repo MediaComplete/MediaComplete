@@ -243,9 +243,8 @@ namespace MSOE.MediaComplete
                 PopulateSongTree(dir, songTree, dirItem, false);
             }
 
-            foreach (var file in TreeViewBackend.GetFiles(dirInfo).Where(file => file.Name.EndsWith(".mp3")))
+            foreach (var x in TreeViewBackend.GetFiles(dirInfo).Where(file => file.Name.EndsWith(".mp3")).Select(file => new SongTreeViewItem { Header = file.Name, ParentItem = dirItem }))
             {
-                var x = new SongTreeViewItem { Header = file.Name, ParentItem = dirItem };
                 songTree.Items.Add(x);
             }
         }
@@ -399,10 +398,9 @@ namespace MSOE.MediaComplete
         }
         private void TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!_changedBoxes.Contains((TextBox)sender) && !SongTitle.IsReadOnly ) { 
-                _changedBoxes.Add((TextBox)sender);
-                StatusBarHandler.Instance.ChangeStatusBarMessage("", StatusBarHandler.StatusIcon.None);
-            }
+            if (_changedBoxes.Contains((TextBox) sender) || SongTitle.IsReadOnly) return;
+            _changedBoxes.Add((TextBox)sender);
+            StatusBarHandler.Instance.ChangeStatusBarMessage("", StatusBarHandler.StatusIcon.None);
         }
     }
 }

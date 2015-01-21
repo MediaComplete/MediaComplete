@@ -240,9 +240,9 @@ namespace MSOE.MediaComplete.Test
             SettingWrapper.SetSortOrder(defaultSortOrder);
             // ReSharper disable once ObjectCreationAsStatement
             new Sorter(null, null); // Force the static initializer to fire.
-            FileHelper.CreateTestFile(_homeDir.FullName);
+            FileHelper.CreateFile(_homeDir, Constants.FileTypes.Valid);
             var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "The Money Store" +
-                Path.DirectorySeparatorChar + "Death Grips" + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName;
+                Path.DirectorySeparatorChar + "Death Grips" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.Valid].Item1;
 
             SettingWrapper.SetSortOrder(newSortOrder);
             SettingWrapper.Save();
@@ -265,8 +265,8 @@ namespace MSOE.MediaComplete.Test
             SettingWrapper.SetSortOrder(defaultSortOrder);
             // ReSharper disable once ObjectCreationAsStatement
             new Sorter(null, null); // Force the static initializer to fire.
-            FileHelper.CreateTestFile(_homeDir.FullName);
-            var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName;
+            FileHelper.CreateFile(_homeDir, Constants.FileTypes.Valid);
+            var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.Valid].Item1;
 
             SettingWrapper.SetSortOrder(newSortOrder);
             SettingWrapper.Save();
@@ -288,12 +288,12 @@ namespace MSOE.MediaComplete.Test
             SettingWrapper.SetSortOrder(defaultSortOrder);
             // ReSharper disable once ObjectCreationAsStatement
             new Sorter(null, null); // Force the static initializer to fire.
-            FileHelper.CreateTestFile(_homeDir.FullName);
+            FileHelper.CreateFile(_homeDir, Constants.FileTypes.Valid);
             var firstFileDestination = _homeDir.FullName + Path.DirectorySeparatorChar + "The Money Store" +
-                Path.DirectorySeparatorChar + "Death Grips" + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName;
+                Path.DirectorySeparatorChar + "Death Grips" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.Valid].Item1;
 
             var secondFileDestination = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
-                Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Util.Constants.ValidMp3FileName;
+                Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.Valid].Item1;
 
             SettingWrapper.SetSortOrder(newSortOrder);
             SettingWrapper.Save();
