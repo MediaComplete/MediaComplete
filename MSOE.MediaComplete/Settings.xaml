@@ -1,7 +1,7 @@
 ﻿<Window x:Class="MSOE.MediaComplete.Settings"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Settings" Height="372" Width="482"
+        Title="Settings" Height="372" Width="482" Icon="Resources/logo_small.ico"
         ResizeMode="NoResize">
     <StackPanel Margin="0,0,0,0" Style="{DynamicResource StackStyle}">
         <TabControl DockPanel.Dock="Top" HorizontalAlignment="Left" VerticalAlignment="Top" Width="476" Height="305">
