@@ -93,6 +93,7 @@ namespace MSOE.MediaComplete
             SettingWrapper.SetIsPolling(!StopShowingCheckBox.IsChecked.GetValueOrDefault((false)));
             Polling.Instance.Reset();
             DialogResult = false;
+            SettingWrapper.Save();
         }
     }
 }
