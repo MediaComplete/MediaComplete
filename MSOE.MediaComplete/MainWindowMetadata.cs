@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
+using System.Windows.Forms.DataVisualization.Charting;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
 using TagLib;
@@ -61,8 +63,16 @@ namespace MSOE.MediaComplete
                     {MetaAttribute.Year, null},
                     {MetaAttribute.Rating, null}
                 };
+                var escape = 0;
                 foreach ( SongTreeViewItem item in SongTree.SelectedItems)
                 {
+                    var allVals = attributes.Values.ToArray();
+                    foreach (var val in allVals)
+                    {
+                        if (val == null) break;
+                        if (val.Equals("-1") || val.Trim().Equals("")) escape++;
+                    }
+                    if (escape == 8) break;
                     try
                     {
                         var song = File.Create(item.GetPath());
@@ -235,10 +245,10 @@ namespace MSOE.MediaComplete
                     changedBox.Redo();
                     changedBox.LockCurrentUndoUnit();
                 }
+                if(_changedBoxes.Count != 0) PopulateMetadataForm();
                 _changedBoxes.Clear();
                 ToggleReadOnlyFields(true);
                 EditCancelButton.Content = "Edit";
-                PopulateMetadataForm();
             }
         }
 
