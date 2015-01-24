@@ -16,6 +16,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         public int UnsortableCount { get; private set; }
         public int MoveCount { get { return Actions.Count(a => a is MoveAction); } }
         public int DupCount { get { return Actions.Count(a => a is DeleteAction); } }
+        public static bool IsSorting { get; private set; }
 
         private readonly DirectoryInfo _root;
 
@@ -49,6 +50,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <returns>A task on completion of the sort. Currently no value is returned.</returns>
         public async Task PerformSort()
         {
+            IsSorting = true;
             StatusBarHandler.Instance.ChangeStatusBarMessage("Sorting-Started", StatusBarHandler.StatusIcon.Working);
             await Task.Run(() =>
             {
@@ -61,6 +63,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                 ScrubEmptyDirectories(_root);
             });
             StatusBarHandler.Instance.ChangeStatusBarMessage("Sorting-Success", StatusBarHandler.StatusIcon.Success);
+            IsSorting = false;
         }
 
         /// <summary>

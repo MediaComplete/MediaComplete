@@ -307,6 +307,7 @@ namespace MSOE.MediaComplete
 
         private static void OnChanged(object source, FileSystemEventArgs e)
         {
+            if(!Polling.IsPolling && !Sorter.IsSorting)
             Application.Current.Dispatcher.Invoke(() =>
             {
                 var win = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();

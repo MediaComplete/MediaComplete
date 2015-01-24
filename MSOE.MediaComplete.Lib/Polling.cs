@@ -14,6 +14,7 @@ namespace MSOE.MediaComplete.Lib
         private readonly Timer _timer;
         public double TimeInMinutes { get; set; }
         private static Polling _instance;
+        public static bool IsPolling { get; private set; }
 
         public delegate void InboxFilesHandler(IEnumerable<FileInfo> files);
         public static event InboxFilesHandler InboxFilesDetected = delegate {};
@@ -33,6 +34,7 @@ namespace MSOE.MediaComplete.Lib
         /// </summary>
         public void Start()
         {
+            IsPolling = true;
             var timeInMilliseconds = TimeSpan.FromMinutes(TimeInMinutes).TotalMilliseconds;
             _timer.Interval = timeInMilliseconds;
             _timer.Enabled = true;
@@ -79,6 +81,7 @@ namespace MSOE.MediaComplete.Lib
             {
                 InboxFilesDetected(fileInfos);
             }
+            IsPolling = false;
         }
     }
 }
