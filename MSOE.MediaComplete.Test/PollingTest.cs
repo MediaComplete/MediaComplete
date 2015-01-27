@@ -106,8 +106,7 @@ namespace MSOE.MediaComplete.Test
             };
             Polling.Instance.Start();
 
-            var timer = new Timer(DoNothing);
-            timer.Change(500, Timeout.Infinite);
+            Thread.Sleep(500);
 
             if (!File.Exists(_file.FullName))
             {
@@ -133,18 +132,12 @@ namespace MSOE.MediaComplete.Test
             };
             Polling.Instance.Start();
 
-            var timer = new Timer(DoNothing);
-            timer.Change(500, Timeout.Infinite);
+            Thread.Sleep(500);
 
             if (!File.Exists(_file.FullName))
             {
                 Assert.Fail("File does not exist in source directory - it should not have been moved.");
             }
-        }
-
-        private static void DoNothing(object o)
-        {
-
         }
     }
 }
