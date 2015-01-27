@@ -6,16 +6,16 @@ namespace MSOE.MediaComplete.Test
     [TestClass]
     public class StatusBarTest
     {
-        private string _message = "";
+        private string _message;
         private StatusBarHandler.StatusIcon _icon = StatusBarHandler.StatusIcon.None;
         private int _count;
 
-        [TestMethod]
+        [TestMethod, Timeout(30000)]
         public void RaiseStatusBarEvent_StatusMessage_ValidStatusMessage()
         {
             const string testMessage = "Test is successful";
             const StatusBarHandler.StatusIcon testIcon = StatusBarHandler.StatusIcon.Success;
-            const string clearMessage = "";
+            const string clearMessage = null;
             const StatusBarHandler.StatusIcon clearIcon = StatusBarHandler.StatusIcon.None;
             StatusBarHandler.Instance.Interval = .1;
             
@@ -33,10 +33,10 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(clearIcon, _icon);
         }
 
-        private void HandleStatusBarChangeEvent(string status, StatusBarHandler.StatusIcon statusIcon)
+        private void HandleStatusBarChangeEvent(string format, string messageKey, StatusBarHandler.StatusIcon icon, params object[] extraArgs)
         {
-            _message = status;
-            _icon = statusIcon;
+            _message = messageKey;
+            _icon = icon;
             _count++;
         }
     }

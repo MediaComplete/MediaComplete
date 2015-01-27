@@ -23,27 +23,36 @@ namespace MSOE.MediaComplete.Lib
 
         private void OnTimerFinished(object sender, EventArgs eventArgs)
         {
-            ChangeStatusBarMessage("", StatusIcon.None);
+            ChangeStatusBarMessage(null, StatusIcon.None);
             _timer.Stop();
         }
 
+        /// <summary>
+        /// Icon to represent the status symbol to display. 
+        /// </summary>
         public enum StatusIcon 
         {
+            // The order of this enum should be preserved, as it is used as a priority indicator in Queue.cs
             None,
             Working,
             Info,
+            Success,
             Warning,
-            Error,
-            Success
+            Error
         }
-        public delegate void StatusBarChanged(string message, StatusIcon icon);
+        public delegate void StatusBarChanged(string format, string messageKey, StatusIcon icon, params object[] extraArgs);
 
         public event StatusBarChanged RaiseStatusBarEvent = delegate { };
 
         public void ChangeStatusBarMessage(string message, StatusIcon icon)
         {
+            ChangeStatusBarMessage("{0}", message, icon);
+        }
+
+        public void ChangeStatusBarMessage(string format, string messageKey, StatusIcon icon, params object[] extraArgs)
+        {
             SetTimer();
-            RaiseStatusBarEvent(message, icon);
+            RaiseStatusBarEvent(format, messageKey, icon, extraArgs);
         }
 
         private void SetTimer()
@@ -51,7 +60,6 @@ namespace MSOE.MediaComplete.Lib
             _timer.Stop();
             _timer.Interval = 1000 * 60 * Interval;
             _timer.Start();
-
         }
     }
 }

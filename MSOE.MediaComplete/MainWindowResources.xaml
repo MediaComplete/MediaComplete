@@ -22,12 +22,16 @@
 
     <system:String x:Key="Import-Started">Import Started</system:String>
     <system:String x:Key="Import-Success">Import Finished</system:String>
+    <system:String x:Key="Import-InProgress">Importing....</system:String>
     <system:String x:Key="Import-Error">Import Error</system:String>
     <system:String x:Key="Sorting-Started">Sorting Started</system:String>
+    <system:String x:Key="Sorting-InProgress">Sorting....</system:String>
     <system:String x:Key="Sorting-Success">Sorting Finished</system:String>
+    <system:String x:Key="Sorting-HadError">Encountered an error while sorting files: {0}</system:String>
     <system:String x:Key="MusicIdentification-Started">Music Identification Started</system:String>
     <system:String x:Key="MusicIdentification-Success">Music Identification Finished</system:String>
-    <system:String x:Key="MusicIdentification-Error">Music Identification Error</system:String>
+    <system:String x:Key="MusicIdentification-Error">Music Identification Error: {0}</system:String>
+    <system:String x:Key="MusicIdentification-Error-NoException">Music Identification Error</system:String>
     <system:String x:Key="CorruptFile-Error">A Selected File Was Corrupted</system:String>
     <system:String x:Key="Save-Error">One or More Files Could Not Be Saved</system:String>
     

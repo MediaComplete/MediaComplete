@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using MSOE.MediaComplete.Lib.Import;
+using MSOE.MediaComplete.Lib.Metadata;
 using WinForms = System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using MSOE.MediaComplete.Lib;
@@ -64,14 +66,15 @@ namespace MSOE.MediaComplete
             Polling.InboxFilesDetected += ImportFromInbox;
             SettingWrapper.RaiseSettingEvent += HandleSettingEvent;
             // ReSharper disable once ObjectCreationAsStatement
-            new Sorter(null, null);
+            new Sorter(null);
         }
 
-        private void HandleStatusBarChangeEvent(string message, StatusBarHandler.StatusIcon icon)
+        private void HandleStatusBarChangeEvent(string format, string message, StatusBarHandler.StatusIcon icon, params object[] extraArgs)
         {
             Dispatcher.Invoke(() =>
             {
-                StatusMessage.Text = (message.Length == 0) ? "" : Resources[message].ToString();
+                var args = (new[] {message == null ? "" : Resources[message]}).Concat(extraArgs);
+                StatusMessage.Text = String.Format(format, args.ToArray());
                 var sourceUri = new Uri("./Resources/" + icon + ".png", UriKind.Relative);
                 StatusIcon.Source = new BitmapImage(sourceUri);
             });
@@ -160,6 +163,7 @@ namespace MSOE.MediaComplete
 
             if (folderDialog.ShowDialog() != WinForms.DialogResult.OK) return;
             var selectedDir = folderDialog.SelectedPath;
+
             var results = await new Importer(SettingWrapper.GetHomeDir()).ImportDirectory(selectedDir, true);
             if (results.FailCount > 0)
             {
@@ -319,7 +323,7 @@ namespace MSOE.MediaComplete
 
         private async void Toolbar_AutoIDMusic_Click(object sender, RoutedEventArgs e)
         {
-            // TODO mass ID of multi-selected songs or folders
+            // TODO (MC-45) mass ID of multi-selected songs and folders
             foreach (var selection in from object item in SongTree.SelectedItems select item as SongTreeViewItem)
             {
                 try
@@ -329,7 +333,10 @@ namespace MSOE.MediaComplete
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message); // TODO status bar error message
+                    // TODO (MC-125) Logging
+                    StatusBarHandler.Instance.ChangeStatusBarMessage(
+                        String.Format(Resources["MusicIdentification-Error"].ToString(), ex.Message),
+                        StatusBarHandler.StatusIcon.Error);
                 }
             }
         }
@@ -337,8 +344,7 @@ namespace MSOE.MediaComplete
         private async void ContextMenu_AutoIDMusic_Click(object sender, RoutedEventArgs e)
         {
             // Access the targetted song 
-            // TODO mass ID of multi-selected songs
-            // TODO provide this context menu item for folders
+            // TODO (MC-45) mass ID of multi-selected songs and folders
             var menuItem = sender as MenuItem;
             if (menuItem == null)
                 return;
@@ -353,7 +359,10 @@ namespace MSOE.MediaComplete
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message); // TODO status bar error message
+                    // TODO (MC-125) Logging
+                    StatusBarHandler.Instance.ChangeStatusBarMessage(
+                        String.Format(Resources["MusicIdentification-Error"].ToString(), ex.Message), 
+                        StatusBarHandler.StatusIcon.Error);
                 }
             }
             
@@ -366,13 +375,16 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private async void Toolbar_SortMusic_Click(object sender, RoutedEventArgs e)
         {
-            // TODO - obtain from settings file, make configurable
+            // TODO (MC-43) obtain from settings file, make configurable
+            var root = new DirectoryInfo(SettingWrapper.GetHomeDir());
             var settings = new SortSettings
             {
-                SortOrder = new List<MetaAttribute> { MetaAttribute.Artist, MetaAttribute.Album }
+                SortOrder = new List<MetaAttribute> { MetaAttribute.Artist, MetaAttribute.Album },
+                Root = root
             };
 
-            var sorter = new Sorter(new DirectoryInfo(SettingWrapper.GetHomeDir()), settings);
+            var sorter = new Sorter(settings);
+            await sorter.CalculateActions();    
 
             if (sorter.Actions.Count == 0) // Nothing to do! Notify and return.
             {
@@ -389,15 +401,8 @@ namespace MSOE.MediaComplete
                 Resources["Dialog-SortLibrary-Title"].ToString(), MessageBoxButton.YesNo, MessageBoxImage.Question);
 
             if (result != MessageBoxResult.Yes) return;
-            try
-            {
-                await sorter.PerformSort();
-            }
-            catch (IOException ioe)
-            {
-                // TODO - This should get localized and put in the application status bar (TBD)
-                MessageBox.Show("Encountered an error while sorting files: " + ioe.Message);
-            }
+            
+            sorter.PerformSort();
         }
         private void TextChanged(object sender, TextChangedEventArgs e)
         {
