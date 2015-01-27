@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using WinForms = System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using MSOE.MediaComplete.Lib;
@@ -31,12 +32,11 @@ namespace MSOE.MediaComplete
             _settings = new Settings();
             _changedBoxes = new List<TextBox>();
 
-            var homeDir = SettingWrapper.GetHomeDir() ??
-                          Path.GetPathRoot(Environment.SystemDirectory);
+            var homeDir = SettingWrapper.GetHomeDir() ?? Path.GetPathRoot(Environment.SystemDirectory);
             ChangeSortMusic();
             StatusBarHandler.Instance.RaiseStatusBarEvent += HandleStatusBarChangeEvent;
 
-            if (!homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
+            if (!homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal))
             {
                 homeDir += Path.DirectorySeparatorChar;
             }
@@ -54,6 +54,7 @@ namespace MSOE.MediaComplete
                 Polling.Instance.Start();
             }
             Directory.CreateDirectory(homeDir);
+            
             InitEvents();
 
             InitTreeView();
@@ -307,17 +308,30 @@ namespace MSOE.MediaComplete
 
         private static void OnChanged(object source, FileSystemEventArgs e)
         {
-            if(!Polling.IsPolling && !Sorter.IsSorting)
+            
             Application.Current.Dispatcher.Invoke(() =>
             {
                 var win = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
                 if (win != null)
                 {
-                    win.RefreshTreeView();
+                    win.StartRefreshTimer(500);
                 }
             });
         }
+        
+        public void StartRefreshTimer(int dueTime)
+        {
+            var _refreshTimer = new Timer(TimerProc);
+            _refreshTimer.Change(dueTime, Timeout.Infinite);
+            RefreshTreeView();
+        }
 
+        private static void TimerProc(object state)
+        {
+            // The state object is the Timer object.
+            var t = (Timer)state;
+            t.Dispose();
+        }
         private async void Toolbar_AutoIDMusic_Click(object sender, RoutedEventArgs e)
         {
             // TODO mass ID of multi-selected songs or folders
