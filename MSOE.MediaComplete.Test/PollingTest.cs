@@ -1,8 +1,11 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib;
+using MSOE.MediaComplete.Test.Util;
+using Constants = MSOE.MediaComplete.Test.Util.Constants;
 
 namespace MSOE.MediaComplete.Test
 {
@@ -10,11 +13,8 @@ namespace MSOE.MediaComplete.Test
     public class PollingTest
     {
         private static FileInfo _file;
+        private DirectoryInfo _dir;
         private const string DirectoryPath = "C:\\TESTinboxForLibrary\\";
-        private const string Mp3FileName = "file.mp3";
-        private const string WmaFileName = "file.wma";
-        private const string WavFileName = "file.wav";
-        private const string NoFileName = "file";
 
         /// <summary>
         /// deletes the file and directory if they still exist
@@ -22,14 +22,7 @@ namespace MSOE.MediaComplete.Test
         [TestCleanup]
         public void After()
         {
-            if (File.Exists(_file.FullName))
-            {
-                File.Delete(_file.FullName);
-            }
-            if (Directory.Exists(DirectoryPath))
-            {
-                Directory.Delete(DirectoryPath);
-            }
+            Directory.Delete(_dir.FullName, true);
         }
         /// <summary>
         /// tests that it calls the delegate
@@ -38,12 +31,11 @@ namespace MSOE.MediaComplete.Test
         [Timeout(40000)]//Milliseconds
         public void CheckForSongMp3()
         {
-            Directory.CreateDirectory(DirectoryPath);
-            _file = new FileInfo(DirectoryPath + Mp3FileName);
-            File.Create(_file.FullName).Close();
+            _dir = FileHelper.CreateDirectory(DirectoryPath);
+            _file = FileHelper.CreateFile(_dir, Constants.FileTypes.ValidMp3);
 
             var pass = false;
-            SettingWrapper.SetInboxDir(DirectoryPath);
+            SettingWrapper.SetInboxDir(_dir.FullName);
             Polling.Instance.TimeInMinutes = 0.0005;
             Polling.InboxFilesDetected += delegate
             {
@@ -66,9 +58,8 @@ namespace MSOE.MediaComplete.Test
         [Timeout(40000)]//Milliseconds
         public void CheckForSongWma()
         {
-            Directory.CreateDirectory(DirectoryPath);
-            _file = new FileInfo(DirectoryPath + WmaFileName);
-            File.Create(_file.FullName).Close();
+            _dir = FileHelper.CreateDirectory(DirectoryPath);
+            _file = FileHelper.CreateFile(_dir, Constants.FileTypes.ValidWma);
 
             var pass = false;
             SettingWrapper.SetInboxDir(DirectoryPath);
@@ -91,45 +82,13 @@ namespace MSOE.MediaComplete.Test
         /// tests that it calls the delegate
         /// </summary>
         [TestMethod]
-        public void CheckForSongWav()
+        public void CheckForSongNotMusic()
         {
-            Directory.CreateDirectory(DirectoryPath);
-            _file = new FileInfo(DirectoryPath + WavFileName);
-            File.Create(_file.FullName).Close();
+            _dir = FileHelper.CreateDirectory(DirectoryPath);
+            _file = FileHelper.CreateFile(_dir, Constants.FileTypes.NonMusic);
 
-            var pass = false;
             SettingWrapper.SetInboxDir(DirectoryPath);
             Polling.Instance.TimeInMinutes = 0.0005;
-            Polling.InboxFilesDetected += delegate
-            {
-                pass = true;
-            };
-            Polling.Instance.Start();
-
-            Thread.Sleep(500);
-
-            if (!File.Exists(_file.FullName))
-            {
-                Assert.Fail("File does not exist in source directory - it should not have been moved.");
-            }
-        }
-        /// <summary>
-        /// tests that it calls the delegate
-        /// </summary>
-        [TestMethod]
-        public void CheckForSongNo()
-        {
-            Directory.CreateDirectory(DirectoryPath);
-            _file = new FileInfo(DirectoryPath + NoFileName);
-            File.Create(_file.FullName).Close();
-
-            var pass = false;
-            SettingWrapper.SetInboxDir(DirectoryPath);
-            Polling.Instance.TimeInMinutes = 0.0005;
-            Polling.InboxFilesDetected += delegate
-            {
-                pass = true;
-            };
             Polling.Instance.Start();
 
             Thread.Sleep(500);
