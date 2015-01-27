@@ -1,15 +1,16 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 namespace MSOE.MediaComplete.Lib
 {
-    public class TreeViewBackend
+    public static class TreeViewBackend
     {
-        public static FileInfo[] GetFiles()
+        public static IEnumerable<FileInfo> GetFiles()
         {
             var rootDirInfo = new DirectoryInfo(SettingWrapper.GetHomeDir());
             return GetFiles(rootDirInfo);
         }
 
-        public static FileInfo[] GetFiles(DirectoryInfo rootDirInfo)
+        public static IEnumerable<FileInfo> GetFiles(DirectoryInfo rootDirInfo)
         {
             try
             {
@@ -21,13 +22,13 @@ namespace MSOE.MediaComplete.Lib
                 return rootDirInfo.GetFiles();
             }
         }
-        public static DirectoryInfo[] GetDirectories()
+        public static IEnumerable<DirectoryInfo> GetDirectories()
         {
             var rootDirInfo = new DirectoryInfo(SettingWrapper.GetHomeDir());
             return GetDirectories(rootDirInfo);
         }
 
-        public static DirectoryInfo[] GetDirectories(DirectoryInfo rootDirInfo)
+        public static IEnumerable<DirectoryInfo> GetDirectories(DirectoryInfo rootDirInfo)
         {
             return rootDirInfo.GetDirectories();
         }

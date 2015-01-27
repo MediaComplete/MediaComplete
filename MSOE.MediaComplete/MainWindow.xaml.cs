@@ -36,7 +36,7 @@ namespace MSOE.MediaComplete
             ChangeSortMusic();
             StatusBarHandler.Instance.RaiseStatusBarEvent += HandleStatusBarChangeEvent;
 
-            if (!homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
+            if (!homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal))
             {
                 homeDir += Path.DirectorySeparatorChar;
             }
@@ -245,9 +245,8 @@ namespace MSOE.MediaComplete
                 PopulateSongTree(dir, songTree, dirItem, false);
             }
 
-            foreach (var file in TreeViewBackend.GetFiles(dirInfo).GetMusicFiles())
+            foreach (var x in TreeViewBackend.GetFiles(dirInfo).GetMusicFiles().Select(file => new SongTreeViewItem { Header = file.Name, ParentItem = dirItem }))
             {
-                var x = new SongTreeViewItem { Header = file.Name, ParentItem = dirItem };
                 songTree.Items.Add(x);
             }
         }
@@ -401,10 +400,9 @@ namespace MSOE.MediaComplete
         }
         private void TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!_changedBoxes.Contains((TextBox)sender) && !SongTitle.IsReadOnly ) { 
-                _changedBoxes.Add((TextBox)sender);
-                StatusBarHandler.Instance.ChangeStatusBarMessage("", StatusBarHandler.StatusIcon.None);
-            }
+            if (_changedBoxes.Contains((TextBox) sender) || SongTitle.IsReadOnly) return;
+            _changedBoxes.Add((TextBox)sender);
+            StatusBarHandler.Instance.ChangeStatusBarMessage("", StatusBarHandler.StatusIcon.None);
         }
     }
 }
