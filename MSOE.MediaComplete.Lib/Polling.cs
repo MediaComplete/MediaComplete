@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Timers;
+using MSOE.MediaComplete.Lib.Metadata;
 
 namespace MSOE.MediaComplete.Lib
 {
@@ -73,8 +74,8 @@ namespace MSOE.MediaComplete.Lib
         private static void OnTimerFinished(Object sender, ElapsedEventArgs args)
         {
             var inbox = new DirectoryInfo(SettingWrapper.GetInboxDir());
-            var files = inbox.EnumerateFiles("*.mp3"); // TODO MC-172 (need to check subdirectories)
 
+            var files = inbox.EnumerateFiles("*").GetMusicFiles(); // TODO MC-172 (need to check subdirectories)
             var fileInfos = files as FileInfo[] ?? files.ToArray();
             if(fileInfos.Any())
             {

@@ -11,7 +11,7 @@ using Sys = System.Threading.Tasks;
 namespace MSOE.MediaComplete.Lib.Sorting
 {
     /// <summary>
-    /// Provides the implementation for sorting the library of MP3 files by metadata
+    /// Provides the implementation for sorting the library of music files by metadata
     /// </summary>
     public class Sorter
     {
@@ -55,7 +55,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
             await Sys.Task.Run(() =>
             {
                 var fileInfos = Settings.Files ??
-                                Settings.Root.EnumerateFiles(Constants.MusicFilePattern, SearchOption.AllDirectories);
+                                Settings.Root.EnumerateFiles("*", SearchOption.AllDirectories).GetMusicFiles();
 
                 foreach (var file in fileInfos)
                 {

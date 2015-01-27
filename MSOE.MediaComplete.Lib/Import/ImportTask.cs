@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using MSOE.MediaComplete.Lib.Background;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Sorting;
@@ -14,7 +15,7 @@ namespace MSOE.MediaComplete.Lib.Import
     public class ImportTask : Task
     {
         private readonly DirectoryInfo _homeDir;
-        private readonly string[] _files;
+        private readonly IEnumerable<FileInfo> _files;
         private readonly bool _isCopy;
 
         public ImportResults Results { get; set; }
@@ -26,7 +27,7 @@ namespace MSOE.MediaComplete.Lib.Import
         /// <param name="files">An array of absolute filepaths to bring in.</param>
         /// <param name="isCopy">If true, files will be replicated into the library. Otherwise, 
         /// they will be "cut", removing the originals.</param>
-        public ImportTask(DirectoryInfo homeDir, string[] files, bool isCopy)
+        public ImportTask(DirectoryInfo homeDir, IEnumerable<FileInfo> files, bool isCopy)
         {
             Results = null;
             _homeDir = homeDir;
@@ -44,32 +45,32 @@ namespace MSOE.MediaComplete.Lib.Import
             Id = i;
             Message = "Import-InProgress";
             Icon = StatusBarHandler.StatusIcon.Working;
+            var count = _files.Count();
             var results = new ImportResults
             {
                 FailCount = 0,
-                NewFiles = new List<FileInfo>(_files.Length),
+                NewFiles = new List<FileInfo>(count),
                 HomeDir = _homeDir
             };
 
             try
             {
                 var counter = 0;
-                var max = (_files.Length > 100 ? _files.Length / 100 : 1);
+                var max = (count > 100 ? count / 100 : 1);
                 var total = 0;
                 foreach (var file in _files)
                 {
-                    var myFile = file;
-                    var newFile = _homeDir.FullName + Path.DirectorySeparatorChar + Path.GetFileName(file);
+                    var newFile = _homeDir.FullName + Path.DirectorySeparatorChar + file.Name;
                     if (File.Exists(newFile)) continue;
                     try
                     {
                         if (_isCopy)
                         {
-                            File.Copy(myFile, newFile);
+                            file.CopyTo(newFile);
                         }
                         else
                         {
-                            File.Move(myFile, newFile);
+                            file.MoveTo(newFile);
                         }
                         results.NewFiles.Add(new FileInfo(newFile));
                     }
@@ -82,12 +83,21 @@ namespace MSOE.MediaComplete.Lib.Import
                         Error = exception;
                         TriggerUpdate(this);
                     }
+                    catch (UnauthorizedAccessException exception)
+                    {
+                        Console.WriteLine(exception); // TODO (MC-125) log
+                        results.FailCount++;
+                        Message = "UnauthorizedAccess-Error";
+                        Icon = StatusBarHandler.StatusIcon.Error;
+                        Error = exception;
+                        TriggerUpdate(this);
+                    }
 
                     total++;
                     if (counter++ >= max)
                     {
                         counter = 0;
-                        PercentComplete = ((double)total) / _files.Length;
+                        PercentComplete = ((double)total) / count;
                         TriggerUpdate(this);
                     }
                 }

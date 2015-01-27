@@ -82,7 +82,10 @@
     <Compile Include="MetadataExtensionsTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\Blanked.mp3">
+    <Content Include="Resources\BlankedMp3.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\BlankedWma.wma">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\InvalidMp3File.mp3">
@@ -104,6 +107,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="ReadMe.txt" />
+    <Content Include="Resources\ValidWmaFile.wma">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

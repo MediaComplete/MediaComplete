@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MSOE.MediaComplete.Lib.Background;
+using MSOE.MediaComplete.Lib.Metadata;
 
 namespace MSOE.MediaComplete.Lib.Import
 {
@@ -40,8 +41,10 @@ namespace MSOE.MediaComplete.Lib.Import
         /// <returns>An awaitable task of ImportResults</returns>
         public async Task<ImportResults> ImportDirectory(string directory, bool isCopy)
         {
-            var files = Array.FindAll(Directory.GetFiles(directory, "*.mp3", SearchOption.AllDirectories),
-                s => !new FileInfo(s).HasParent(_homeDir));
+            var files =
+                new DirectoryInfo(directory).EnumerateFiles("*", SearchOption.AllDirectories)
+                    .GetMusicFiles()
+                    .Where(f => !f.HasParent(_homeDir));
             var results = await ImportFiles(files, isCopy);
             return results;
         }
@@ -54,9 +57,9 @@ namespace MSOE.MediaComplete.Lib.Import
         /// Otherwise, files are "cut" and removed from the source directory.</param>
         /// <returns>An awaitable task of ImportResults</returns>
         /// <exception cref="InvalidImportException">Thrown when files includes a file in the current home directory</exception>
-        public async Task<ImportResults> ImportFiles(string[] files, bool isCopy)
+        public async Task<ImportResults> ImportFiles(IEnumerable<FileInfo> files, bool isCopy)
         {
-            if (files.Any(f => new FileInfo(f).HasParent(_homeDir)))
+            if (files.Any(f => f.HasParent(_homeDir)))
             {
                 throw new InvalidImportException();
             }
