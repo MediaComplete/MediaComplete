@@ -55,7 +55,7 @@ namespace MSOE.MediaComplete.Lib
             return fileTag.Album == otherTag.Album && fileTag.Track == otherTag.Track;
         }
 
-        internal static void SetMetaAttribute(this File file, MetaAttribute attr, object value)
+        public static void SetAttribute(this File file, MetaAttribute attr, object value)
         {
             if (value == null) return;
             var tag = file.Tag;
@@ -89,10 +89,24 @@ namespace MSOE.MediaComplete.Lib
                     tag.AlbumArtists = aa2.ToArray();
                     break;
                 case MetaAttribute.TrackNumber:
-                    tag.Track = Convert.ToUInt32(value);
+                    try
+                    {
+                        tag.Track = Convert.ToUInt32(value);
+                    }
+                    catch (FormatException)
+                    {
+                        StatusBarHandler.Instance.ChangeStatusBarMessage("InvalidTrackNumber", StatusBarHandler.StatusIcon.Error);
+                    }
                     break;
                 case MetaAttribute.Year:
-                    tag.Year = Convert.ToUInt32(value);
+                    try
+                    {
+                        tag.Year = Convert.ToUInt32(value);
+                    }
+                    catch (FormatException)
+                    {
+                        StatusBarHandler.Instance.ChangeStatusBarMessage("InvalidTrackNumber", StatusBarHandler.StatusIcon.Error);
+                    }
                     break;
                 default:
                     return;
@@ -113,7 +127,7 @@ namespace MSOE.MediaComplete.Lib
         /// <param name="file">The Music File</param>
         /// <param name="attr">The MetaAttribute for the specific ID3 value to be returned</param>
         /// <returns>The ID3 value from the tag</returns>
-        internal static string StringForMetaAttribute(this File file, MetaAttribute attr)
+        public static string GetAttribute(this File file, MetaAttribute attr)
         {
             var tag = file.Tag;
             switch (attr)
@@ -181,84 +195,5 @@ namespace MSOE.MediaComplete.Lib
                     return 0;
             }
         }
-        public static string GetSongTitle(this File file)
-        {
-            return file.StringForMetaAttribute(MetaAttribute.SongTitle);
-        }
-        public static string GetAlbum(this File file)
-        {
-            return file.StringForMetaAttribute(MetaAttribute.Album);
-        }
-        public static string GetArtist(this File file)
-        {
-            return file.StringForMetaAttribute(MetaAttribute.Artist);
-        }
-        public static string GetGenre(this File file)
-        {
-            return file.StringForMetaAttribute(MetaAttribute.Genre);
-        }
-        public static string GetSupportingArtist(this File file)
-        {
-            return file.StringForMetaAttribute(MetaAttribute.SupportingArtist);
-        }
-        public static string GetTrack(this File file)
-        {
-            return file.StringForMetaAttribute(MetaAttribute.TrackNumber);
-        }
-        public static string GetYear(this File file)
-        {
-            return file.StringForMetaAttribute(MetaAttribute.Year);
-        }
-        public static string GetRating(this File file)
-        {
-            return file.StringForMetaAttribute(MetaAttribute.Rating);
-        }
-
-        public static void SetSongTitle(this File file, string value)
-        {
-            file.SetMetaAttribute(MetaAttribute.SongTitle, value);
-        }
-        public static void SetAlbum(this File file, string value)
-        {
-            file.SetMetaAttribute(MetaAttribute.Album, value);
-        }
-        public static void SetArtist(this File file, string value)
-        {
-            file.SetMetaAttribute(MetaAttribute.Artist, value);
-        }
-        public static void SetGenre(this File file, string value)
-        {
-            file.SetMetaAttribute(MetaAttribute.Genre, value);
-        }
-        public static void SetYear(this File file, string value)
-        {
-            try
-            {
-                file.SetMetaAttribute(MetaAttribute.Year, value);
-            }
-            catch (FormatException)
-            {
-                StatusBarHandler.Instance.ChangeStatusBarMessage("InvalidTrackNumber", StatusBarHandler.StatusIcon.Error);
-            }
-        }
-        public static void SetSupportingArtists(this File file, string value)
-        {
-            file.SetMetaAttribute(MetaAttribute.SupportingArtist, value);
-        }
-        public static void SetRating(this File file, string value)
-        {
-            file.SetMetaAttribute(MetaAttribute.Rating, value);
-        }
-        public static void SetTrack(this File file, string value)
-        {
-            try
-            {
-                file.SetMetaAttribute(MetaAttribute.TrackNumber, value);
-            }
-            catch (FormatException)
-            {
-                StatusBarHandler.Instance.ChangeStatusBarMessage("InvalidTrackNumber", StatusBarHandler.StatusIcon.Error);
-            }
-        }
-}
+    }
 }

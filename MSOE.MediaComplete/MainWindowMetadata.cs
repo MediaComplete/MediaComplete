@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using System.Windows.Forms.DataVisualization.Charting;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
 using TagLib;
@@ -35,15 +34,14 @@ namespace MSOE.MediaComplete
                 try
                 {
                     var song = File.Create(((SongTreeViewItem) SongTree.SelectedItems[0]).GetPath());
-                    SongTitle.Text = song.GetSongTitle();
-                    Album.Text = song.GetAlbum();
-                    Artist.Text = song.GetArtist();
-                    SuppArtist.Text = song.GetSupportingArtist();
-                    Genre.Text = song.GetGenre();
-                    Track.Text = song.GetTrack();
-                    Year.Text = song.GetYear();
-                    Rating.Text = song.GetRating().Equals("-1") ? "" : song.GetRating();
-                    StatusBarHandler.Instance.ChangeStatusBarMessage("", StatusBarHandler.StatusIcon.None);
+                    SongTitle.Text = song.GetAttribute(MetaAttribute.SongTitle);
+                    Album.Text = song.GetAttribute(MetaAttribute.Album);
+                    Artist.Text = song.GetAttribute(MetaAttribute.Artist);
+                    SuppArtist.Text = song.GetAttribute(MetaAttribute.Artist);
+                    Genre.Text = song.GetAttribute(MetaAttribute.Genre);
+                    Track.Text = song.GetAttribute(MetaAttribute.TrackNumber);
+                    Year.Text = song.GetAttribute(MetaAttribute.Year);
+                    Rating.Text = song.GetAttribute(MetaAttribute.Rating).Equals("-1") ? "" : song.GetAttribute(MetaAttribute.Rating);
                 }
                 catch (CorruptFileException)
                 {
@@ -70,15 +68,15 @@ namespace MSOE.MediaComplete
                     try
                     {
                         var song = File.Create(item.GetPath());
-                        foreach (MetaAttribute metaAttribute in Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>().Where(metaAttribute => !finalAttributes.ContainsKey(metaAttribute)))
+                        foreach (var metaAttribute in Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>().Where(metaAttribute => !finalAttributes.ContainsKey(metaAttribute)))
                         {
                             if (initalAttributes[metaAttribute] == null)
-                                initalAttributes[metaAttribute] = GetValue(metaAttribute, song);
-                            else if (!initalAttributes[metaAttribute].Equals(GetValue(metaAttribute,song)))
+                                initalAttributes[metaAttribute] = song.GetAttribute(metaAttribute);
+                            else if (!initalAttributes[metaAttribute].Equals(song.GetAttribute(metaAttribute)))
                             {
                                 initalAttributes[metaAttribute] = "-1";
                             }
-
+                            if (initalAttributes[metaAttribute] == null) continue;
                             if (!initalAttributes[metaAttribute].Equals("-1")) continue;
                             finalAttributes.Add(metaAttribute, initalAttributes[metaAttribute]);
                             initalAttributes.Remove(metaAttribute);
@@ -93,43 +91,18 @@ namespace MSOE.MediaComplete
                 {
                     finalAttributes.Add(attribute.Key, initalAttributes[attribute.Key]);
                 }
-                SongTitle.Text = finalAttributes[MetaAttribute.SongTitle] == "-1" ? "Various Songs" : finalAttributes[MetaAttribute.SongTitle];
-                Album.Text = finalAttributes[MetaAttribute.Album] == "-1" ? "Various Albums" : finalAttributes[MetaAttribute.Album];
-                Artist.Text = finalAttributes[MetaAttribute.Artist] == "-1" ? "Various Artists" : finalAttributes[MetaAttribute.Artist];
-                SuppArtist.Text = finalAttributes[MetaAttribute.SupportingArtist] == "-1" ? "Various Artists" : finalAttributes[MetaAttribute.SupportingArtist];
-                Genre.Text = finalAttributes[MetaAttribute.Genre] == "-1" ? "Various Genres" : finalAttributes[MetaAttribute.Genre];
-                Track.Text = finalAttributes[MetaAttribute.TrackNumber] == "-1" ? "--" : finalAttributes[MetaAttribute.TrackNumber];
-                Year.Text = finalAttributes[MetaAttribute.Year] == "-1" ? "----" : finalAttributes[MetaAttribute.Year];
-                Rating.Text = finalAttributes[MetaAttribute.Rating] == "-1" ? "Various Ratings" : finalAttributes[MetaAttribute.Rating];
+
+                SongTitle.Text = finalAttributes[MetaAttribute.SongTitle] == "-1" ?  Resources["VariousSongs"].ToString() : finalAttributes[MetaAttribute.SongTitle];
+                Album.Text = finalAttributes[MetaAttribute.Album] == "-1" ? Resources["VariousAlbums"].ToString() : finalAttributes[MetaAttribute.Album];
+                Artist.Text = finalAttributes[MetaAttribute.Artist] == "-1" ?  Resources["VariousArtists"].ToString() : finalAttributes[MetaAttribute.Artist];
+                SuppArtist.Text = finalAttributes[MetaAttribute.SupportingArtist] == "-1" ?  Resources["VariousArtists"].ToString() : finalAttributes[MetaAttribute.SupportingArtist];
+                Genre.Text = finalAttributes[MetaAttribute.Genre] == "-1" ?  Resources["VariousGenres"].ToString() : finalAttributes[MetaAttribute.Genre];
+                Track.Text = finalAttributes[MetaAttribute.TrackNumber] == "-1" ?  Resources["VariousTrackNumbers"].ToString() : finalAttributes[MetaAttribute.TrackNumber];
+                Year.Text = finalAttributes[MetaAttribute.Year] == "-1" ?  Resources["VariousYear"].ToString() : finalAttributes[MetaAttribute.Year];
+                Rating.Text = finalAttributes[MetaAttribute.Rating] == "-1" ?  Resources["VariousRatings"].ToString() : finalAttributes[MetaAttribute.Rating];
             }
         }
 
-        private static string GetValue(MetaAttribute attribute, File song)
-        {
-            switch (attribute)
-            {
-                case MetaAttribute.SongTitle:
-                    return song.GetSongTitle();
-                case MetaAttribute.Album:
-                    return song.GetAlbum();
-                case MetaAttribute.Artist:
-                    return song.GetArtist();
-                case MetaAttribute.SupportingArtist:
-                    return song.GetSupportingArtist();
-                case MetaAttribute.Genre:
-                    return song.GetGenre();
-                case MetaAttribute.TrackNumber:
-                    return song.GetTrack();
-                case MetaAttribute.Year:
-                    return song.GetYear();
-                case MetaAttribute.Rating:
-                    return song.GetRating();
-                case MetaAttribute.AlbumArt:
-                    return "-1";
-                default:
-                    return null;
-            }
-        }
 
         private void ClearDetailPane()
         {
@@ -142,19 +115,19 @@ namespace MSOE.MediaComplete
             Year.Text = "";
             Genre.Text = "";
 
-            EditCancelButton.Content = "Edit";
+            EditCancelButton.Content = Resources["EditButton"].ToString();
 
         }
 
         private void Edit_OnClick(object sender, RoutedEventArgs e)
         {
 
-            if (EditCancelButton.Content.Equals("Edit") && SongTree.SelectedItems.Count > 0)
+            if (EditCancelButton.Content.Equals(Resources["EditButton"].ToString()) && SongTree.SelectedItems.Count > 0)
             {
-                EditCancelButton.Content = "Cancel";
+                EditCancelButton.Content = Resources["CancelButton"].ToString();
                 ToggleReadOnlyFields(false);
             }
-            else if (EditCancelButton.Content.Equals("Cancel"))
+            else if (EditCancelButton.Content.Equals(Resources["CancelButton"].ToString()))
             {
                 foreach (var changedBox in _changedBoxes)
                 {
@@ -168,13 +141,13 @@ namespace MSOE.MediaComplete
                 if(_changedBoxes.Count != 0) PopulateMetadataForm();
                 _changedBoxes.Clear();
                 ToggleReadOnlyFields(true);
-                EditCancelButton.Content = "Edit";
+                EditCancelButton.Content = Resources["EditButton"].ToString();
             }
         }
 
         private void FormCheck()
         {
-            if (EditCancelButton.Content.Equals("Cancel"))
+            if (EditCancelButton.Content.Equals(Resources["CancelButton"].ToString()))
             {
                 foreach (var changedBox in _changedBoxes)
                 {
@@ -187,7 +160,7 @@ namespace MSOE.MediaComplete
                 }
                 _changedBoxes.Clear();
                 ToggleReadOnlyFields(true);
-                EditCancelButton.Content = "Edit";
+                EditCancelButton.Content = Resources["EditButton"].ToString();
                 PopulateMetadataForm();
             }
         }
@@ -195,7 +168,7 @@ namespace MSOE.MediaComplete
         private void Save_OnClick(object sender, RoutedEventArgs e)
         {
             if (SongTitle.IsReadOnly) return;
-            EditCancelButton.Content = "Edit";
+            EditCancelButton.Content = Resources["EditButton"].ToString();
             ToggleReadOnlyFields(true);
             foreach (SongTreeViewItem item in SongTree.SelectedItems)
             {
@@ -206,35 +179,35 @@ namespace MSOE.MediaComplete
                     {
                         if (changedBox.Equals(SongTitle))
                         {
-                            song.SetSongTitle(changedBox.Text);
+                            song.SetAttribute(MetaAttribute.SongTitle, changedBox.Text);
                         }
                         else if (changedBox.Equals(Album))
                         {
-                            song.SetAlbum(changedBox.Text);
+                            song.SetAttribute(MetaAttribute.Album, changedBox.Text);
                         }
                         else if (changedBox.Equals(Artist))
                         {
-                            song.SetArtist(changedBox.Text);
+                            song.SetAttribute(MetaAttribute.Artist, changedBox.Text);
                         }
                         else if (changedBox.Equals(Genre))
                         {
-                            song.SetGenre(changedBox.Text);
+                            song.SetAttribute(MetaAttribute.Genre, changedBox.Text);
                         }
                         else if (changedBox.Equals(Track))
                         {
-                            song.SetTrack(changedBox.Text);
+                            song.SetAttribute(MetaAttribute.TrackNumber, changedBox.Text);
                         }
                         else if (changedBox.Equals(Year))
                         {
-                            song.SetYear(changedBox.Text);
+                            song.SetAttribute(MetaAttribute.Year, changedBox.Text);
                         }
                         else if (changedBox.Equals(Rating))
                         {
-                            song.SetRating(changedBox.Text);
+                            song.SetAttribute(MetaAttribute.Rating, changedBox.Text);
                         }
                         else if (changedBox.Equals(SuppArtist))
                         {
-                            song.SetSupportingArtists(changedBox.Text);
+                            song.SetAttribute(MetaAttribute.SupportingArtist, changedBox.Text);
                         }
                     }
                 }
@@ -247,7 +220,7 @@ namespace MSOE.MediaComplete
             PopulateMetadataForm();
         }
 
-        private void ToggleReadOnlyFields(Boolean toggle)
+        private void ToggleReadOnlyFields(bool toggle)
         {
             SongTitle.IsReadOnly = toggle;
             Album.IsReadOnly = toggle;

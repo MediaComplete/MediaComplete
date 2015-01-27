@@ -136,7 +136,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
             }
 
             var metadataPath = new StringBuilder();
-            foreach (var metaValue in list.Select(metadata.StringForMetaAttribute).TakeWhile(metaValue => !String.IsNullOrWhiteSpace((metaValue))))
+            foreach (var metaValue in list.Select(metadata.GetAttribute).TakeWhile(metaValue => !String.IsNullOrWhiteSpace((metaValue))))
             {
                 metadataPath.Append(metaValue);
                 metadataPath.Append(Path.DirectorySeparatorChar);
