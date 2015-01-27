@@ -24,7 +24,7 @@ namespace MSOE.MediaComplete
     {
         private readonly List<TextBox>_changedBoxes;
         private Settings _settings;
-        private Timer _refreshTimer;
+        private readonly Timer _refreshTimer;
 
         public MainWindow()
         {
@@ -311,16 +311,9 @@ namespace MSOE.MediaComplete
 
         private void OnChanged(object source, FileSystemEventArgs e)
         {
-
-            StartRefreshTimer(500);
+            _refreshTimer.Change(500, Timeout.Infinite);
         }
         
-        public void StartRefreshTimer(int dueTime)
-        {
-            _refreshTimer = new Timer(TimerProc);
-            _refreshTimer.Change(dueTime, Timeout.Infinite);
-        }
-
         private void TimerProc(object state)
         {
             Application.Current.Dispatcher.Invoke(() =>
