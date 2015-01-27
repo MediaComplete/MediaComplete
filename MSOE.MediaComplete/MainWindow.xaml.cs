@@ -24,6 +24,7 @@ namespace MSOE.MediaComplete
     {
         private readonly List<TextBox>_changedBoxes;
         private Settings _settings;
+        private Timer _refreshTimer;
 
         public MainWindow()
         {
@@ -54,6 +55,8 @@ namespace MSOE.MediaComplete
                 Polling.Instance.Start();
             }
             Directory.CreateDirectory(homeDir);
+            _refreshTimer = new Timer(TimerProc);
+            
             
             InitEvents();
 
@@ -306,32 +309,30 @@ namespace MSOE.MediaComplete
             return (FolderTree.SelectedItems.Contains(folder.ParentItem) || ContainsParent(folder.ParentItem));
         }
 
-        private static void OnChanged(object source, FileSystemEventArgs e)
+        private void OnChanged(object source, FileSystemEventArgs e)
         {
-            
+
+            StartRefreshTimer(500);
+        }
+        
+        public void StartRefreshTimer(int dueTime)
+        {
+            _refreshTimer = new Timer(TimerProc);
+            _refreshTimer.Change(dueTime, Timeout.Infinite);
+        }
+
+        private void TimerProc(object state)
+        {
             Application.Current.Dispatcher.Invoke(() =>
             {
                 var win = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
                 if (win != null)
                 {
-                    win.StartRefreshTimer(500);
+                    RefreshTreeView();
                 }
             });
         }
-        
-        public void StartRefreshTimer(int dueTime)
-        {
-            var _refreshTimer = new Timer(TimerProc);
-            _refreshTimer.Change(dueTime, Timeout.Infinite);
-            RefreshTreeView();
-        }
 
-        private static void TimerProc(object state)
-        {
-            // The state object is the Timer object.
-            var t = (Timer)state;
-            t.Dispose();
-        }
         private async void Toolbar_AutoIDMusic_Click(object sender, RoutedEventArgs e)
         {
             // TODO mass ID of multi-selected songs or folders
