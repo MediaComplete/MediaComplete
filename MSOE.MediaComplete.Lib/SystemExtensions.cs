@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 
 namespace MSOE.MediaComplete.Lib
 {
@@ -95,7 +96,23 @@ namespace MSOE.MediaComplete.Lib
 
             return fileName;
 
-        }  
+        }
+
+        /// <summary>
+        /// Removes empty directories and subdirectories from the given root directory
+        /// </summary>
+        /// <param name="rootInfo">The root of the tree</param>
+        public static void ScrubEmptyDirectories(this DirectoryInfo rootInfo)
+        {
+            foreach (var child in rootInfo.EnumerateDirectories("*", SearchOption.AllDirectories))
+            {
+                ScrubEmptyDirectories(child);
+                if (!child.EnumerateFileSystemInfos().Any())
+                {
+                    child.Delete();
+                }
+            }
+        }
     }
 
     public class DirectoryEqualityComparer : IEqualityComparer<DirectoryInfo>
