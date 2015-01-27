@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MSOE.MediaComplete.Lib;
+using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Test.Util;
 using Constants = MSOE.MediaComplete.Test.Util.Constants;
 using File = TagLib.File;

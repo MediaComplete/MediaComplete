@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using MSOE.MediaComplete.Lib.Metadata;
 
 namespace MSOE.MediaComplete.Lib.Sorting
 {
@@ -12,5 +14,15 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// Example: Artist, Year, Album
         /// </summary>
         public List<MetaAttribute> SortOrder { get; set; }
+
+        /// <summary>
+        /// The root directory of the library.
+        /// </summary>
+        public DirectoryInfo Root { get; set; }
+
+        /// <summary>
+        /// The specific files to sort within Root
+        /// </summary>
+        public IEnumerable<FileInfo> Files { get; set; }
     }
 }

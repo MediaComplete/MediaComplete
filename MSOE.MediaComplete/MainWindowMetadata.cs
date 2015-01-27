@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
+using MSOE.MediaComplete.Lib.Metadata;
 using TagLib;
 using TextBox = System.Windows.Controls.TextBox;
 

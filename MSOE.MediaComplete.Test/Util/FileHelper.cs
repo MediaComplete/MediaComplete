@@ -19,6 +19,7 @@ namespace MSOE.MediaComplete.Test.Util
 
         public static FileInfo CreateFile(DirectoryInfo location, Constants.FileTypes source)
         {
+
             var destPath = location.FullName + Path.DirectorySeparatorChar + Constants.TestFiles[source].Item1;
             if (File.Exists(destPath))
             {
