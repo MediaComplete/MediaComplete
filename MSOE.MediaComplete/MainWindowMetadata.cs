@@ -148,7 +148,7 @@ namespace MSOE.MediaComplete
 
         private void FormCheck()
         {
-            if (EditCancelButton!= null && EditCancelButton.Content.Equals(Resources["CancelButton"].ToString()))
+            if (EditCancelButton.Content.Equals(Resources["CancelButton"].ToString()))
             {
                 foreach (var changedBox in _changedBoxes)
                 {

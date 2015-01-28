@@ -54,7 +54,6 @@
 
 
 
-
     <!-- Images -->
     <BitmapImage x:Key="Toolbar-AddMusicFile-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
                  UriSource=".\Resources\page_white_add.png" />
