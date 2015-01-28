@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MSOE.MediaComplete.Lib;
 using System.IO;
 using System.Text.RegularExpressions;
+using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Test.Util;
 using Constants = MSOE.MediaComplete.Test.Util.Constants;
 using File = TagLib.File;
@@ -34,14 +35,13 @@ namespace MSOE.MediaComplete.Test
             var file = FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidMp3);
             _mp3File = File.Create(file.FullName);
             const string artist = "Not an Artist";
-            _mp3File.SetArtist(artist);
+            _mp3File.SetAttribute(MetaAttribute.Artist, artist);
             var task = MusicIdentifier.IdentifySong(_mp3File.Name);
-            while (!task.IsCompleted)
-            {
-            }
+
+            SpinWait.SpinUntil(() => task.IsCompleted, 30000);
 
             _mp3File = File.Create(file.FullName);
-            Assert.AreNotEqual(artist, _mp3File.GetArtist(), "Name was not fixed!");
+            Assert.AreNotEqual(artist, _mp3File.GetAttribute(MetaAttribute.Artist), "Name was not fixed!");
         }
 
         [TestMethod, Timeout(30000)]
