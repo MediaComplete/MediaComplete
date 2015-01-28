@@ -20,7 +20,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void Play_NullFileInfo_ReturnWithoutPlaying()
         {
-            _player.Play(new FileInfo(null));
+            _player.Play(null);
             Assert.AreEqual(PlaybackState.Stopped, _player.PlaybackState);
         }
 
