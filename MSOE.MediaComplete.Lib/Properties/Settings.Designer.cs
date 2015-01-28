@@ -22,16 +22,43 @@ namespace MSOE.MediaComplete.Lib.Properties {
                 return defaultInstance;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\library\\")]
-        public string HomeDir {
-            get {
+        public string HomeDir
+        {
+            get
+            {
                 return ((string)(this["HomeDir"]));
             }
-            set {
+            set
+            {
                 this["HomeDir"] = value;
+            }
+        }
+
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Music\\")]
+        public string MusicDir
+        {
+            get
+            {
+                return (string)(this["MusicDir"]);
+            }
+        }
+
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Playlists\\")]
+        public string PlaylistDir
+        {
+            get
+            {
+                return (string)(this["PlaylistDir"]);
             }
         }
         

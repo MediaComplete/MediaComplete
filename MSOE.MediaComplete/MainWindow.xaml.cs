@@ -33,7 +33,7 @@ namespace MSOE.MediaComplete
             _settings = new Settings();
             _changedBoxes = new List<TextBox>();
 
-            var homeDir = SettingWrapper.GetHomeDir() ??
+            var homeDir = SettingWrapper.GetMusicDir() ??
                           Path.GetPathRoot(Environment.SystemDirectory);
             ChangeSortMusic();
             StatusBarHandler.Instance.RaiseStatusBarEvent += HandleStatusBarChangeEvent;
@@ -106,7 +106,7 @@ namespace MSOE.MediaComplete
             }
             else
             {
-                await new Importer(SettingWrapper.GetHomeDir()).ImportFiles(files, false);
+                await new Importer(SettingWrapper.GetMusicDir()).ImportFiles(files, false);
             }
         }
         
@@ -137,7 +137,7 @@ namespace MSOE.MediaComplete
             ImportResults results;
             try
             {
-                results = await new Importer(SettingWrapper.GetHomeDir()).ImportFiles(fileDialog.FileNames.Select(p => new FileInfo(p)).ToList(), true);
+                results = await new Importer(SettingWrapper.GetMusicDir()).ImportFiles(fileDialog.FileNames.Select(p => new FileInfo(p)).ToList(), true);
             }
             catch (InvalidImportException)
             {
@@ -181,7 +181,7 @@ namespace MSOE.MediaComplete
         public void RefreshTreeView()
         {
             //Create Parent node
-            var firstNode = new FolderTreeViewItem { Header = SettingWrapper.GetHomeDir(), ParentItem = null};
+            var firstNode = new FolderTreeViewItem { Header = SettingWrapper.GetMusicDir(), ParentItem = null};
 
             SongTree.Items.Clear();
 
@@ -207,7 +207,7 @@ namespace MSOE.MediaComplete
         {
             RefreshTreeView();
 
-            var watcher = new FileSystemWatcher(SettingWrapper.GetHomeDir())
+            var watcher = new FileSystemWatcher(SettingWrapper.GetMusicDir())
             {
                 NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName
             };
@@ -311,14 +311,14 @@ namespace MSOE.MediaComplete
 
         private static void OnChanged(object source, FileSystemEventArgs e)
         {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                var win = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-                if (win != null)
+                Application.Current.Dispatcher.Invoke(() =>
                 {
-                    win.RefreshTreeView();
-                }
-            });
+                    var win = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+                    if (win != null)
+                    {
+                        win.RefreshTreeView();
+                    }
+                });
         }
 
         private async void Toolbar_AutoIDMusic_Click(object sender, RoutedEventArgs e)

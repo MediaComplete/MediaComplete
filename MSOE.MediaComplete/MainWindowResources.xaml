@@ -46,8 +46,11 @@
     <system:String x:Key="VariousGenres">Various Genres</system:String>
     <system:String x:Key="VariousTrackNumbers">--</system:String>
     <system:String x:Key="VariousYear">----</system:String>
-    <system:String x:Key="VariousRatings">"Various Ratings"</system:String>
+    <system:String x:Key="VariousRatings">Various Ratings</system:String>
 
+
+    <system:String x:Key="EditButton">Edit</system:String>
+    <system:String x:Key="CancelButton">Cancel</system:String>
 
 
 
