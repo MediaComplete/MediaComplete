@@ -8,17 +8,6 @@ namespace MSOE.MediaComplete.Lib.Sorting
     {
         private static bool _shouldSort;
 
-        private static readonly List<MetaAttribute> AlbumRule = new List<MetaAttribute>
-        {
-            MetaAttribute.Year,
-            MetaAttribute.AlbumArt
-        };
-        private static readonly List<MetaAttribute> AlbumArtRule = new List<MetaAttribute>
-        {
-            MetaAttribute.Album,
-            MetaAttribute.Year
-        };
-
         public static void SetSorting(List<MetaAttribute> oldSort, List<MetaAttribute> newSort)
         {
             _shouldSort = !oldSort.SequenceEqual(newSort) && SettingWrapper.GetIsSorting();
@@ -40,15 +29,14 @@ namespace MSOE.MediaComplete.Lib.Sorting
         {
             
             var metaList = Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>().ToList().Except(valueList).ToList();
-            if (valueList.Contains(MetaAttribute.Album))
-            {
-                metaList = metaList.Except(AlbumRule).ToList();
-            }
-            if (valueList.Contains(MetaAttribute.AlbumArt))
-            {
-                metaList = metaList.Except(AlbumArtRule).ToList();
-            }
+            return metaList;
+        }
 
+        public static List<MetaAttribute> GetAllValidAttributes(List<MetaAttribute> valueList, MetaAttribute metaAttribute)
+        {
+
+            var metaList = Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>().ToList().Except(valueList).ToList();
+            metaList.Add(metaAttribute);
             return metaList;
         }
     }

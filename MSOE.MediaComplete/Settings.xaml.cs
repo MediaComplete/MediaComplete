@@ -5,11 +5,14 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Media;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Sorting;
 using Button = System.Windows.Controls.Button;
 using ComboBox = System.Windows.Controls.ComboBox;
-using Label = System.Windows.Controls.Label;
+using Control = System.Windows.Controls.Control;
+using HorizontalAlignment = System.Windows.HorizontalAlignment;
+using Orientation = System.Windows.Controls.Orientation;
 
 namespace MSOE.MediaComplete
 {
@@ -19,9 +22,9 @@ namespace MSOE.MediaComplete
     /// </summary>
     public partial class Settings
     {
-        private readonly bool _hasBeenSelected;
-        private readonly List<Label> _labels;
-        private List<MetaAttribute> _sortOrderList; 
+        private readonly List<ComboBox> _comboBoxes;
+        private List<MetaAttribute> _sortOrderList;
+        private List<bool> _showComboBox; 
 
         private readonly Dictionary<LayoutType, string> _layoutsDict = new Dictionary<LayoutType, string>
         {
@@ -49,67 +52,143 @@ namespace MSOE.MediaComplete
             {
                 DarkCheck.IsChecked = true;
             }
-
-            _hasBeenSelected = false;
-            _labels = new List<Label>();
+            _comboBoxes = new List<ComboBox>();
             _sortOrderList= SettingWrapper.GetSortOrder();
+            _showComboBox = new List<bool>();
+            LoadDictionary();
             LoadSortListBox();
+        }
 
-            MinusButton.Click += MinusClicked;
-            PlusButton.Click += PlusClicked;
-            SortOrderComboBox.SelectionChanged += SelectChanged;
+        private void LoadDictionary()
+        {
+            _showComboBox.Clear();
+            for (var i = 0; i < _sortOrderList.Count; i++)
+            {
+                _showComboBox.Add(true);
+            }
         }
 
         private void LoadSortListBox()
         {
-            for (var i = 0; i < _sortOrderList.Count; i++)
+            var withValue = -1;
+            for (var i = 0; i < _showComboBox.Count; i++)
             {
-                var label = new Label
+                var showValue = _showComboBox[i];
+                if (showValue)
                 {
-                    Content = _sortOrderList[i],
-                    Padding = new Thickness(8 * (i + 1), 8, 8, 8)
-                        
+                    withValue++;
+                }
+                var stackPanel = new StackPanel {Orientation = Orientation.Horizontal};
+                var folder = new Image
+                {
+                    Source = (ImageSource)Resources["Settings-Folder-Icon"],
+                    Width = 14,
+                    Height = 14,
+                    Margin = new Thickness(16 * (i + 1), 8, 0, 8)
                 };
-                _labels.Add(label);
-                SortConfig.Children.Add(label);
+                var comboBox = new ComboBox
+                {
+                    Width = 100,
+                    Height = 24,
+                    ItemsSource = showValue ? SortHelper.GetAllValidAttributes(_sortOrderList, _sortOrderList[withValue]) 
+                                                : SortHelper.GetAllUnusedMetaAttributes(_sortOrderList),
+                    SelectedValue = showValue ? (object) _sortOrderList[withValue] : -1,
+                    Tag = i
+                };
+                var minus = new Button
+                {
+                    Content = new Image
+                    {
+                        Source = (ImageSource) Resources["Settings-MinusConfig-Icon"]
+                    },
+                    Tag = i
+                };
+                minus.SetResourceReference(StyleProperty, "Plus/Minus"); 
+                var plus = new Button
+                {
+                    Content = new Image
+                    {
+                        Source = (ImageSource)Resources["Settings-AddConfig-Icon"]
+                    },
+                    Tag = i,
+                };
+                plus.SetResourceReference(StyleProperty, "Plus/Minus"); 
+
+                minus.Click += MinusClicked;
+                plus.Click += PlusClicked;
+                comboBox.SelectionChanged += SelectChanged;
+
+                _comboBoxes.Add(comboBox);
+                stackPanel.Children.Add(folder);
+                stackPanel.Children.Add(comboBox);
+
+                if (i != 0)
+                {
+                    stackPanel.Children.Add(minus);
+                }
+                stackPanel.Children.Add(plus);
+                SortConfig.Children.Add(stackPanel);
             }
-            SortOrderComboBox.ItemsSource = SortHelper.GetAllUnusedMetaAttributes(_sortOrderList);
-            
-            ChangingColumn.Width = new GridLength(8 *_sortOrderList.Count);
 
         }
 
         private void PlusClicked(object sender, RoutedEventArgs e)
         {
+            var plus = sender as Button;
+            if (plus == null) return;
+            var tag = (int)plus.Tag;
+
+            _showComboBox.Insert(tag + 1 , false);
+
+            _comboBoxes.Clear();
+
             SortConfig.Children.Clear();
-            _labels.Clear();
-            _sortOrderList.Add((MetaAttribute)SortOrderComboBox.SelectedValue);
             LoadSortListBox();
-            PlusButton.Visibility = Visibility.Hidden;
+
+            _comboBoxes[tag + 1].ItemsSource = SortHelper.GetAllUnusedMetaAttributes(_sortOrderList);
+            _comboBoxes[tag + 1].SelectedValue = -1;
         }
 
         private void MinusClicked(object sender, RoutedEventArgs e)
         {
-            var toRemove = _labels.Count - 1;
+            var minus = sender as Button;
+            if (minus == null) return;
+            var tag = (int)minus.Tag;
 
-            if (toRemove < 0) return;
-            _sortOrderList.RemoveAt(toRemove);
-            _labels.Clear();
+            if (_showComboBox[tag])
+            {
+                _sortOrderList.Remove((MetaAttribute)_comboBoxes[tag].SelectedValue);
+            }
+            _showComboBox.RemoveAt(tag);
+            _comboBoxes.Clear();
 
             SortConfig.Children.Clear();
             LoadSortListBox();
-                
-            if(toRemove == 0)
-            {
-                MinusButton.Visibility = Visibility.Hidden;
-            }
         }
 
         private void SelectChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (_hasBeenSelected) return;
-            PlusButton.Visibility = Visibility.Visible;
-            MinusButton.Visibility = Visibility.Visible;
+            if (e.AddedItems.Count <= 0) return;
+
+            var comboBox = sender as ComboBox;
+            if (comboBox == null) return;
+            var tag = (int)comboBox.Tag;
+            _showComboBox[tag] = true;
+
+            var addItem = e.AddedItems[0] as MetaAttribute? ?? MetaAttribute.Album;
+            if (e.RemovedItems.Count > 0)
+            {
+
+                var removedItem = e.RemovedItems[0] as MetaAttribute? ?? MetaAttribute.Album;
+                _sortOrderList.Remove(removedItem);
+            }
+
+            _sortOrderList.Insert(tag, addItem);
+
+            foreach (var box in _comboBoxes)
+            {
+                box.ItemsSource = box.SelectedValue == null ? SortHelper.GetAllUnusedMetaAttributes(_sortOrderList) : SortHelper.GetAllValidAttributes(_sortOrderList, (MetaAttribute)box.SelectedValue);
+            }
         }
 
 
@@ -225,11 +304,10 @@ namespace MSOE.MediaComplete
         private void ResetDefault(object sender, RoutedEventArgs e)
         {
             _sortOrderList = SortHelper.GetDefault();
+            _comboBoxes.Clear();
+            LoadDictionary();
             SortConfig.Children.Clear();
             LoadSortListBox();
-            SortOrderComboBox.SelectedValue = -1;
-            PlusButton.Visibility = Visibility.Hidden;
-
         }
 
         private void Skins_Checked(object sender, RoutedEventArgs e)

@@ -246,7 +246,7 @@ namespace MSOE.MediaComplete
             }
             foreach (var file in TreeViewBackend.GetFiles(dirInfo).GetMusicFiles())
             {
-                songTree.Items.Add(x);
+                songTree.Items.Add(file);
             }
         }
 

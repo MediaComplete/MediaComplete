@@ -51,4 +51,6 @@
                  UriSource=".\Resources\delete.png" />
     <BitmapImage x:Key="Settings-Info-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
                  UriSource=".\Resources\Information.png" />
+    <BitmapImage x:Key="Settings-Folder-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
+                 UriSource=".\Resources\folder.png" />
 </ResourceDictionary>

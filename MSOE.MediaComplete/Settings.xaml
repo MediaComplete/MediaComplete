@@ -53,46 +53,9 @@
                                     </Image.ToolTip>
                                 </Image>
                             </StackPanel>
-                            <ScrollViewer Padding="0, 8, 0, 0" HorizontalScrollBarVisibility="auto" VerticalScrollBarVisibility="auto" Width="auto" Height="175">
+                            <ScrollViewer HorizontalScrollBarVisibility="auto" VerticalScrollBarVisibility="auto" Width="auto" Height="175">
                                 <StackPanel>
                                     <StackPanel  x:Name="SortConfig" Orientation="Vertical">
-                                    </StackPanel>
-                                    <StackPanel>
-                                        <Grid Name="Config">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="20"></RowDefinition>
-                                                <RowDefinition Height="*"></RowDefinition>
-                                            </Grid.RowDefinitions>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Name="ChangingColumn" MinWidth="0" Width="0"/>
-                                                    <ColumnDefinition Width="100"/>
-                                                    <ColumnDefinition Width="18"/>
-                                                    <ColumnDefinition Width="18"/>
-                                                </Grid.ColumnDefinitions>
-                                            <ComboBox Name="SortOrderComboBox" Grid.Column="1" Grid.Row="0"/>
-                                            <Button x:Name="MinusButton" Grid.Column="2" Grid.Row="0">
-                                                    <Button.Template>
-                                                        <ControlTemplate>
-                                                            <Border HorizontalAlignment="Center" VerticalAlignment="Center" >
-                                                                <Image Source="{StaticResource Settings-MinusConfig-Icon}" 
-                                                                               Width="16" 
-                                                                               Height="16"/>
-                                                            </Border>
-                                                        </ControlTemplate>
-                                                    </Button.Template>
-                                                </Button>
-                                            <Button x:Name="PlusButton" Grid.Column="3" Visibility="Hidden" Grid.Row="0">
-                                                <Button.Template>
-                                                    <ControlTemplate>
-                                                        <Border HorizontalAlignment="Center" VerticalAlignment="Center" >
-                                                            <Image Source="{StaticResource Settings-AddConfig-Icon}" 
-                                                                        Width="16" 
-                                                                        Height="16"/>
-                                                        </Border>
-                                                    </ControlTemplate>
-                                                </Button.Template>
-                                            </Button>
-                                        </Grid>
                                     </StackPanel>
                                 </StackPanel>
                             </ScrollViewer>
