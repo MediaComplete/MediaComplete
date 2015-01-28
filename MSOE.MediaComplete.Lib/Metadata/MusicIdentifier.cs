@@ -8,9 +8,9 @@ using ENMFPdotNet;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using Newtonsoft.Json.Linq;
-using File = TagLib.File;
+using TagLib;
 
-namespace MSOE.MediaComplete.Lib
+namespace MSOE.MediaComplete.Lib.Metadata
 {
     public class MusicIdentifier
     {
@@ -27,7 +27,7 @@ namespace MSOE.MediaComplete.Lib
 
             if (!System.IO.File.Exists(filename))
             {
-                StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error", StatusBarHandler.StatusIcon.Error);
+                StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error-NoException", StatusBarHandler.StatusIcon.Error);
                 return null;
             }
             // We have to force "SampleAudio" onto a new thread, otherwise the main thread 
@@ -35,7 +35,7 @@ namespace MSOE.MediaComplete.Lib
             var audioData = await Task.Run(() => SampleAudio(filename));
             if (audioData == null)
             {
-                StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error", StatusBarHandler.StatusIcon.Error);
+                StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error-NoException", StatusBarHandler.StatusIcon.Error);
                 return null;
             }
 
@@ -50,7 +50,8 @@ namespace MSOE.MediaComplete.Lib
             var response = await client.GetAsync(Path + "?" + query);
 
             // Parse the response body.
-            var json = JObject.Parse(await response.Content.ReadAsStringAsync());
+            var strResponse = await response.Content.ReadAsStringAsync();
+            var json = JObject.Parse(strResponse);
 
             UpdateFileWithJson(json, File.Create(filename));
 
@@ -73,7 +74,7 @@ namespace MSOE.MediaComplete.Lib
                 create.SetAttribute(MetaAttribute.Artist, artist.ToString());
             }
 
-            //TODO add more - this will require using the ID passed in to access possible other databases...further research needed
+            // TODO (MC-139, MC-45) add more - this will require using the ID passed in to access possible other databases...further research needed
         }
 
         /*
@@ -97,7 +98,7 @@ namespace MSOE.MediaComplete.Lib
                         using (var readerStream = new WaveFormatConversionStream(format, pcmStream))
                         {
                             var provider = new Pcm16BitToSampleProvider(readerStream);
-                            // Assumes 16 bit... TODO is this a problem?
+                            // Assumes 16 bit... works with all the fields we've tested, but we might need to enhance this later.
                             // Read blocks of samples until no more available
                             const int blockSize = 2000;
                             var buffer = new float[blockSize];
