@@ -67,4 +67,39 @@
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=VirtualMemberNeverOverriden_002EGlobal/@EntryIndexedValue">WARNING</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=VirtualMemberNeverOverriden_002ELocal/@EntryIndexedValue">WARNING</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=Xaml_002EBindingWithContextNotResolved/@EntryIndexedValue">DO_NOT_SHOW</s:String>
-	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=Xaml_002EBindingWithoutContextNotResolved/@EntryIndexedValue">DO_NOT_SHOW</s:String></wpf:ResourceDictionary>
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=Xaml_002EBindingWithoutContextNotResolved/@EntryIndexedValue">DO_NOT_SHOW</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/Comment/@EntryValue">Adds the 'Async' suffix to methods returning 'async Task'</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/CustomPatternPlaceholder/=method/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/CustomPatternPlaceholder/=method/Properties/=CaseSensitive/@EntryIndexedValue">True</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/CustomPatternPlaceholder/=method/Properties/=ExactType/@EntryIndexedValue">False</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/CustomPatternPlaceholder/=method/Properties/=RegEx/@EntryIndexedValue"></s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/CustomPatternPlaceholder/=method/Type/@EntryValue">IdentifierPlaceholder</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/CustomPatternPlaceholder/=parameters/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/CustomPatternPlaceholder/=parameters/Properties/=Maximal/@EntryIndexedValue">-1</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/CustomPatternPlaceholder/=parameters/Properties/=Minimal/@EntryIndexedValue">-1</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/CustomPatternPlaceholder/=parameters/Type/@EntryValue">ArgumentPlaceholder</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/CustomPatternPlaceholder/=returnType/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/CustomPatternPlaceholder/=returnType/Properties/=ExactType/@EntryIndexedValue">False</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/CustomPatternPlaceholder/=returnType/Properties/=Type/@EntryIndexedValue"></s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/CustomPatternPlaceholder/=returnType/Type/@EntryValue">TypePlaceholder</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/CustomPatternPlaceholder/=statements/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/CustomPatternPlaceholder/=statements/Properties/=Maximal/@EntryIndexedValue">-1</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/CustomPatternPlaceholder/=statements/Properties/=Minimal/@EntryIndexedValue">-1</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/CustomPatternPlaceholder/=statements/Type/@EntryValue">StatementPlaceholder</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/CustomPatternPlaceholder/=type/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/CustomPatternPlaceholder/=type/Properties/=ExactType/@EntryIndexedValue">False</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/CustomPatternPlaceholder/=type/Properties/=Type/@EntryIndexedValue"></s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/CustomPatternPlaceholder/=type/Type/@EntryValue">TypePlaceholder</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/IsReplacePattern/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/LanguageName/@EntryValue">CSHARP</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/ReplaceComment/@EntryValue">Add suffix Async</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/ReplacePattern/@EntryValue">async $type$ $method$Async($parameters$)&#xD;
+{&#xD;
+	$statements$&#xD;
+}</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/SearchPattern/@EntryValue">async $type$ $method$($parameters$)&#xD;
+{&#xD;
+	$statements$&#xD;
+}</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=445A4E62552AB04EAD3622815C21C499/Severity/@EntryValue">WARNING</s:String></wpf:ResourceDictionary>
