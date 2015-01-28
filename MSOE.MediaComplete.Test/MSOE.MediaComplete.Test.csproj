@@ -46,6 +46,9 @@
     <OutputPath>bin\x86\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NAudio">
+      <HintPath>..\packages\NAudio.1.7.1\lib\net35\NAudio.dll</HintPath>
+    </Reference>
     <Reference Include="policy.2.0.taglib-sharp">
       <HintPath>..\packages\taglib.2.1.0.0\lib\policy.2.0.taglib-sharp.dll</HintPath>
     </Reference>
@@ -73,6 +76,7 @@
     <Compile Include="PollingTest.cs" />
     <Compile Include="SortingTest.cs" />
     <Compile Include="ImporterTest.cs" />
+    <Compile Include="PlayerTest.cs" />
     <Compile Include="Util\Constants.cs" />
     <Compile Include="Util\FileHelper.cs" />
     <Compile Include="StatusBarTest.cs" />

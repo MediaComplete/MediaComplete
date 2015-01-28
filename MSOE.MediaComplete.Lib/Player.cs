@@ -8,22 +8,45 @@ namespace MSOE.MediaComplete.Lib
     public class Player
     {
         #region singleton stuff
+
+        /// <summary>
+        /// backing store for the singleton instance
+        /// </summary>
         private static Player _instance;
 
+        /// <summary>
+        /// gets the singleton instance of the Player
+        /// </summary>
         public static Player Instance
         {
             get { return _instance ?? (_instance = new Player()); }
         }
 
-        private Player()
-        {
-        }
+        /// <summary>
+        /// private constructor to prevent creation of more than one Player instance
+        /// </summary>
+        private Player() { }
         #endregion
 
+        /// <summary>
+        /// the wave object that controls the play/pause of the song
+        /// </summary>
         private WaveOut _waveOut;
+
+        /// <summary>
+        /// the reader used by the _waveOut to get bytes from the files
+        /// </summary>
         private WaveStream _reader;
+
+        /// <summary>
+        /// the state of the player
+        /// </summary>
         public PlaybackState PlaybackState { get; private set; }
 
+        /// <summary>
+        /// sets up the player to play the file
+        /// </summary>
+        /// <param name="file">file to play</param>
         public void Play(FileInfo file)
         {
             if (file == null) return;
@@ -61,6 +84,9 @@ namespace MSOE.MediaComplete.Lib
             PlaybackState = PlaybackState.Playing;
         }
 
+        /// <summary>
+        /// pauses the current playback
+        /// </summary>
         public void Pause()
         {
             if (_waveOut == null) return;
@@ -68,6 +94,9 @@ namespace MSOE.MediaComplete.Lib
             PlaybackState = PlaybackState.Paused;
         }
 
+        /// <summary>
+        /// resumes the playback of a paused song
+        /// </summary>
         public void Resume()
         {
             if (_waveOut == null) return;
@@ -75,6 +104,9 @@ namespace MSOE.MediaComplete.Lib
             PlaybackState = PlaybackState.Playing;
         }
 
+        /// <summary>
+        /// stops the current playback and unloads the player of the current song
+        /// </summary>
         public void Stop()
         {
             if (_waveOut != null)
@@ -87,7 +119,7 @@ namespace MSOE.MediaComplete.Lib
             _reader = null;
             PlaybackState = PlaybackState.Stopped;
         }
-
+        
         public void Seek()
         {
             throw new NotImplementedException("Seek is not yet implemented.");

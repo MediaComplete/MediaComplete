@@ -10,14 +10,25 @@ namespace MSOE.MediaComplete
 {
     partial class MainWindow
     {
+        /// <summary>
+        /// the player object
+        /// </summary>
         private Player _player;
 
+        /// <summary>
+        /// initializes the player
+        /// </summary>
         private void InitPlayer()
         {
             PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
             _player = Player.Instance;
         }
 
+        /// <summary>
+        /// starts, pauses, or resumes the playback appropriately based on the state of the player
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PlayPauseButton_OnClick(object sender, RoutedEventArgs e)
         {
             switch (_player.PlaybackState)
@@ -34,6 +45,9 @@ namespace MSOE.MediaComplete
             }
         }
 
+        /// <summary>
+        /// gets the selected song from the song tree and plays it with the Player
+        /// </summary>
         private void PlaySelectedSong()
         {
             if (SongTree.SelectedItems == null) return;
@@ -52,12 +66,18 @@ namespace MSOE.MediaComplete
             PlayPauseButton.SetResourceReference(StyleProperty, "PauseButton");
         }
 
+        /// <summary>
+        /// pauses the song and changes the UI button into a play button
+        /// </summary>
         private void PauseSong()
         {
             _player.Pause();
             PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
         }
 
+        /// <summary>
+        /// resumes the song and changes the UI button into a pause button
+        /// </summary>
         private void ResumePausedSong()
         {
             _player.Resume();
@@ -70,6 +90,11 @@ namespace MSOE.MediaComplete
             PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
         }
 
+        /// <summary>
+        /// plays the selected song on double click of a song
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SongTree_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             PlaySelectedSong();
@@ -85,6 +110,11 @@ namespace MSOE.MediaComplete
             //throw new System.NotImplementedException();
         }
 
+        /// <summary>
+        /// plays the selected song on the context menu "Play" option
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ContextMenu_PlayMusic_Click(object sender, RoutedEventArgs e)
         {
             PlaySelectedSong();
