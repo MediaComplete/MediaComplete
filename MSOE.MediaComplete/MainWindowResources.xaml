@@ -34,10 +34,21 @@
     <system:String x:Key="MusicIdentification-Error-NoException">Music Identification Error</system:String>
     <system:String x:Key="CorruptFile-Error">A Selected File Was Corrupted</system:String>
     <system:String x:Key="Save-Error">One or More Files Could Not Be Saved</system:String>
-    
+
     <system:String x:Key="InvalidTrackNumber">Invalid Track Number Entered</system:String>
     <system:String x:Key="UnauthorizedAccess-Error">A system protected file could not be imported</system:String>
     <system:String x:Key="FailedImport-Error">There was a failure importing</system:String>
+
+
+    <system:String x:Key="VariousSongs">Various Songs</system:String>
+    <system:String x:Key="VariousAlbums">Various Albums</system:String>
+    <system:String x:Key="VariousArtists">Various Artists</system:String>
+    <system:String x:Key="VariousGenres">Various Genres</system:String>
+    <system:String x:Key="VariousTrackNumbers">--</system:String>
+    <system:String x:Key="VariousYear">----</system:String>
+    <system:String x:Key="VariousRatings">"Various Ratings"</system:String>
+
+
 
 
     <!-- Images -->
