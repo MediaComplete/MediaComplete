@@ -139,6 +139,9 @@ namespace MSOE.MediaComplete
             SettingWrapper.SetIsSorting(CheckBoxSorting.IsChecked.GetValueOrDefault(false));
             SettingWrapper.Save();
 
+
+            if (!Directory.Exists(SettingWrapper.GetMusicDir()))
+                Directory.CreateDirectory(SettingWrapper.GetMusicDir());
             Close();
         }
 
