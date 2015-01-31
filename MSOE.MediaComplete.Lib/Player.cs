@@ -49,7 +49,7 @@ namespace MSOE.MediaComplete.Lib
         /// <param name="file">file to play</param>
         public void Play(FileInfo file)
         {
-            if (file == null) return;
+            if (file == null) return;//TODO: throw something
 
             if (_waveOut != null)
             {
@@ -69,10 +69,10 @@ namespace MSOE.MediaComplete.Lib
                         _reader = new WMAFileReader(file.FullName);
                         break;
                     default:
-                        return;
+                        return;//TODO: throw?
                 }
             }
-            catch
+            catch//TODO: Catch specifically
             {
                 throw new FileLoadException(file.FullName +
                                             " cannot be loaded, the file may be corrupt or have the wrong extension.");

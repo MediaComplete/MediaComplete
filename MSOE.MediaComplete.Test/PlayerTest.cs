@@ -47,5 +47,7 @@ namespace MSOE.MediaComplete.Test
             player.Play(new FileInfo("someWav.wav"));//TODO: put an actual file here
             Assert.AreEqual(PlaybackState.Playing, _player.PlaybackState);
         }
+
+        //TODO: adding
     }
 }

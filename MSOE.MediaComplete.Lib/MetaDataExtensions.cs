@@ -91,7 +91,7 @@ namespace MSOE.MediaComplete.Lib
             }
             try
             {
-                file.Save();
+                file.Save();//TODO: add catch for save
             }
             catch (UnauthorizedAccessException)
             {
