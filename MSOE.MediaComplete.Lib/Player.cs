@@ -2,6 +2,7 @@
 using System.IO;
 using NAudio.Wave;
 using NAudio.WindowsMediaFormat;
+using TagLib;
 
 namespace MSOE.MediaComplete.Lib
 {
@@ -69,12 +70,13 @@ namespace MSOE.MediaComplete.Lib
                         _reader = new WMAFileReader(file.FullName);
                         break;
                     default:
-                        return;//TODO: throw?
+                        throw new UnsupportedFormatException(file.Extension + " is not supported");
                 }
             }
             catch//TODO: Catch specifically
             {
-                throw new FileLoadException(file.FullName +
+                Stop();
+                throw new CorruptFileException(file.FullName +
                                             " cannot be loaded, the file may be corrupt or have the wrong extension.");
             }
 

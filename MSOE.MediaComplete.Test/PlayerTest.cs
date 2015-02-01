@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Test.Util;
 using NAudio.Wave;
+using TagLib;
 using Constants = MSOE.MediaComplete.Test.Util.Constants;
 
 namespace MSOE.MediaComplete.Test
@@ -41,6 +42,24 @@ namespace MSOE.MediaComplete.Test
             var mp3File = new FileInfo(FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidMp3).FullName);
             _player.Play(mp3File);
             Assert.AreEqual(PlaybackState.Playing, _player.PlaybackState);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(CorruptFileException))]
+        public void Play_InvalidMp3File_ThrowCorruptFileException()
+        {
+            var invalidFile = new FileInfo(FileHelper.CreateFile(_homeDir, Constants.FileTypes.Invalid).FullName);
+            _player.Play(invalidFile);
+            Assert.Fail("Play should throw a CorruptFileException");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(CorruptFileException))]
+        public void Play_NotAMusicFile_ThrowCorruptFileException()
+        {
+            var notAMusicFile = new FileInfo(FileHelper.CreateFile(_homeDir, Constants.FileTypes.NonMusic).FullName);
+            _player.Play(notAMusicFile);
+            Assert.Fail("Play should throw a CorruptFileException");
         }
 
         [TestMethod]
