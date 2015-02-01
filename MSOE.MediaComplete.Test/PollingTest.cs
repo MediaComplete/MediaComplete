@@ -14,7 +14,7 @@ namespace MSOE.MediaComplete.Test
     {
         private static FileInfo _file;
         private DirectoryInfo _dir;
-        private const string DirectoryPath = "C:\\TESTinboxForLibrary\\";
+        private const string DirectoryPath = "TESTinboxForLibrary";
 
         /// <summary>
         /// deletes the file and directory if they still exist
