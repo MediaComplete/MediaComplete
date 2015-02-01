@@ -1,8 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib;
+using MSOE.MediaComplete.Lib.Import;
 using MSOE.MediaComplete.Test.Util;
 using System.IO;
+using Constants = MSOE.MediaComplete.Test.Util.Constants;
 
 namespace MSOE.MediaComplete.Test
 {
@@ -32,11 +35,11 @@ namespace MSOE.MediaComplete.Test
         [TestMethod, Timeout(30000)]
         public void Import_FileInUse_SkipAndNotify()
         {
-            var fileInUse = FileHelper.CreateTestFile(_importDir.FullName);
+            var fileInUse = FileHelper.CreateFile(_importDir, Constants.FileTypes.ValidMp3);
             Task<ImportResults> task;
             using (fileInUse.OpenWrite())
             {
-                task = new Importer(_homeDir.FullName).ImportFiles(new[] { fileInUse.FullName }, true);
+                task = new Importer(_homeDir.FullName).ImportFiles(new List<FileInfo>{fileInUse}, true);
                 while (!task.IsCompleted)
                 {
                 }
@@ -51,12 +54,13 @@ namespace MSOE.MediaComplete.Test
         [TestMethod, Timeout(30000)]
         public void Import_FromLibrary_Exception()
         {
-            var fileInLib = FileHelper.CreateTestFile(_homeDir.FullName);
-            var task = new Importer(_homeDir.FullName).ImportFiles(new[] { fileInLib.FullName }, true);
+            var fileInLib = FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidMp3);
+            var task = new Importer(_homeDir.FullName).ImportFiles(new List<FileInfo>{ fileInLib }, true);
             while (!task.IsCompleted)
             {
             }
 
+            
             if (task.Exception == null)
                 Assert.Fail("No exception occured!");
 
@@ -68,8 +72,8 @@ namespace MSOE.MediaComplete.Test
         [TestMethod, Timeout(30000)]
         public void Import_FromAboveLibrary_Skips()
         {
-            var newFile = FileHelper.CreateTestFile(_importDir.FullName);
-            var oldFile = FileHelper.CreateMissingAlbumTestFile(_homeDir.FullName);
+            var newFile = FileHelper.CreateFile(_importDir, Constants.FileTypes.ValidMp3);
+            var oldFile = FileHelper.CreateFile(_homeDir, Constants.FileTypes.MissingAlbum);
             var task = new Importer(_homeDir.FullName).ImportDirectory(_testDir.FullName, false);
             while (!task.IsCompleted)
             {
@@ -85,8 +89,8 @@ namespace MSOE.MediaComplete.Test
         [TestMethod, Timeout(30000)]
         public void Import_FromMultiTieredDirs_GetsAll()
         {
-            var childFile = FileHelper.CreateTestFile(_importDir.FullName);
-            var parentFile = FileHelper.CreateMissingAlbumTestFile(_testDir.FullName);
+            var childFile = FileHelper.CreateFile(_importDir, Constants.FileTypes.ValidMp3);
+            var parentFile = FileHelper.CreateFile(_testDir, Constants.FileTypes.MissingAlbum);
             var task = new Importer(_homeDir.FullName).ImportDirectory(_testDir.FullName, false);
             while (!task.IsCompleted)
             {

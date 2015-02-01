@@ -8,7 +8,9 @@
     <system:String x:Key="Toolbar-SortMusicDisabled-Tooltip">Sorting is disabled in Settings Menu</system:String>
     <system:String x:Key="ContextMenu-AutoIdMusic-Header">Restore Metadata</system:String>
     <system:String x:Key="ContextMenu-PlayMusic-Header">Play</system:String>
-    <system:String x:Key="Dialog-AddFile-FileFilter">MP3 Files (*.mp3)</system:String>
+    <system:String x:Key="Dialog-AddFile-MusicFilter">All Music Files (*.mp3, *.wma)</system:String>
+    <system:String x:Key="Dialog-AddFile-Mp3Filter">MP3 Files (*.mp3)</system:String>
+    <system:String x:Key="Dialog-AddFile-WmaFilter">WMA Files (*.wma)</system:String>
     <system:String x:Key="Dialog-AddFile-Title">Select Music File(s)</system:String>
     <system:String x:Key="Dialog-SortLibrary-Confirm">{0} file(s) will be moved, {1} duplicate file(s) will be deleted, {2} file(s) cannot be sorted, do you want to perform this operation?</system:String>
     <system:String x:Key="Dialog-SortLibrary-Title">Confirm</system:String>
@@ -21,18 +23,36 @@
 
     <system:String x:Key="Import-Started">Import Started</system:String>
     <system:String x:Key="Import-Success">Import Finished</system:String>
+    <system:String x:Key="Import-InProgress">Importing....</system:String>
     <system:String x:Key="Import-Error">Import Error</system:String>
     <system:String x:Key="Sorting-Started">Sorting Started</system:String>
+    <system:String x:Key="Sorting-InProgress">Sorting....</system:String>
     <system:String x:Key="Sorting-Success">Sorting Finished</system:String>
+    <system:String x:Key="Sorting-HadError">Encountered an error while sorting files: {0}</system:String>
     <system:String x:Key="MusicIdentification-Started">Music Identification Started</system:String>
     <system:String x:Key="MusicIdentification-Success">Music Identification Finished</system:String>
-    <system:String x:Key="MusicIdentification-Error">Music Identification Error</system:String>
+    <system:String x:Key="MusicIdentification-Error">Music Identification Error: {0}</system:String>
+    <system:String x:Key="MusicIdentification-Error-NoException">Music Identification Error</system:String>
     <system:String x:Key="CorruptFile-Error">A Selected File Was Corrupted</system:String>
     <system:String x:Key="Save-Error">One or More Files Could Not Be Saved</system:String>
-    
+
     <system:String x:Key="InvalidTrackNumber">Invalid Track Number Entered</system:String>
     <system:String x:Key="UnauthorizedAccess-Error">A system protected file could not be imported</system:String>
     <system:String x:Key="FailedImport-Error">There was a failure importing</system:String>
+
+
+    <system:String x:Key="VariousSongs">Various Songs</system:String>
+    <system:String x:Key="VariousAlbums">Various Albums</system:String>
+    <system:String x:Key="VariousArtists">Various Artists</system:String>
+    <system:String x:Key="VariousGenres">Various Genres</system:String>
+    <system:String x:Key="VariousTrackNumbers">--</system:String>
+    <system:String x:Key="VariousYear">----</system:String>
+    <system:String x:Key="VariousRatings">Various Ratings</system:String>
+
+
+    <system:String x:Key="EditButton">Edit</system:String>
+    <system:String x:Key="CancelButton">Cancel</system:String>
+
 
 
     <!-- Images -->

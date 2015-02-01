@@ -1,17 +1,24 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MSOE.MediaComplete.Lib;
-using TagLib;
+﻿using System.IO;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MSOE.MediaComplete.Lib.Metadata;
+using MSOE.MediaComplete.Test.Util;
+using Constants = MSOE.MediaComplete.Test.Util.Constants;
+using File = TagLib.File;
 
 namespace MSOE.MediaComplete.Test
 {
     [TestClass]
-    public class MetaDataExtensions
+    public class MetadataExtensionsTest
     {
+        #region Files
+        private static File _blankMp3File;
+        private static File _blankWmaFile;
         private File _mp3File;
-        private static File _file;
-        private const string InvalidMp3FileName = "Resources/InvalidMp3File.mp3";
-        private const string BlankFile = "Resources/Blanked.mp3";
-        private const string ValidMp3FileName = "Resources/ValidMp3File.mp3";
+        private File _wmaFile;
+        private DirectoryInfo _homeDir;
+        #endregion
+
+        #region Attributes
         private const string ValidYear = "2012";
         private const string ValidTrack = "1";
         private const string ValidTitle = "Get Got";
@@ -26,135 +33,218 @@ namespace MSOE.MediaComplete.Test
         private const string BadArtist = "NotArtist";
         private const string BadSupportingArtist = "artist12,artist32";
         private const string BadGenre = "BadGenre";
-        private const string BadRating = "1";
+        #endregion
 
-        [TestMethod]
-        [ExpectedException(typeof(CorruptFileException))]
-        public void Mp3MetadataEditor_InvalidFileType_ShouldThrowCorruptFileException()
+        #region Initialization
+        [TestInitialize]
+        public void Initialize()
         {
-            _mp3File = File.Create(InvalidMp3FileName);
+            _homeDir = FileHelper.CreateDirectory("MetadataExtensionsTestHomeDir");
+            _blankMp3File = File.Create(FileHelper.CreateFile(_homeDir, Constants.FileTypes.BlankedMp3).FullName);
+            _blankWmaFile = File.Create(FileHelper.CreateFile(_homeDir, Constants.FileTypes.BlankedWma).FullName);
+            _mp3File = File.Create(FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidMp3).FullName);
+            _wmaFile = File.Create(FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidWma).FullName); 
         }
 
+        [TestCleanup]
+        public void TearDown()
+        {
+            Directory.Delete(_homeDir.FullName, true);
+        }
+        #endregion
+
+        #region MP3 Getters
         [TestMethod]
         public void GetYear_ValidMp3_ShouldReturnYear()
         {
-            _mp3File = File.Create(ValidMp3FileName);
-            Assert.AreEqual(ValidYear, _mp3File.GetYear());
+            Assert.AreEqual(ValidYear, _mp3File.GetAttribute(MetaAttribute.Year));
         }
         [TestMethod]
         public void GetTrack_ValidMp3_ShouldReturnTrack()
         {
-            _mp3File = File.Create(ValidMp3FileName);
-            Assert.AreEqual(ValidTrack, _mp3File.GetTrack());
+            Assert.AreEqual(ValidTrack, _mp3File.GetAttribute(MetaAttribute.TrackNumber));
         }
         [TestMethod]
         public void GetTitle_ValidMp3_ShouldReturnTitle()
         {
-            _mp3File = File.Create(ValidMp3FileName);
-            Assert.AreEqual(ValidTitle, _mp3File.GetSongTitle());
+            Assert.AreEqual(ValidTitle, _mp3File.GetAttribute(MetaAttribute.SongTitle));
         }
         [TestMethod]
         public void GetAlbum_ValidMp3_ShouldReturnAlbum()
         {
-            _mp3File = File.Create(ValidMp3FileName);
-            Assert.AreEqual(ValidAlbum, _mp3File.GetAlbum());
+            Assert.AreEqual(ValidAlbum, _mp3File.GetAttribute(MetaAttribute.Album));
         }
         [TestMethod]
         public void GetArtist_ValidMp3_ShouldReturnArtist()
         {
-            _mp3File = File.Create(ValidMp3FileName);
-            Assert.AreEqual(ValidArtist, _mp3File.GetArtist());
+            Assert.AreEqual(ValidArtist, _mp3File.GetAttribute(MetaAttribute.Artist));
         }
         [TestMethod]
         public void GetSupportingArtist_ValidMp3_ShouldReturnSuppArtist()
         {
-            _mp3File = File.Create(ValidMp3FileName);
-            Assert.AreEqual(ValidSupportingArtist, _mp3File.GetSupportingArtist());
+            Assert.AreEqual(ValidSupportingArtist, _mp3File.GetAttribute(MetaAttribute.SupportingArtist));
         }
         [TestMethod]
         public void GetGenre_ValidMp3_ShouldReturnGenre()
         {
-            _mp3File = File.Create(ValidMp3FileName);
-            Assert.AreEqual(ValidGenre, _mp3File.GetGenre());
+            Assert.AreEqual(ValidGenre, _mp3File.GetAttribute(MetaAttribute.Genre));
         }
+        #endregion
 
-
-        [ClassCleanup]
-        public static void CleanUp()
-        {
-            _file.SetYear("");
-            _file.SetAlbum("");
-            _file.SetArtist("");
-            _file.SetGenre("");
-            _file.SetRating("");
-            _file.SetSongTitle("");
-            _file.SetSupportingArtists("");
-            _file.SetTrack("");
-
-        }
-        [ClassInitialize]
-        public static void Initialize(TestContext tc)
-        {
-            _file = File.Create(BlankFile);
-
-        }
+        #region MP3 Setters
         [TestMethod]
         public void SetYear_BlankMp3_ShouldChangeYear()
         {
-            _file.SetYear(ValidYear);
-            Assert.AreNotEqual(BadYear, _file.GetYear());
-            _file.SetYear(BadYear);
-            Assert.AreEqual(BadYear, _file.GetYear());
+            _blankMp3File.SetAttribute(MetaAttribute.Year, ValidYear);
+            Assert.AreEqual(ValidYear, _blankMp3File.GetAttribute(MetaAttribute.Year));
+            _blankMp3File.SetAttribute(MetaAttribute.Year, BadYear);
+            Assert.AreEqual(BadYear, _blankMp3File.GetAttribute(MetaAttribute.Year));
         }
         [TestMethod]
         public void SetTrack_BlankMp3_ShouldChangeTrack()
         {
-            _file.SetTrack(ValidTrack);
-            Assert.AreNotEqual(BadTrack, _file.GetTrack());
-            _file.SetTrack(BadTrack);
-            Assert.AreEqual(BadTrack, _file.GetTrack());
+            _blankMp3File.SetAttribute(MetaAttribute.TrackNumber, ValidTrack);
+            Assert.AreEqual(ValidTrack, _blankMp3File.GetAttribute(MetaAttribute.TrackNumber));
+            _blankMp3File.SetAttribute(MetaAttribute.TrackNumber, BadTrack);
+            Assert.AreEqual(BadTrack, _blankMp3File.GetAttribute(MetaAttribute.TrackNumber));
         }
         [TestMethod]
         public void SetTitle_BlankMp3_ShouldChangeTitle()
         {
-            _file.SetSongTitle(ValidTitle);
-            Assert.AreNotEqual(BadTitle, _file.GetSongTitle());
-            _file.SetSongTitle(BadTitle);
-            Assert.AreEqual(BadTitle, _file.GetSongTitle());
+            _blankMp3File.SetAttribute(MetaAttribute.SongTitle, ValidTitle);
+            Assert.AreEqual(ValidTitle, _blankMp3File.GetAttribute(MetaAttribute.SongTitle));
+            _blankMp3File.SetAttribute(MetaAttribute.SongTitle, BadTitle);
+            Assert.AreEqual(BadTitle, _blankMp3File.GetAttribute(MetaAttribute.SongTitle));
         }
         [TestMethod]
         public void SetAlbum_BlankMp3_ShouldChangeAlbum()
         {
-            _file.SetAlbum(ValidAlbum);
-            Assert.AreNotEqual(BadAlbum, _file.GetAlbum());
-            _file.SetAlbum(BadAlbum);
-            Assert.AreEqual(BadAlbum, _file.GetAlbum());
+            _blankMp3File.SetAttribute(MetaAttribute.Album, ValidAlbum);
+            Assert.AreEqual(ValidAlbum, _blankMp3File.GetAttribute(MetaAttribute.Album));
+            _blankMp3File.SetAttribute(MetaAttribute.Album, BadAlbum);
+            Assert.AreEqual(BadAlbum, _blankMp3File.GetAttribute(MetaAttribute.Album));
         }
         [TestMethod]
         public void SetArtist_BlankMp3_ShouldChangeArtist()
         {
-            _file.SetArtist(ValidArtist);
-            Assert.AreNotEqual(BadArtist, _file.GetArtist());
-            _file.SetArtist(BadArtist);
-            Assert.AreEqual(BadArtist, _file.GetArtist());
+            _blankMp3File.SetAttribute(MetaAttribute.Artist, ValidArtist);
+            Assert.AreEqual(ValidArtist, _blankMp3File.GetAttribute(MetaAttribute.Artist));
+            _blankMp3File.SetAttribute(MetaAttribute.Artist, BadArtist);
+            Assert.AreEqual(BadArtist, _blankMp3File.GetAttribute(MetaAttribute.Artist));
         }
         [TestMethod]
         public void SetSupportingArtist_BlankMp3_ShouldChangeSuppArtist()
         {
-            _file.SetSupportingArtists(ValidSupportingArtist);
-            Assert.AreNotEqual(BadSupportingArtist, _file.GetSupportingArtist());
-            _file.SetSupportingArtists(BadSupportingArtist);
-            Assert.AreEqual(BadSupportingArtist, _file.GetSupportingArtist());
+            _blankMp3File.SetAttribute(MetaAttribute.SupportingArtist, ValidSupportingArtist);
+            Assert.AreEqual(ValidSupportingArtist, _blankMp3File.GetAttribute(MetaAttribute.SupportingArtist));
+            _blankMp3File.SetAttribute(MetaAttribute.SupportingArtist, BadSupportingArtist);
+            Assert.AreEqual(BadSupportingArtist, _blankMp3File.GetAttribute(MetaAttribute.SupportingArtist));
         }
         [TestMethod]
         public void SetGenre_BlankMp3_ShouldChangeGenre()
         {
-            _file.SetGenre(ValidGenre);
-            Assert.AreNotEqual(BadGenre, _file.GetGenre());
-            _file.SetGenre(BadGenre);
-            Assert.AreEqual(BadGenre, _file.GetGenre());
+            _blankMp3File.SetAttribute(MetaAttribute.Genre, ValidGenre);
+            Assert.AreEqual(ValidGenre, _blankMp3File.GetAttribute(MetaAttribute.Genre));
+            _blankMp3File.SetAttribute(MetaAttribute.Genre, BadGenre);
+            Assert.AreEqual(BadGenre, _blankMp3File.GetAttribute(MetaAttribute.Genre));
         }
-    }
-        
+        #endregion
 
+        #region WMA Getters
+        [TestMethod]
+        public void GetYear_ValidWma_ShouldReturnYear()
+        {
+            Assert.AreEqual(ValidYear, _wmaFile.GetAttribute(MetaAttribute.Year));
+        }
+        [TestMethod]
+        public void GetTrack_ValidWma_ShouldReturnTrack()
+        {
+            Assert.AreEqual(ValidTrack, _wmaFile.GetAttribute(MetaAttribute.TrackNumber));
+        }
+        [TestMethod]
+        public void GetTitle_ValidWma_ShouldReturnTitle()
+        {
+            Assert.AreEqual(ValidTitle, _wmaFile.GetAttribute(MetaAttribute.SongTitle));
+        }
+        [TestMethod]
+        public void GetAlbum_ValidWma_ShouldReturnAlbum()
+        {
+            Assert.AreEqual(ValidAlbum, _wmaFile.GetAttribute(MetaAttribute.Album));
+        }
+        [TestMethod]
+        public void GetArtist_ValidWma_ShouldReturnArtist()
+        {
+            Assert.AreEqual(ValidArtist, _wmaFile.GetAttribute(MetaAttribute.Artist));
+        }
+        [TestMethod]
+        public void GetSupportingArtist_ValidWma_ShouldReturnSuppArtist()
+        {
+            Assert.AreEqual(ValidSupportingArtist, _wmaFile.GetAttribute(MetaAttribute.SupportingArtist));
+        }
+        [TestMethod]
+        public void GetGenre_ValidWma_ShouldReturnGenre()
+        {
+            Assert.AreEqual(ValidGenre, _wmaFile.GetAttribute(MetaAttribute.Genre));
+        }
+        #endregion
+
+        #region WMA Setters
+        [TestMethod]
+        public void SetYear_BlankWma_ShouldChangeYear()
+        {
+            _blankWmaFile.SetAttribute(MetaAttribute.Year, ValidYear);
+            Assert.AreEqual(ValidYear, _blankWmaFile.GetAttribute(MetaAttribute.Year));
+            _blankWmaFile.SetAttribute(MetaAttribute.Year, BadYear);
+            Assert.AreEqual(BadYear, _blankWmaFile.GetAttribute(MetaAttribute.Year));
+        }
+        [TestMethod]
+        public void SetTrack_BlankWma_ShouldChangeTrack()
+        {
+            _blankWmaFile.SetAttribute(MetaAttribute.TrackNumber, ValidTrack);
+            Assert.AreEqual(ValidTrack, _blankWmaFile.GetAttribute(MetaAttribute.TrackNumber));
+            _blankWmaFile.SetAttribute(MetaAttribute.TrackNumber, BadTrack);
+            Assert.AreEqual(BadTrack, _blankWmaFile.GetAttribute(MetaAttribute.TrackNumber));
+        }
+        [TestMethod]
+        public void SetTitle_BlankWma_ShouldChangeTitle()
+        {
+            _blankWmaFile.SetAttribute(MetaAttribute.SongTitle, ValidTitle);
+            Assert.AreEqual(ValidTitle, _blankWmaFile.GetAttribute(MetaAttribute.SongTitle));
+            _blankWmaFile.SetAttribute(MetaAttribute.SongTitle, BadTitle);
+            Assert.AreEqual(BadTitle, _blankWmaFile.GetAttribute(MetaAttribute.SongTitle));
+        }
+        [TestMethod]
+        public void SetAlbum_BlankWma_ShouldChangeAlbum()
+        {
+            _blankWmaFile.SetAttribute(MetaAttribute.Album, ValidAlbum);
+            Assert.AreEqual(ValidAlbum, _blankWmaFile.GetAttribute(MetaAttribute.Album));
+            _blankWmaFile.SetAttribute(MetaAttribute.Album, BadAlbum);
+            Assert.AreEqual(BadAlbum, _blankWmaFile.GetAttribute(MetaAttribute.Album));
+        }
+        [TestMethod]
+        public void SetArtist_BlankWma_ShouldChangeArtist()
+        {
+            _blankWmaFile.SetAttribute(MetaAttribute.Artist, ValidArtist);
+            Assert.AreEqual(ValidArtist, _blankWmaFile.GetAttribute(MetaAttribute.Artist));
+            _blankWmaFile.SetAttribute(MetaAttribute.Artist, BadArtist);
+            Assert.AreEqual(BadArtist, _blankWmaFile.GetAttribute(MetaAttribute.Artist));
+        }
+        [TestMethod]
+        public void SetSupportingArtist_BlankWma_ShouldChangeSuppArtist()
+        {
+            _blankWmaFile.SetAttribute(MetaAttribute.SupportingArtist, ValidSupportingArtist);
+            Assert.AreEqual(ValidSupportingArtist, _blankWmaFile.GetAttribute(MetaAttribute.SupportingArtist));
+            _blankWmaFile.SetAttribute(MetaAttribute.SupportingArtist, BadSupportingArtist);
+            Assert.AreEqual(BadSupportingArtist, _blankWmaFile.GetAttribute(MetaAttribute.SupportingArtist));
+        }
+        [TestMethod]
+        public void SetGenre_BlankWma_ShouldChangeGenre()
+        {
+            _blankWmaFile.SetAttribute(MetaAttribute.Genre, ValidGenre);
+            Assert.AreEqual(ValidGenre, _blankWmaFile.GetAttribute(MetaAttribute.Genre));
+            _blankWmaFile.SetAttribute(MetaAttribute.Genre, BadGenre);
+            Assert.AreEqual(BadGenre, _blankWmaFile.GetAttribute(MetaAttribute.Genre));
+        }
+        #endregion
+    }
 }

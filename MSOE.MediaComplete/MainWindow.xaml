@@ -5,7 +5,7 @@
         xmlns:customControls="clr-namespace:MSOE.MediaComplete.CustomControls"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="MSOE.MediaComplete.MainWindow"
         Title="Media Complete" MinHeight="425" Width="695.731" MinWidth="613"
-        AutomationProperties.Name="Tree" d:DesignHeight="502.905">
+        AutomationProperties.Name="Tree" d:DesignHeight="502.905" Icon="Resources/logo_small.ico">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

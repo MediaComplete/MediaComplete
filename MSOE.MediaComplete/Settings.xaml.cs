@@ -15,7 +15,7 @@ namespace MSOE.MediaComplete
     public partial class Settings
     {
 
-        private readonly Dictionary<LayoutType, string> _layoutsDict = new Dictionary<LayoutType, string>()
+        private readonly Dictionary<LayoutType, string> _layoutsDict = new Dictionary<LayoutType, string>
         {
             {LayoutType.Dark, "layout\\Dark.xaml"},
             {LayoutType.Pink, "layout\\Pink.xaml"}
@@ -139,6 +139,9 @@ namespace MSOE.MediaComplete
             SettingWrapper.SetIsSorting(CheckBoxSorting.IsChecked.GetValueOrDefault(false));
             SettingWrapper.Save();
 
+
+            if (!Directory.Exists(SettingWrapper.GetMusicDir()))
+                Directory.CreateDirectory(SettingWrapper.GetMusicDir());
             Close();
         }
 
