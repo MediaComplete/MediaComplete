@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Test.Util;
@@ -12,11 +13,12 @@ namespace MSOE.MediaComplete.Test
     public class PlayerTest
     {
         private readonly Player _player = Player.Instance;
-        private readonly DirectoryInfo _homeDir = FileHelper.CreateDirectory("PlayerTestHomeDir");
+        private DirectoryInfo _homeDir;
 
         [TestInitialize]
         public void Before()
         {
+            _homeDir = FileHelper.CreateDirectory("PlayerTestHomeDir");
             _player.Stop();
         }
 
@@ -28,16 +30,17 @@ namespace MSOE.MediaComplete.Test
         }
 
         [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void Play_NullFileInfo_ReturnWithoutPlaying()
         {
             _player.Play(null);
-            Assert.AreEqual(PlaybackState.Stopped, _player.PlaybackState);
+            Assert.Fail("Play should have thrown an ArgumentNullException");
         }
 
         [TestMethod]
         public void Play_Mp3File_ReturnAndContinuePlaying()
         {
-            var mp3File = new FileInfo(FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidMp3).FullName);
+            var mp3File = FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidMp3);
             _player.Play(mp3File);
             Assert.AreEqual(PlaybackState.Playing, _player.PlaybackState);
         }
@@ -46,7 +49,7 @@ namespace MSOE.MediaComplete.Test
         [ExpectedException(typeof(CorruptFileException))]
         public void Play_InvalidMp3File_ThrowCorruptFileException()
         {
-            var invalidFile = new FileInfo(FileHelper.CreateFile(_homeDir, Constants.FileTypes.Invalid).FullName);
+            var invalidFile = FileHelper.CreateFile(_homeDir, Constants.FileTypes.Invalid);
             _player.Play(invalidFile);
             Assert.Fail("Play should throw a CorruptFileException");
         }
@@ -55,7 +58,7 @@ namespace MSOE.MediaComplete.Test
         [ExpectedException(typeof(CorruptFileException))]
         public void Play_NotAMusicFile_ThrowCorruptFileException()
         {
-            var notAMusicFile = new FileInfo(FileHelper.CreateFile(_homeDir, Constants.FileTypes.NonMusic).FullName);
+            var notAMusicFile = FileHelper.CreateFile(_homeDir, Constants.FileTypes.NonMusic);
             _player.Play(notAMusicFile);
             Assert.Fail("Play should throw a CorruptFileException");
         }
@@ -63,7 +66,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void Play_WmaFile_ReturnAndContinuePlaying()
         {
-            var wmaFile = new FileInfo(FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidWma).FullName);
+            var wmaFile = FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidWma);
             _player.Play(wmaFile);
             Assert.AreEqual(PlaybackState.Playing, _player.PlaybackState);
         }
@@ -71,7 +74,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void Play_WavFile_ReturnAndContinuePlaying()
         {
-            var wavFile = new FileInfo(FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidWav).FullName);
+            var wavFile = FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidWav);
             _player.Play(wavFile);
             Assert.AreEqual(PlaybackState.Playing, _player.PlaybackState);
         }
@@ -79,7 +82,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void Player_MultipleStateChanges()
         {
-            var mp3File = new FileInfo(FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidMp3).FullName);
+            var mp3File = FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidMp3);
             _player.Play(mp3File);
             Assert.AreEqual(PlaybackState.Playing, _player.PlaybackState);
             _player.Pause();

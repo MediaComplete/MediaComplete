@@ -50,34 +50,35 @@ namespace MSOE.MediaComplete.Lib
         /// <param name="file">file to play</param>
         public void Play(FileInfo file)
         {
-            if (file == null) return;//TODO: throw something
+            if (file == null) throw new ArgumentNullException("file");
 
-            if (_waveOut != null)
-            {
-                Stop();
-            }
+            Stop();
+
             try
             {
                 switch (file.Extension.ToLower())
                 {
-                    case ".mp3":
+                    case Constants.Mp3FileExtension:
                         _reader = new Mp3FileReader(file.FullName);
                         break;
-                    case ".wav":
+                    case Constants.WavFileExtension:
                         _reader = new WaveFileReader(file.FullName);
                         break;
-                    case ".wma":
+                    case Constants.WmaFileExtension:
                         _reader = new WMAFileReader(file.FullName);
                         break;
                     default:
                         throw new UnsupportedFormatException(file.Extension + " is not supported");
                 }
             }
-            catch(Exception e)//TODO: Catch specifically
+            catch (Exception ex)
             {
-                Stop();
-                throw new CorruptFileException(file.FullName +
-                                            " cannot be loaded, the file may be corrupt or have the wrong extension.", e);
+                if (ex is NullReferenceException || ex is UnsupportedFormatException)
+                {
+                    throw new CorruptFileException(file.FullName +
+                        " cannot be loaded, the file may be corrupt or have the wrong extension.", ex);
+                }
+                throw;
             }
 
             _waveOut = new WaveOut();
@@ -124,7 +125,7 @@ namespace MSOE.MediaComplete.Lib
             }
             PlaybackState = PlaybackState.Stopped;
         }
-        
+
         public void Seek()
         {
             throw new NotImplementedException("Seek is not yet implemented.");

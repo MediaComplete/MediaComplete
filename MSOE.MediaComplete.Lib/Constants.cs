@@ -18,9 +18,29 @@ namespace MSOE.MediaComplete.Lib
 	    public const string PathSeparator = "\\";
 
         /// <summary>
+        /// extension for mp3 files
+        /// </summary>
+        public const string Mp3FileExtension = ".mp3";
+
+        /// <summary>
+        /// extension for wma files
+        /// </summary>
+        public const string WmaFileExtension = ".wma";
+
+        /// <summary>
+        /// extension for wav files
+        /// </summary>
+        public const string WavFileExtension = ".wav";
+
+        /// <summary>
         /// User to filter music files
         /// </summary>
-        public static readonly List<string> MusicFileExtensions = new List<string> { ".mp3", ".wma" };
+        public static readonly List<string> MusicFileExtensions = new List<string>
+        {
+            Mp3FileExtension, 
+            WmaFileExtension, 
+            //WavFileExtension TODO: for when supporting wav files
+        };
 
         /// <summary>
         /// The file dialog's wild card for extensions
