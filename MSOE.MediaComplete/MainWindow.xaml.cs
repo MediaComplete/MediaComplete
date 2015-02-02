@@ -63,7 +63,7 @@ namespace MSOE.MediaComplete
 
         private void InitEvents()
         {
-            Polling.InboxFilesDetected += ImportFromInbox;
+            Polling.InboxFilesDetected += ImportFromInboxAsync;
             SettingWrapper.RaiseSettingEvent += HandleSettingEvent;
             // ReSharper disable once ObjectCreationAsStatement
             new Sorter(null);
@@ -98,7 +98,7 @@ namespace MSOE.MediaComplete
             Application.Current.Shutdown();
         }
 
-        private async void ImportFromInbox(IEnumerable<FileInfo> files)
+        private async void ImportFromInboxAsync(IEnumerable<FileInfo> files)
         {
             if (SettingWrapper.GetShowInputDialog())
             {
@@ -106,7 +106,7 @@ namespace MSOE.MediaComplete
             }
             else
             {
-                await new Importer(SettingWrapper.GetHomeDir()).ImportFiles(files, false);
+                await new Importer(SettingWrapper.GetHomeDir()).ImportFilesAsync(files, false);
             }
         }
         
@@ -137,7 +137,7 @@ namespace MSOE.MediaComplete
             ImportResults results;
             try
             {
-                results = await new Importer(SettingWrapper.GetHomeDir()).ImportFiles(fileDialog.FileNames.Select(p => new FileInfo(p)).ToList(), true);
+                results = await new Importer(SettingWrapper.GetHomeDir()).ImportFilesAsync(fileDialog.FileNames.Select(p => new FileInfo(p)).ToList(), true);
             }
             catch (InvalidImportException)
             {
@@ -164,7 +164,7 @@ namespace MSOE.MediaComplete
             if (folderDialog.ShowDialog() != WinForms.DialogResult.OK) return;
             var selectedDir = folderDialog.SelectedPath;
 
-            var results = await new Importer(SettingWrapper.GetHomeDir()).ImportDirectory(selectedDir, true);
+            var results = await new Importer(SettingWrapper.GetHomeDir()).ImportDirectoryAsync(selectedDir, true);
             if (results.FailCount > 0)
             {
                 MessageBox.Show(this,
@@ -383,7 +383,7 @@ namespace MSOE.MediaComplete
             };
 
             var sorter = new Sorter(settings);
-            await sorter.CalculateActions();    
+            await sorter.CalculateActionsAsync();    
 
             if (sorter.Actions.Count == 0) // Nothing to do! Notify and return.
             {

@@ -50,7 +50,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <summary>
         /// Private function to determine what movements need to occur to put the library in order
         /// </summary>
-        public async Sys.Task CalculateActions()
+        public async Sys.Task CalculateActionsAsync()
         {
             await Sys.Task.Run(() =>
             {
