@@ -73,11 +73,11 @@ namespace MSOE.MediaComplete.Lib
                         throw new UnsupportedFormatException(file.Extension + " is not supported");
                 }
             }
-            catch//TODO: Catch specifically
+            catch(Exception e)//TODO: Catch specifically
             {
                 Stop();
                 throw new CorruptFileException(file.FullName +
-                                            " cannot be loaded, the file may be corrupt or have the wrong extension.");
+                                            " cannot be loaded, the file may be corrupt or have the wrong extension.", e);
             }
 
             _waveOut = new WaveOut();
@@ -115,10 +115,13 @@ namespace MSOE.MediaComplete.Lib
             {
                 _waveOut.Stop();
                 _waveOut.Dispose();
-                _reader.Dispose();
                 _waveOut = null;
             }
-            _reader = null;
+            if (_reader != null)
+            {
+                _reader.Dispose();
+                _reader = null;
+            }
             PlaybackState = PlaybackState.Stopped;
         }
         

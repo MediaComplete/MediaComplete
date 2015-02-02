@@ -11,14 +11,12 @@ namespace MSOE.MediaComplete.Test
     [TestClass]
     public class PlayerTest
     {
-        private Player _player;
-        private DirectoryInfo _homeDir;
+        private readonly Player _player = Player.Instance;
+        private readonly DirectoryInfo _homeDir = FileHelper.CreateDirectory("PlayerTestHomeDir");
 
         [TestInitialize]
         public void Before()
         {
-            _player = Player.Instance;
-            _homeDir = FileHelper.CreateDirectory("PlayerTestHomeDir");
             _player.Stop();
         }
 
@@ -44,7 +42,7 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(PlaybackState.Playing, _player.PlaybackState);
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]
         [ExpectedException(typeof(CorruptFileException))]
         public void Play_InvalidMp3File_ThrowCorruptFileException()
         {
