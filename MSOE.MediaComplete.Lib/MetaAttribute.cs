@@ -31,6 +31,8 @@ namespace MSOE.MediaComplete.Lib
         [Description("Genre")]
         Genre,
         [Description("Rating")]
-        Rating
+        Rating,
+        [Description("")]
+        NoSort
     }
 }

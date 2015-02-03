@@ -10,8 +10,6 @@ using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Sorting;
 using Button = System.Windows.Controls.Button;
 using ComboBox = System.Windows.Controls.ComboBox;
-using Control = System.Windows.Controls.Control;
-using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using Orientation = System.Windows.Controls.Orientation;
 
 namespace MSOE.MediaComplete
@@ -23,8 +21,8 @@ namespace MSOE.MediaComplete
     public partial class Settings
     {
         private readonly List<ComboBox> _comboBoxes;
-        private List<MetaAttribute> _sortOrderList;
-        private List<bool> _showComboBox; 
+        private List<string> _sortOrderList;
+        private readonly List<bool> _showComboBox; 
 
         private readonly Dictionary<LayoutType, string> _layoutsDict = new Dictionary<LayoutType, string>
         {
@@ -53,7 +51,7 @@ namespace MSOE.MediaComplete
                 DarkCheck.IsChecked = true;
             }
             _comboBoxes = new List<ComboBox>();
-            _sortOrderList= SettingWrapper.GetSortOrder();
+            _sortOrderList= SortHelper.ConvertToString(SettingWrapper.GetSortOrder());
             _showComboBox = new List<bool>();
             LoadDictionary();
             LoadSortListBox();
@@ -71,6 +69,7 @@ namespace MSOE.MediaComplete
         private void LoadSortListBox()
         {
             var withValue = -1;
+            var isFirst = _showComboBox.Count == 1;
             for (var i = 0; i < _showComboBox.Count; i++)
             {
                 var showValue = _showComboBox[i];
@@ -82,16 +81,16 @@ namespace MSOE.MediaComplete
                 var folder = new Image
                 {
                     Source = (ImageSource)Resources["Settings-Folder-Icon"],
-                    Width = 14,
-                    Height = 14,
+                    Width = 20,
+                    Height = 20,
                     Margin = new Thickness(16 * (i + 1), 8, 0, 8)
                 };
                 var comboBox = new ComboBox
                 {
                     Width = 100,
                     Height = 24,
-                    ItemsSource = showValue ? SortHelper.GetAllValidAttributes(_sortOrderList, _sortOrderList[withValue]) 
-                                                : SortHelper.GetAllUnusedMetaAttributes(_sortOrderList),
+                    ItemsSource = showValue ? SortHelper.GetAllValidAttributes(_sortOrderList, _sortOrderList[withValue], isFirst) 
+                                                : SortHelper.GetAllUnusedMetaAttributes(_sortOrderList, isFirst),
                     SelectedValue = showValue ? (object) _sortOrderList[withValue] : -1,
                     Tag = i
                 };
@@ -122,7 +121,7 @@ namespace MSOE.MediaComplete
                 stackPanel.Children.Add(folder);
                 stackPanel.Children.Add(comboBox);
 
-                if (i != 0)
+                if (!isFirst)
                 {
                     stackPanel.Children.Add(minus);
                 }
@@ -145,7 +144,7 @@ namespace MSOE.MediaComplete
             SortConfig.Children.Clear();
             LoadSortListBox();
 
-            _comboBoxes[tag + 1].ItemsSource = SortHelper.GetAllUnusedMetaAttributes(_sortOrderList);
+            _comboBoxes[tag + 1].ItemsSource = SortHelper.GetAllUnusedMetaAttributes(_sortOrderList, false);
             _comboBoxes[tag + 1].SelectedValue = -1;
         }
 
@@ -157,7 +156,7 @@ namespace MSOE.MediaComplete
 
             if (_showComboBox[tag])
             {
-                _sortOrderList.Remove((MetaAttribute)_comboBoxes[tag].SelectedValue);
+                _sortOrderList.Remove((string)_comboBoxes[tag].SelectedValue);
             }
             _showComboBox.RemoveAt(tag);
             _comboBoxes.Clear();
@@ -175,19 +174,18 @@ namespace MSOE.MediaComplete
             var tag = (int)comboBox.Tag;
             _showComboBox[tag] = true;
 
-            var addItem = e.AddedItems[0] as MetaAttribute? ?? MetaAttribute.Album;
+            var addItem = (string)e.AddedItems[0];
             if (e.RemovedItems.Count > 0)
             {
-
-                var removedItem = e.RemovedItems[0] as MetaAttribute? ?? MetaAttribute.Album;
+                var removedItem = (string)e.RemovedItems[0];
                 _sortOrderList.Remove(removedItem);
             }
-
-            _sortOrderList.Insert(tag, addItem);
+            var insertInt = _sortOrderList.Count <= tag ? _sortOrderList.Count : tag;
+            _sortOrderList.Insert(insertInt , addItem);
 
             foreach (var box in _comboBoxes)
             {
-                box.ItemsSource = box.SelectedValue == null ? SortHelper.GetAllUnusedMetaAttributes(_sortOrderList) : SortHelper.GetAllValidAttributes(_sortOrderList, (MetaAttribute)box.SelectedValue);
+                box.ItemsSource = box.SelectedValue == null ? SortHelper.GetAllUnusedMetaAttributes(_sortOrderList, false) : SortHelper.GetAllValidAttributes(_sortOrderList, (string)box.SelectedValue, false);
             }
         }
 
@@ -287,7 +285,7 @@ namespace MSOE.MediaComplete
             SettingWrapper.SetShowInputDialog(CheckboxShowImportDialog.IsChecked.GetValueOrDefault(false));
             SettingWrapper.SetIsSorting(CheckBoxSorting.IsChecked.GetValueOrDefault(false));
 
-            SettingWrapper.SetSortOrder(_sortOrderList);
+            SettingWrapper.SetSortOrder(SortHelper.ConvertToMetaAttribute(_sortOrderList));
             SettingWrapper.Save();
 
             Close();
@@ -303,7 +301,7 @@ namespace MSOE.MediaComplete
 
         private void ResetDefault(object sender, RoutedEventArgs e)
         {
-            _sortOrderList = SortHelper.GetDefault();
+            _sortOrderList = SortHelper.GetDefaultStringValues();
             _comboBoxes.Clear();
             LoadDictionary();
             SortConfig.Children.Clear();
