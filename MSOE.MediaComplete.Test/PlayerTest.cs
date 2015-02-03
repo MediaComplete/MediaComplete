@@ -45,7 +45,7 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(PlaybackState.Playing, _player.PlaybackState);
         }
 
-        [TestMethod, Ignore]
+        [TestMethod, Ignore]//ignored because causes issues with other tests, due to bug in NAudio MC-107
         [ExpectedException(typeof(CorruptFileException))]
         public void Play_InvalidMp3File_ThrowCorruptFileException()
         {
