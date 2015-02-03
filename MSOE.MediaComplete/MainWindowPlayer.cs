@@ -102,11 +102,13 @@ namespace MSOE.MediaComplete
 
         private void PreviousButton_OnClick(object sender, RoutedEventArgs e)
         {
+            //TODO: MC-34 or MC-35
             //throw new System.NotImplementedException();
         }
 
         private void SkipButton_OnClick(object sender, RoutedEventArgs e)
         {
+            //TODO: MC-34 or MC-35
             //throw new System.NotImplementedException();
         }
 

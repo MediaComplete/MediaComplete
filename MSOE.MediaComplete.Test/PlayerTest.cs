@@ -19,7 +19,6 @@ namespace MSOE.MediaComplete.Test
         public void Before()
         {
             _homeDir = FileHelper.CreateDirectory("PlayerTestHomeDir");
-            _player.Stop();
         }
 
         [TestCleanup]
