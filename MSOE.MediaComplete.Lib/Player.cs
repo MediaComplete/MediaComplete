@@ -73,7 +73,7 @@ namespace MSOE.MediaComplete.Lib
             }
             catch (Exception ex)
             {
-                if (ex is NullReferenceException || ex is UnsupportedFormatException)
+                if (ex is NullReferenceException || ex is UnsupportedFormatException || ex is CorruptFileException)
                 {
                     throw new CorruptFileException(file.FullName +
                         " cannot be loaded, the file may be corrupt or have the wrong extension.", ex);
@@ -128,6 +128,7 @@ namespace MSOE.MediaComplete.Lib
 
         public void Seek()
         {
+            //TODO: MC-41 - Seeking functionality
             throw new NotImplementedException("Seek is not yet implemented.");
             //_reader.Seek(10000000, SeekOrigin.Current);//seeks ahead 10000000 bytes in the file?
         }

@@ -84,7 +84,7 @@ namespace MSOE.MediaComplete
             PlayPauseButton.SetResourceReference(StyleProperty, "PauseButton");
         }
 
-        private void StopButton_OnClick()
+        private void StopButton_OnClick(object sender, RoutedEventArgs e)
         {
             _player.Stop();
             PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
