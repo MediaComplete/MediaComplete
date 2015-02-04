@@ -69,7 +69,7 @@ namespace MSOE.MediaComplete
 
         private void InitEvents()
         {
-            Polling.InboxFilesDetected += ImportFromInbox;
+            Polling.InboxFilesDetected += ImportFromInboxAsync;
             SettingWrapper.RaiseSettingEvent += HandleSettingEvent;
             // ReSharper disable once ObjectCreationAsStatement
             new Sorter(null);
@@ -104,7 +104,7 @@ namespace MSOE.MediaComplete
             Application.Current.Shutdown();
         }
 
-        private async void ImportFromInbox(IEnumerable<FileInfo> files)
+        private async void ImportFromInboxAsync(IEnumerable<FileInfo> files)
         {
             if (SettingWrapper.GetShowInputDialog())
             {
@@ -112,7 +112,7 @@ namespace MSOE.MediaComplete
             }
             else
             {
-                await new Importer(SettingWrapper.GetMusicDir()).ImportFiles(files, false);
+                await new Importer(SettingWrapper.GetMusicDir()).ImportFilesAsync(files, false);
             }
         }
         
@@ -143,7 +143,7 @@ namespace MSOE.MediaComplete
             ImportResults results;
             try
             {
-                results = await new Importer(SettingWrapper.GetMusicDir()).ImportFiles(fileDialog.FileNames.Select(p => new FileInfo(p)).ToList(), true);
+                results = await new Importer(SettingWrapper.GetMusicDir()).ImportFilesAsync(fileDialog.FileNames.Select(p => new FileInfo(p)).ToList(), true);
             }
             catch (InvalidImportException)
             {
@@ -170,7 +170,7 @@ namespace MSOE.MediaComplete
             if (folderDialog.ShowDialog() != WinForms.DialogResult.OK) return;
             var selectedDir = folderDialog.SelectedPath;
 
-            var results = await new Importer(SettingWrapper.GetMusicDir()).ImportDirectory(selectedDir, true);
+            var results = await new Importer(SettingWrapper.GetMusicDir()).ImportDirectoryAsync(selectedDir, true);
             if (results.FailCount > 0)
             {
                 MessageBox.Show(this,
@@ -255,9 +255,8 @@ namespace MSOE.MediaComplete
                 PopulateSongTree(dir, songTree, dirItem, false);
             }
 
-            foreach (var file in TreeViewBackend.GetFiles(dirInfo).GetMusicFiles())
+            foreach (var x in TreeViewBackend.GetFiles(dirInfo).GetMusicFiles().Select(file => new SongTreeViewItem { Header = file.Name, ParentItem = dirItem }))
             {
-                var x = new SongTreeViewItem { Header = file.Name, ParentItem = dirItem };
                 songTree.Items.Add(x);
             }
         }
@@ -394,7 +393,7 @@ namespace MSOE.MediaComplete
             };
 
             var sorter = new Sorter(settings);
-            await sorter.CalculateActions();    
+            await sorter.CalculateActionsAsync();    
 
             if (sorter.Actions.Count == 0) // Nothing to do! Notify and return.
             {
@@ -416,10 +415,9 @@ namespace MSOE.MediaComplete
         }
         private void TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!_changedBoxes.Contains((TextBox)sender) && !SongTitle.IsReadOnly ) { 
-                _changedBoxes.Add((TextBox)sender);
-                StatusBarHandler.Instance.ChangeStatusBarMessage("", StatusBarHandler.StatusIcon.None);
-            }
+            if (_changedBoxes.Contains((TextBox) sender) || SongTitle.IsReadOnly) return;
+            _changedBoxes.Add((TextBox)sender);
+            StatusBarHandler.Instance.ChangeStatusBarMessage("", StatusBarHandler.StatusIcon.None);
         }
     }
 }

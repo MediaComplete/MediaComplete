@@ -39,7 +39,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
 
                 if (Sorter.Actions.Count == 0)
                 {
-                    Sys.Task.Run(() => Sorter.CalculateActions()).Wait();
+                    Sys.Task.Run(() => Sorter.CalculateActionsAsync()).Wait();
                 }
 
                 var counter = 0;
