@@ -65,6 +65,7 @@ namespace MSOE.MediaComplete
 
             //Do the move
             var results = await new Importer(SettingWrapper.GetHomeDir()).ImportFilesAsync(_files.Select(f => new FileInfo(f.FullName)).ToList(), false);
+
             if (results.FailCount > 0)
             {
                 try
@@ -94,6 +95,7 @@ namespace MSOE.MediaComplete
             SettingWrapper.SetIsPolling(!StopShowingCheckBox.IsChecked.GetValueOrDefault((false)));
             Polling.Instance.Reset();
             DialogResult = false;
+            SettingWrapper.Save();
         }
     }
 }
