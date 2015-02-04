@@ -32,7 +32,7 @@
 
                 </DockPanel>
             </TabItem>
-            <TabItem Header="Sorting Options">
+            <TabItem Header="Sorting Options" Height="23" VerticalAlignment="Top">
                 <DockPanel LastChildFill="True">
                     <StackPanel DockPanel.Dock="Top">
                         <StackPanel Orientation="Horizontal">

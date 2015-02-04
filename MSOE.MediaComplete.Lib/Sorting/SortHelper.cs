@@ -47,7 +47,10 @@ namespace MSOE.MediaComplete.Lib.Sorting
         public static List<string> GetAllValidAttributes(List<string> valueList, string metaAttribute, bool shouldShowEmpty)
         {
             var stringList = GetAllUnusedMetaAttributes(valueList, shouldShowEmpty);
-            stringList.Add(metaAttribute);
+            if (metaAttribute != MetaAttribute.NoSort.ToString())
+            {
+                stringList.Add(metaAttribute);
+            }
             return stringList.OrderBy(x => x).ToList();
         }
 

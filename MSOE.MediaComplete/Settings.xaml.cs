@@ -100,7 +100,8 @@ namespace MSOE.MediaComplete
                     {
                         Source = (ImageSource) Resources["Settings-MinusConfig-Icon"]
                     },
-                    Tag = i
+                    Tag = i,
+                    Margin = new Thickness(0, 0, 2, 0)
                 };
                 minus.SetResourceReference(StyleProperty, "Plus/Minus"); 
                 var plus = new Button
