@@ -35,7 +35,9 @@ namespace MSOE.MediaComplete
             _settings = new Settings();
             _changedBoxes = new List<TextBox>();
 
-            var homeDir = SettingWrapper.GetHomeDir() ?? Path.GetPathRoot(Environment.SystemDirectory);
+            var homeDir = SettingWrapper.GetMusicDir() ??
+                          Path.GetPathRoot(Environment.SystemDirectory);
+
             ChangeSortMusic();
             StatusBarHandler.Instance.RaiseStatusBarEvent += HandleStatusBarChangeEvent;
 
@@ -110,7 +112,7 @@ namespace MSOE.MediaComplete
             }
             else
             {
-                await new Importer(SettingWrapper.GetHomeDir()).ImportFiles(files, false);
+                await new Importer(SettingWrapper.GetMusicDir()).ImportFiles(files, false);
             }
         }
         
@@ -141,7 +143,7 @@ namespace MSOE.MediaComplete
             ImportResults results;
             try
             {
-                results = await new Importer(SettingWrapper.GetHomeDir()).ImportFiles(fileDialog.FileNames.Select(p => new FileInfo(p)).ToList(), true);
+                results = await new Importer(SettingWrapper.GetMusicDir()).ImportFiles(fileDialog.FileNames.Select(p => new FileInfo(p)).ToList(), true);
             }
             catch (InvalidImportException)
             {
@@ -168,7 +170,7 @@ namespace MSOE.MediaComplete
             if (folderDialog.ShowDialog() != WinForms.DialogResult.OK) return;
             var selectedDir = folderDialog.SelectedPath;
 
-            var results = await new Importer(SettingWrapper.GetHomeDir()).ImportDirectory(selectedDir, true);
+            var results = await new Importer(SettingWrapper.GetMusicDir()).ImportDirectory(selectedDir, true);
             if (results.FailCount > 0)
             {
                 MessageBox.Show(this,
@@ -185,7 +187,7 @@ namespace MSOE.MediaComplete
         public void RefreshTreeView()
         {
             //Create Parent node
-            var firstNode = new FolderTreeViewItem { Header = SettingWrapper.GetHomeDir(), ParentItem = null};
+            var firstNode = new FolderTreeViewItem { Header = SettingWrapper.GetMusicDir(), ParentItem = null};
 
             SongTree.Items.Clear();
 
@@ -211,7 +213,7 @@ namespace MSOE.MediaComplete
         {
             RefreshTreeView();
 
-            var watcher = new FileSystemWatcher(SettingWrapper.GetHomeDir())
+            var watcher = new FileSystemWatcher(SettingWrapper.GetMusicDir())
             {
                 NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName
             };
@@ -325,7 +327,7 @@ namespace MSOE.MediaComplete
                 var win = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
                 if (win != null)
                 {
-                    RefreshTreeView();
+                    win.RefreshTreeView();
                 }
             });
         }
@@ -385,11 +387,10 @@ namespace MSOE.MediaComplete
         private async void Toolbar_SortMusic_Click(object sender, RoutedEventArgs e)
         {
             // TODO (MC-43) obtain from settings file, make configurable
-            var root = new DirectoryInfo(SettingWrapper.GetHomeDir());
             var settings = new SortSettings
             {
                 SortOrder = new List<MetaAttribute> { MetaAttribute.Artist, MetaAttribute.Album },
-                Root = root
+                Root = new DirectoryInfo(SettingWrapper.GetMusicDir())
             };
 
             var sorter = new Sorter(settings);
