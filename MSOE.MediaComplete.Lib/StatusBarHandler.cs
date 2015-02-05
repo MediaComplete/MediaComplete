@@ -40,7 +40,7 @@ namespace MSOE.MediaComplete.Lib
             Warning,
             Error
         }
-        public delegate void StatusBarChanged(string format, string messageKey, StatusIcon icon, params object[] extraArgs);
+        public delegate void StatusBarChanged(string format, string messageKey, StatusBarHandler.StatusIcon icon, params object[] extraArgs);
 
         public event StatusBarChanged RaiseStatusBarEvent = delegate { };
 
