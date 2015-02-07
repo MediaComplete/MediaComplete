@@ -6,7 +6,7 @@ namespace MSOE.MediaComplete.Lib.Background
     /// <summary>
     /// Handles the resolution of potential conflicts between various tasks.
     /// </summary>
-    public class TaskAdder
+    public static class TaskAdder
     {
         /// <summary>
         /// Handles the resolution of redundant or blocking jobs, and adds the passed in Task to the underlying _tasks.
@@ -54,14 +54,11 @@ namespace MSOE.MediaComplete.Lib.Background
             }
             else if (minIndex <= maxIndex) // New group in the middle
             {
-                foreach (var group in currentQueue)
+                foreach (var grp in currentQueue.Where(grp => !grp.Any(t => newTask.InvalidDuringTypes.Contains(t.GetType()))))
                 {
-                    if (!group.Any(t => newTask.InvalidDuringTypes.Contains(t.GetType())))
-                    {
-                        group.Add(newTask);
-                        inserted = true;
-                        break;
-                    }
+                    grp.Add(newTask);
+                    inserted = true;
+                    break;
                 }
             }
 

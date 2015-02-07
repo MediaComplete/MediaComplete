@@ -28,29 +28,6 @@ namespace MSOE.MediaComplete.Lib
         }
 
         /// <summary>
-        /// Returns the 0-indexed parent directory of a given file. 
-        /// </summary>
-        /// <param name="file">The invoking file.</param>
-        /// <param name="n">The number of directories to go upwards</param>
-        /// <returns>The n'th upward directory, where 0 is file's containing directory. If n is greater than the number of parents, it will return the root directory.</returns>
-        public static DirectoryInfo Parent(this FileInfo file, int n)
-        {
-            var dir = file.Directory;
-            if (dir == null)
-            {
-                return null;
-            }
-
-            var i = 0;
-            while (i < n && dir.Parent != null)
-            {
-                dir = dir.Parent;
-                i++;
-            }
-            return dir;
-        }
-
-        /// <summary>
         /// Returns a list of directories between the calling object and the specified leaf directory.
         /// </summary>
         /// <param name="top">The calling object</param>
