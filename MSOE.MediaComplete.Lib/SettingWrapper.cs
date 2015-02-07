@@ -6,9 +6,11 @@ namespace MSOE.MediaComplete.Lib
     /// <summary>
     /// Used to wrap the settings object and encapsulate its use, while allowing ats access in both the Lib project and the UI project
     /// </summary>
-    public class SettingWrapper
+    public static class SettingWrapper
     {
         private const string HomeDir = "HomeDir";
+        private const string PlaylistDir = "PlaylistDir";
+        private const string MusicDir = "MusicDir";
         private const string InboxDir = "InboxDir";
         private const string PollingTime = "PollingTime";
         private const string IsPolling = "IsPolling";
@@ -37,6 +39,22 @@ namespace MSOE.MediaComplete.Lib
             Settings.Default[HomeDir] = homeDir;
         }
 
+        /// <summary>
+        /// Gets the music directory from the settings
+        /// </summary>
+        /// <returns>music directory path</returns>
+        public static string GetMusicDir()
+        {
+            return GetHomeDir() + Settings.Default[MusicDir];
+        }
+        /// <summary>
+        /// Gets the playlist directory from the settings
+        /// </summary>
+        /// <returns>playlist directory path</returns>
+        public static string GetPlaylistDir()
+        {
+            return GetHomeDir() + Settings.Default[PlaylistDir];
+        }
         /// <summary>
         /// gets the inbox directory path
         /// </summary>

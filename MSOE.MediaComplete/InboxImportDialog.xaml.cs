@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using MSOE.MediaComplete.Lib;
 using System;
+using MSOE.MediaComplete.Lib.Import;
 
 namespace MSOE.MediaComplete
 {
@@ -63,7 +64,8 @@ namespace MSOE.MediaComplete
             SettingWrapper.SetShowInputDialog(!StopShowingCheckBox.IsChecked.GetValueOrDefault(false));
 
             //Do the move
-            var results = await new Importer(SettingWrapper.GetHomeDir()).ImportFiles(_files.Select(f => new FileInfo(f.FullName)).ToList(), false);
+            var results = await new Importer(SettingWrapper.GetHomeDir()).ImportFilesAsync(_files.Select(f => new FileInfo(f.FullName)).ToList(), false);
+
             if (results.FailCount > 0)
             {
                 try
@@ -93,6 +95,7 @@ namespace MSOE.MediaComplete
             SettingWrapper.SetIsPolling(!StopShowingCheckBox.IsChecked.GetValueOrDefault((false)));
             Polling.Instance.Reset();
             DialogResult = false;
+            SettingWrapper.Save();
         }
     }
 }

@@ -10,7 +10,7 @@ namespace MSOE.MediaComplete.CustomControls
             IsSelected = true;
             base.OnPreviewMouseRightButtonDown(e);
         }
-        public FolderTreeViewItem ParentItem { get; set; }
+        public FolderTreeViewItem ParentItem { private get; set; }
 
         public override string ToString()
         {

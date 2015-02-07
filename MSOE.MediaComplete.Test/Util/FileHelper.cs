@@ -5,7 +5,7 @@ namespace MSOE.MediaComplete.Test.Util
     /// <summary>
     /// This class contains helper methods for managing test files.
     /// </summary>
-    class FileHelper
+    static class FileHelper
     {
         public static DirectoryInfo CreateDirectory(string path)
         {
@@ -19,6 +19,7 @@ namespace MSOE.MediaComplete.Test.Util
 
         public static FileInfo CreateFile(DirectoryInfo location, Constants.FileTypes source)
         {
+
             var destPath = location.FullName + Path.DirectorySeparatorChar + Constants.TestFiles[source].Item1;
             if (File.Exists(destPath))
             {

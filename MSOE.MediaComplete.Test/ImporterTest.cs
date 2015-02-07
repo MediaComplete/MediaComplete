@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib;
+using MSOE.MediaComplete.Lib.Import;
 using MSOE.MediaComplete.Test.Util;
 using System.IO;
 using Constants = MSOE.MediaComplete.Test.Util.Constants;
@@ -38,7 +39,7 @@ namespace MSOE.MediaComplete.Test
             Task<ImportResults> task;
             using (fileInUse.OpenWrite())
             {
-                task = new Importer(_homeDir.FullName).ImportFiles(new List<FileInfo>{fileInUse}, true);
+                task = new Importer(_homeDir.FullName).ImportFilesAsync(new List<FileInfo>{fileInUse}, true);
                 while (!task.IsCompleted)
                 {
                 }
@@ -54,11 +55,12 @@ namespace MSOE.MediaComplete.Test
         public void Import_FromLibrary_Exception()
         {
             var fileInLib = FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidMp3);
-            var task = new Importer(_homeDir.FullName).ImportFiles(new List<FileInfo>{ fileInLib }, true);
+            var task = new Importer(_homeDir.FullName).ImportFilesAsync(new List<FileInfo>{ fileInLib }, true);
             while (!task.IsCompleted)
             {
             }
 
+            
             if (task.Exception == null)
                 Assert.Fail("No exception occured!");
 
@@ -72,7 +74,7 @@ namespace MSOE.MediaComplete.Test
         {
             var newFile = FileHelper.CreateFile(_importDir, Constants.FileTypes.ValidMp3);
             var oldFile = FileHelper.CreateFile(_homeDir, Constants.FileTypes.MissingAlbum);
-            var task = new Importer(_homeDir.FullName).ImportDirectory(_testDir.FullName, false);
+            var task = new Importer(_homeDir.FullName).ImportDirectoryAsync(_testDir.FullName, false);
             while (!task.IsCompleted)
             {
             }
@@ -89,7 +91,7 @@ namespace MSOE.MediaComplete.Test
         {
             var childFile = FileHelper.CreateFile(_importDir, Constants.FileTypes.ValidMp3);
             var parentFile = FileHelper.CreateFile(_testDir, Constants.FileTypes.MissingAlbum);
-            var task = new Importer(_homeDir.FullName).ImportDirectory(_testDir.FullName, false);
+            var task = new Importer(_homeDir.FullName).ImportDirectoryAsync(_testDir.FullName, false);
             while (!task.IsCompleted)
             {
             }

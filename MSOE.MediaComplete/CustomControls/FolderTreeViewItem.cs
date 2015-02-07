@@ -38,7 +38,7 @@ namespace MSOE.MediaComplete.CustomControls
             {
                 return ParentItem.GetPath() + Header + consts.PathSeparator;
             }
-            return SettingWrapper.GetHomeDir();
+            return SettingWrapper.GetMusicDir();
             
         }
     }
