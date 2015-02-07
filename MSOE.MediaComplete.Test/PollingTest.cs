@@ -85,8 +85,13 @@ namespace MSOE.MediaComplete.Test
             _dir = FileHelper.CreateDirectory(DirectoryPath);
             _file = FileHelper.CreateFile(_dir, Constants.FileTypes.NonMusic);
 
+            var pass = false;
             SettingWrapper.SetInboxDir(DirectoryPath);
             Polling.Instance.TimeInMinutes = 0.0005;
+            Polling.InboxFilesDetected += delegate
+            {
+                pass = true;
+            };
             Polling.Instance.Start();
 
             Thread.Sleep(500);
@@ -94,6 +99,10 @@ namespace MSOE.MediaComplete.Test
             if (!File.Exists(_file.FullName))
             {
                 Assert.Fail("File does not exist in source directory - it should not have been moved.");
+            }
+            if (pass)
+            {
+                Assert.Fail("Event was triggered, it shouldnt have been.");
             }
         }
     }
