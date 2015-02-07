@@ -138,7 +138,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <param name="results">The results of the triggering import</param>
         public static void SortNewImports (ImportResults results)
         {
-            if (!SettingWrapper.GetIsSorting()) return;
+            if (!SettingWrapper.IsSorting) return;
             // TODO (MC-43) get settings from configuration
             var settings = new SortSettings
             {

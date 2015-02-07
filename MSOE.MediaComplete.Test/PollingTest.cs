@@ -42,7 +42,7 @@ namespace MSOE.MediaComplete.Test
             File.Create(_file.FullName).Close();
 
             var pass = false;
-            SettingWrapper.SetInboxDir(DirectoryPath);
+            SettingWrapper.InboxDir = DirectoryPath;
             Polling.Instance.TimeInMinutes = 0.0005;
             Polling.InboxFilesDetected += delegate
             {
@@ -70,7 +70,7 @@ namespace MSOE.MediaComplete.Test
             File.Create(_file.FullName).Close();
 
             var pass = false;
-            SettingWrapper.SetInboxDir(DirectoryPath);
+            SettingWrapper.InboxDir = DirectoryPath;
             Polling.Instance.TimeInMinutes = 0.0005;
             Polling.InboxFilesDetected += delegate
             {
@@ -97,7 +97,7 @@ namespace MSOE.MediaComplete.Test
             File.Create(_file.FullName).Close();
 
             var pass = false;
-            SettingWrapper.SetInboxDir(DirectoryPath);
+            SettingWrapper.InboxDir = DirectoryPath;
             Polling.Instance.TimeInMinutes = 0.0005;
             Polling.InboxFilesDetected += delegate
             {

@@ -22,7 +22,7 @@ namespace MSOE.MediaComplete.Test
             _testDir = FileHelper.CreateDirectory("ImporterTest");
             _homeDir = FileHelper.CreateDirectory("ImporterTest" + Path.DirectorySeparatorChar + "HomeDir");
             _importDir = FileHelper.CreateDirectory("ImporterTest" + Path.DirectorySeparatorChar + "ImportDir");
-            SettingWrapper.SetHomeDir(_homeDir.FullName);
+            SettingWrapper.HomeDir = _homeDir.FullName;
         }
 
         [TestCleanup]

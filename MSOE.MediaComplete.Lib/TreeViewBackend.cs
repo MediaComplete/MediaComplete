@@ -5,7 +5,7 @@ namespace MSOE.MediaComplete.Lib
     {
         public static FileInfo[] GetFiles()
         {
-            var rootDirInfo = new DirectoryInfo(SettingWrapper.GetMusicDir());
+            var rootDirInfo = new DirectoryInfo(SettingWrapper.MusicDir);
             return GetFiles(rootDirInfo);
         }
 
@@ -23,7 +23,7 @@ namespace MSOE.MediaComplete.Lib
         }
         public static DirectoryInfo[] GetDirectories()
         {
-            var rootDirInfo = new DirectoryInfo(SettingWrapper.GetMusicDir());
+            var rootDirInfo = new DirectoryInfo(SettingWrapper.MusicDir);
             return GetDirectories(rootDirInfo);
         }
 

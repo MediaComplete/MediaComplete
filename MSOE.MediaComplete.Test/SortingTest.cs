@@ -26,7 +26,7 @@ namespace MSOE.MediaComplete.Test
         {
             _homeDir = FileHelper.CreateDirectory("SortingTestHomeDir");
             _importDir = FileHelper.CreateDirectory("SortingTestImportDir");
-            SettingWrapper.SetHomeDir(_homeDir.FullName);
+            SettingWrapper.HomeDir = _homeDir.FullName;
         }
 
         [TestCleanup]
@@ -219,7 +219,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod, Timeout(30000)]
         public void Import_CausesSort_IgnoresOldFiles()
         {
-            SettingWrapper.SetIsSorting(true);
+            SettingWrapper.IsSorting = true;
             // ReSharper disable once ObjectCreationAsStatement
             new Sorter(null);// Force the static initializer to fire.
             var decoyFile = FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidMp3); // Deliberately put an unsorted file in
@@ -248,7 +248,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod, Timeout(30000)]
         public void Import_NoSort_IgnoresNewFiles()
         {
-            SettingWrapper.SetIsSorting(false);
+            SettingWrapper.IsSorting = false;
             // ReSharper disable once ObjectCreationAsStatement
             new Sorter(null); // Force the static initializer to fire.
             FileHelper.CreateFile(_importDir, Constants.FileTypes.ValidMp3);
