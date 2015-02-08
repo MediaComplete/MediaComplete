@@ -130,10 +130,11 @@ namespace MSOE.MediaComplete
                 SettingWrapper.Layout = _layoutsDict[_changedType];
 
                 _layoutHasChanged = false;
-            }SettingWrapper.HomeDir =homeDir;
-
+            }
+            
+            SettingWrapper.HomeDir =homeDir;
             SettingWrapper.InboxDir =inboxDir;
-            SettingWrapper.PollingTime = (double)ComboBoxPollingTime.SelectedValue;
+            SettingWrapper.PollingTime = Convert.ToDouble(ComboBoxPollingTime.SelectedValue.ToString());
             SettingWrapper.IsPolling = CheckboxPolling.IsChecked.GetValueOrDefault(false);
             SettingWrapper.ShowInputDialog = CheckboxShowImportDialog.IsChecked.GetValueOrDefault(false);
             SettingWrapper.IsSorting = CheckBoxSorting.IsChecked.GetValueOrDefault(false);
