@@ -13,7 +13,7 @@ namespace MSOE.MediaComplete.Lib.Background
         /// <summary>
         /// Captures the task that caused the issue
         /// </summary>
-        public Task Task { get; set; }
+        public Task Task {get; set; }
 
         /// <summary>
         /// Constructs the exception with the given provoking task

@@ -77,17 +77,17 @@ namespace MSOE.MediaComplete.Lib.Background
 
         /// <summary>
         /// Contains any subclass types that cannot appear before this task in the execution queue. 
-        /// Used by <see cref="Queue.ResolveConflicts"/> to re-order the queue after adding this task.
+        /// Used by <see cref="TaskAdder.ResolveConflicts"/> to re-order the queue after adding this task.
         /// </summary>
         public abstract IReadOnlyCollection<Type> InvalidBeforeTypes { get; }
         /// <summary>
         /// Contains any subclass types that cannot appear after this task in the execution queue. 
-        /// Used by <see cref="Queue.ResolveConflicts"/> to re-order the queue after adding this task.
+        /// Used by <see cref="TaskAdder.ResolveConflicts"/> to re-order the queue after adding this task.
         /// </summary>
         public abstract IReadOnlyCollection<Type> InvalidAfterTypes { get; }
         /// <summary>
         /// Contains any subclass types that cannot appear in the same parallel block in the execution queue. 
-        /// Used by <see cref="Queue.ResolveConflicts"/> to re-order the queue after adding this task.
+        /// Used by <see cref="TaskAdder.ResolveConflicts"/> to re-order the queue after adding this task.
         /// </summary>
         public abstract IReadOnlyCollection<Type> InvalidDuringTypes { get; }
         /// <summary>

@@ -7,7 +7,7 @@ namespace MSOE.MediaComplete.Test.Util
     /// <summary>
     /// Test related constant values
     /// </summary>
-    class Constants
+    public static class Constants
     {
         private const string ResourceDirName = "Resources";
         private const string InvalidMp3FileName = "InvalidMp3File.mp3";

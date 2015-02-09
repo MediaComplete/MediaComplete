@@ -165,7 +165,7 @@ namespace MSOE.MediaComplete
                 PopulateMetadataForm();
             }
         }
-
+		
         private void Save_OnClick(object sender, RoutedEventArgs e)
         {
             if (SongTitle.IsReadOnly) return;

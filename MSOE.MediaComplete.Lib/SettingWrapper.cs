@@ -6,7 +6,7 @@ namespace MSOE.MediaComplete.Lib
     /// <summary>
     /// Used to wrap the settings object and encapsulate its use, while allowing ats access in both the Lib project and the UI project
     /// </summary>
-    public class SettingWrapper
+    public static class SettingWrapper
     {
         public static event SettingsChangedListener RaiseSettingEvent = delegate {};
         public delegate void SettingsChangedListener();

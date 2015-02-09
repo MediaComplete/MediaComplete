@@ -64,7 +64,7 @@ namespace MSOE.MediaComplete
             SettingWrapper.ShowInputDialog =!StopShowingCheckBox.IsChecked.GetValueOrDefault(false);
 
             //Do the move
-            var results = await new Importer(SettingWrapper.MusicDir).ImportFiles(_files.Select(f => new FileInfo(f.FullName)).ToList(), false);
+            var results = await new Importer(SettingWrapper.MusicDir).ImportFilesAsync(_files.Select(f => new FileInfo(f.FullName)).ToList(), false);
             if (results.FailCount > 0)
             {
                 try
