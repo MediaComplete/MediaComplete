@@ -25,18 +25,18 @@ namespace MSOE.MediaComplete
         public Settings()
         {
             InitializeComponent();
-            TxtboxSelectedFolder.Text = SettingWrapper.GetHomeDir();
-            LblInboxFolder.Content = SettingWrapper.GetInboxDir();
-            ComboBoxPollingTime.SelectedValue = SettingWrapper.GetPollingTime().ToString(CultureInfo.InvariantCulture);
-            CheckboxPolling.IsChecked = SettingWrapper.GetIsPolling();
-            CheckboxShowImportDialog.IsChecked = SettingWrapper.GetShowInputDialog();
-            CheckBoxSorting.IsChecked = SettingWrapper.GetIsSorting();
+            TxtboxSelectedFolder.Text = SettingWrapper.HomeDir;
+            LblInboxFolder.Content = SettingWrapper.InboxDir;
+            ComboBoxPollingTime.SelectedValue = SettingWrapper.PollingTime.ToString(CultureInfo.InvariantCulture);
+            CheckboxPolling.IsChecked = SettingWrapper.IsPolling;
+            CheckboxShowImportDialog.IsChecked = SettingWrapper.ShowInputDialog;
+            CheckBoxSorting.IsChecked = SettingWrapper.IsSorting;
             PollingCheckBoxChanged(CheckboxPolling, null);
-            if (SettingWrapper.GetLayout().Equals(_layoutsDict[LayoutType.Pink]))
+            if (SettingWrapper.Layout.Equals(_layoutsDict[LayoutType.Pink]))
             {
                 PinkCheck.IsChecked = true;
             }
-            else if (SettingWrapper.GetLayout().Equals(_layoutsDict[LayoutType.Dark]))
+            else if (SettingWrapper.Layout.Equals(_layoutsDict[LayoutType.Dark]))
             {
                 DarkCheck.IsChecked = true;
             }
@@ -127,21 +127,22 @@ namespace MSOE.MediaComplete
                 var resourceDict = System.Windows.Application.LoadComponent(dictUri) as ResourceDictionary;
                 System.Windows.Application.Current.Resources.MergedDictionaries.Clear();
                 System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDict);
-                SettingWrapper.SetLayout(_layoutsDict[_changedType]);
+                SettingWrapper.Layout = _layoutsDict[_changedType];
 
                 _layoutHasChanged = false;
-            }SettingWrapper.SetHomeDir(homeDir);
-
-            SettingWrapper.SetInboxDir(inboxDir);
-            SettingWrapper.SetPollingTime(ComboBoxPollingTime.SelectedValue);
-            SettingWrapper.SetIsPolling(CheckboxPolling.IsChecked.GetValueOrDefault(false));
-            SettingWrapper.SetShowInputDialog(CheckboxShowImportDialog.IsChecked.GetValueOrDefault(false));
-            SettingWrapper.SetIsSorting(CheckBoxSorting.IsChecked.GetValueOrDefault(false));
+            }
+            
+            SettingWrapper.HomeDir =homeDir;
+            SettingWrapper.InboxDir =inboxDir;
+            SettingWrapper.PollingTime = Convert.ToDouble(ComboBoxPollingTime.SelectedValue.ToString());
+            SettingWrapper.IsPolling = CheckboxPolling.IsChecked.GetValueOrDefault(false);
+            SettingWrapper.ShowInputDialog = CheckboxShowImportDialog.IsChecked.GetValueOrDefault(false);
+            SettingWrapper.IsSorting = CheckBoxSorting.IsChecked.GetValueOrDefault(false);
             SettingWrapper.Save();
 
 
-            if (!Directory.Exists(SettingWrapper.GetMusicDir()))
-                Directory.CreateDirectory(SettingWrapper.GetMusicDir());
+            if (!Directory.Exists(SettingWrapper.MusicDir))
+                Directory.CreateDirectory(SettingWrapper.MusicDir);
             Close();
         }
 
@@ -181,7 +182,7 @@ namespace MSOE.MediaComplete
             var resourceDict = System.Windows.Application.LoadComponent(dictUri) as ResourceDictionary;
             System.Windows.Application.Current.Resources.MergedDictionaries.Clear();
             System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDict);
-            SettingWrapper.SetLayout(_layoutsDict[_changedType]);
+            SettingWrapper.Layout =_layoutsDict[_changedType];
 
             SettingWrapper.Save();
         }
