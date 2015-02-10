@@ -6,6 +6,7 @@ using System.Windows.Input;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
 using NAudio.Wave;
+using TagLib;
 
 namespace MSOE.MediaComplete
 {
@@ -26,6 +27,11 @@ namespace MSOE.MediaComplete
             _player.PlaybackEnded += AutomaticStop;
         }
 
+        /// <summary>
+        /// event handler for when the player hits the end of the file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
         private void AutomaticStop(object sender, EventArgs eventArgs)
         {
             Stop();
@@ -64,7 +70,7 @@ namespace MSOE.MediaComplete
             {
                 _player.Play(new FileInfo(song.GetPath()));
             }
-            catch (FileLoadException)
+            catch (CorruptFileException)
             {
                 StatusBarHandler.Instance.ChangeStatusBarMessage("CorruptFile-Error", StatusBarHandler.StatusIcon.Error);
                 PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");

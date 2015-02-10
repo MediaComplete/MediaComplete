@@ -87,7 +87,7 @@ namespace MSOE.MediaComplete.Lib
             }
             catch (Exception ex)
             {
-                if (ex is NullReferenceException || ex is UnsupportedFormatException || ex is CorruptFileException)
+                if (ex is NullReferenceException || ex is IndexOutOfRangeException || ex is UnsupportedFormatException || ex is CorruptFileException)
                 {
                     throw new CorruptFileException(file.FullName +
                         " cannot be loaded, the file may be corrupt or have the wrong extension.", ex);
