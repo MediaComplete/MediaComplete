@@ -119,12 +119,17 @@ namespace MSOE.MediaComplete
                 plus.Click += PlusClicked;
                 comboBox.SelectionChanged += SelectChanged;
 
+
                 _comboBoxes.Add(comboBox);
                 stackPanel.Children.Add(folder);
                 stackPanel.Children.Add(comboBox);
-
                 stackPanel.Children.Add(minus);
-                stackPanel.Children.Add(plus);
+
+                if (Enum.GetNames(typeof(MetaAttribute)).Length != _showComboBox.Count )
+                {
+                    stackPanel.Children.Add(plus);
+                }
+
                 SortConfig.Children.Add(stackPanel);
             }
             if (_sortOrderList.Count != 0 || _comboBoxes.Count != 0) return;
