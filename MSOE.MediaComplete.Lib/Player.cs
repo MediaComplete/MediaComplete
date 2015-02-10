@@ -6,6 +6,9 @@ using TagLib;
 
 namespace MSOE.MediaComplete.Lib
 {
+    /// <summary>
+    /// interface to define the requirements of the player object
+    /// </summary>
     public interface IPlayer
     {
         void Play(FileInfo file);
@@ -17,6 +20,9 @@ namespace MSOE.MediaComplete.Lib
         PlaybackState PlaybackState { get; }
     }
 
+    /// <summary>
+    /// implementation of the IPlayer interface utilizing NAudio
+    /// </summary>
     public class Player : IPlayer
     {
         #region singleton stuff
