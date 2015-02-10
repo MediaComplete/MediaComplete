@@ -111,7 +111,7 @@ namespace MSOE.MediaComplete
                     {
                         Source = (ImageSource)Resources["Settings-AddConfig-Icon"]
                     },
-                    Tag = i,
+                    Tag = i
                 };
                 plus.SetResourceReference(StyleProperty, "Plus/Minus"); 
 
@@ -127,27 +127,23 @@ namespace MSOE.MediaComplete
                 stackPanel.Children.Add(plus);
                 SortConfig.Children.Add(stackPanel);
             }
-            if (_sortOrderList.Count == 0 && _comboBoxes.Count == 0)
+            if (_sortOrderList.Count != 0 || _comboBoxes.Count != 0) return;
+            var stackPanelForNoSort = new StackPanel { Orientation = Orientation.Horizontal };
+            var label = new Label { Content = "No Sort" };
+            var plusForNoSort = new Button
             {
-                var stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
-                var label = new Label { Content = "No Sort" };
-                var plus = new Button
+                Content = new Image
                 {
-                    Content = new Image
-                    {
-                        Source = (ImageSource)Resources["Settings-AddConfig-Icon"]
-                    },
-                    Tag = -1,
-                };
-                plus.Click += PlusClicked;
-                plus.SetResourceReference(StyleProperty, "Plus/Minus"); 
+                    Source = (ImageSource)Resources["Settings-AddConfig-Icon"]
+                },
+                Tag = -1
+            };
+            plusForNoSort.Click += PlusClicked;
+            plusForNoSort.SetResourceReference(StyleProperty, "Plus/Minus"); 
 
-                stackPanel.Children.Add(label);
-                stackPanel.Children.Add(plus);
-                SortConfig.Children.Add(stackPanel);
-
-            }
-
+            stackPanelForNoSort.Children.Add(label);
+            stackPanelForNoSort.Children.Add(plusForNoSort);
+            SortConfig.Children.Add(stackPanelForNoSort);
         }
 
         private void PlusClicked(object sender, RoutedEventArgs e)
