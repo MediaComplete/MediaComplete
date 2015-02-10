@@ -10,6 +10,7 @@ using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Sorting;
 using Button = System.Windows.Controls.Button;
 using ComboBox = System.Windows.Controls.ComboBox;
+using Label = System.Windows.Controls.Label;
 using Orientation = System.Windows.Controls.Orientation;
 
 namespace MSOE.MediaComplete
@@ -69,7 +70,7 @@ namespace MSOE.MediaComplete
         private void LoadSortListBox()
         {
             var withValue = -1;
-            var isFirst = _showComboBox.Count == 1;
+
             for (var i = 0; i < _showComboBox.Count; i++)
             {
                 var showValue = _showComboBox[i];
@@ -89,8 +90,8 @@ namespace MSOE.MediaComplete
                 {
                     Width = 100,
                     Height = 24,
-                    ItemsSource = showValue ? SortHelper.GetAllValidAttributes(_sortOrderList, _sortOrderList[withValue], isFirst) 
-                                                : SortHelper.GetAllUnusedMetaAttributes(_sortOrderList, isFirst),
+                    ItemsSource = showValue ? SortHelper.GetAllValidAttributes(_sortOrderList, _sortOrderList[withValue]) 
+                                                : SortHelper.GetAllUnusedMetaAttributes(_sortOrderList),
                     SelectedValue = showValue ? (object) _sortOrderList[withValue] : -1,
                     Tag = i
                 };
@@ -122,12 +123,29 @@ namespace MSOE.MediaComplete
                 stackPanel.Children.Add(folder);
                 stackPanel.Children.Add(comboBox);
 
-                if (!isFirst)
-                {
-                    stackPanel.Children.Add(minus);
-                }
+                stackPanel.Children.Add(minus);
                 stackPanel.Children.Add(plus);
                 SortConfig.Children.Add(stackPanel);
+            }
+            if (_sortOrderList.Count == 0 && _comboBoxes.Count == 0)
+            {
+                var stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
+                var label = new Label { Content = "No Sort" };
+                var plus = new Button
+                {
+                    Content = new Image
+                    {
+                        Source = (ImageSource)Resources["Settings-AddConfig-Icon"]
+                    },
+                    Tag = -1,
+                };
+                plus.Click += PlusClicked;
+                plus.SetResourceReference(StyleProperty, "Plus/Minus"); 
+
+                stackPanel.Children.Add(label);
+                stackPanel.Children.Add(plus);
+                SortConfig.Children.Add(stackPanel);
+
             }
 
         }
@@ -145,7 +163,7 @@ namespace MSOE.MediaComplete
             SortConfig.Children.Clear();
             LoadSortListBox();
 
-            _comboBoxes[tag + 1].ItemsSource = SortHelper.GetAllUnusedMetaAttributes(_sortOrderList, false);
+            _comboBoxes[tag + 1].ItemsSource = SortHelper.GetAllUnusedMetaAttributes(_sortOrderList);
             _comboBoxes[tag + 1].SelectedValue = -1;
         }
 
@@ -186,7 +204,7 @@ namespace MSOE.MediaComplete
 
             foreach (var box in _comboBoxes)
             {
-                box.ItemsSource = box.SelectedValue == null ? SortHelper.GetAllUnusedMetaAttributes(_sortOrderList, false) : SortHelper.GetAllValidAttributes(_sortOrderList, (string)box.SelectedValue, false);
+                box.ItemsSource = box.SelectedValue == null ? SortHelper.GetAllUnusedMetaAttributes(_sortOrderList) : SortHelper.GetAllValidAttributes(_sortOrderList, (string)box.SelectedValue);
             }
         }
 

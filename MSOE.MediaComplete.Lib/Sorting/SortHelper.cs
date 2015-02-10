@@ -35,22 +35,19 @@ namespace MSOE.MediaComplete.Lib.Sorting
             };
             return listOfMetaAttributes.Select(GetDescription).ToList();
         } 
-        public static List<string> GetAllUnusedMetaAttributes(List<string> valueList, bool shouldShowEmpty)
+        public static List<string> GetAllUnusedMetaAttributes(List<string> valueList)
         {
             
-            var metaList = Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>().Where(x => shouldShowEmpty ||  x != MetaAttribute.NoSort).ToList();
+            var metaList = Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>().ToList();
             var stringList = metaList.Select(GetDescription).Except(valueList).OrderBy(x => x).ToList();
 
             return stringList;
         }
 
-        public static List<string> GetAllValidAttributes(List<string> valueList, string metaAttribute, bool shouldShowEmpty)
+        public static List<string> GetAllValidAttributes(List<string> valueList, string metaAttribute)
         {
-            var stringList = GetAllUnusedMetaAttributes(valueList, shouldShowEmpty);
-            if (metaAttribute != MetaAttribute.NoSort.ToString())
-            {
-                stringList.Add(metaAttribute);
-            }
+            var stringList = GetAllUnusedMetaAttributes(valueList);
+            stringList.Add(metaAttribute);
             return stringList.OrderBy(x => x).ToList();
         }
 

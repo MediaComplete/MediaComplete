@@ -14,7 +14,7 @@
         <Setter Property="BorderBrush">
             <Setter.Value>
                 <RadialGradientBrush>
-                    <GradientStop Color="#FFCD6AA5" Offset="0"/>
+                    <GradientStop Color="#FF8F1454" Offset="0"/>
                     <GradientStop Color="#FFFFD0EC" Offset="1"/>
                 </RadialGradientBrush>
             </Setter.Value>
@@ -23,8 +23,8 @@
     <LinearGradientBrush x:Key="NormalBrush" StartPoint="0,0" EndPoint="0,1">
         <GradientBrush.GradientStops>
             <GradientStopCollection>
-                <GradientStop Color="White" Offset="1.0"/>
-                <GradientStop Color="#FFCD6AA5" Offset="0.0"/>
+                <GradientStop Color="#FF8F1454" Offset="0"/>
+                <GradientStop Color="#FFFFD0EC" Offset="1"/>
             </GradientStopCollection>
         </GradientBrush.GradientStops>
     </LinearGradientBrush>
@@ -32,8 +32,8 @@
     <LinearGradientBrush x:Key="HorizontalNormalBrush" StartPoint="0,0" EndPoint="1,0">
         <GradientBrush.GradientStops>
             <GradientStopCollection>
-                <GradientStop Color="#FFFFD0EC" Offset="1.0"/>
-                <GradientStop Color="#FFCD6AA5" Offset="0.0"/>
+                <GradientStop Color="#FF8F1454" Offset="0"/>
+                <GradientStop Color="#FFCD6AA5" Offset="1"/>
             </GradientStopCollection>
         </GradientBrush.GradientStops>
     </LinearGradientBrush>
@@ -41,8 +41,8 @@
     <LinearGradientBrush x:Key="LightBrush" StartPoint="0,0" EndPoint="0,1">
         <GradientBrush.GradientStops>
             <GradientStopCollection>
-                <GradientStop Color="#FFFFD0EC" Offset="1.0"/>
-                <GradientStop Color="#FFCD6AA5" Offset="0.0"/>
+                <GradientStop Color="#FF8F1454" Offset="0"/>
+                <GradientStop Color="#FFCD6AA5" Offset="1"/>
             </GradientStopCollection>
         </GradientBrush.GradientStops>
     </LinearGradientBrush>
@@ -50,8 +50,8 @@
     <LinearGradientBrush x:Key="HorizontalLightBrush" StartPoint="0,0" EndPoint="1,0">
         <GradientBrush.GradientStops>
             <GradientStopCollection>
-                <GradientStop Color="#FFFFD0EC" Offset="1.0"/>
-                <GradientStop Color="#FFCD6AA5" Offset="0.0"/>
+                <GradientStop Color="#FF8F1454" Offset="0"/>
+                <GradientStop Color="#FFCD6AA5" Offset="1"/>
             </GradientStopCollection>
         </GradientBrush.GradientStops>
     </LinearGradientBrush>
@@ -59,8 +59,8 @@
     <LinearGradientBrush x:Key="DarkBrush" StartPoint="0,0" EndPoint="0,1">
         <GradientBrush.GradientStops>
             <GradientStopCollection>
-                <GradientStop Color="#FFFFD0EC" Offset="1.0"/>
-                <GradientStop Color="#FFCD6AA5" Offset="0.0"/>
+                <GradientStop Color="#FF8F1454" Offset="0"/>
+                <GradientStop Color="#FFCD6AA5" Offset="1"/>
             </GradientStopCollection>
         </GradientBrush.GradientStops>
     </LinearGradientBrush>
@@ -68,8 +68,8 @@
     <LinearGradientBrush x:Key="PressedBrush" StartPoint="0,0" EndPoint="0,1">
         <GradientBrush.GradientStops>
             <GradientStopCollection>
-                <GradientStop Color="#FFFFD0EC" Offset="1.0"/>
-                <GradientStop Color="#FFCD6AA5" Offset="0.0"/>
+                <GradientStop Color="#FF8F1454" Offset="0"/>
+                <GradientStop Color="#FFCD6AA5" Offset="1"/>
             </GradientStopCollection>
         </GradientBrush.GradientStops>
     </LinearGradientBrush>
