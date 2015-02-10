@@ -190,9 +190,8 @@ namespace MSOE.MediaComplete
             var firstNode = new FolderTreeViewItem { Header = SettingWrapper.MusicDir, ParentItem = null};
 
             SongTree.Items.Clear();
-
-            var rootFiles = TreeViewBackend.GetFiles();
-            var rootDirs = TreeViewBackend.GetDirectories();
+            var rootFiles = new DirectoryInfo(SettingWrapper.MusicDir).GetFilesOrCreateDir();
+            var rootDirs = new DirectoryInfo(SettingWrapper.MusicDir).GetDirectories();
 
             //For each folder in the root Directory
             foreach (var rootChild in rootDirs)
@@ -235,12 +234,12 @@ namespace MSOE.MediaComplete
         private static FolderTreeViewItem PopulateFromFolder(DirectoryInfo dirInfo, ItemsControl songTree, FolderTreeViewItem parent)
         {
             var dirItem = new FolderTreeViewItem { Header = dirInfo.Name, ParentItem = parent };
-            foreach (var dir in TreeViewBackend.GetDirectories(dirInfo))
+            foreach (var dir in dirInfo.GetDirectories())
             {
                 dirItem.Children.Add(PopulateFromFolder(dir, songTree, dirItem));
             }
             
-            foreach (var file in TreeViewBackend.GetFiles(dirInfo).GetMusicFiles())
+            foreach (var file in dirInfo.GetFilesOrCreateDir().GetMusicFiles())
             {
                 songTree.Items.Add(new SongTreeViewItem { Header = file.Name, ParentItem = dirItem });
             }
@@ -250,12 +249,12 @@ namespace MSOE.MediaComplete
         private static void PopulateSongTree(DirectoryInfo dirInfo, ItemsControl songTree, FolderTreeViewItem parent, bool root)
         {
             var dirItem = root ? parent : new FolderTreeViewItem { Header = dirInfo.Name, ParentItem = parent };
-            foreach (var dir in TreeViewBackend.GetDirectories(dirInfo))
+            foreach (var dir in dirInfo.GetDirectories())
             {
                 PopulateSongTree(dir, songTree, dirItem, false);
             }
 
-            foreach (var x in TreeViewBackend.GetFiles(dirInfo).GetMusicFiles().Select(file => new SongTreeViewItem { Header = file.Name, ParentItem = dirItem }))
+            foreach (var x in dirInfo.GetFilesOrCreateDir().GetMusicFiles().Select(file => new SongTreeViewItem { Header = file.Name, ParentItem = dirItem }))
             {
                 songTree.Items.Add(x);
             }
@@ -319,7 +318,7 @@ namespace MSOE.MediaComplete
             _refreshTimer.Change(500, Timeout.Infinite);
         }
         
-        private void TimerProc(object state)
+        private static void TimerProc(object state)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
