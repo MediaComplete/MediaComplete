@@ -52,10 +52,10 @@ namespace MSOE.MediaComplete.Lib
         /// </summary>
         public void OnSettingChanged()
         {
-            var timeInMilliseconds = TimeSpan.FromMinutes(SettingWrapper.GetPollingTime()).TotalMilliseconds;
+            var timeInMilliseconds = TimeSpan.FromMinutes(SettingWrapper.PollingTime).TotalMilliseconds;
             _timer.Enabled = false;
             _timer.Interval = timeInMilliseconds;
-            _timer.Enabled = SettingWrapper.GetIsPolling();
+            _timer.Enabled = SettingWrapper.IsPolling;
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace MSOE.MediaComplete.Lib
         /// <param name="args"></param>
         private static void OnTimerFinished(Object sender, ElapsedEventArgs args)
         {
-            var inbox = new DirectoryInfo(SettingWrapper.GetInboxDir());
+            var inbox = new DirectoryInfo(SettingWrapper.InboxDir);
             if (!inbox.Exists)
             {
                 inbox.Create();

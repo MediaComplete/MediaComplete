@@ -12,7 +12,7 @@ namespace MSOE.MediaComplete.Test
     [TestClass]
     public class PlayerTest
     {
-        private readonly Player _player = Player.Instance;
+        private readonly IPlayer _player = Player.Instance;
         private DirectoryInfo _homeDir;
 
         [TestInitialize]

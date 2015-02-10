@@ -39,13 +39,13 @@ namespace MSOE.MediaComplete.Lib.Import
         /// <param name="isCopy">If true, files are copies and the original files remain in the source location. 
         /// Otherwise, files are "cut" and removed from the source directory.</param>
         /// <returns>An awaitable task of ImportResults</returns>
-        public async Task<ImportResults> ImportDirectory(string directory, bool isCopy)
+        public async Task<ImportResults> ImportDirectoryAsync(string directory, bool isCopy)
         {
             var files =
                 new DirectoryInfo(directory).EnumerateFiles("*", SearchOption.AllDirectories)
                     .GetMusicFiles()
                     .Where(f => !f.HasParent(_homeDir));
-            var results = await ImportFiles(files, isCopy);
+            var results = await ImportFilesAsync(files, isCopy);
             return results;
         }
 
@@ -57,7 +57,7 @@ namespace MSOE.MediaComplete.Lib.Import
         /// Otherwise, files are "cut" and removed from the source directory.</param>
         /// <returns>An awaitable task of ImportResults</returns>
         /// <exception cref="InvalidImportException">Thrown when files includes a file in the current home directory</exception>
-        public async Task<ImportResults> ImportFiles(IEnumerable<FileInfo> files, bool isCopy)
+        public async Task<ImportResults> ImportFilesAsync(IEnumerable<FileInfo> files, bool isCopy)
         {
             if (files.Any(f => f.HasParent(_homeDir)))
             {

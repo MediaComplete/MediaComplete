@@ -26,7 +26,7 @@ namespace MSOE.MediaComplete.Test
         {
             _homeDir = FileHelper.CreateDirectory("SortingTestHomeDir");
             _importDir = FileHelper.CreateDirectory("SortingTestImportDir");
-            SettingWrapper.SetHomeDir(_homeDir.FullName);
+            SettingWrapper.HomeDir = _homeDir.FullName;
         }
 
         [TestCleanup]
@@ -49,7 +49,7 @@ namespace MSOE.MediaComplete.Test
             FileHelper.CreateFile(new DirectoryInfo(normalFilePath), Constants.FileTypes.ValidMp3);
 
             var subject = new Sorter(GetNormalSettings());
-            var task  = subject.CalculateActions();
+            var task  = subject.CalculateActionsAsync();
             SpinWait.SpinUntil(() => task.IsCompleted);
 
             Assert.AreEqual(0, subject.UnsortableCount, "Sorter shouldn't have invalid files!");
@@ -79,7 +79,7 @@ namespace MSOE.MediaComplete.Test
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
 
             var subject = new Sorter(GetNormalSettings());
-            var task = subject.CalculateActions();
+            var task = subject.CalculateActionsAsync();
             task.Wait();
 
             Assert.AreEqual(1, subject.UnsortableCount, "Sorter didn't count up the invalid file!");
@@ -105,7 +105,7 @@ namespace MSOE.MediaComplete.Test
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
 
             var subject = new Sorter(GetNormalSettings());
-            var task = subject.CalculateActions();
+            var task = subject.CalculateActionsAsync();
             SpinWait.SpinUntil(() => task.IsCompleted);
 
             Assert.AreEqual(1, subject.UnsortableCount, "Sorter should still flag the file!");
@@ -135,7 +135,7 @@ namespace MSOE.MediaComplete.Test
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
 
             var subject = new Sorter(GetNormalSettings());
-            var task = subject.CalculateActions();
+            var task = subject.CalculateActionsAsync();
             SpinWait.SpinUntil(() => task.IsCompleted);
 
             Assert.AreEqual(1, subject.UnsortableCount, "Sorter should still flag the file!");
@@ -160,7 +160,7 @@ namespace MSOE.MediaComplete.Test
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
 
             var subject = new Sorter(GetNormalSettings());
-            var task = subject.CalculateActions();
+            var task = subject.CalculateActionsAsync();
             SpinWait.SpinUntil(() => task.IsCompleted);
 
             Assert.AreEqual(0, subject.UnsortableCount, "The file should be sortable!");
@@ -193,7 +193,7 @@ namespace MSOE.MediaComplete.Test
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
 
             var subject = new Sorter(GetNormalSettings());
-            var task = subject.CalculateActions();
+            var task = subject.CalculateActionsAsync();
             SpinWait.SpinUntil(() => task.IsCompleted);
 
             Assert.AreEqual(0, subject.UnsortableCount, "The file should be sortable!");
@@ -219,7 +219,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod, Timeout(30000)]
         public void Import_CausesSort_IgnoresOldFiles()
         {
-            SettingWrapper.SetIsSorting(true);
+            SettingWrapper.IsSorting = true;
             // ReSharper disable once ObjectCreationAsStatement
             new Sorter(null);// Force the static initializer to fire.
             var decoyFile = FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidMp3); // Deliberately put an unsorted file in
@@ -229,7 +229,7 @@ namespace MSOE.MediaComplete.Test
             var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
 
-            var task = new Importer(_homeDir.FullName).ImportDirectory(_importDir.FullName, true);
+            var task = new Importer(_homeDir.FullName).ImportDirectoryAsync(_importDir.FullName, true);
             while (!task.IsCompleted)
             {
 
@@ -248,13 +248,13 @@ namespace MSOE.MediaComplete.Test
         [TestMethod, Timeout(30000)]
         public void Import_NoSort_IgnoresNewFiles()
         {
-            SettingWrapper.SetIsSorting(false);
+            SettingWrapper.IsSorting = false;
             // ReSharper disable once ObjectCreationAsStatement
             new Sorter(null); // Force the static initializer to fire.
             FileHelper.CreateFile(_importDir, Constants.FileTypes.ValidMp3);
             var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
 
-            var task = new Importer(_homeDir.FullName).ImportDirectory(_importDir.FullName, true);
+            var task = new Importer(_homeDir.FullName).ImportDirectoryAsync(_importDir.FullName, true);
             while (!task.IsCompleted)
             {
 

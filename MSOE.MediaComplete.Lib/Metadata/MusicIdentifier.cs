@@ -12,7 +12,7 @@ using TagLib;
 
 namespace MSOE.MediaComplete.Lib.Metadata
 {
-    public class MusicIdentifier
+    public static class MusicIdentifier
     {
         private const int Freq = 22050;
         private const int SampleSeconds = 30;

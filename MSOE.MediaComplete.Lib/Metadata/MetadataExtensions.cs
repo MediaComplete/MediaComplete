@@ -31,7 +31,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /// <returns></returns>
         public static IEnumerable<FileInfo> GetMusicFiles(this IEnumerable<FileInfo> dir)
         {
-            return dir.Where(child => Constants.MusicFileExtensions.Any((e => child.Name.EndsWith(e))));
+            return dir.Where(child => Constants.MusicFileExtensions.Any((e => child.Name.EndsWith(e, StringComparison.Ordinal))));
         }
 
         /// <summary>
