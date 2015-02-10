@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -13,7 +14,7 @@ namespace MSOE.MediaComplete
         /// <summary>
         /// the player object
         /// </summary>
-        private Player _player;
+        private IPlayer _player;
 
         /// <summary>
         /// initializes the player
@@ -22,6 +23,12 @@ namespace MSOE.MediaComplete
         {
             PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
             _player = Player.Instance;
+            _player.PlaybackEnded += AutomaticStop;
+        }
+
+        private void AutomaticStop(object sender, EventArgs eventArgs)
+        {
+            Stop();
         }
 
         /// <summary>
@@ -84,7 +91,20 @@ namespace MSOE.MediaComplete
             PlayPauseButton.SetResourceReference(StyleProperty, "PauseButton");
         }
 
+        /// <summary>
+        /// stops the song and changes the UI play/pause button to show the play icon
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void StopButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Stop();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void Stop()
         {
             _player.Stop();
             PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");

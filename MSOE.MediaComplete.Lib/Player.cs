@@ -6,7 +6,18 @@ using TagLib;
 
 namespace MSOE.MediaComplete.Lib
 {
-    public class Player
+    public interface IPlayer
+    {
+        void Play(FileInfo file);
+        void Pause();
+        void Resume();
+        void Stop();
+        //void Seek();
+        event EventHandler PlaybackEnded;
+        PlaybackState PlaybackState { get; }
+    }
+
+    public class Player : IPlayer
     {
         #region singleton stuff
 
@@ -29,6 +40,7 @@ namespace MSOE.MediaComplete.Lib
         private Player() { }
         #endregion
 
+        #region properties
         /// <summary>
         /// the wave object that controls the play/pause of the song
         /// </summary>
@@ -43,7 +55,9 @@ namespace MSOE.MediaComplete.Lib
         /// the state of the player
         /// </summary>
         public PlaybackState PlaybackState { get; private set; }
+        #endregion
 
+        #region IPlayer methods
         /// <summary>
         /// sets up the player to play the file
         /// </summary>
@@ -82,6 +96,7 @@ namespace MSOE.MediaComplete.Lib
             }
 
             _waveOut = new WaveOut();
+            _waveOut.PlaybackStopped += WaveOutOnPlaybackStopped;
             _waveOut.Init(_reader);
             _waveOut.Play();
             PlaybackState = PlaybackState.Playing;
@@ -126,11 +141,29 @@ namespace MSOE.MediaComplete.Lib
             PlaybackState = PlaybackState.Stopped;
         }
 
-        public void Seek()
+        /// <summary>
+        /// event that fires when the player stops automatically
+        /// </summary>
+        public event EventHandler PlaybackEnded;
+
+        //public void Seek()
+        //{
+        //    //TODO: MC-41 - Seeking functionality
+        //    throw new NotImplementedException("Seek is not yet implemented.");
+        //    //_reader.Seek(10000000, SeekOrigin.Current);//seeks ahead 10000000 bytes in the file?
+        //}
+        #endregion
+
+        #region private methods
+        /// <summary>
+        /// passes the event from _waveout to the caller
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="stoppedEventArgs"></param>
+        private void WaveOutOnPlaybackStopped(object sender, StoppedEventArgs stoppedEventArgs)
         {
-            //TODO: MC-41 - Seeking functionality
-            throw new NotImplementedException("Seek is not yet implemented.");
-            //_reader.Seek(10000000, SeekOrigin.Current);//seeks ahead 10000000 bytes in the file?
+            if (PlaybackEnded != null) PlaybackEnded(sender, stoppedEventArgs);
         }
+        #endregion
     }
 }
