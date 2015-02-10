@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 
 namespace MSOE.MediaComplete.Lib
 {
@@ -24,29 +25,6 @@ namespace MSOE.MediaComplete.Lib
                 dir = dir.Parent;
             }
             return dir != null;
-        }
-
-        /// <summary>
-        /// Returns the 0-indexed parent directory of a given file. 
-        /// </summary>
-        /// <param name="file">The invoking file.</param>
-        /// <param name="n">The number of directories to go upwards</param>
-        /// <returns>The n'th upward directory, where 0 is file's containing directory. If n is greater than the number of parents, it will return the root directory.</returns>
-        public static DirectoryInfo Parent(this FileInfo file, int n)
-        {
-            var dir = file.Directory;
-            if (dir == null)
-            {
-                return null;
-            }
-
-            var i = 0;
-            while (i < n && dir.Parent != null)
-            {
-                dir = dir.Parent;
-                i++;
-            }
-            return dir;
         }
 
         /// <summary>
@@ -95,7 +73,23 @@ namespace MSOE.MediaComplete.Lib
 
             return fileName;
 
-        }  
+        }
+
+        /// <summary>
+        /// Removes empty directories and subdirectories from the given root directory
+        /// </summary>
+        /// <param name="rootInfo">The root of the tree</param>
+        public static void ScrubEmptyDirectories(this DirectoryInfo rootInfo)
+        {
+            foreach (var child in rootInfo.EnumerateDirectories("*", SearchOption.AllDirectories))
+            {
+                ScrubEmptyDirectories(child);
+                if (!child.EnumerateFileSystemInfos().Any())
+                {
+                    child.Delete();
+                }
+            }
+        }
     }
 
     public class DirectoryEqualityComparer : IEqualityComparer<DirectoryInfo>

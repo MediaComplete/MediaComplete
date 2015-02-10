@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using MSOE.MediaComplete.Lib.Metadata;
 
 namespace MSOE.MediaComplete.Lib.Sorting
 {
@@ -11,7 +12,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
 
         public static void SetSorting(List<MetaAttribute> oldSort, List<MetaAttribute> newSort)
         {
-            _shouldSort = !oldSort.SequenceEqual(newSort) && SettingWrapper.GetIsSorting();
+            _shouldSort = !oldSort.SequenceEqual(newSort) && SettingWrapper.IsSorting;
         }
 
         public static bool GetSorting()

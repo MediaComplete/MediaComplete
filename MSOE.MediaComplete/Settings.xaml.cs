@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media;
 using MSOE.MediaComplete.Lib;
+using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Sorting;
 using Button = System.Windows.Controls.Button;
 using ComboBox = System.Windows.Controls.ComboBox;
@@ -36,23 +37,23 @@ namespace MSOE.MediaComplete
         {
 
             InitializeComponent();
-            TxtboxSelectedFolder.Text = SettingWrapper.GetHomeDir();
-            LblInboxFolder.Content = SettingWrapper.GetInboxDir();
-            ComboBoxPollingTime.SelectedValue = SettingWrapper.GetPollingTime().ToString(CultureInfo.InvariantCulture);
-            CheckboxPolling.IsChecked = SettingWrapper.GetIsPolling();
-            CheckboxShowImportDialog.IsChecked = SettingWrapper.GetShowInputDialog();
-            CheckBoxSorting.IsChecked = SettingWrapper.GetIsSorting();
+            TxtboxSelectedFolder.Text = SettingWrapper.HomeDir;
+            LblInboxFolder.Content = SettingWrapper.InboxDir;
+            ComboBoxPollingTime.SelectedValue = SettingWrapper.PollingTime.ToString(CultureInfo.InvariantCulture);
+            CheckboxPolling.IsChecked = SettingWrapper.IsPolling;
+            CheckboxShowImportDialog.IsChecked = SettingWrapper.ShowInputDialog;
+            CheckBoxSorting.IsChecked = SettingWrapper.IsSorting;
             PollingCheckBoxChanged(CheckboxPolling, null);
-            if (SettingWrapper.GetLayout().Equals(_layoutsDict[LayoutType.Pink]))
+            if (SettingWrapper.Layout.Equals(_layoutsDict[LayoutType.Pink]))
             {
                 PinkCheck.IsChecked = true;
             }
-            else if (SettingWrapper.GetLayout().Equals(_layoutsDict[LayoutType.Dark]))
+            else if (SettingWrapper.Layout.Equals(_layoutsDict[LayoutType.Dark]))
             {
                 DarkCheck.IsChecked = true;
             }
             _comboBoxes = new List<ComboBox>();
-            _sortOrderList= SortHelper.ConvertToString(SettingWrapper.GetSortOrder());
+            _sortOrderList= SortHelper.ConvertToString(SettingWrapper.SortOrder);
             _showComboBox = new List<bool>();
             LoadDictionary();
             LoadSortListBox();
@@ -278,12 +279,12 @@ namespace MSOE.MediaComplete
         {
             // add settings here as they are added to the UI
             var homeDir = TxtboxSelectedFolder.Text;
-            if (!homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.CurrentCulture)))
+            if (homeDir != null && !homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.CurrentCulture), StringComparison.Ordinal))
             {
                 homeDir += Path.DirectorySeparatorChar;
             }
             var inboxDir = (string) LblInboxFolder.Content;
-            if (!inboxDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.CurrentCulture)))
+            if (!inboxDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.CurrentCulture), StringComparison.Ordinal))
             {
                 inboxDir += Path.DirectorySeparatorChar;
             }
@@ -294,20 +295,24 @@ namespace MSOE.MediaComplete
                 var resourceDict = System.Windows.Application.LoadComponent(dictUri) as ResourceDictionary;
                 System.Windows.Application.Current.Resources.MergedDictionaries.Clear();
                 System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDict);
-                SettingWrapper.SetLayout(_layoutsDict[_changedType]);
+                SettingWrapper.Layout = _layoutsDict[_changedType];
 
                 _layoutHasChanged = false;
-            }SettingWrapper.SetHomeDir(homeDir);
+            }
+            
+            SettingWrapper.HomeDir =homeDir;
+            SettingWrapper.InboxDir =inboxDir;
+            SettingWrapper.PollingTime = Convert.ToDouble(ComboBoxPollingTime.SelectedValue.ToString());
+            SettingWrapper.IsPolling = CheckboxPolling.IsChecked.GetValueOrDefault(false);
+            SettingWrapper.ShowInputDialog = CheckboxShowImportDialog.IsChecked.GetValueOrDefault(false);
+            SettingWrapper.IsSorting = CheckBoxSorting.IsChecked.GetValueOrDefault(false);
 
-            SettingWrapper.SetInboxDir(inboxDir);
-            SettingWrapper.SetPollingTime(ComboBoxPollingTime.SelectedValue);
-            SettingWrapper.SetIsPolling(CheckboxPolling.IsChecked.GetValueOrDefault(false));
-            SettingWrapper.SetShowInputDialog(CheckboxShowImportDialog.IsChecked.GetValueOrDefault(false));
-            SettingWrapper.SetIsSorting(CheckBoxSorting.IsChecked.GetValueOrDefault(false));
-
-            SettingWrapper.SetSortOrder(SortHelper.ConvertToMetaAttribute(_sortOrderList));
+            SettingWrapper.SortOrder = SortHelper.ConvertToMetaAttribute(_sortOrderList);
             SettingWrapper.Save();
 
+
+            if (!Directory.Exists(SettingWrapper.MusicDir))
+                Directory.CreateDirectory(SettingWrapper.MusicDir);
             Close();
         }
 
@@ -356,7 +361,7 @@ namespace MSOE.MediaComplete
             var resourceDict = System.Windows.Application.LoadComponent(dictUri) as ResourceDictionary;
             System.Windows.Application.Current.Resources.MergedDictionaries.Clear();
             System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDict);
-            SettingWrapper.SetLayout(_layoutsDict[_changedType]);
+            SettingWrapper.Layout =_layoutsDict[_changedType];
 
             SettingWrapper.Save();
         }

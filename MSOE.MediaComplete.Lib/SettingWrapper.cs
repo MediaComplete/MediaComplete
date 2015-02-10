@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Properties;
 using MSOE.MediaComplete.Lib.Sorting;
 
@@ -10,17 +11,8 @@ namespace MSOE.MediaComplete.Lib
     /// <summary>
     /// Used to wrap the settings object and encapsulate its use, while allowing ats access in both the Lib project and the UI project
     /// </summary>
-    public class SettingWrapper
+    public static class SettingWrapper
     {
-        private const string HomeDir = "HomeDir";
-        private const string InboxDir = "InboxDir";
-        private const string PollingTime = "PollingTime";
-        private const string IsPolling = "IsPolling";
-        private const string ShowInputDialog = "ShowInputDialog";
-        private const string Layout = "Layout";
-        private const string IsSorting = "IsSorting";
-        private const string SortingOrder = "SortingOrder";
-
         public static event SettingsChangedListener RaiseSettingEvent = delegate {};
         public delegate void SettingsChangedListener();
 
@@ -28,131 +20,105 @@ namespace MSOE.MediaComplete.Lib
         /// Gets the home directory from the settings
         /// </summary>
         /// <returns>home directory path</returns>
-        public static string GetHomeDir()
+        public static string HomeDir
         {
-            return (string)Settings.Default[HomeDir];
+            get { return (string)Settings.Default["HomeDir"]; }
+            set { Settings.Default["HomeDir"] = value; }
         }
 
         /// <summary>
-        /// Sets the home directory path
+        /// Gets the music directory from the settings
         /// </summary>
-        /// <param name="homeDir">path to set</param>
-        public static void SetHomeDir(string homeDir)
+        /// <returns>music directory path</returns>
+        public static string MusicDir
         {
-            Settings.Default[HomeDir] = homeDir;
+            get { return HomeDir + Settings.Default["MusicDir"]; }
         }
-
+        /// <summary>
+        /// Gets the playlist directory from the settings
+        /// </summary>
+        /// <returns>playlist directory path</returns>
+        public static string PlaylistDir
+        {
+            get { return HomeDir + Settings.Default["PlaylistDir"]; }
+        }
         /// <summary>
         /// gets the inbox directory path
         /// </summary>
         /// <returns>inbox directory path</returns>
-        public static string GetInboxDir()
+        public static string InboxDir
         {
-            return (string)Settings.Default[InboxDir];
-        }
-
-        /// <summary>
-        /// sets the inbox directory path
-        /// </summary>
-        /// <param name="inboxDir">path to set</param>
-        public static void SetInboxDir(string inboxDir)
-        {
-            Settings.Default[InboxDir] = inboxDir;
+            get { return (string)Settings.Default["InboxDir"]; }
+            set { Settings.Default["InboxDir"] = value; }
         }
 
         /// <summary>
         /// gets the polling time from the settings
         /// </summary>
         /// <returns>the polling interval</returns>
-        public static double GetPollingTime()
+        public static double PollingTime
         {
-            return Convert.ToDouble(Settings.Default[PollingTime]);
-        }
-
-        /// <summary>
-        /// sets the polling interval 
-        /// </summary>
-        /// <param name="pollingTime">interval to set in minutes</param>
-        public static void SetPollingTime(object pollingTime)
-        {
-            Settings.Default[PollingTime] = pollingTime;
+            get { return Convert.ToDouble(Settings.Default["PollingTime"]); } 
+            set { Settings.Default["PollingTime"] = value; }
         }
 
         /// <summary>
         /// gets the IsPolling boolean from settings
         /// </summary>
         /// <returns>IsPolling is true if polling is desired, false if not desired</returns>
-        public static bool GetIsPolling()
+        public static bool IsPolling
         {
-            return (bool)Settings.Default[IsPolling];
-        }
-
-        /// <summary>
-        /// sets whether the application should poll the inbox location
-        /// </summary>
-        /// <param name="isPolling">boolean to set</param>
-        public static void SetIsPolling(bool isPolling)
-        {
-            Settings.Default[IsPolling] = isPolling;
+            get { return (bool)Settings.Default["IsPolling"]; }
+            set { Settings.Default["IsPolling"] = value; }
         }
 
         /// <summary>
         /// gets whether the application should show the inbox import dialog
         /// </summary>
         /// <returns>true if the dialog is to be shown, false if it should not show</returns>
-        public static bool GetShowInputDialog()
+        public static bool ShowInputDialog
         {
-            return (bool)Settings.Default[ShowInputDialog];
-        }
+            get { return (bool)Settings.Default["ShowInputDialog"]; }
+            set { Settings.Default["ShowInputDialog"] = value; }
 
-        /// <summary>
-        /// sets whether the inbox import dialog should be shown
-        /// </summary>
-        /// <param name="showInputDialog">bool to set</param>
-        public static void SetShowInputDialog(bool showInputDialog)
-        {
-            Settings.Default[ShowInputDialog] = showInputDialog;
         }
         /// <summary>
         /// gets the IsSorting boolean from settings
         /// </summary>
         /// <returns>IsSorting is true if automatically sorting is desired, false if not desired</returns>
-        public static bool GetIsSorting()
+        public static bool IsSorting
         {
-            return (bool)Settings.Default[IsSorting];
+            get { return (bool)Settings.Default["IsSorting"]; }
+            set { Settings.Default["IsSorting"] = value; }
         }
 
-        /// <summary>
-        /// sets whether the application should sort automatically
-        /// </summary>
-        /// <param name="isSorting">boolean to set</param>
-        public static void SetIsSorting(bool isSorting)
+        public static string Layout
         {
-            Settings.Default[IsSorting] = isSorting;
+            get { return (string)Settings.Default["Layout"]; }
+            set { Settings.Default["Layout"] = value; }
         }
-
+        
         /// <summary>
         /// gets the SortOrder list from settings
         /// </summary>
         /// <returns>The order the sort will perform in</returns>
-        public static List<MetaAttribute> GetSortOrder()
+        public static List<MetaAttribute> SortOrder
         {
-            var stringList = ((StringCollection) Settings.Default[SortingOrder]).Cast<string>().ToList();
-            var metaAttrList = stringList.Select(x => (MetaAttribute) Enum.Parse(typeof(MetaAttribute), x)).ToList();
-            return metaAttrList;
-        }
+            get
+            {
+                var stringList = ((StringCollection)Settings.Default["SortingOrder"]).Cast<string>().ToList();
+                var metaAttrList = stringList.Select(x => (MetaAttribute)Enum.Parse(typeof(MetaAttribute), x)).ToList();
+                return metaAttrList;
+            }
+            set
+            {
 
-        /// <summary>
-        /// Sets the order of the sort
-        /// </summary>
-        /// <param name="sortOrder">list to set</param>
-        public static void SetSortOrder(List<MetaAttribute> sortOrder)
-        {
-
-            SortHelper.SetSorting(GetSortOrder(), sortOrder);
-            var collection = new StringCollection();
-            collection.AddRange(sortOrder.Select(x => x.ToString()).ToArray());
-            Settings.Default[SortingOrder] = collection;
+                SortHelper.SetSorting(SortOrder, value);
+                var collection = new StringCollection();
+                collection.AddRange(value.Select(x => x.ToString()).ToArray());
+                Settings.Default["SortingOrder"] = collection;
+            }
+            
         }
 
         /// <summary>
@@ -164,15 +130,6 @@ namespace MSOE.MediaComplete.Lib
             RaiseSettingEvent.Invoke();
         }
 
-        public static string GetLayout()
-        {
-            return (string)Settings.Default[Layout];
-        }
-
-        public static void SetLayout(string layout)
-        {
-            Settings.Default[Layout] = layout;
-        }
 
     }
 }

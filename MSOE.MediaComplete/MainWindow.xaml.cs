@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using MSOE.MediaComplete.Lib.Import;
+using MSOE.MediaComplete.Lib.Metadata;
+using System.Threading;
 using WinForms = System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using MSOE.MediaComplete.Lib;
@@ -23,6 +26,7 @@ namespace MSOE.MediaComplete
     {
         private readonly List<TextBox>_changedBoxes;
         private Settings _settings;
+        private readonly Timer _refreshTimer;
 
         public MainWindow()
         {
@@ -31,29 +35,33 @@ namespace MSOE.MediaComplete
             _settings = new Settings();
             _changedBoxes = new List<TextBox>();
 
-            var homeDir = SettingWrapper.GetHomeDir() ??
+            var homeDir = SettingWrapper.MusicDir ??
                           Path.GetPathRoot(Environment.SystemDirectory);
+
             ChangeSortMusic();
             StatusBarHandler.Instance.RaiseStatusBarEvent += HandleStatusBarChangeEvent;
 
-            if (!homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
+            if (!homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal))
             {
                 homeDir += Path.DirectorySeparatorChar;
             }
             
-            var dictUri  = new Uri(SettingWrapper.GetLayout(), UriKind.Relative);
+            var dictUri  = new Uri(SettingWrapper.Layout, UriKind.Relative);
             
             var resourceDict = Application.LoadComponent(dictUri) as ResourceDictionary;
             Application.Current.Resources.MergedDictionaries.Clear();
             Application.Current.Resources.MergedDictionaries.Add(resourceDict);
 
-            if (SettingWrapper.GetIsPolling())
+            if (SettingWrapper.IsPolling)
             {
-                Polling.Instance.TimeInMinutes = SettingWrapper.GetPollingTime();
+                Polling.Instance.TimeInMinutes = SettingWrapper.PollingTime;
 
                 Polling.Instance.Start();
             }
             Directory.CreateDirectory(homeDir);
+            _refreshTimer = new Timer(TimerProc);
+            
+            
             InitEvents();
 
             InitTreeView();
@@ -61,17 +69,18 @@ namespace MSOE.MediaComplete
 
         private void InitEvents()
         {
-            Polling.InboxFilesDetected += ImportFromInbox;
+            Polling.InboxFilesDetected += ImportFromInboxAsync;
             SettingWrapper.RaiseSettingEvent += HandleSettingEvent;
             // ReSharper disable once ObjectCreationAsStatement
-            new Sorter(null, null);
+            new Sorter(null);
         }
 
-        private void HandleStatusBarChangeEvent(string message, StatusBarHandler.StatusIcon icon)
+        private void HandleStatusBarChangeEvent(string format, string message, StatusBarHandler.StatusIcon icon, params object[] extraArgs)
         {
             Dispatcher.Invoke(() =>
             {
-                StatusMessage.Text = (message.Length == 0) ? "" : Resources[message].ToString();
+                var args = (new[] {message == null ? "" : Resources[message]}).Concat(extraArgs);
+                StatusMessage.Text = String.Format(format, args.ToArray());
                 var sourceUri = new Uri("./Resources/" + icon + ".png", UriKind.Relative);
                 StatusIcon.Source = new BitmapImage(sourceUri);
             });
@@ -84,9 +93,9 @@ namespace MSOE.MediaComplete
 
         private void ChangeSortMusic()
         {
-            var content = SettingWrapper.GetIsSorting() ? Resources["Toolbar-SortMusic-Tooltip"].ToString() : Resources["Toolbar-SortMusicDisabled-Tooltip"].ToString();
+            var content = SettingWrapper.IsSorting ? Resources["Toolbar-SortMusic-Tooltip"].ToString() : Resources["Toolbar-SortMusicDisabled-Tooltip"].ToString();
             SortMusic.ToolTip = content;
-            SortMusic.IsEnabled = SettingWrapper.GetIsSorting();
+            SortMusic.IsEnabled = SettingWrapper.IsSorting;
         }
 
         protected override void OnClosed(EventArgs e)
@@ -95,15 +104,15 @@ namespace MSOE.MediaComplete
             Application.Current.Shutdown();
         }
 
-        private async void ImportFromInbox(IEnumerable<FileInfo> files)
+        private async void ImportFromInboxAsync(IEnumerable<FileInfo> files)
         {
-            if (SettingWrapper.GetShowInputDialog())
+            if (SettingWrapper.ShowInputDialog)
             {
                 Dispatcher.BeginInvoke(new Action(() => InboxImportDialog.Prompt(this, files)));
             }
             else
             {
-                await new Importer(SettingWrapper.GetHomeDir()).ImportFiles(files, false);
+                await new Importer(SettingWrapper.MusicDir).ImportFilesAsync(files, false);
             }
         }
         
@@ -134,7 +143,7 @@ namespace MSOE.MediaComplete
             ImportResults results;
             try
             {
-                results = await new Importer(SettingWrapper.GetHomeDir()).ImportFiles(fileDialog.FileNames.Select(p => new FileInfo(p)).ToList(), true);
+                results = await new Importer(SettingWrapper.MusicDir).ImportFilesAsync(fileDialog.FileNames.Select(p => new FileInfo(p)).ToList(), true);
             }
             catch (InvalidImportException)
             {
@@ -160,7 +169,8 @@ namespace MSOE.MediaComplete
 
             if (folderDialog.ShowDialog() != WinForms.DialogResult.OK) return;
             var selectedDir = folderDialog.SelectedPath;
-            var results = await new Importer(SettingWrapper.GetHomeDir()).ImportDirectory(selectedDir, true);
+
+            var results = await new Importer(SettingWrapper.MusicDir).ImportDirectoryAsync(selectedDir, true);
             if (results.FailCount > 0)
             {
                 MessageBox.Show(this,
@@ -177,7 +187,7 @@ namespace MSOE.MediaComplete
         public void RefreshTreeView()
         {
             //Create Parent node
-            var firstNode = new FolderTreeViewItem { Header = SettingWrapper.GetHomeDir(), ParentItem = null};
+            var firstNode = new FolderTreeViewItem { Header = SettingWrapper.MusicDir, ParentItem = null};
 
             SongTree.Items.Clear();
 
@@ -203,7 +213,7 @@ namespace MSOE.MediaComplete
         {
             RefreshTreeView();
 
-            var watcher = new FileSystemWatcher(SettingWrapper.GetHomeDir())
+            var watcher = new FileSystemWatcher(SettingWrapper.MusicDir)
             {
                 NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName
             };
@@ -244,9 +254,10 @@ namespace MSOE.MediaComplete
             {
                 PopulateSongTree(dir, songTree, dirItem, false);
             }
-            foreach (var file in TreeViewBackend.GetFiles(dirInfo).GetMusicFiles())
+
+            foreach (var x in TreeViewBackend.GetFiles(dirInfo).GetMusicFiles().Select(file => new SongTreeViewItem { Header = file.Name, ParentItem = dirItem }))
             {
-                songTree.Items.Add(file);
+                songTree.Items.Add(x);
             }
         }
 
@@ -303,7 +314,12 @@ namespace MSOE.MediaComplete
             return (FolderTree.SelectedItems.Contains(folder.ParentItem) || ContainsParent(folder.ParentItem));
         }
 
-        private static void OnChanged(object source, FileSystemEventArgs e)
+        private void OnChanged(object source, FileSystemEventArgs e)
+        {
+            _refreshTimer.Change(500, Timeout.Infinite);
+        }
+        
+        private void TimerProc(object state)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -317,7 +333,7 @@ namespace MSOE.MediaComplete
 
         private async void Toolbar_AutoIDMusic_Click(object sender, RoutedEventArgs e)
         {
-            // TODO mass ID of multi-selected songs or folders
+            // TODO (MC-45) mass ID of multi-selected songs and folders
             foreach (var selection in from object item in SongTree.SelectedItems select item as SongTreeViewItem)
             {
                 try
@@ -327,7 +343,10 @@ namespace MSOE.MediaComplete
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message); // TODO status bar error message
+                    // TODO (MC-125) Logging
+                    StatusBarHandler.Instance.ChangeStatusBarMessage(
+                        String.Format(Resources["MusicIdentification-Error"].ToString(), ex.Message),
+                        StatusBarHandler.StatusIcon.Error);
                 }
             }
         }
@@ -335,8 +354,7 @@ namespace MSOE.MediaComplete
         private async void ContextMenu_AutoIDMusic_Click(object sender, RoutedEventArgs e)
         {
             // Access the targetted song 
-            // TODO mass ID of multi-selected songs
-            // TODO provide this context menu item for folders
+            // TODO (MC-45) mass ID of multi-selected songs and folders
             var menuItem = sender as MenuItem;
             if (menuItem == null)
                 return;
@@ -351,7 +369,10 @@ namespace MSOE.MediaComplete
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message); // TODO status bar error message
+                    // TODO (MC-125) Logging
+                    StatusBarHandler.Instance.ChangeStatusBarMessage(
+                        String.Format(Resources["MusicIdentification-Error"].ToString(), ex.Message), 
+                        StatusBarHandler.StatusIcon.Error);
                 }
             }
             
@@ -364,13 +385,14 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private async void Toolbar_SortMusic_Click(object sender, RoutedEventArgs e)
         {
-            // TODO - obtain from settings file, make configurable
+            // TODO (MC-43) obtain from settings file, make configurable
             var settings = new SortSettings
             {
-                SortOrder = SettingWrapper.GetSortOrder()
+                SortOrder = new List<MetaAttribute> { MetaAttribute.Artist, MetaAttribute.Album }
             };
 
-            var sorter = new Sorter(new DirectoryInfo(SettingWrapper.GetHomeDir()), settings);
+            var sorter = new Sorter(settings);
+            await sorter.CalculateActionsAsync();    
 
             if (sorter.Actions.Count == 0) // Nothing to do! Notify and return.
             {
@@ -387,15 +409,8 @@ namespace MSOE.MediaComplete
                 Resources["Dialog-SortLibrary-Title"].ToString(), MessageBoxButton.YesNo, MessageBoxImage.Question);
 
             if (result != MessageBoxResult.Yes) return;
-            try
-            {
-                await sorter.PerformSort();
-            }
-            catch (IOException ioe)
-            {
-                // TODO - This should get localized and put in the application status bar (TBD)
-                MessageBox.Show("Encountered an error while sorting files: " + ioe.Message);
-            }
+            
+            sorter.PerformSort();
         }
         private void TextChanged(object sender, TextChangedEventArgs e)
         {
