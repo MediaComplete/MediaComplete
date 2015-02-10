@@ -250,15 +250,15 @@ namespace MSOE.MediaComplete.Test
         {
             var defaultSortOrder = SortHelper.GetDefault();
             var newSortOrder = new List<MetaAttribute> {MetaAttribute.Album, MetaAttribute.Artist};
-            SettingWrapper.SetIsSorting(true);
-            SettingWrapper.SetSortOrder(defaultSortOrder);
+            SettingWrapper.IsSorting = true;
+            SettingWrapper.SortOrder = defaultSortOrder;
             // ReSharper disable once ObjectCreationAsStatement
-            new Sorter(null, null); // Force the static initializer to fire.
+            new Sorter(null); // Force the static initializer to fire.
             FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidMp3);
             var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "The Money Store" +
                 Path.DirectorySeparatorChar + "Death Grips" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
 
-            SettingWrapper.SetSortOrder(newSortOrder);
+            SettingWrapper.SortOrder = newSortOrder;
             SettingWrapper.Save();
 
             while (!new FileInfo(normalFileDest).Exists)
@@ -275,14 +275,14 @@ namespace MSOE.MediaComplete.Test
         {
             var defaultSortOrder = SortHelper.GetDefault();
             var newSortOrder = new List<MetaAttribute> { MetaAttribute.Album, MetaAttribute.Artist };
-            SettingWrapper.SetIsSorting(false);
-            SettingWrapper.SetSortOrder(defaultSortOrder);
+            SettingWrapper.IsSorting = false;
+            SettingWrapper.SortOrder = defaultSortOrder;
             // ReSharper disable once ObjectCreationAsStatement
-            new Sorter(null, null); // Force the static initializer to fire.
+            new Sorter(null); // Force the static initializer to fire.
             FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidMp3);
             var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
 
-            SettingWrapper.SetSortOrder(newSortOrder);
+            SettingWrapper.SortOrder = newSortOrder;
             SettingWrapper.Save();
 
             Thread.Sleep(3000);
@@ -298,10 +298,10 @@ namespace MSOE.MediaComplete.Test
         {
             var defaultSortOrder = SortHelper.GetDefault();
             var newSortOrder = new List<MetaAttribute> { MetaAttribute.Album, MetaAttribute.Artist };
-            SettingWrapper.SetIsSorting(true);
-            SettingWrapper.SetSortOrder(defaultSortOrder);
+            SettingWrapper.IsSorting = true;
+            SettingWrapper.SortOrder = defaultSortOrder;
             // ReSharper disable once ObjectCreationAsStatement
-            new Sorter(null, null); // Force the static initializer to fire.
+            new Sorter(null); // Force the static initializer to fire.
             FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidMp3);
             var firstFileDestination = _homeDir.FullName + Path.DirectorySeparatorChar + "The Money Store" +
                 Path.DirectorySeparatorChar + "Death Grips" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
@@ -309,14 +309,14 @@ namespace MSOE.MediaComplete.Test
             var secondFileDestination = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
 
-            SettingWrapper.SetSortOrder(newSortOrder);
+            SettingWrapper.SortOrder = newSortOrder;
             SettingWrapper.Save();
 
             while (!new FileInfo(firstFileDestination).Exists)
             {
             }
 
-            SettingWrapper.SetSortOrder(defaultSortOrder);
+            SettingWrapper.SortOrder = defaultSortOrder;
             SettingWrapper.Save();
 
             while (!new FileInfo(secondFileDestination).Exists)
