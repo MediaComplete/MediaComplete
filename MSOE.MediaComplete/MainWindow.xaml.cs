@@ -35,7 +35,7 @@ namespace MSOE.MediaComplete
             _settings = new Settings();
             _changedBoxes = new List<TextBox>();
 
-            var homeDir = SettingWrapper.GetMusicDir() ??
+            var homeDir = SettingWrapper.MusicDir ??
                           Path.GetPathRoot(Environment.SystemDirectory);
 
             ChangeSortMusic();
@@ -46,15 +46,15 @@ namespace MSOE.MediaComplete
                 homeDir += Path.DirectorySeparatorChar;
             }
             
-            var dictUri  = new Uri(SettingWrapper.GetLayout(), UriKind.Relative);
+            var dictUri  = new Uri(SettingWrapper.Layout, UriKind.Relative);
             
             var resourceDict = Application.LoadComponent(dictUri) as ResourceDictionary;
             Application.Current.Resources.MergedDictionaries.Clear();
             Application.Current.Resources.MergedDictionaries.Add(resourceDict);
 
-            if (SettingWrapper.GetIsPolling())
+            if (SettingWrapper.IsPolling)
             {
-                Polling.Instance.TimeInMinutes = SettingWrapper.GetPollingTime();
+                Polling.Instance.TimeInMinutes = SettingWrapper.PollingTime;
 
                 Polling.Instance.Start();
             }
@@ -93,9 +93,9 @@ namespace MSOE.MediaComplete
 
         private void ChangeSortMusic()
         {
-            var content = SettingWrapper.GetIsSorting() ? Resources["Toolbar-SortMusic-Tooltip"].ToString() : Resources["Toolbar-SortMusicDisabled-Tooltip"].ToString();
+            var content = SettingWrapper.IsSorting ? Resources["Toolbar-SortMusic-Tooltip"].ToString() : Resources["Toolbar-SortMusicDisabled-Tooltip"].ToString();
             SortMusic.ToolTip = content;
-            SortMusic.IsEnabled = SettingWrapper.GetIsSorting();
+            SortMusic.IsEnabled = SettingWrapper.IsSorting;
         }
 
         protected override void OnClosed(EventArgs e)
@@ -106,13 +106,13 @@ namespace MSOE.MediaComplete
 
         private async void ImportFromInboxAsync(IEnumerable<FileInfo> files)
         {
-            if (SettingWrapper.GetShowInputDialog())
+            if (SettingWrapper.ShowInputDialog)
             {
                 Dispatcher.BeginInvoke(new Action(() => InboxImportDialog.Prompt(this, files)));
             }
             else
             {
-                await new Importer(SettingWrapper.GetMusicDir()).ImportFilesAsync(files, false);
+                await new Importer(SettingWrapper.MusicDir).ImportFilesAsync(files, false);
             }
         }
         
@@ -143,7 +143,7 @@ namespace MSOE.MediaComplete
             ImportResults results;
             try
             {
-                results = await new Importer(SettingWrapper.GetMusicDir()).ImportFilesAsync(fileDialog.FileNames.Select(p => new FileInfo(p)).ToList(), true);
+                results = await new Importer(SettingWrapper.MusicDir).ImportFilesAsync(fileDialog.FileNames.Select(p => new FileInfo(p)).ToList(), true);
             }
             catch (InvalidImportException)
             {
@@ -170,7 +170,7 @@ namespace MSOE.MediaComplete
             if (folderDialog.ShowDialog() != WinForms.DialogResult.OK) return;
             var selectedDir = folderDialog.SelectedPath;
 
-            var results = await new Importer(SettingWrapper.GetMusicDir()).ImportDirectoryAsync(selectedDir, true);
+            var results = await new Importer(SettingWrapper.MusicDir).ImportDirectoryAsync(selectedDir, true);
             if (results.FailCount > 0)
             {
                 MessageBox.Show(this,
@@ -187,7 +187,7 @@ namespace MSOE.MediaComplete
         public void RefreshTreeView()
         {
             //Create Parent node
-            var firstNode = new FolderTreeViewItem { Header = SettingWrapper.GetMusicDir(), ParentItem = null};
+            var firstNode = new FolderTreeViewItem { Header = SettingWrapper.MusicDir, ParentItem = null};
 
             SongTree.Items.Clear();
 
@@ -213,7 +213,7 @@ namespace MSOE.MediaComplete
         {
             RefreshTreeView();
 
-            var watcher = new FileSystemWatcher(SettingWrapper.GetMusicDir())
+            var watcher = new FileSystemWatcher(SettingWrapper.MusicDir)
             {
                 NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName
             };
@@ -388,8 +388,7 @@ namespace MSOE.MediaComplete
             // TODO (MC-43) obtain from settings file, make configurable
             var settings = new SortSettings
             {
-                SortOrder = new List<MetaAttribute> { MetaAttribute.Artist, MetaAttribute.Album },
-                Root = new DirectoryInfo(SettingWrapper.GetMusicDir())
+                SortOrder = new List<MetaAttribute> { MetaAttribute.Artist, MetaAttribute.Album }
             };
 
             var sorter = new Sorter(settings);
