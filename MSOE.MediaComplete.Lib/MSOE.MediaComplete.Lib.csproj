@@ -41,17 +41,23 @@
     <OutputPath>bin\x86\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="M3U.NET, Version=1.0.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\M3U.NET.1.0.0.1\lib\net45\M3U.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio, Version=1.7.2.19, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NAudio.1.7.2\lib\net35\NAudio.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="policy.2.0.taglib-sharp">
       <HintPath>..\packages\taglib.2.1.0.0\lib\policy.2.0.taglib-sharp.dll</HintPath>
     </Reference>
     <Reference Include="ENMFPdotNet">
       <HintPath>..\packages\ENMFPdotNet.1.1\lib\ENMFPdotNet.dll</HintPath>
-    </Reference>
-    <Reference Include="NAudio">
-      <HintPath>..\packages\NAudio.1.7.1\lib\net35\NAudio.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.5\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -78,6 +84,10 @@
     <Compile Include="Import\ImportTask.cs" />
     <Compile Include="Metadata\IdentifierTask.cs" />
     <Compile Include="Metadata\MetadataExtensions.cs" />
+    <Compile Include="Playlists\Playlist.cs" />
+    <Compile Include="Playlists\Playlists.cs" />
+    <Compile Include="Songs\AbstractSong.cs" />
+    <Compile Include="Songs\LocalSong.cs" />
     <Compile Include="Sorting\SortingTask.cs" />
     <Compile Include="LayoutType.cs" />
     <Compile Include="SystemExtensions.cs" />

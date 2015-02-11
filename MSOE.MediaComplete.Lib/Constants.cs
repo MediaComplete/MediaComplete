@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 
 namespace MSOE.MediaComplete.Lib
 {
@@ -15,12 +17,17 @@ namespace MSOE.MediaComplete.Lib
         /// <summary>
         /// Used for backslashes in folder paths
         /// </summary>
-	    public const string PathSeparator = "\\";
+        public static readonly string PathSeparator = Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture);
 
         /// <summary>
         /// User to filter music files
         /// </summary>
-        public static readonly List<string> MusicFileExtensions = new List<string> { ".mp3", ".wma" };
+        public static readonly IReadOnlyList<string> MusicFileExtensions = new List<string> { ".mp3", ".wma" }.AsReadOnly();
+
+        /// <summary>
+        /// Used to filter and create playlist files
+        /// </summary>
+        public static readonly IReadOnlyList<string> PlaylistFileExtensions = new List<string> { "m3u" }.AsReadOnly();
 
         /// <summary>
         /// The file dialog's wild card for extensions
