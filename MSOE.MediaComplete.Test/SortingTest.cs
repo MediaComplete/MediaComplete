@@ -26,7 +26,7 @@ namespace MSOE.MediaComplete.Test
         {
             _homeDir = FileHelper.CreateDirectory("SortingTestHomeDir");
             _importDir = FileHelper.CreateDirectory("SortingTestImportDir");
-            SettingWrapper.HomeDir = _homeDir.FullName;
+            SettingWrapper.HomeDir = _homeDir.FullName + Path.DirectorySeparatorChar;
         }
 
         [TestCleanup]
@@ -226,7 +226,7 @@ namespace MSOE.MediaComplete.Test
 
             decoyFile.MoveTo(decoyFile.FullName + ".decoy.mp3");
             FileHelper.CreateFile(_importDir, Constants.FileTypes.ValidMp3);
-            var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
+            var normalFileDest = SettingWrapper.MusicDir + Path.DirectorySeparatorChar + "Death Grips" +
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
 
             var task = new Importer(_homeDir.FullName).ImportDirectoryAsync(_importDir.FullName, true);
@@ -254,8 +254,8 @@ namespace MSOE.MediaComplete.Test
             SettingWrapper.SortOrder = defaultSortOrder;
             // ReSharper disable once ObjectCreationAsStatement
             new Sorter(null); // Force the static initializer to fire.
-            FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidMp3);
-            var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "The Money Store" +
+            FileHelper.CreateFile(new DirectoryInfo(SettingWrapper.MusicDir), Constants.FileTypes.ValidMp3);
+            var normalFileDest = SettingWrapper.MusicDir + Path.DirectorySeparatorChar + "The Money Store" +
                 Path.DirectorySeparatorChar + "Death Grips" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
 
             SettingWrapper.SortOrder = newSortOrder;
@@ -302,11 +302,11 @@ namespace MSOE.MediaComplete.Test
             SettingWrapper.SortOrder = defaultSortOrder;
             // ReSharper disable once ObjectCreationAsStatement
             new Sorter(null); // Force the static initializer to fire.
-            FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidMp3);
-            var firstFileDestination = _homeDir.FullName + Path.DirectorySeparatorChar + "The Money Store" +
+            FileHelper.CreateFile(new DirectoryInfo(SettingWrapper.MusicDir), Constants.FileTypes.ValidMp3);
+            var firstFileDestination = SettingWrapper.MusicDir + Path.DirectorySeparatorChar + "The Money Store" +
                 Path.DirectorySeparatorChar + "Death Grips" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
 
-            var secondFileDestination = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
+            var secondFileDestination = SettingWrapper.MusicDir + Path.DirectorySeparatorChar + "Death Grips" +
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
 
             SettingWrapper.SortOrder = newSortOrder;
