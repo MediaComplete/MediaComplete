@@ -79,7 +79,7 @@ namespace MSOE.MediaComplete.Lib
                 inbox.Create();
             }
 
-            var files = inbox.EnumerateFiles("*").GetMusicFiles(); // TODO MC-172 (need to check subdirectories)
+            var files = inbox.EnumerateFiles("*",SearchOption.AllDirectories).GetMusicFiles();
             var fileInfos = files as FileInfo[] ?? files.ToArray();
             if(fileInfos.Any())
             {
