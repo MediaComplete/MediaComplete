@@ -33,9 +33,9 @@
             }
 
             // 4. The API will call this function when the video player is ready.
-            function onPlayerReady(event) {
+            function onPlayerReady(/*event*/) {
                 document.getElementById('debug').innerText = "Player Ready";
-                event.target.playVideo();// - Tyler Evert - commented out for release, 2/10/15
+                // event.target.playVideo(); - Tyler Evert - commented out for release, 2/10/15
             }
 
             // 5. The API calls this function when the player's state changes.
