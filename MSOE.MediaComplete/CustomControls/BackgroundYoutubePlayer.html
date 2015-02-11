@@ -1,6 +1,7 @@
 ﻿<!DOCTYPE html>
 <!-- Code adapted from https://developers.google.com/youtube/iframe_api_reference -->
 <html>
+    <head></head>
     <body>
         <div id="debug">DEBUG MESSAGES HERE</div>
         <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
@@ -32,7 +33,7 @@
             }
 
             // 4. The API will call this function when the video player is ready.
-            function onPlayerReady(event) {
+            function onPlayerReady(/*event*/) {
                 document.getElementById('debug').innerText = "Player Ready";
                 // event.target.playVideo(); - Tyler Evert - commented out for release, 2/10/15
             }

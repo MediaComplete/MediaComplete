@@ -111,12 +111,12 @@ namespace MSOE.MediaComplete
         {
             // add settings here as they are added to the UI
             var homeDir = TxtboxSelectedFolder.Text;
-            if (!homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.CurrentCulture)))
+            if (homeDir != null && !homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.CurrentCulture), StringComparison.Ordinal))
             {
                 homeDir += Path.DirectorySeparatorChar;
             }
             var inboxDir = (string) LblInboxFolder.Content;
-            if (!inboxDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.CurrentCulture)))
+            if (!inboxDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.CurrentCulture), StringComparison.Ordinal))
             {
                 inboxDir += Path.DirectorySeparatorChar;
             }
