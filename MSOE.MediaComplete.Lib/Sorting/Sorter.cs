@@ -140,7 +140,9 @@ namespace MSOE.MediaComplete.Lib.Sorting
             var settings = new SortSettings
             {
                 SortOrder = SettingWrapper.SortOrder,
-                Root = new DirectoryInfo(SettingWrapper.MusicDir)
+                Root = new DirectoryInfo(SettingWrapper.MusicDir),
+                Files =  new DirectoryInfo(SettingWrapper.MusicDir).EnumerateFiles("*", SearchOption.AllDirectories)
+                    .GetMusicFiles()
             };
             var sorter = new Sorter(settings);
             sorter.PerformSort();
