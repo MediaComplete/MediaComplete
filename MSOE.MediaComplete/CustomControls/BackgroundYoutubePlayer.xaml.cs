@@ -16,7 +16,7 @@ namespace MSOE.MediaComplete.CustomControls
         public BackgroundYoutubePlayer()
         {
             InitializeComponent();
-            var embeddedServer = new WebServer(ServePage, new[] { Url });
+            var embeddedServer = new WebServer(ServePage, Url);
             embeddedServer.Run();
 
             YoutubeBrowser.Source = new Uri(Url);
