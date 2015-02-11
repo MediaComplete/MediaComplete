@@ -61,11 +61,10 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private async void okButton_Click(object sender, RoutedEventArgs e)
         {
-            SettingWrapper.SetShowInputDialog(!StopShowingCheckBox.IsChecked.GetValueOrDefault(false));
+            SettingWrapper.ShowInputDialog =!StopShowingCheckBox.IsChecked.GetValueOrDefault(false);
 
             //Do the move
-            var results = await new Importer(SettingWrapper.GetHomeDir()).ImportFilesAsync(_files.Select(f => new FileInfo(f.FullName)).ToList(), false);
-
+            var results = await new Importer(SettingWrapper.MusicDir).ImportFilesAsync(_files.Select(f => new FileInfo(f.FullName)).ToList(), false);
             if (results.FailCount > 0)
             {
                 try
@@ -92,7 +91,7 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void CancelButton_OnClick(object sender, RoutedEventArgs e)
         {
-            SettingWrapper.SetIsPolling(!StopShowingCheckBox.IsChecked.GetValueOrDefault((false)));
+            SettingWrapper.IsPolling =!StopShowingCheckBox.IsChecked.GetValueOrDefault((false));
             Polling.Instance.Reset();
             DialogResult = false;
             SettingWrapper.Save();

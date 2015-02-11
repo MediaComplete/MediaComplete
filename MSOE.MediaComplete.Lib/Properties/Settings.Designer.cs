@@ -50,9 +50,9 @@ namespace MSOE.MediaComplete.Lib.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1")]
-        public string PollingTime {
+        public double PollingTime {
             get {
-                return ((string)(this["PollingTime"]));
+                return ((double)(this["PollingTime"]));
             }
             set {
                 this["PollingTime"] = value;
