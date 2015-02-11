@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
+using MSOE.MediaComplete.Lib.Playing;
 using NAudio.Wave;
 using TagLib;
 

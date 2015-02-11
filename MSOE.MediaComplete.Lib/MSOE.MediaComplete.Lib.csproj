@@ -83,9 +83,12 @@
     <Compile Include="Import\ImportTask.cs" />
     <Compile Include="Metadata\IdentifierTask.cs" />
     <Compile Include="Metadata\MetadataExtensions.cs" />
+    <Compile Include="Playing\IPlayer.cs" />
+    <Compile Include="Playing\INAudioWrapper.cs" />
+    <Compile Include="Playing\NAudioWrapper.cs" />
     <Compile Include="Sorting\SortingTask.cs" />
     <Compile Include="LayoutType.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="Playing\Player.cs" />
     <Compile Include="SystemExtensions.cs" />
     <Compile Include="TreeViewBackend.cs" />
     <Compile Include="StatusBarHandler.cs" />

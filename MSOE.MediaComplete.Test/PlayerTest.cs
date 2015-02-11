@@ -2,6 +2,7 @@
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib;
+using MSOE.MediaComplete.Lib.Playing;
 using MSOE.MediaComplete.Test.Util;
 using NAudio.Wave;
 using TagLib;
@@ -30,7 +31,7 @@ namespace MSOE.MediaComplete.Test
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void Play_NullFileInfo_ReturnWithoutPlaying()
+        public void Play_NullFileInfo_ThrowArgumentNullException()
         {
             _player.Play(null);
             Assert.Fail("Play should have thrown an ArgumentNullException");
