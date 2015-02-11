@@ -114,6 +114,7 @@ namespace MSOE.MediaComplete.Test
 
             var pass = false;
             SettingWrapper.InboxDir = DirectoryPath;
+
             Polling.Instance.TimeInMinutes = 0.0005;
             Polling.InboxFilesDetected += delegate
             {

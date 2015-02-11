@@ -175,6 +175,7 @@
                 <Button Height="60" Width="60" Style="{DynamicResource PreviousButton}" />
                 <Button Height="75" Width="75" Style="{DynamicResource PlayButton}" />
                 <Button Height="60" Width="60" Style="{DynamicResource SkipButton}" />
+                <customControls:BackgroundYoutubePlayer></customControls:BackgroundYoutubePlayer>
             </StackPanel>
         </StackPanel>
         <StackPanel Grid.Row="4" Grid.Column="0" Height="22">
