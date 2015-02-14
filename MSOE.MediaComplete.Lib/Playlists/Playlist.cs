@@ -13,7 +13,12 @@ namespace MSOE.MediaComplete.Lib.Playlists
         private readonly M3UFile _file;
 
         public List<AbstractSong> Songs { get; private set; }
-        public string Name { get; set; }
+        
+        public string Name
+        {
+            get { return _file.Name; }
+            set { _file.Name = value; }
+        }
 
         /// <summary>
         /// Creates a new playlist based on an underlying M3U file.
@@ -30,7 +35,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
         /// </summary>
         public void Save()
         {
-            _file.Files.Clear();
+            _file.Files.Clear(); 
             _file.Files.AddRange(Songs.Select(s => s.ToMediaItem()));
         }
 
