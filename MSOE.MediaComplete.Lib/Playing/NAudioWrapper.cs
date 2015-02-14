@@ -11,14 +11,18 @@ namespace MSOE.MediaComplete.Lib.Playing
     /// </summary>
     public class NAudioWrapper : INAudioWrapper
     {
+        private WaveStream _waveStream;
+        private WaveOut _waveOut;
 
         /// <summary>
         /// returns the proper wavestream based on the given filetype
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        public WaveStream GetWaveStream(FileInfo file)
+        private static WaveStream GetWaveStream(FileInfo file)
         {
+            if(file == null) throw new ArgumentNullException("file");
+            
             try
             {
                 switch (file.Extension.ToLower())
@@ -44,40 +48,39 @@ namespace MSOE.MediaComplete.Lib.Playing
             }
         }
 
-        public WaveOut GetWaveOut(WaveStream waveStream, EventHandler<StoppedEventArgs> handler)
+        public void Setup(FileInfo fileInfo, EventHandler<StoppedEventArgs> handler)
         {
-            var waveOut = new WaveOut();
-            waveOut.Init(waveStream);
-            waveOut.PlaybackStopped += handler;
-            return waveOut;
+            _waveOut = new WaveOut();
+            _waveOut.Init(_waveStream = GetWaveStream(fileInfo));
+            _waveOut.PlaybackStopped += handler;
         }
 
-        public PlaybackState Play(WaveOut waveOut)
+        public PlaybackState Play()
         {
-            if (waveOut == null) return PlaybackState.Stopped;
-            waveOut.Play();
-            return waveOut.PlaybackState;
+            if (_waveOut == null) return PlaybackState.Stopped;
+            _waveOut.Play();
+            return _waveOut.PlaybackState;
         }
 
-        public PlaybackState Pause(WaveOut waveOut)
+        public PlaybackState Pause()
         {
-            if (waveOut == null) return PlaybackState.Stopped;
-            waveOut.Pause();
-            return waveOut.PlaybackState;
+            if (_waveOut == null) return PlaybackState.Stopped;
+            _waveOut.Pause();
+            return _waveOut.PlaybackState;
         }
 
-        public PlaybackState Stop(ref WaveOut waveOut, ref WaveStream waveStream)
+        public PlaybackState Stop()
         {
-            if (waveOut != null)
+            if (_waveOut != null)
             {
-                waveOut.Stop();
-                waveOut.Dispose();
-                waveOut = null;
+                _waveOut.Stop();
+                _waveOut.Dispose();
+                _waveOut = null;
             }
-            if (waveStream != null)
+            if (_waveStream != null)
             {
-                waveStream.Dispose();
-                waveStream = null;
+                _waveStream.Dispose();
+                _waveStream = null;
             }
             return PlaybackState.Stopped;
         }

@@ -34,16 +34,6 @@ namespace MSOE.MediaComplete.Lib.Playing
 
         #region properties
         /// <summary>
-        /// the wave object that controls the play/pause of the song
-        /// </summary>
-        private WaveOut _waveOut;
-
-        /// <summary>
-        /// the reader used by the _waveOut to get bytes from the files
-        /// </summary>
-        private WaveStream _waveStream;
-
-        /// <summary>
         /// factory used to get the WaveStream
         /// </summary>
         private readonly INAudioWrapper _nAudioWrapper;
@@ -65,9 +55,8 @@ namespace MSOE.MediaComplete.Lib.Playing
 
             Stop();
 
-            _waveStream = _nAudioWrapper.GetWaveStream(file);
-            _waveOut = _nAudioWrapper.GetWaveOut(_waveStream, WaveOutOnPlaybackStopped);
-            PlaybackState = _nAudioWrapper.Play(_waveOut);
+            _nAudioWrapper.Setup(file, WaveOutOnPlaybackStopped);
+            PlaybackState = _nAudioWrapper.Play();
             
         }
 
@@ -76,7 +65,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// </summary>
         public void Pause()
         {
-            PlaybackState = _nAudioWrapper.Pause(_waveOut);
+            PlaybackState = _nAudioWrapper.Pause();
         }
 
         /// <summary>
@@ -84,7 +73,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// </summary>
         public void Resume()
         {
-            PlaybackState = _nAudioWrapper.Play(_waveOut);
+            PlaybackState = _nAudioWrapper.Play();
         }
 
         /// <summary>
@@ -92,7 +81,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// </summary>
         public void Stop()
         {
-            PlaybackState = _nAudioWrapper.Stop(ref _waveOut, ref _waveStream);
+            PlaybackState = _nAudioWrapper.Stop();
         }
 
         /// <summary>
