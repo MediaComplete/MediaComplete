@@ -24,7 +24,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
         /// <returns>A DirectoryInfo for the playlist storage directory</returns>
         public static DirectoryInfo GetPlaylistDir()
         {
-            return new DirectoryInfo(SettingWrapper.GetPlaylistDir());
+            return new DirectoryInfo(SettingWrapper.PlaylistDir);
         }
 
         /// <summary>

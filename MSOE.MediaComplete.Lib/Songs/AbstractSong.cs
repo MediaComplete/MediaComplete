@@ -13,7 +13,8 @@ namespace MSOE.MediaComplete.Lib.Songs
     {
         private static readonly IReadOnlyDictionary<string, Type> TypeDictionary = new Dictionary<string, Type>
         {
-            { @"*.\.[" + Constants.MusicFileExtensions.Aggregate((x, y) => x + "|" + y) + "]", typeof (LocalSong) }
+            // MP3/WMA file regex
+            { @".*\.[" + Constants.MusicFileExtensions.Aggregate((x, y) => x + "|" + y) + "]", typeof (LocalSong) }
             // Future - youtube URLs regex
         };
 

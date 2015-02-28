@@ -1,5 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using M3U.NET;
+using TagLib;
 using File = TagLib.File;
 
 namespace MSOE.MediaComplete.Lib.Songs
@@ -34,7 +36,23 @@ namespace MSOE.MediaComplete.Lib.Songs
         /// <returns>A new media item</returns>
         public override MediaItem ToMediaItem()
         {
-            var tagFile = File.Create(_file.FullName);
+            File tagFile;
+            try
+            {
+                tagFile = File.Create(_file.FullName);
+            }
+            catch (Exception e)
+            {
+                if (e is UnsupportedFormatException || e is CorruptFileException)
+                {
+                    // TODO MC-125 log
+                    throw new FileNotFoundException(
+                        String.Format("File ({0}) was not found or is not a recognized music file.", _file.FullName), e);
+                }
+
+                throw;
+            }
+
             return new MediaItem
             {
                 Location = _file.FullName, 
