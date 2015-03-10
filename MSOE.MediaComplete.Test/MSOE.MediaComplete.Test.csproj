@@ -46,8 +46,12 @@
     <OutputPath>bin\x86\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="M3U.NET">
-      <HintPath>..\packages\M3U.NET.1.0.0.2\lib\net45\M3U.NET.dll</HintPath>
+    <Reference Include="M3U.NET, Version=1.0.0.3, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\M3U.NET.1.0.0.3\lib\net45\M3U.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="Moq">
+      <HintPath>..\packages\Moq.4.2.1502.0911\lib\net40\Moq.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
@@ -78,6 +82,7 @@
     <Compile Include="Background\QueueTest.cs" />
     <Compile Include="Background\SortingTaskTest.cs" />
     <Compile Include="MusicIdentifierTest.cs" />
+    <Compile Include="Playlists\PlaylistTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PollingTest.cs" />
     <Compile Include="Songs\AbstractSongTest.cs" />

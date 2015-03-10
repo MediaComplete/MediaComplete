@@ -7,7 +7,7 @@ namespace MSOE.MediaComplete.Test.Songs
 {
     public class AbstractSongTest
     {
-        [TestCase]
+        [Test]
         public void Create_UnknownPathFormat_Exception()
         {
             var unknownItem = new MediaItem

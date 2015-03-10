@@ -10,7 +10,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
     /// </summary>
     public class Playlist
     {
-        private readonly M3UFile _file;
+        private readonly IM3UFile _file;
 
         public List<AbstractSong> Songs { get; private set; }
         
@@ -24,7 +24,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
         /// Creates a new playlist based on an underlying M3U file.
         /// </summary>
         /// <param name="file">The M3U file</param>
-        public Playlist(M3UFile file)
+        public Playlist(IM3UFile file)
         {
             _file = file;
             Songs = _file.Files.Select(AbstractSong.Create).ToList();
@@ -37,6 +37,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
         {
             _file.Files.Clear(); 
             _file.Files.AddRange(Songs.Select(s => s.ToMediaItem()));
+            _file.Save();
         }
 
         /// <summary>
