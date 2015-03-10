@@ -220,13 +220,14 @@ namespace MSOE.MediaComplete.Test
         public void Import_CausesSort_IgnoresOldFiles()
         {
             SettingWrapper.IsSorting = true;
+            SettingWrapper.SortOrder = SortHelper.GetDefault();
             // ReSharper disable once ObjectCreationAsStatement
             new Sorter(null);// Force the static initializer to fire.
             var decoyFile = FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidMp3); // Deliberately put an unsorted file in
 
             decoyFile.MoveTo(decoyFile.FullName + ".decoy.mp3");
             FileHelper.CreateFile(_importDir, Constants.FileTypes.ValidMp3);
-            var normalFileDest = SettingWrapper.MusicDir + Path.DirectorySeparatorChar + "Death Grips" +
+            var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
 
             var task = new Importer(_homeDir.FullName).ImportDirectoryAsync(_importDir.FullName, true);
