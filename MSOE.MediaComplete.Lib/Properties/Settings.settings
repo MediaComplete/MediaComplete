@@ -23,5 +23,11 @@
     <Setting Name="PlaylistDir" Type="System.String" Scope="User">
       <Value Profile="(Default)">playlists</Value>
     </Setting>
+    <Setting Name="Layout" Type="System.String" Scope="User">
+      <Value Profile="(Default)">layout\Dark.xaml</Value>
+    </Setting>
+    <Setting Name="MusicDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)">music</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

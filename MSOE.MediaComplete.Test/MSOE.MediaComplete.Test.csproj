@@ -82,6 +82,7 @@
     <Compile Include="Background\QueueTest.cs" />
     <Compile Include="Background\SortingTaskTest.cs" />
     <Compile Include="MusicIdentifierTest.cs" />
+    <Compile Include="Playlists\PlaylistsTest.cs" />
     <Compile Include="Playlists\PlaylistTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PollingTest.cs" />

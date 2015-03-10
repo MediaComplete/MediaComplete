@@ -11,6 +11,8 @@ namespace MSOE.MediaComplete.Lib.Playlists
     /// </summary>
     public class Playlists
     {
+        // TODO MC-192 rewrite class to use mockable injectable File service. Also write tests at this time - see PlaylistsTest.cs
+
         /// <summary>
         /// The base name for new playlists created without a specified name.
         /// </summary>
@@ -24,7 +26,12 @@ namespace MSOE.MediaComplete.Lib.Playlists
         /// <returns>A DirectoryInfo for the playlist storage directory</returns>
         public static DirectoryInfo GetPlaylistDir()
         {
-            return new DirectoryInfo(SettingWrapper.PlaylistDir);
+            var dir = new DirectoryInfo(SettingWrapper.PlaylistDir);
+            if (!dir.Exists)
+            {
+                Directory.CreateDirectory(dir.FullName);
+            }
+            return dir;
         }
 
         /// <summary>
@@ -47,12 +54,22 @@ namespace MSOE.MediaComplete.Lib.Playlists
         /// <returns>The playlist object, or null if it's not found</returns>
         public static Playlist GetPlaylist(string name)
         {
-            return
-                new Playlist(
-                    new M3UFile(
-                        GetPlaylistDir()
-                            .EnumerateFiles(Constants.Wildcard, SearchOption.AllDirectories)
-                            .First(f => Constants.PlaylistFileExtensions.Any(e => f.Extension.Equals(e)))));
+            if (name == null)
+            {
+                throw new ArgumentNullException("name");
+            }
+
+            if (String.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("Playlist name cannot be empty", "name");
+            }
+
+            var file = GetPlaylistDir()
+                .EnumerateFiles(Constants.Wildcard, SearchOption.AllDirectories)
+                .FirstOrDefault(f => Path.GetFileNameWithoutExtension(f.Name).Equals(name) &&
+                                     Constants.PlaylistFileExtensions.Any(e => f.Extension.Equals(e)));
+
+            return file == null ? null : new Playlist(new M3UFile(file));
         }
 
         /// <summary>
@@ -67,7 +84,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
             {
                 throw new IOException("A playlist by that name already exists.");
             }
-            return new Playlist(new M3UFile(new FileInfo(GetPlaylistDir().FullName + name + "." + DefaultExtension)));
+            return new Playlist(new M3UFile(new FileInfo(GetPlaylistDir().FullName + Path.DirectorySeparatorChar + name + DefaultExtension)));
         }
 
         /// <summary>
@@ -76,11 +93,11 @@ namespace MSOE.MediaComplete.Lib.Playlists
         /// <returns>The new Playlist object</returns>
         public static Playlist GetNewPlaylist()
         {
-            var name = PlaylistDefaultName + "." + DefaultExtension;
+            var name = PlaylistDefaultName;
             var i = 1;
             while (GetPlaylist(name) != null)
             {
-                name = String.Format(PlaylistDefaultName + " ({0})." + DefaultExtension, i++);
+                name = String.Format(PlaylistDefaultName + " ({0})", i++);
             }
             return GetNewPlaylist(name);
         }

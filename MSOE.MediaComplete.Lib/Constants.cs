@@ -27,7 +27,7 @@ namespace MSOE.MediaComplete.Lib
         /// <summary>
         /// Used to filter and create playlist files
         /// </summary>
-        public static readonly IReadOnlyList<string> PlaylistFileExtensions = new List<string> { "m3u" }.AsReadOnly();
+        public static readonly IReadOnlyList<string> PlaylistFileExtensions = new List<string> { ".m3u" }.AsReadOnly();
 
         /// <summary>
         /// The file dialog's wild card for extensions

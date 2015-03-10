@@ -15,6 +15,7 @@ using MSOE.MediaComplete.Lib.Sorting;
 using System.Windows.Controls;
 using Application = System.Windows.Application;
 using System.Globalization;
+using MSOE.MediaComplete.Lib.Playlists;
 
 namespace MSOE.MediaComplete
 {
@@ -65,6 +66,7 @@ namespace MSOE.MediaComplete
             InitEvents();
 
             InitTreeView();
+            var x = Playlists.PlaylistDefaultName;
         }
 
         private void InitEvents()
