@@ -419,14 +419,5 @@ namespace MSOE.MediaComplete
             _changedBoxes.Add((TextBox)sender);
             StatusBarHandler.Instance.ChangeStatusBarMessage("", StatusBarHandler.StatusIcon.None);
         }
-
-
-
-
-
-
-
-
-        
     }
 }
