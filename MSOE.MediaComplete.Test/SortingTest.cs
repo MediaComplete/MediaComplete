@@ -256,7 +256,7 @@ namespace MSOE.MediaComplete.Test
             // ReSharper disable once ObjectCreationAsStatement
             new Sorter(null); // Force the static initializer to fire.
             FileHelper.CreateFile(new DirectoryInfo(SettingWrapper.MusicDir), Constants.FileTypes.ValidMp3);
-            var normalFileDest = SettingWrapper.MusicDir + Path.DirectorySeparatorChar + "The Money Store" +
+            var normalFileDest = SettingWrapper.MusicDir + "The Money Store" +
                 Path.DirectorySeparatorChar + "Death Grips" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
 
             SettingWrapper.SortOrder = newSortOrder;
@@ -265,6 +265,7 @@ namespace MSOE.MediaComplete.Test
             while (!new FileInfo(normalFileDest).Exists)
             {
             }
+
             Assert.IsTrue(new FileInfo(normalFileDest).Exists);
         }
 
@@ -304,10 +305,10 @@ namespace MSOE.MediaComplete.Test
             // ReSharper disable once ObjectCreationAsStatement
             new Sorter(null); // Force the static initializer to fire.
             FileHelper.CreateFile(new DirectoryInfo(SettingWrapper.MusicDir), Constants.FileTypes.ValidMp3);
-            var firstFileDestination = SettingWrapper.MusicDir + Path.DirectorySeparatorChar + "The Money Store" +
+            var firstFileDestination = SettingWrapper.MusicDir + "The Money Store" +
                 Path.DirectorySeparatorChar + "Death Grips" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
 
-            var secondFileDestination = SettingWrapper.MusicDir + Path.DirectorySeparatorChar + "Death Grips" +
+            var secondFileDestination = SettingWrapper.MusicDir + "Death Grips" +
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
 
             SettingWrapper.SortOrder = newSortOrder;
