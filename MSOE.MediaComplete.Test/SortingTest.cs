@@ -361,7 +361,7 @@ namespace MSOE.MediaComplete.Test
         {
             return new SortSettings
             {
-                SortOrder = new List<MetaAttribute> { MetaAttribute.Artist, MetaAttribute.Album },
+                SortOrder = SortHelper.GetDefault(),
                 Root = _homeDir
             };
         }

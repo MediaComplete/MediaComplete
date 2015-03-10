@@ -387,7 +387,10 @@ namespace MSOE.MediaComplete
             // TODO (MC-43) obtain from settings file, make configurable
             var settings = new SortSettings
             {
-                SortOrder = new List<MetaAttribute> { MetaAttribute.Artist, MetaAttribute.Album }
+                SortOrder = SettingWrapper.SortOrder,
+                Root = new DirectoryInfo(SettingWrapper.MusicDir),
+                Files =  new DirectoryInfo(SettingWrapper.MusicDir).EnumerateFiles("*", SearchOption.AllDirectories)
+                    .GetMusicFiles()
             };
 
             var sorter = new Sorter(settings);
