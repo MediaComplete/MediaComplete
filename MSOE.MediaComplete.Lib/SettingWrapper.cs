@@ -112,8 +112,6 @@ namespace MSOE.MediaComplete.Lib
             }
             set
             {
-
-                SortHelper.SetSorting(SortOrder, value);
                 var collection = new StringCollection();
                 collection.AddRange(value.Select(x => x.ToString()).ToArray());
                 Settings.Default["SortingOrder"] = collection;

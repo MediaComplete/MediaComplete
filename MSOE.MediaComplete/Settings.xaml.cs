@@ -55,29 +55,32 @@ namespace MSOE.MediaComplete
             _comboBoxes = new List<ComboBox>();
             _sortOrderList= SortHelper.ConvertToString(SettingWrapper.SortOrder);
             _showComboBox = new List<bool>();
-            LoadDictionary();
+            LoadComboBoxes();
             LoadSortListBox();
         }
 
-        private void LoadDictionary()
+        private void LoadComboBoxes()
         {
             _showComboBox.Clear();
-            for (var i = 0; i < _sortOrderList.Count; i++)
+            _sortOrderList.ForEach(delegate
             {
                 _showComboBox.Add(true);
-            }
+            });
         }
 
         private void LoadSortListBox()
         {
-            var withValue = -1;
+            _comboBoxes.Clear();
+            SortConfig.Children.Clear();
+
+            var comboboxIndex = -1;
 
             for (var i = 0; i < _showComboBox.Count; i++)
             {
                 var showValue = _showComboBox[i];
                 if (showValue)
                 {
-                    withValue++;
+                    comboboxIndex++;
                 }
                 var stackPanel = new StackPanel {Orientation = Orientation.Horizontal};
                 var folder = new Image
@@ -91,9 +94,9 @@ namespace MSOE.MediaComplete
                 {
                     Width = 100,
                     Height = 24,
-                    ItemsSource = showValue ? SortHelper.GetAllValidAttributes(_sortOrderList, _sortOrderList[withValue]) 
+                    ItemsSource = showValue ? SortHelper.GetAllValidAttributes(_sortOrderList, _sortOrderList[comboboxIndex]) 
                                                 : SortHelper.GetAllUnusedMetaAttributes(_sortOrderList),
-                    SelectedValue = showValue ? (object) _sortOrderList[withValue] : -1,
+                    SelectedValue = showValue ? (object) _sortOrderList[comboboxIndex] : -1,
                     Tag = i
                 };
                 var minus = new Button
@@ -160,9 +163,6 @@ namespace MSOE.MediaComplete
 
             _showComboBox.Insert(tag + 1 , false);
 
-            _comboBoxes.Clear();
-
-            SortConfig.Children.Clear();
             LoadSortListBox();
 
             _comboBoxes[tag + 1].ItemsSource = SortHelper.GetAllUnusedMetaAttributes(_sortOrderList);
@@ -179,10 +179,8 @@ namespace MSOE.MediaComplete
             {
                 _sortOrderList.Remove((string)_comboBoxes[tag].SelectedValue);
             }
-            _showComboBox.RemoveAt(tag);
-            _comboBoxes.Clear();
 
-            SortConfig.Children.Clear();
+            _showComboBox.RemoveAt(tag);
             LoadSortListBox();
         }
 
@@ -192,6 +190,7 @@ namespace MSOE.MediaComplete
 
             var comboBox = sender as ComboBox;
             if (comboBox == null) return;
+
             var tag = (int)comboBox.Tag;
             _showComboBox[tag] = true;
 
@@ -305,9 +304,15 @@ namespace MSOE.MediaComplete
             SettingWrapper.PollingTime = Convert.ToDouble(ComboBoxPollingTime.SelectedValue.ToString());
             SettingWrapper.IsPolling = CheckboxPolling.IsChecked.GetValueOrDefault(false);
             SettingWrapper.ShowInputDialog = CheckboxShowImportDialog.IsChecked.GetValueOrDefault(false);
-            SettingWrapper.IsSorting = CheckBoxSorting.IsChecked.GetValueOrDefault(false);
 
-            SettingWrapper.SortOrder = SortHelper.ConvertToMetaAttribute(_sortOrderList);
+            var newSortOrder = SortHelper.ConvertToMetaAttribute(_sortOrderList);
+            var newIsSorted = CheckBoxSorting.IsChecked.GetValueOrDefault(false);
+            SortHelper.SetSorting(SettingWrapper.SortOrder, newSortOrder, SettingWrapper.IsSorting, newIsSorted);
+
+            SettingWrapper.SortOrder = newSortOrder;
+            SettingWrapper.IsSorting = newIsSorted;
+
+
             SettingWrapper.Save();
 
 
@@ -328,7 +333,7 @@ namespace MSOE.MediaComplete
         {
             _sortOrderList = SortHelper.GetDefaultStringValues();
             _comboBoxes.Clear();
-            LoadDictionary();
+            LoadComboBoxes();
             SortConfig.Children.Clear();
             LoadSortListBox();
         }

@@ -259,6 +259,8 @@ namespace MSOE.MediaComplete.Test
             var normalFileDest = SettingWrapper.MusicDir + "The Money Store" +
                 Path.DirectorySeparatorChar + "Death Grips" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
 
+            SortHelper.SetSorting(SettingWrapper.SortOrder, newSortOrder, true, true);
+
             SettingWrapper.SortOrder = newSortOrder;
             SettingWrapper.Save();
 
@@ -311,12 +313,16 @@ namespace MSOE.MediaComplete.Test
             var secondFileDestination = SettingWrapper.MusicDir + "Death Grips" +
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
 
+            SortHelper.SetSorting(SettingWrapper.SortOrder, newSortOrder, true, true);
+
             SettingWrapper.SortOrder = newSortOrder;
             SettingWrapper.Save();
 
             while (!new FileInfo(firstFileDestination).Exists)
             {
             }
+
+            SortHelper.SetSorting(SettingWrapper.SortOrder, defaultSortOrder, true, true);
 
             SettingWrapper.SortOrder = defaultSortOrder;
             SettingWrapper.Save();

@@ -10,9 +10,9 @@ namespace MSOE.MediaComplete.Lib.Sorting
     {
         private static bool _shouldSort;
 
-        public static void SetSorting(List<MetaAttribute> oldSort, List<MetaAttribute> newSort)
+        public static void SetSorting(List<MetaAttribute> pastSort, List<MetaAttribute> newSort, bool pastIsSorted, bool newIsSorted)
         {
-            _shouldSort = !oldSort.SequenceEqual(newSort) && SettingWrapper.IsSorting;
+            _shouldSort = (!pastSort.SequenceEqual(newSort) || !pastIsSorted) && newIsSorted;
         }
 
         public static bool GetSorting()
