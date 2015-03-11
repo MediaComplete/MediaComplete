@@ -33,7 +33,7 @@
     <system:String x:Key="MusicIdentification-Success">Music Identification Finished</system:String>
     <system:String x:Key="MusicIdentification-Error">Music Identification Error: {0}</system:String>
     <system:String x:Key="MusicIdentification-Error-NoException">Music Identification Error</system:String>
-    <system:String x:Key="CorruptFile-Error">A Selected File Was Corrupted</system:String>
+    <system:String x:Key="CorruptFile-Error">A selected file was corrupted</system:String>
     <system:String x:Key="Save-Error">One or More Files Could Not Be Saved</system:String>
 
     <system:String x:Key="InvalidTrackNumber">Invalid Track Number Entered</system:String>
