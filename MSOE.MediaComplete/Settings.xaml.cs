@@ -17,10 +17,6 @@ namespace MSOE.MediaComplete
     /// </summary>
     public partial class Settings
     {
-        private readonly List<ComboBox> _comboBoxes;
-        private List<string> _sortOrderList;
-        private readonly List<bool> _showComboBox; 
-
         private readonly Dictionary<LayoutType, string> _layoutsDict = new Dictionary<LayoutType, string>
         {
             {LayoutType.Dark, "layout\\Dark.xaml"},
