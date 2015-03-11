@@ -22,43 +22,16 @@ namespace MSOE.MediaComplete.Lib.Properties {
                 return defaultInstance;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\library\\")]
-        public string HomeDir
-        {
-            get
-            {
+        public string HomeDir {
+            get {
                 return ((string)(this["HomeDir"]));
             }
-            set
-            {
+            set {
                 this["HomeDir"] = value;
-            }
-        }
-
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Music\\")]
-        public string MusicDir
-        {
-            get
-            {
-                return (string)(this["MusicDir"]);
-            }
-        }
-
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Playlists\\")]
-        public string PlaylistDir
-        {
-            get
-            {
-                return (string)(this["PlaylistDir"]);
             }
         }
         
@@ -77,9 +50,9 @@ namespace MSOE.MediaComplete.Lib.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1")]
-        public double PollingTime {
+        public string PollingTime {
             get {
-                return ((double)(this["PollingTime"]));
+                return ((string)(this["PollingTime"]));
             }
             set {
                 this["PollingTime"] = value;
@@ -97,35 +70,19 @@ namespace MSOE.MediaComplete.Lib.Properties {
                 this["IsPolling"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowInputDialog
-        {
-            get
-            {
+        public bool ShowInputDialog {
+            get {
                 return ((bool)(this["ShowInputDialog"]));
             }
-            set
-            {
+            set {
                 this["ShowInputDialog"] = value;
             }
         }
-        [global::System.Configuration.UserScopedSettingAttribute()]
-                [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("layout\\Dark.xaml")]
-        public string Layout
-        {
-            get
-            {
-                return ((string)(this["Layout"]));
-            }
-            set
-            {
-                this["Layout"] = value;
-            }
-        }
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
@@ -135,6 +92,18 @@ namespace MSOE.MediaComplete.Lib.Properties {
             }
             set {
                 this["IsSorting"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShouldRemoveOnImport {
+            get {
+                return ((bool)(this["ShouldRemoveOnImport"]));
+            }
+            set {
+                this["ShouldRemoveOnImport"] = value;
             }
         }
     }

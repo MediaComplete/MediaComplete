@@ -58,6 +58,17 @@ namespace MSOE.MediaComplete.Lib
         }
 
         /// <summary>
+        /// gets the ShouldRemoveOnImport boolean from settings
+        /// </summary>
+        /// <returns>ShouldRemoveOnImport is true if you will remove the original file on import
+        /// false if not desired</returns>
+        public static bool ShouldRemoveOnImport
+        {
+            get { return (bool)Settings.Default["ShouldRemoveOnImport"]; }
+            set { Settings.Default["ShouldRemoveOnImport"] = value; }
+        }
+
+        /// <summary>ShouldRemoveOnImport
         /// gets the IsPolling boolean from settings
         /// </summary>
         /// <returns>IsPolling is true if polling is desired, false if not desired</returns>

@@ -16,7 +16,7 @@ namespace MSOE.MediaComplete.Lib.Import
     {
         private readonly DirectoryInfo _homeDir;
         private readonly IEnumerable<FileInfo> _files;
-        private readonly bool _isCopy;
+        private readonly bool _isRemove;
 
         public ImportResults Results { get; set; }
 
@@ -25,14 +25,14 @@ namespace MSOE.MediaComplete.Lib.Import
         /// </summary>
         /// <param name="homeDir">The target library directory</param>
         /// <param name="files">An array of absolute filepaths to bring in.</param>
-        /// <param name="isCopy">If true, files will be replicated into the library. Otherwise, 
+        /// <param name="isRemove">If true, files will be replicated into the library. Otherwise, 
         /// they will be "cut", removing the originals.</param>
-        public ImportTask(DirectoryInfo homeDir, IEnumerable<FileInfo> files, bool isCopy)
+        public ImportTask(DirectoryInfo homeDir, IEnumerable<FileInfo> files, bool isRemove)
         {
             Results = null;
             _homeDir = homeDir;
             _files = files;
-            _isCopy = isCopy;
+            _isRemove = isRemove;
         }
 
         /// <summary>
@@ -64,13 +64,13 @@ namespace MSOE.MediaComplete.Lib.Import
                     if (File.Exists(newFile)) continue;
                     try
                     {
-                        if (_isCopy)
+                        if (_isRemove)
                         {
-                            file.CopyTo(newFile);
+                            file.MoveTo(newFile);
                         }
                         else
                         {
-                            file.MoveTo(newFile);
+                            file.CopyTo(newFile);
                         }
                         results.NewFiles.Add(new FileInfo(newFile));
                     }

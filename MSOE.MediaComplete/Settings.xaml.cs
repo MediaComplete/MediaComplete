@@ -31,6 +31,7 @@ namespace MSOE.MediaComplete
             CheckboxPolling.IsChecked = SettingWrapper.IsPolling;
             CheckboxShowImportDialog.IsChecked = SettingWrapper.ShowInputDialog;
             CheckBoxSorting.IsChecked = SettingWrapper.IsSorting;
+            MoveOrCopy.IsChecked = SettingWrapper.ShouldRemoveOnImport;
             PollingCheckBoxChanged(CheckboxPolling, null);
             if (SettingWrapper.Layout.Equals(_layoutsDict[LayoutType.Pink]))
             {
@@ -138,6 +139,7 @@ namespace MSOE.MediaComplete
             SettingWrapper.IsPolling = CheckboxPolling.IsChecked.GetValueOrDefault(false);
             SettingWrapper.ShowInputDialog = CheckboxShowImportDialog.IsChecked.GetValueOrDefault(false);
             SettingWrapper.IsSorting = CheckBoxSorting.IsChecked.GetValueOrDefault(false);
+            SettingWrapper.ShouldRemoveOnImport = MoveOrCopy.IsChecked.GetValueOrDefault(false);
             SettingWrapper.Save();
 
 
