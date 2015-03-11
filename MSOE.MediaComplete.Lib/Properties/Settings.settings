@@ -8,7 +8,7 @@
     <Setting Name="InboxDir" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\inboxForLibrary\</Value>
     </Setting>
-    <Setting Name="PollingTime" Type="System.String" Scope="User">
+    <Setting Name="PollingTime" Type="System.Double" Scope="User">
       <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="IsPolling" Type="System.Boolean" Scope="User">
@@ -22,6 +22,12 @@
     </Setting>
     <Setting Name="ShouldRemoveOnImport" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Layout" Type="System.String" Scope="User">
+      <Value Profile="(Default)">layout\\Pink.xaml</Value>
+    </Setting>
+    <Setting Name="MusicDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Music</Value>
     </Setting>
   </Settings>
 </SettingsFile>

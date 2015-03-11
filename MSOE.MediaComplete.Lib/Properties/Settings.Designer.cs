@@ -50,9 +50,9 @@ namespace MSOE.MediaComplete.Lib.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1")]
-        public string PollingTime {
+        public double PollingTime {
             get {
-                return ((string)(this["PollingTime"]));
+                return ((double)(this["PollingTime"]));
             }
             set {
                 this["PollingTime"] = value;
@@ -104,6 +104,30 @@ namespace MSOE.MediaComplete.Lib.Properties {
             }
             set {
                 this["ShouldRemoveOnImport"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("layout\\\\Pink.xaml")]
+        public string Layout {
+            get {
+                return ((string)(this["Layout"]));
+            }
+            set {
+                this["Layout"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Music")]
+        public string MusicDir {
+            get {
+                return ((string)(this["MusicDir"]));
+            }
+            set {
+                this["MusicDir"] = value;
             }
         }
     }
