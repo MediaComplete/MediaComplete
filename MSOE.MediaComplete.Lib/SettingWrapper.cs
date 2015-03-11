@@ -4,7 +4,6 @@ using System.Collections.Specialized;
 using System.Linq;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Properties;
-using MSOE.MediaComplete.Lib.Sorting;
 
 namespace MSOE.MediaComplete.Lib
 {

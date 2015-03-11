@@ -37,7 +37,7 @@ namespace MSOE.MediaComplete.Test.Background
             SpinWait.SpinUntil(() => secondMock.DoCalled);
         }
 
-        private class MockTask : Task
+        sealed private class MockTask : Task
         {
             public bool DoCalled { get; private set; }
             private readonly int _doDelay;
