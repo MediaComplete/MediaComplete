@@ -23,10 +23,37 @@ namespace MSOE.MediaComplete.Test
             Directory.Delete(_dir.FullName, true);
         }
         /// <summary>
+        /// tests that polling works in sub-directories
+        /// </summary>
+        [TestMethod]
+        [Timeout(40000)]
+        public void CheckSubDirectoryPolling()
+        {
+            _dir = FileHelper.CreateDirectory(DirectoryPath+"/Subdir/Subdirdir");
+            _file = FileHelper.CreateFile(_dir, Constants.FileTypes.ValidMp3);
+
+            var pass = false;
+            SettingWrapper.InboxDir = DirectoryPath;
+            Polling.Instance.TimeInMinutes = 0.0005;
+            Polling.InboxFilesDetected += delegate
+            {
+                pass = true;
+            };
+            Polling.Instance.Start();
+
+            while (!pass)
+            {
+                if (pass)
+                {
+                    break;
+                }
+            }
+        }
+        /// <summary>
         /// tests that it calls the delegate
         /// </summary>
         [TestMethod]
-        [Timeout(40000)]//Milliseconds
+        [Timeout(40000)]
         public void CheckForSongMp3()
         {
             _dir = FileHelper.CreateDirectory(DirectoryPath);
@@ -87,6 +114,7 @@ namespace MSOE.MediaComplete.Test
 
             var pass = false;
             SettingWrapper.InboxDir = DirectoryPath;
+
             Polling.Instance.TimeInMinutes = 0.0005;
             Polling.InboxFilesDetected += delegate
             {
