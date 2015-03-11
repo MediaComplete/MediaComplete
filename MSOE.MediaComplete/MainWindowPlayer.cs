@@ -70,6 +70,7 @@ namespace MSOE.MediaComplete
             try
             {
                 _player.Play(new FileInfo(song.GetPath()));
+                StatusBarHandler.Instance.ChangeStatusBarMessage(null, StatusBarHandler.StatusIcon.None);
             }
             catch (CorruptFileException)
             {
