@@ -4,7 +4,7 @@
         Title="Settings" Height="372" Width="482" Icon="Resources/logo_small.ico"
         ResizeMode="NoResize">
     <StackPanel Margin="0,0,0,0" Style="{DynamicResource StackStyle}">
-        <TabControl DockPanel.Dock="Top" HorizontalAlignment="Left" VerticalAlignment="Top" Width="476" Height="305">
+        <TabControl HorizontalAlignment="Left" VerticalAlignment="Top" Width="476" Height="305">
             <TabItem Header="Library">
                 <DockPanel LastChildFill="True">
                     <StackPanel DockPanel.Dock="Top">
@@ -17,7 +17,7 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBox x:Name="TxtboxSelectedFolder" Grid.Column="0" IsReadOnly="True" />
                                 <Button x:Name="BtnSelectFolder" Grid.Column="1" Content="Select Directory"
-                            	Click="BtnSelectFolder_Click" HorizontalAlignment="Right" Width="100"/>
+    								Click="BtnSelectFolder_Click" HorizontalAlignment="Right" Width="100"/>
                             </Grid>
                         </StackPanel>
 
@@ -30,42 +30,55 @@
                     <StackPanel DockPanel.Dock="Top">
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Sort Automatically?" VerticalAlignment="Center" FontWeight="ExtraBold" />
-                            <CheckBox Name="CheckBoxSorting" VerticalAlignment="Center"
-                                          VerticalContentAlignment="Center" />
+                            <CheckBox x:Name="CheckBoxSorting" VerticalAlignment="Center"
+    							VerticalContentAlignment="Center" />
                         </StackPanel>
 
                     </StackPanel>
 
                 </DockPanel>
             </TabItem>
+            <TabItem Header="Import">
+                <DockPanel LastChildFill="True">
+                    <StackPanel DockPanel.Dock="Top">
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Remove Original File After Import" VerticalAlignment="Center" FontWeight="ExtraBold" />
+                            <CheckBox x:Name="MoveOrCopy" VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                    </StackPanel>
+
+                </DockPanel>
+            </TabItem>
+
             <TabItem Header="Automated Import">
                 <DockPanel LastChildFill="True">
                     <StackPanel DockPanel.Dock="Top">
                         <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                             <Label Content="Polling" VerticalAlignment="Center" FontWeight="ExtraBold" />
-                            <CheckBox Name="CheckboxPolling" VerticalAlignment="Center"
-                                          VerticalContentAlignment="Center" Checked="PollingCheckBoxChanged"
-                                          Unchecked="PollingCheckBoxChanged" />
+                            <CheckBox x:Name="CheckboxPolling" VerticalAlignment="Center"
+    							VerticalContentAlignment="Center" Checked="PollingCheckBoxChanged"
+    							Unchecked="PollingCheckBoxChanged" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                            <Label Name="LblPromptBeforeImport" Content="Prompt before Importing" VerticalAlignment="Center" FontWeight="ExtraBold" />
-                            <CheckBox Name="CheckboxShowImportDialog" VerticalAlignment="Center"
-                                          VerticalContentAlignment="Center" />
+                            <Label x:Name="LblPromptBeforeImport" Content="Prompt before Importing" VerticalAlignment="Center" FontWeight="ExtraBold" />
+                            <CheckBox x:Name="CheckboxShowImportDialog" VerticalAlignment="Center"
+    							VerticalContentAlignment="Center" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <Label Name="LblPollTime" Content="Polling Time: " VerticalAlignment="Center"
-                                       HorizontalAlignment="Left" />
+                            <Label x:Name="LblPollTime" Content="Polling Time: " VerticalAlignment="Center"
+    							HorizontalAlignment="Left" />
                             <ComboBox
-                                    Name="ComboBoxPollingTime"
-                                    HorizontalAlignment="Left"
-                                    Margin="10,10,0,0"
-	                                VerticalAlignment="Top"
-	                                Width="120"
-	                                Loaded="ComboBox_Loaded"/>
-                            <Label Name="LblMin" Content="(min)" VerticalAlignment="Center" HorizontalAlignment="Left"
-                                       FontWeight="Light" />
+    							x:Name="ComboBoxPollingTime"
+    							HorizontalAlignment="Left"
+    							Margin="10,10,0,0"
+    							VerticalAlignment="Top"
+    							Width="120"
+    							Loaded="ComboBox_Loaded"/>
+                            <Label x:Name="LblMin" Content="(min)" VerticalAlignment="Center" HorizontalAlignment="Left"
+    							FontWeight="Light" />
                         </StackPanel>
-                        <Label Name="LblSelectInboxLocation" Content="Select Location of Inbox Directory:" />
+                        <Label x:Name="LblSelectInboxLocation" Content="Select Location of Inbox Directory:" />
                         <StackPanel Orientation="Horizontal">
                             <Label x:Name="LblInboxFolder" Width="370" />
                             <Button x:Name="BtnInboxFolder" Margin="4, 0, 0, 0" Content="Select Folder" Click="BtnSelectFolder_Click" Width="88" />
@@ -74,7 +87,7 @@
                 </DockPanel>
             </TabItem>
             <TabItem Header ="Appearance">
-                
+
                 <DockPanel>
                     <StackPanel DockPanel.Dock="Top" Height="248">
                         <Label Content="Skins:"/>
@@ -87,8 +100,8 @@
         </TabControl>
         <StackPanel DockPanel.Dock="Bottom">
             <StackPanel HorizontalAlignment="Right" Margin="0,0,0,5" Orientation="Horizontal">
-                <Button Name="BtnCancel" Margin="4" Content="Cancel" Click="BtnCancel_OnClick" Width="90" Height="22"/>
-                <Button Name="BtnSave" Margin="4" Content="Save" Click="BtnSave_Click" Width="90" Height="22"/>
+                <Button x:Name="BtnCancel" Margin="4" Content="Cancel" Click="BtnCancel_OnClick" Width="90" Height="22"/>
+                <Button x:Name="BtnSave" Margin="4" Content="Save" Click="BtnSave_Click" Width="90" Height="22"/>
             </StackPanel>
         </StackPanel>
     </StackPanel>
