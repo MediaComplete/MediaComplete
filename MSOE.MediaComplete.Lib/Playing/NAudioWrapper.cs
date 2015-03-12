@@ -25,17 +25,7 @@ namespace MSOE.MediaComplete.Lib.Playing
             
             try
             {
-                switch (file.Extension.ToLower())
-                {
-                    case Constants.Mp3FileExtension:
-                        return new Mp3FileReader(file.FullName);
-                    case Constants.WavFileExtension:
-                        return new WaveFileReader(file.FullName);
-                    case Constants.WmaFileExtension:
-                        return new WMAFileReader(file.FullName);
-                    default:
-                        throw new UnsupportedFormatException(file.Extension + " is not supported");
-                }
+                return new AudioFileReader(file.FullName);
             }
             catch (Exception ex)
             {
