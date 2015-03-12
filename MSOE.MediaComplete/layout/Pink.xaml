@@ -142,7 +142,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style TargetType="{x:Type StackPanel}" x:Key="StackStyle">
+    <Style TargetType="{x:Type Panel}" x:Key="PanelStyle">
         <Setter Property="Background" Value="#FFE3B3CF"/>
     </Style>
     <Style TargetType="{x:Type Menu}" x:Key="MenuStyle">

@@ -26,7 +26,7 @@ namespace MSOE.MediaComplete
         {
             InitializeComponent();
             TxtboxSelectedFolder.Text = SettingWrapper.HomeDir;
-            LblInboxFolder.Content = SettingWrapper.InboxDir;
+            TxtInboxFolder.Text = SettingWrapper.InboxDir;
             ComboBoxPollingTime.SelectedValue = SettingWrapper.PollingTime.ToString(CultureInfo.InvariantCulture);
             CheckboxPolling.IsChecked = SettingWrapper.IsPolling;
             CheckboxShowImportDialog.IsChecked = SettingWrapper.ShowInputDialog;
@@ -63,7 +63,7 @@ namespace MSOE.MediaComplete
                     TxtboxSelectedFolder.Text = folderBrowserDialog1.SelectedPath;
                     break;
                 case "BtnInboxFolder":
-                    LblInboxFolder.Content = folderBrowserDialog1.SelectedPath;
+                    TxtInboxFolder.Text = folderBrowserDialog1.SelectedPath;
                     break;
             }
         }
@@ -83,7 +83,7 @@ namespace MSOE.MediaComplete
             {
                 CheckboxShowImportDialog.IsEnabled = true;
                 
-                LblInboxFolder.IsEnabled = true;
+                TxtInboxFolder.IsEnabled = true;
                 ComboBoxPollingTime.IsEnabled = true;
                 BtnInboxFolder.IsEnabled = true;
                 LblPollTime.IsEnabled = true;
@@ -93,7 +93,7 @@ namespace MSOE.MediaComplete
             else
             {
                 CheckboxShowImportDialog.IsEnabled = false;
-                LblInboxFolder.IsEnabled = false;
+                TxtInboxFolder.IsEnabled = false;
                 ComboBoxPollingTime.IsEnabled = false;
                 BtnInboxFolder.IsEnabled = false;
                 LblPollTime.IsEnabled = false;
@@ -116,7 +116,7 @@ namespace MSOE.MediaComplete
             {
                 homeDir += Path.DirectorySeparatorChar;
             }
-            var inboxDir = (string) LblInboxFolder.Content;
+            var inboxDir = TxtInboxFolder.Text;
             if (!inboxDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.CurrentCulture), StringComparison.Ordinal))
             {
                 inboxDir += Path.DirectorySeparatorChar;
