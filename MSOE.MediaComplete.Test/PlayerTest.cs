@@ -24,9 +24,6 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void StateChanges_HappyPath()
         {
-            const PlaybackState playingState = PlaybackState.Playing;
-            const PlaybackState pausedState = PlaybackState.Paused;
-            const PlaybackState stoppedState = PlaybackState.Stopped;
             var mockNAudioWrapper = new Mock<INAudioWrapper>();
             var stuff = new Fixture().Create<string>();
             var mockFile = new FileInfo(stuff);
@@ -34,33 +31,30 @@ namespace MSOE.MediaComplete.Test
             mockNAudioWrapper.Setup(m => m.Setup(mockFile, It.IsAny<EventHandler<StoppedEventArgs>>()));
 
             var player = new Player(mockNAudioWrapper.Object);
-            mockNAudioWrapper.Setup(m => m.Play()).Returns(playingState);
+            mockNAudioWrapper.Setup(m => m.Play()).Returns(PlaybackState.Playing);
 
             player.Play(mockFile);
-            Assert.AreEqual(playingState, player.PlaybackState);
+            Assert.AreEqual(PlaybackState.Playing, player.PlaybackState);
 
-            mockNAudioWrapper.Setup(m => m.Pause()).Returns(pausedState);
+            mockNAudioWrapper.Setup(m => m.Pause()).Returns(PlaybackState.Paused);
 
             player.Pause();
-            Assert.AreEqual(pausedState, player.PlaybackState);
+            Assert.AreEqual(PlaybackState.Paused, player.PlaybackState);
 
-            mockNAudioWrapper.Setup(m => m.Play()).Returns(playingState);
+            mockNAudioWrapper.Setup(m => m.Play()).Returns(PlaybackState.Playing);
 
             player.Resume();
-            Assert.AreEqual(playingState, player.PlaybackState);
+            Assert.AreEqual(PlaybackState.Playing, player.PlaybackState);
 
-            mockNAudioWrapper.Setup(m => m.Stop()).Returns(stoppedState);
+            mockNAudioWrapper.Setup(m => m.Stop()).Returns(PlaybackState.Stopped);
 
             player.Stop();
-            Assert.AreEqual(stoppedState, player.PlaybackState);
+            Assert.AreEqual(PlaybackState.Stopped, player.PlaybackState);
         }
 
         [TestMethod]
         public void StateChanges_WeirdPath()
         {
-            const PlaybackState playingState = PlaybackState.Playing;
-            const PlaybackState pausedState = PlaybackState.Paused;
-            const PlaybackState stoppedState = PlaybackState.Stopped;
             var mockNAudioWrapper = new Mock<INAudioWrapper>();
             var stuff = new Fixture().Create<string>();
             var mockFile = new FileInfo(stuff);
@@ -68,45 +62,45 @@ namespace MSOE.MediaComplete.Test
             mockNAudioWrapper.Setup(m => m.Setup(mockFile, It.IsAny<EventHandler<StoppedEventArgs>>()));
 
             var player = new Player(mockNAudioWrapper.Object);
-            mockNAudioWrapper.Setup(m => m.Play()).Returns(playingState);
+            mockNAudioWrapper.Setup(m => m.Play()).Returns(PlaybackState.Playing);
 
             player.Play(mockFile);
-            Assert.AreEqual(playingState, player.PlaybackState);
+            Assert.AreEqual(PlaybackState.Playing, player.PlaybackState);
 
-            mockNAudioWrapper.Setup(m => m.Stop()).Returns(stoppedState);
-
-            player.Stop();
-            Assert.AreEqual(stoppedState, player.PlaybackState);
-
-            mockNAudioWrapper.Setup(m => m.Stop()).Returns(stoppedState);
+            mockNAudioWrapper.Setup(m => m.Stop()).Returns(PlaybackState.Stopped);
 
             player.Stop();
-            Assert.AreEqual(stoppedState, player.PlaybackState);
+            Assert.AreEqual(PlaybackState.Stopped, player.PlaybackState);
 
-            mockNAudioWrapper.Setup(m => m.Pause()).Returns(stoppedState);
+            mockNAudioWrapper.Setup(m => m.Stop()).Returns(PlaybackState.Stopped);
+
+            player.Stop();
+            Assert.AreEqual(PlaybackState.Stopped, player.PlaybackState);
+
+            mockNAudioWrapper.Setup(m => m.Pause()).Returns(PlaybackState.Stopped);
 
             player.Pause();
-            Assert.AreEqual(stoppedState, player.PlaybackState);
+            Assert.AreEqual(PlaybackState.Stopped, player.PlaybackState);
 
-            mockNAudioWrapper.Setup(m => m.Play()).Returns(stoppedState);
+            mockNAudioWrapper.Setup(m => m.Play()).Returns(PlaybackState.Stopped);
 
             player.Resume();
-            Assert.AreEqual(stoppedState, player.PlaybackState);
+            Assert.AreEqual(PlaybackState.Stopped, player.PlaybackState);
 
-            mockNAudioWrapper.Setup(m => m.Play()).Returns(playingState);
+            mockNAudioWrapper.Setup(m => m.Play()).Returns(PlaybackState.Playing);
 
             player.Play(mockFile);
-            Assert.AreEqual(playingState, player.PlaybackState);
+            Assert.AreEqual(PlaybackState.Playing, player.PlaybackState);
 
-            mockNAudioWrapper.Setup(m => m.Pause()).Returns(pausedState);
-
-            player.Pause();
-            Assert.AreEqual(pausedState, player.PlaybackState);
-
-            mockNAudioWrapper.Setup(m => m.Pause()).Returns(pausedState);
+            mockNAudioWrapper.Setup(m => m.Pause()).Returns(PlaybackState.Paused);
 
             player.Pause();
-            Assert.AreEqual(pausedState, player.PlaybackState);
+            Assert.AreEqual(PlaybackState.Paused, player.PlaybackState);
+
+            mockNAudioWrapper.Setup(m => m.Pause()).Returns(PlaybackState.Paused);
+
+            player.Pause();
+            Assert.AreEqual(PlaybackState.Paused, player.PlaybackState);
         }
 
         [TestMethod]
