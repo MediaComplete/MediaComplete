@@ -3,6 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Settings" Height="372" Width="482" Icon="Resources/logo_small.ico"
         ResizeMode="NoResize">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="MainWindowResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <StackPanel Margin="0,0,0,0" Style="{DynamicResource StackStyle}">
         <TabControl DockPanel.Dock="Top" HorizontalAlignment="Left" VerticalAlignment="Top" Width="476" Height="305">
             <TabItem Header="Library">
@@ -25,7 +32,7 @@
 
                 </DockPanel>
             </TabItem>
-            <TabItem Header="Sorting Options">
+            <TabItem Header="Sorting Options" Height="23" VerticalAlignment="Top">
                 <DockPanel LastChildFill="True">
                     <StackPanel DockPanel.Dock="Top">
                         <StackPanel Orientation="Horizontal">
@@ -33,9 +40,30 @@
                             <CheckBox Name="CheckBoxSorting" VerticalAlignment="Center"
                                           VerticalContentAlignment="Center" />
                         </StackPanel>
-
+                        <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Sort Order" VerticalAlignment="Center" FontWeight="ExtraBold"/>
+                                <Image Source="{StaticResource Settings-Info-Icon}" Width="16" Height="16">
+                                <Image.ToolTip>
+                                        <ToolTip>
+                                            <StackPanel>
+                                                <TextBlock>The Sort Order defines the file structure that your library will be sorted into.</TextBlock>
+                                            </StackPanel>
+                                        </ToolTip>
+                                    </Image.ToolTip>
+                                </Image>
+                            </StackPanel>
+                            <ScrollViewer HorizontalScrollBarVisibility="auto" VerticalScrollBarVisibility="auto" Width="auto" Height="175">
+                                <StackPanel>
+                                    <StackPanel  x:Name="SortConfig" Orientation="Vertical">
+                                    </StackPanel>
+                                </StackPanel>
+                            </ScrollViewer>
+                            <DockPanel Dock="Bottom">
+                                <Button Content="Restore Default Order" Width="150" Height="22" HorizontalAlignment="Right" Margin="8" Click="ResetDefault"></Button>
+                            </DockPanel>
+                        </StackPanel>
                     </StackPanel>
-
                 </DockPanel>
             </TabItem>
             <TabItem Header="Automated Import">

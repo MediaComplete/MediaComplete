@@ -137,5 +137,19 @@ namespace MSOE.MediaComplete.Lib.Properties {
                 this["IsSorting"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
+            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
+            "tring>Artist</string>\r\n  <string>Album</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection SortingOrder {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["SortingOrder"]));
+            }
+            set {
+                this["SortingOrder"] = value;
+            }
+        }
     }
 }

@@ -129,7 +129,23 @@ namespace MSOE.MediaComplete.Lib.Sorting
 
         static Sorter()
         {
-            Importer.ImportFinished += SortNewImports;   
+            Importer.ImportFinished += SortNewImports;
+            SettingWrapper.RaiseSettingEvent += Resort;
+        }
+
+        private static void Resort()
+        {
+            if (!SortHelper.GetSorting()) return;
+            
+            var settings = new SortSettings
+            {
+                SortOrder = SettingWrapper.SortOrder,
+                Root = new DirectoryInfo(SettingWrapper.MusicDir),
+                Files =  new DirectoryInfo(SettingWrapper.MusicDir).EnumerateFiles("*", SearchOption.AllDirectories)
+                    .GetMusicFiles()
+            };
+            var sorter = new Sorter(settings);
+            sorter.PerformSort();
         }
 
         /// <summary>
@@ -142,7 +158,8 @@ namespace MSOE.MediaComplete.Lib.Sorting
             // TODO (MC-43) get settings from configuration
             var settings = new SortSettings
             {
-                SortOrder = new List<MetaAttribute> { MetaAttribute.Artist, MetaAttribute.Album },
+                SortOrder = SettingWrapper.SortOrder,
+
                 Root = results.HomeDir,
                 Files = results.NewFiles
             };

@@ -26,7 +26,7 @@ namespace MSOE.MediaComplete.Test
         {
             _homeDir = FileHelper.CreateDirectory("SortingTestHomeDir");
             _importDir = FileHelper.CreateDirectory("SortingTestImportDir");
-            SettingWrapper.HomeDir = _homeDir.FullName;
+            SettingWrapper.HomeDir = _homeDir.FullName + Path.DirectorySeparatorChar;
         }
 
         [TestCleanup]
@@ -220,6 +220,7 @@ namespace MSOE.MediaComplete.Test
         public void Import_CausesSort_IgnoresOldFiles()
         {
             SettingWrapper.IsSorting = true;
+            SettingWrapper.SortOrder = SortHelper.GetDefault();
             // ReSharper disable once ObjectCreationAsStatement
             new Sorter(null);// Force the static initializer to fire.
             var decoyFile = FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidMp3); // Deliberately put an unsorted file in
@@ -243,7 +244,106 @@ namespace MSOE.MediaComplete.Test
         }
 
         /// <summary>
-        /// Make sure that imports trigger does not trigger a sort.
+        /// Make sure that the sort happens successfully
+        /// </summary>
+        [TestMethod, Timeout(30000)]
+        public void Sort_SortConfigSettingChanged_SortHappens()
+        {
+            var defaultSortOrder = SortHelper.GetDefault();
+            var newSortOrder = new List<MetaAttribute> {MetaAttribute.Album, MetaAttribute.Artist};
+            SettingWrapper.IsSorting = true;
+            SettingWrapper.SortOrder = defaultSortOrder;
+            // ReSharper disable once ObjectCreationAsStatement
+            new Sorter(null); // Force the static initializer to fire.
+            FileHelper.CreateFile(new DirectoryInfo(SettingWrapper.MusicDir), Constants.FileTypes.ValidMp3);
+            var normalFileDest = SettingWrapper.MusicDir + "The Money Store" +
+                Path.DirectorySeparatorChar + "Death Grips" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
+
+            SortHelper.SetSorting(SettingWrapper.SortOrder, newSortOrder, true, true);
+
+            SettingWrapper.SortOrder = newSortOrder;
+            SettingWrapper.Save();
+
+            while (!new FileInfo(normalFileDest).Exists)
+            {
+            }
+
+            Assert.IsTrue(new FileInfo(normalFileDest).Exists);
+        }
+
+        /// <summary>
+        /// Make sure that the sort happens successfully
+        /// </summary>
+        [TestMethod, Timeout(30000)]
+        public void Sort_SortConfigSettingChangedButIsSortingFalse_SortDoesNotHappen()
+        {
+            var defaultSortOrder = SortHelper.GetDefault();
+            var newSortOrder = new List<MetaAttribute> { MetaAttribute.Album, MetaAttribute.Artist };
+            SettingWrapper.IsSorting = false;
+            SettingWrapper.SortOrder = defaultSortOrder;
+            // ReSharper disable once ObjectCreationAsStatement
+            new Sorter(null); // Force the static initializer to fire.
+            FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidMp3);
+            var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
+
+            SettingWrapper.SortOrder = newSortOrder;
+            SettingWrapper.Save();
+
+            Thread.Sleep(3000);
+
+            Assert.IsTrue(new FileInfo(normalFileDest).Exists);
+        }
+
+        /// <summary>
+        /// Make sure that sort happens successfully when sorted twice
+        /// </summary>
+        [TestMethod, Timeout(30000)]
+        public void Sort_SortConfigSettingChangedTwice_SortHappens()
+        {
+            var defaultSortOrder = SortHelper.GetDefault();
+            var newSortOrder = new List<MetaAttribute> { MetaAttribute.Album, MetaAttribute.Artist };
+            SettingWrapper.IsSorting = true;
+            SettingWrapper.SortOrder = defaultSortOrder;
+            // ReSharper disable once ObjectCreationAsStatement
+            new Sorter(null); // Force the static initializer to fire.
+            FileHelper.CreateFile(new DirectoryInfo(SettingWrapper.MusicDir), Constants.FileTypes.ValidMp3);
+            var firstFileDestination = SettingWrapper.MusicDir + "The Money Store" +
+                Path.DirectorySeparatorChar + "Death Grips" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
+
+            var secondFileDestination = SettingWrapper.MusicDir + "Death Grips" +
+                Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
+
+            SortHelper.SetSorting(SettingWrapper.SortOrder, newSortOrder, true, true);
+
+            SettingWrapper.SortOrder = newSortOrder;
+            SettingWrapper.Save();
+
+            while (!new FileInfo(firstFileDestination).Exists)
+            {
+            }
+
+            SortHelper.SetSorting(SettingWrapper.SortOrder, defaultSortOrder, true, true);
+
+            SettingWrapper.SortOrder = defaultSortOrder;
+            SettingWrapper.Save();
+
+            while (!new FileInfo(secondFileDestination).Exists)
+            {
+            }
+            
+            Assert.IsTrue(new FileInfo(secondFileDestination).Exists);
+
+            while (new FileInfo(_homeDir.FullName + Path.DirectorySeparatorChar + "The Money Store" +
+                                Path.DirectorySeparatorChar + "Death Grips").Exists)
+            {
+                
+            }
+            Thread.Sleep(200);
+            Assert.IsTrue(new DirectoryInfo(_homeDir.FullName).GetDirectories().Length == 1);
+        }
+
+        /// <summary>
+        /// Make sure that imports trigger sorting operations on the new files.
         /// </summary>
         [TestMethod, Timeout(30000)]
         public void Import_NoSort_IgnoresNewFiles()
@@ -268,7 +368,7 @@ namespace MSOE.MediaComplete.Test
         {
             return new SortSettings
             {
-                SortOrder = new List<MetaAttribute> { MetaAttribute.Artist, MetaAttribute.Album },
+                SortOrder = SortHelper.GetDefault(),
                 Root = _homeDir
             };
         }

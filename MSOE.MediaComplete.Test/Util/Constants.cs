@@ -45,7 +45,7 @@ namespace MSOE.MediaComplete.Test.Util
                 { FileTypes.MissingAlbum, new Tuple<string, string>(MissingAlbumMp3FileName, MissingAlbumMp3FullPath)},
                 { FileTypes.MissingArtist, new Tuple<string, string>(MissingArtistMp3FileName, MissingArtistMp3FullPath)},
                 { FileTypes.BlankedWma, new Tuple<string, string>(BlankedWmaFileName, BlankedWmaFileFullPath)},
-                { FileTypes.ValidWma, new Tuple<string, string>(ValidWmaFileName, ValidWmaFullPath)},
+                { FileTypes.ValidWma, new Tuple<string, string>(ValidWmaFileName, ValidWmaFullPath)}
             });
     }
 }
