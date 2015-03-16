@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows.Controls;
 using MSOE.MediaComplete.Lib;
 using consts = MSOE.MediaComplete.Lib.Constants;
@@ -15,6 +16,7 @@ namespace MSOE.MediaComplete.CustomControls
         /// <summary>
         /// Contains all folders contained within this folder.
         /// </summary>
+        [SuppressMessage("ReSharper", "CollectionNeverQueried.Global")] // Binding is implicit
         public ObservableCollection<FolderTreeViewItem> Children { get; set; }
 
         /// <summary>

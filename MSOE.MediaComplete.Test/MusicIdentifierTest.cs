@@ -36,7 +36,7 @@ namespace MSOE.MediaComplete.Test
             _mp3File = File.Create(file.FullName);
             const string artist = "Not an Artist";
             _mp3File.SetAttribute(MetaAttribute.Artist, artist);
-            var task = MusicIdentifier.IdentifySong(_mp3File.Name);
+            var task = MusicIdentifier.IdentifySongAsync(_mp3File.Name);
 
             SpinWait.SpinUntil(() => task.IsCompleted, 30000);
 
@@ -49,7 +49,7 @@ namespace MSOE.MediaComplete.Test
         {
             var file = FileHelper.CreateFile(_homeDir, Constants.FileTypes.Unknown);
 
-            var task = MusicIdentifier.IdentifySong(file.FullName);
+            var task = MusicIdentifier.IdentifySongAsync(file.FullName);
             while (!task.IsCompleted)
             {
             }
@@ -62,7 +62,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod, Timeout(30000)]
         public void Identify_NonexistantSong_ReturnsNull()
         {
-            var task = MusicIdentifier.IdentifySong(_homeDir.FullName + Path.DirectorySeparatorChar + "doesnotexist.mp3");
+            var task = MusicIdentifier.IdentifySongAsync(_homeDir.FullName + Path.DirectorySeparatorChar + "doesnotexist.mp3");
             while (!task.IsCompleted)
             {
             }
@@ -75,7 +75,7 @@ namespace MSOE.MediaComplete.Test
         {
             var file = FileHelper.CreateFile(_homeDir, Constants.FileTypes.Invalid);
 
-            var task = MusicIdentifier.IdentifySong(file.FullName);
+            var task = MusicIdentifier.IdentifySongAsync(file.FullName);
             while (!task.IsCompleted && !task.IsFaulted)
             {
             }
@@ -90,7 +90,7 @@ namespace MSOE.MediaComplete.Test
         {
             var file = FileHelper.CreateFile(_homeDir, Constants.FileTypes.NonMusic);
 
-            var task = MusicIdentifier.IdentifySong(file.FullName);
+            var task = MusicIdentifier.IdentifySongAsync(file.FullName);
             while (!task.IsCompleted && !task.IsFaulted)
             {
             }

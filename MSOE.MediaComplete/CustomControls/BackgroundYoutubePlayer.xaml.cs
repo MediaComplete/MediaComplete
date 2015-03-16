@@ -22,7 +22,7 @@ namespace MSOE.MediaComplete.CustomControls
             YoutubeBrowser.Source = new Uri(Url);
         }
 
-        public string ServePage(HttpListenerRequest request)
+        public static string ServePage(HttpListenerRequest request)
         {
             var html = "";
             var uri = new Uri("/CustomControls/BackgroundYoutubePlayer.html", UriKind.Relative);

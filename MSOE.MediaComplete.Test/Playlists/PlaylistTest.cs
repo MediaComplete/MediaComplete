@@ -94,7 +94,7 @@ namespace MSOE.MediaComplete.Test.Playlists
             mock.VerifySet(m => m.Name = It.IsAny<string>(), Times.Once);
         }
 
-        private Mock<IM3UFile> BuildM3UMock(string name, List<MediaItem> mediaList)
+        private static Mock<IM3UFile> BuildM3UMock(string name, List<MediaItem> mediaList)
         {
             var mockFile = new Mock<IM3UFile>();
             mockFile.SetupGet(mock => mock.Name).Returns(name);
@@ -102,7 +102,7 @@ namespace MSOE.MediaComplete.Test.Playlists
             return mockFile;
         }
 
-        private MediaItem BuildMediaItem()
+        private static MediaItem BuildMediaItem()
         {
             return new MediaItem {Location = Constants.TestFiles[Constants.FileTypes.ValidMp3].Item2};
         }

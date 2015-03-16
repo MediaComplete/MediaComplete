@@ -42,19 +42,19 @@
         </Grid>
         <ToolBarTray Grid.Row="1" Style="{DynamicResource ToolBarTrayStyle}">
             <ToolBar Margin="0,0,0,0" Style="{DynamicResource ToolBarStyle}">
-                <Button x:Name="AddFile" ToolTip="Add File" VerticalAlignment="Center" Click="AddFile_Click">
+                <Button x:Name="AddFile" ToolTip="Add File" VerticalAlignment="Center" Click="AddFile_ClickAsync">
                     <Image Source="{StaticResource Toolbar-AddMusicFile-Icon}" />
                 </Button>
-                <Button x:Name="AddFolder" ToolTip="Add Folder" VerticalAlignment="Center" Click="AddFolder_Click">
+                <Button x:Name="AddFolder" ToolTip="Add Folder" VerticalAlignment="Center" Click="AddFolder_ClickAsync">
                     <Image Source="{StaticResource Toolbar-AddMusicFolder-Icon}" />
                 </Button>
                 <Button x:Name="AutoIdentifyMusic" ToolTip="{StaticResource Toolbar-AutoIdMusic-Tooltip}"
-					VerticalAlignment="Center" Click="Toolbar_AutoIDMusic_Click">
+					VerticalAlignment="Center" Click="Toolbar_AutoIDMusic_ClickAsync">
                     <Image Source="{StaticResource Toolbar-AutoIdMusic-Icon}" />
                 </Button>
                 <Button x:Name="SortMusic" ToolTip="{StaticResource Toolbar-SortMusic-Tooltip}"
                     ToolTipService.ShowOnDisabled='true'
-					VerticalAlignment="Center" Click="Toolbar_SortMusic_Click">
+					VerticalAlignment="Center" Click="Toolbar_SortMusic_ClickAsync">
                     <Image Source="{StaticResource Toolbar-SortMusic-Icon}" />
                 </Button>
             </ToolBar>
@@ -97,7 +97,7 @@
                 <controls:TreeViewEx.ContextMenu>
                     <ContextMenu StaysOpen="True">
                         <MenuItem Header="{StaticResource ContextMenu-AutoIdMusic-Header}"
-							Click="ContextMenu_AutoIDMusic_Click" />
+							Click="ContextMenu_AutoIDMusic_ClickAsync" />
                     </ContextMenu>
                 </controls:TreeViewEx.ContextMenu>
             </controls:TreeViewEx>
