@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using NAudio.Wave;
-using NAudio.WindowsMediaFormat;
 using TagLib;
 
 namespace MSOE.MediaComplete.Lib.Playing
