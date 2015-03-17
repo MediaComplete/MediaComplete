@@ -109,13 +109,13 @@ namespace MSOE.MediaComplete.Lib.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("layout\\\\Pink.xaml")]
-        public string Layout {
+        [global::System.Configuration.DefaultSettingValueAttribute("Playlists")]
+        public string PlaylistDir {
             get {
-                return ((string)(this["Layout"]));
+                return ((string)(this["PlaylistDir"]));
             }
             set {
-                this["Layout"] = value;
+                this["PlaylistDir"] = value;
             }
         }
         
@@ -128,6 +128,18 @@ namespace MSOE.MediaComplete.Lib.Properties {
             }
             set {
                 this["MusicDir"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("layout\\Pink.xaml")]
+        public string Layout {
+            get {
+                return ((string)(this["Layout"]));
+            }
+            set {
+                this["Layout"] = value;
             }
         }
     }

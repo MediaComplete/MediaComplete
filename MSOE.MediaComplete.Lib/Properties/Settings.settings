@@ -23,11 +23,14 @@
     <Setting Name="ShouldRemoveOnImport" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="Layout" Type="System.String" Scope="User">
-      <Value Profile="(Default)">layout\\Pink.xaml</Value>
+    <Setting Name="PlaylistDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Playlists</Value>
     </Setting>
     <Setting Name="MusicDir" Type="System.String" Scope="User">
       <Value Profile="(Default)">Music</Value>
+    </Setting>
+    <Setting Name="Layout" Type="System.String" Scope="User">
+      <Value Profile="(Default)">layout\Pink.xaml</Value>
     </Setting>
   </Settings>
 </SettingsFile>
