@@ -3,6 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Settings" Height="372" Width="482" Icon="Resources/logo_small.ico"
         ResizeMode="NoResize">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="MainWindowResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <DockPanel Style="{DynamicResource PanelStyle}">
         <StackPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" Orientation="Horizontal"
                     VerticalAlignment="Bottom">
@@ -36,6 +43,29 @@
                         <StackPanel Orientation="Horizontal">
                             <CheckBox x:Name="CheckBoxSorting" VerticalAlignment="Center" />
                             <Label Content="Sort Automatically?" FontWeight="SemiBold" />
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Sort Order" VerticalAlignment="Center" FontWeight="ExtraBold"/>
+                                <Image Source="{StaticResource Settings-Info-Icon}" Width="16" Height="16">
+                                <Image.ToolTip>
+                                        <ToolTip>
+                                            <StackPanel>
+                                                <TextBlock>The Sort Order defines the file structure that your library will be sorted into.</TextBlock>
+                                            </StackPanel>
+                                        </ToolTip>
+                                    </Image.ToolTip>
+                                </Image>
+                            </StackPanel>
+                            <ScrollViewer HorizontalScrollBarVisibility="auto" VerticalScrollBarVisibility="auto" Width="auto" Height="175">
+                                <StackPanel>
+                                    <StackPanel  x:Name="SortConfig" Orientation="Vertical">
+                                    </StackPanel>
+                                </StackPanel>
+                            </ScrollViewer>
+                            <DockPanel Dock="Bottom">
+                                <Button Content="Restore Default Order" Width="150" Height="22" HorizontalAlignment="Right" Margin="8" Click="ResetDefault"></Button>
+                            </DockPanel>
                         </StackPanel>
                     </StackPanel>
                 </Border>
