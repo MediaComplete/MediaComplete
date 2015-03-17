@@ -153,6 +153,8 @@ namespace MSOE.MediaComplete
             SettingWrapper.SortOrder = newSortOrder;
             SettingWrapper.IsSorting = newIsSorted;
 
+            SettingWrapper.ShouldRemoveOnImport = MoveOrCopy.IsChecked.GetValueOrDefault(false);
+
             SettingWrapper.Save();
 
             if (!Directory.Exists(SettingWrapper.MusicDir))
