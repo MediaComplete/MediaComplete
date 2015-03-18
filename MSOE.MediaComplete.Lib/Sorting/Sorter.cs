@@ -54,14 +54,15 @@ namespace MSOE.MediaComplete.Lib.Sorting
         {
             await Sys.Task.Run(() =>
             {
+                var musicDir = new DirectoryInfo(SettingWrapper.MusicDir);
                 var fileInfos = Settings.Files ??
-                                Settings.Root.EnumerateFiles("*", SearchOption.AllDirectories).GetMusicFiles();
+                                musicDir.EnumerateFiles("*", SearchOption.AllDirectories).GetMusicFiles();
 
                 foreach (var file in fileInfos)
                 {
-                    var path = Settings.Root.PathSegment(file.Directory);
+                    var path = musicDir.PathSegment(file.Directory);
                     var targetFile = GetNewLocation(file, Settings.SortOrder);
-                    var targetPath = Settings.Root.PathSegment(targetFile.Directory);
+                    var targetPath = musicDir.PathSegment(targetFile.Directory);
 
                     // If the current and target paths are different, we know we need to move.
                     if (!path.SequenceEqual(targetPath, new DirectoryEqualityComparer()))
@@ -122,7 +123,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                 metadataPath.Append(metaValue);
                 metadataPath.Append(Path.DirectorySeparatorChar);
             }
-            return new FileInfo(Settings.Root.FullName + Path.DirectorySeparatorChar + metadataPath.ToString().GetValidFileName() + file.Name);
+            return new FileInfo(SettingWrapper.MusicDir + Path.DirectorySeparatorChar + metadataPath.ToString().GetValidFileName() + file.Name);
         }
 
         #region Import Event Handling
@@ -130,17 +131,16 @@ namespace MSOE.MediaComplete.Lib.Sorting
         static Sorter()
         {
             Importer.ImportFinished += SortNewImports;
-            SettingWrapper.RaiseSettingEvent += Resort;
+            SettingWrapper.RaiseSettingEvent += ReSort;
         }
 
-        private static void Resort()
+        private static void ReSort()
         {
             if (!SortHelper.GetSorting()) return;
             
             var settings = new SortSettings
             {
                 SortOrder = SettingWrapper.SortOrder,
-                Root = new DirectoryInfo(SettingWrapper.MusicDir),
                 Files =  new DirectoryInfo(SettingWrapper.MusicDir).EnumerateFiles("*", SearchOption.AllDirectories)
                     .GetMusicFiles()
             };
@@ -159,8 +159,6 @@ namespace MSOE.MediaComplete.Lib.Sorting
             var settings = new SortSettings
             {
                 SortOrder = SettingWrapper.SortOrder,
-
-                Root = results.HomeDir,
                 Files = results.NewFiles
             };
             var sorter = new Sorter(settings);
