@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Forms;
 using MSOE.MediaComplete.Lib;
+using MSOE.MediaComplete.Lib.Sorting;
+using Button = System.Windows.Controls.Button;
+using ComboBox = System.Windows.Controls.ComboBox;
 
 namespace MSOE.MediaComplete
 {
@@ -14,7 +17,6 @@ namespace MSOE.MediaComplete
     /// </summary>
     public partial class Settings
     {
-
         private readonly Dictionary<LayoutType, string> _layoutsDict = new Dictionary<LayoutType, string>
         {
             {LayoutType.Dark, "layout\\Dark.xaml"},
@@ -24,13 +26,15 @@ namespace MSOE.MediaComplete
         private bool _layoutHasChanged;
         public Settings()
         {
+
             InitializeComponent();
             TxtboxSelectedFolder.Text = SettingWrapper.HomeDir;
-            LblInboxFolder.Content = SettingWrapper.InboxDir;
+            TxtInboxFolder.Text = SettingWrapper.InboxDir;
             ComboBoxPollingTime.SelectedValue = SettingWrapper.PollingTime.ToString(CultureInfo.InvariantCulture);
             CheckboxPolling.IsChecked = SettingWrapper.IsPolling;
             CheckboxShowImportDialog.IsChecked = SettingWrapper.ShowInputDialog;
             CheckBoxSorting.IsChecked = SettingWrapper.IsSorting;
+            MoveOrCopy.IsChecked = SettingWrapper.ShouldRemoveOnImport;
             PollingCheckBoxChanged(CheckboxPolling, null);
             if (SettingWrapper.Layout.Equals(_layoutsDict[LayoutType.Pink]))
             {
@@ -40,6 +44,11 @@ namespace MSOE.MediaComplete
             {
                 DarkCheck.IsChecked = true;
             }
+            _comboBoxes = new List<ComboBox>();
+            _sortOrderList= SortHelper.ConvertToString(SettingWrapper.SortOrder);
+            _showComboBox = new List<bool>();
+            LoadComboBoxes();
+            LoadSortListBox();
         }
 
 
@@ -52,7 +61,7 @@ namespace MSOE.MediaComplete
         private void BtnSelectFolder_Click(object sender, EventArgs e)
         {
             var folderBrowserDialog1 = new FolderBrowserDialog();
-            var button = sender as System.Windows.Controls.Button;
+            var button = sender as Button;
             if (folderBrowserDialog1.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
 
             if (button == null) return;
@@ -62,7 +71,7 @@ namespace MSOE.MediaComplete
                     TxtboxSelectedFolder.Text = folderBrowserDialog1.SelectedPath;
                     break;
                 case "BtnInboxFolder":
-                    LblInboxFolder.Content = folderBrowserDialog1.SelectedPath;
+                    TxtInboxFolder.Text = folderBrowserDialog1.SelectedPath;
                     break;
             }
         }
@@ -81,8 +90,7 @@ namespace MSOE.MediaComplete
             if (button != null && button.IsChecked == true)
             {
                 CheckboxShowImportDialog.IsEnabled = true;
-                
-                LblInboxFolder.IsEnabled = true;
+                TxtInboxFolder.IsEnabled = true;
                 ComboBoxPollingTime.IsEnabled = true;
                 BtnInboxFolder.IsEnabled = true;
                 LblPollTime.IsEnabled = true;
@@ -92,7 +100,7 @@ namespace MSOE.MediaComplete
             else
             {
                 CheckboxShowImportDialog.IsEnabled = false;
-                LblInboxFolder.IsEnabled = false;
+                TxtInboxFolder.IsEnabled = false;
                 ComboBoxPollingTime.IsEnabled = false;
                 BtnInboxFolder.IsEnabled = false;
                 LblPollTime.IsEnabled = false;
@@ -115,7 +123,7 @@ namespace MSOE.MediaComplete
             {
                 homeDir += Path.DirectorySeparatorChar;
             }
-            var inboxDir = (string) LblInboxFolder.Content;
+            var inboxDir = TxtInboxFolder.Text;
             if (!inboxDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.CurrentCulture), StringComparison.Ordinal))
             {
                 inboxDir += Path.DirectorySeparatorChar;
@@ -137,9 +145,17 @@ namespace MSOE.MediaComplete
             SettingWrapper.PollingTime = Convert.ToDouble(ComboBoxPollingTime.SelectedValue.ToString());
             SettingWrapper.IsPolling = CheckboxPolling.IsChecked.GetValueOrDefault(false);
             SettingWrapper.ShowInputDialog = CheckboxShowImportDialog.IsChecked.GetValueOrDefault(false);
-            SettingWrapper.IsSorting = CheckBoxSorting.IsChecked.GetValueOrDefault(false);
-            SettingWrapper.Save();
 
+            var newSortOrder = SortHelper.ConvertToMetaAttribute(_sortOrderList);
+            var newIsSorted = CheckBoxSorting.IsChecked.GetValueOrDefault(false);
+            SortHelper.SetSorting(SettingWrapper.SortOrder, newSortOrder, SettingWrapper.IsSorting, newIsSorted);
+
+            SettingWrapper.SortOrder = newSortOrder;
+            SettingWrapper.IsSorting = newIsSorted;
+
+            SettingWrapper.ShouldRemoveOnImport = MoveOrCopy.IsChecked.GetValueOrDefault(false);
+
+            SettingWrapper.Save();
 
             if (!Directory.Exists(SettingWrapper.MusicDir))
                 Directory.CreateDirectory(SettingWrapper.MusicDir);
@@ -148,10 +164,19 @@ namespace MSOE.MediaComplete
 
         private void ComboBox_Loaded(object sender, RoutedEventArgs args)
         {
-            var dataList = new List<string> {"0.5", "1", "5", "10", "30", "60", "120", "240"};
+            var dataList = new List<string> { "0.5", "1", "5", "10", "30", "60", "120", "240" };
 
-            var box = sender as System.Windows.Controls.ComboBox;
+            var box = sender as ComboBox;
             if (box != null) box.ItemsSource = dataList;
+        }
+
+        private void ResetDefault(object sender, RoutedEventArgs e)
+        {
+            _sortOrderList = SortHelper.GetDefaultStringValues();
+            _comboBoxes.Clear();
+            LoadComboBoxes();
+            SortConfig.Children.Clear();
+            LoadSortListBox();
         }
 
         private void Skins_Checked(object sender, RoutedEventArgs e)

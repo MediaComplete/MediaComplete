@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
+using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Properties;
 
 namespace MSOE.MediaComplete.Lib
@@ -58,6 +62,17 @@ namespace MSOE.MediaComplete.Lib
         }
 
         /// <summary>
+        /// gets the ShouldRemoveOnImport boolean from settings
+        /// </summary>
+        /// <returns>ShouldRemoveOnImport is true if you will remove the original file on import
+        /// false if not desired</returns>
+        public static bool ShouldRemoveOnImport
+        {
+            get { return (bool)Settings.Default["ShouldRemoveOnImport"]; }
+            set { Settings.Default["ShouldRemoveOnImport"] = value; }
+        }
+
+        /// <summary>ShouldRemoveOnImport
         /// gets the IsPolling boolean from settings
         /// </summary>
         /// <returns>IsPolling is true if polling is desired, false if not desired</returns>
@@ -93,6 +108,27 @@ namespace MSOE.MediaComplete.Lib
             set { Settings.Default["Layout"] = value; }
         }
         
+        /// <summary>
+        /// gets the SortOrder list from settings
+        /// </summary>
+        /// <returns>The order the sort will perform in</returns>
+        public static List<MetaAttribute> SortOrder
+        {
+            get
+            {
+                var stringList = ((StringCollection)Settings.Default["SortingOrder"]).Cast<string>().ToList();
+                var metaAttrList = stringList.Select(x => (MetaAttribute)Enum.Parse(typeof(MetaAttribute), x)).ToList();
+                return metaAttrList;
+            }
+            set
+            {
+                var collection = new StringCollection();
+                collection.AddRange(value.Select(x => x.ToString()).ToArray());
+                Settings.Default["SortingOrder"] = collection;
+            }
+            
+        }
+
         /// <summary>
         /// saves the settings
         /// </summary>
