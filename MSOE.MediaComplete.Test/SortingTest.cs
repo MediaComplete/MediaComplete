@@ -274,7 +274,7 @@ namespace MSOE.MediaComplete.Test
         /// <summary>
         /// Make sure that the sort happens successfully
         /// </summary>
-        [TestMethod, Timeout(30000)]
+        [TestMethod, Timeout(30000), Ignore] // TODO MC-235
         public void Sort_SortConfigSettingChangedButIsSortingFalse_SortDoesNotHappen()
         {
             var defaultSortOrder = SortHelper.GetDefault();
