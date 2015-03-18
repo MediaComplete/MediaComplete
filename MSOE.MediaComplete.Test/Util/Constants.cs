@@ -28,10 +28,12 @@ namespace MSOE.MediaComplete.Test.Util
         private const string NonMusicFullPath = ResourceDirName + "/" + NonMusicFileName;
         private const string ValidWmaFileName = "ValidWmaFile.wma";
         private const string ValidWmaFullPath = ResourceDirName + "/" + ValidWmaFileName;
+        private const string ValidWavFileName = "ValidWavFile.wav";
+        private const string ValidWavFullPath = ResourceDirName + "/" + ValidWavFileName;
         
         public enum FileTypes
         {
-            ValidMp3, Unknown, BlankedMp3, NonMusic, Invalid, MissingAlbum, MissingArtist, BlankedWma, ValidWma
+            ValidMp3, Unknown, BlankedMp3, NonMusic, Invalid, MissingAlbum, MissingArtist, BlankedWma, ValidWma, ValidWav
         }
 
         public static readonly ReadOnlyDictionary<FileTypes, Tuple<string, string>> TestFiles =
@@ -45,7 +47,8 @@ namespace MSOE.MediaComplete.Test.Util
                 { FileTypes.MissingAlbum, new Tuple<string, string>(MissingAlbumMp3FileName, MissingAlbumMp3FullPath)},
                 { FileTypes.MissingArtist, new Tuple<string, string>(MissingArtistMp3FileName, MissingArtistMp3FullPath)},
                 { FileTypes.BlankedWma, new Tuple<string, string>(BlankedWmaFileName, BlankedWmaFileFullPath)},
-                { FileTypes.ValidWma, new Tuple<string, string>(ValidWmaFileName, ValidWmaFullPath)}
+                { FileTypes.ValidWma, new Tuple<string, string>(ValidWmaFileName, ValidWmaFullPath)},
+                { FileTypes.ValidWav, new Tuple<string, string>(ValidWavFileName, ValidWavFullPath)}
             });
     }
 }

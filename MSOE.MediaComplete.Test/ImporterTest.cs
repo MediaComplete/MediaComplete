@@ -39,7 +39,7 @@ namespace MSOE.MediaComplete.Test
             Task<ImportResults> task;
             using (fileInUse.OpenWrite())
             {
-                task = new Importer(_homeDir.FullName).ImportFilesAsync(new List<FileInfo>{fileInUse}, true);
+                task = new Importer(_homeDir.FullName).ImportFilesAsync(new List<FileInfo> { fileInUse }, false);
                 while (!task.IsCompleted)
                 {
                 }
@@ -55,7 +55,7 @@ namespace MSOE.MediaComplete.Test
         public void Import_FromLibrary_Exception()
         {
             var fileInLib = FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidMp3);
-            var task = new Importer(_homeDir.FullName).ImportFilesAsync(new List<FileInfo>{ fileInLib }, true);
+            var task = new Importer(_homeDir.FullName).ImportFilesAsync(new List<FileInfo> { fileInLib }, false);
             while (!task.IsCompleted)
             {
             }
@@ -72,7 +72,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod, Timeout(30000)]
         public void Import_FromAboveLibrary_Skips()
         {
-            var newFile = FileHelper.CreateFile(_importDir, Constants.FileTypes.ValidMp3);
+            var newFile = FileHelper.CreateFile(_testDir, Constants.FileTypes.ValidMp3);
             var oldFile = FileHelper.CreateFile(_homeDir, Constants.FileTypes.MissingAlbum);
             var task = new Importer(_homeDir.FullName).ImportDirectoryAsync(_testDir.FullName, false);
             while (!task.IsCompleted)
@@ -101,6 +101,36 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(2, _homeDir.GetFiles().Length, "The files aren't in the home dir!");
             Assert.IsFalse(childFile.Exists, "Nested child file wasn't moved!");
             Assert.IsFalse(parentFile.Exists, "File in the root of the import wasn't moved!");
+        }
+
+        [TestMethod, Timeout(30000)]
+        public void Import_MoveFiles_FilesMovedToNewLocation()
+        {
+            var childFile = FileHelper.CreateFile(_importDir, Constants.FileTypes.ValidMp3);
+            var task = new Importer(_homeDir.FullName).ImportDirectoryAsync(_testDir.FullName, false);
+            while (!task.IsCompleted)
+            {
+            }
+
+            Assert.AreEqual(0, task.Result.FailCount, "There was a failed file!");
+            Assert.AreEqual(1, task.Result.NewFiles.Count, "The file wasn't moved!");
+            Assert.AreEqual(1, _homeDir.GetFiles().Length, "The file isn't in the home dir!");
+            Assert.IsTrue(!childFile.Exists, "Original file was only copied!");
+        }
+
+        [TestMethod, Timeout(30000)]
+        public void Import_CopyFiles_FilesCopiedToNewLocation()
+        {
+            var childFile = FileHelper.CreateFile(_importDir, Constants.FileTypes.ValidMp3);
+            var task = new Importer(_homeDir.FullName).ImportDirectoryAsync(_testDir.FullName, true);
+            while (!task.IsCompleted)
+            {
+            }
+
+            Assert.AreEqual(0, task.Result.FailCount, "There was a failed file!");
+            Assert.AreEqual(1, task.Result.NewFiles.Count, "The file wasn't moved!");
+            Assert.AreEqual(1, _homeDir.GetFiles().Length, "The file isn't in the home dir!");
+            Assert.IsTrue(childFile.Exists, "Original file was moved!");
         }
     }
 }

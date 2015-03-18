@@ -372,6 +372,31 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style TargetType="{x:Type Button}" x:Key="PauseButton" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Ellipse Style="{StaticResource EllipseStyle}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                        <Polygon Points="20,15 35,15 35,60 20,60 " Fill="#FFF0EFF1" />
+                        <Polygon Points="40,15 55,15 55,60 40,60 " Fill="#FFF0EFF1" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type Button}" x:Key="StopButton" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Ellipse Style="{StaticResource EllipseStyle}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                        <Polygon Points="12,12 12,28 28,28 28,12" Fill="#FFF0EFF1" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
     <Style TargetType="{x:Type Button}" x:Key="SkipButton" >
         <Setter Property="Template">
             <Setter.Value>
@@ -398,6 +423,9 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style TargetType="{x:Type Panel}" x:Key="PanelStyle">
+        <Setter Property="Background" Value="#FFE3B3CF"/>
+    </Style>
     <Style TargetType="{x:Type Button}" x:Key="Plus/Minus" >
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="Transparent" />
@@ -405,17 +433,14 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Border x:Name="bg"
-                                Background="{TemplateBinding Background}"
-                                BorderThickness="0">
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="0">
                         <ContentPresenter HorizontalAlignment="Center"
-                                VerticalAlignment="Center" />
+                            VerticalAlignment="Center" />
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
-    <Style TargetType="{x:Type StackPanel}" x:Key="StackStyle">
-        <Setter Property="Background" Value="#FFE3B3CF"/>
     </Style>
     <Style TargetType="{x:Type Menu}" x:Key="MenuStyle">
         <Setter Property="Background" Value="#FFE3B3CF"/>

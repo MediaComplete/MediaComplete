@@ -112,7 +112,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
             }
             try
             {
-                file.Save();
+                file.Save();//TODO: MC-185 add catch for save when editing a file while it is playing
             }
             catch (UnauthorizedAccessException)
             {

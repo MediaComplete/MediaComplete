@@ -19,7 +19,6 @@ using System.Globalization;
 namespace MSOE.MediaComplete
 {
     /// <summary>
-
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow
@@ -65,6 +64,8 @@ namespace MSOE.MediaComplete
             InitEvents();
 
             InitTreeView();
+
+            InitPlayer();
         }
 
         private void InitEvents()
@@ -112,7 +113,7 @@ namespace MSOE.MediaComplete
             }
             else
             {
-                await new Importer(SettingWrapper.MusicDir).ImportFilesAsync(files, false);
+                await new Importer(SettingWrapper.MusicDir).ImportFilesAsync(files, true);
             }
         }
         
@@ -143,7 +144,7 @@ namespace MSOE.MediaComplete
             ImportResults results;
             try
             {
-                results = await new Importer(SettingWrapper.MusicDir).ImportFilesAsync(fileDialog.FileNames.Select(p => new FileInfo(p)).ToList(), true);
+                results = await new Importer(SettingWrapper.MusicDir).ImportFilesAsync(fileDialog.FileNames.Select(p => new FileInfo(p)).ToList(), SettingWrapper.ShouldRemoveOnImport);
             }
             catch (InvalidImportException)
             {
@@ -170,7 +171,7 @@ namespace MSOE.MediaComplete
             if (folderDialog.ShowDialog() != WinForms.DialogResult.OK) return;
             var selectedDir = folderDialog.SelectedPath;
 
-            var results = await new Importer(SettingWrapper.MusicDir).ImportDirectoryAsync(selectedDir, true);
+            var results = await new Importer(SettingWrapper.MusicDir).ImportDirectoryAsync(selectedDir, SettingWrapper.ShouldRemoveOnImport);
             if (results.FailCount > 0)
             {
                 MessageBox.Show(this,

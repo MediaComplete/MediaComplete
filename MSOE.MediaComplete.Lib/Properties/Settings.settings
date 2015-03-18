@@ -8,7 +8,7 @@
     <Setting Name="InboxDir" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\inboxForLibrary\</Value>
     </Setting>
-    <Setting Name="PollingTime" Type="System.String" Scope="User">
+    <Setting Name="PollingTime" Type="System.Double" Scope="User">
       <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="IsPolling" Type="System.Boolean" Scope="User">
@@ -20,12 +20,24 @@
     <Setting Name="IsSorting" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="ShouldRemoveOnImport" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="PlaylistDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Playlists</Value>
+    </Setting>
+    <Setting Name="MusicDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Music</Value>
+    </Setting>
+    <Setting Name="Layout" Type="System.String" Scope="User">
+      <Value Profile="(Default)">layout\Pink.xaml</Value>
+    </Setting>
     <Setting Name="SortingOrder" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
   &lt;string&gt;Artist&lt;/string&gt;
   &lt;string&gt;Album&lt;/string&gt;
-&lt;/ArrayOfString&gt;</Value>
+&lt;/ArrayOfString&gt;</Value>lopment
     </Setting>
   </Settings>
 </SettingsFile>
