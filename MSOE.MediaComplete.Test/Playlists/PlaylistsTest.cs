@@ -48,41 +48,41 @@ namespace MSOE.MediaComplete.Test.Playlists
         }
         #endregion
 
-        #region GetNewPlaylist()
+        #region CreatePlaylist()
         [Test]
-        public void GetNewPlaylist_NoNameOnce_ReturnsNewPlaylist()
+        public void CreatePlaylist_NoNameOnce_ReturnsNewPlaylist()
         {
             
         }
 
         [Test]
-        public void GetNewPlaylist_NoNameMultiple_ReturnsUniquePlaylists()
+        public void CreatePlaylist_NoNameMultiple_ReturnsUniquePlaylists()
         {
 
         }
         #endregion
 
-        #region GetNewPlaylist(string name)
+        #region CreatePlaylist(string name)
         [Test]
-        public void GetNewPlaylist_NameAlreadyExists_ThrowsException()
+        public void CreatePlaylist_NameAlreadyExists_ThrowsException()
         {
 
         }
 
         [Test]
-        public void GetNewPlaylist_EmptyName_ThrowsException()
+        public void CreatePlaylist_EmptyName_ThrowsException()
         {
 
         }
 
         [Test]
-        public void GetNewPlaylist_NullName_ThrowsException()
+        public void CreatePlaylist_NullName_ThrowsException()
         {
 
         }
 
         [Test]
-        public void GetNewPlaylist_ValidName_ReturnsNewPlaylist()
+        public void CreatePlaylist_ValidName_ReturnsNewPlaylist()
         {
 
         }
