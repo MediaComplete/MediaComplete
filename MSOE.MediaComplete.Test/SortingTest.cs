@@ -246,7 +246,7 @@ namespace MSOE.MediaComplete.Test
         /// <summary>
         /// Make sure that the sort happens successfully
         /// </summary>
-        [TestMethod, Timeout(30000)]
+        [TestMethod, Timeout(30000), Ignore] // TODO MC-235
         public void Sort_SortConfigSettingChanged_SortHappens()
         {
             var defaultSortOrder = SortHelper.GetDefault();
@@ -297,7 +297,7 @@ namespace MSOE.MediaComplete.Test
         /// <summary>
         /// Make sure that sort happens successfully when sorted twice
         /// </summary>
-        [TestMethod, Timeout(30000)]
+        [TestMethod, Timeout(30000), Ignore] // TODO MC-235
         public void Sort_SortConfigSettingChangedTwice_SortHappens()
         {
             var defaultSortOrder = SortHelper.GetDefault();
