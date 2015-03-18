@@ -91,7 +91,6 @@
     <Compile Include="Playing\Player.cs" />
     <Compile Include="Sorting\SortHelper.cs" />
     <Compile Include="SystemExtensions.cs" />
-    <Compile Include="TreeViewBackend.cs" />
     <Compile Include="StatusBarHandler.cs" />
     <Compile Include="Import\Importer.cs" />
     <Compile Include="Metadata\MusicIdentifier.cs">
