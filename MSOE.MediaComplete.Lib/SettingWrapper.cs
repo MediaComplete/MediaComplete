@@ -21,8 +21,8 @@ namespace MSOE.MediaComplete.Lib
         /// <returns>home directory path</returns>
         public static string HomeDir
         {
-            get { return (string)Settings.Default["HomeDir"]; }
-            set { Settings.Default["HomeDir"] = value; }
+            get { return Settings.Default.HomeDir; }
+            set { Settings.Default.HomeDir = value; }
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace MSOE.MediaComplete.Lib
         /// <returns>music directory path</returns>
         public static string MusicDir
         {
-            get { return HomeDir + Settings.Default["MusicDir"]; }
+            get { return HomeDir + Settings.Default.MusicDir; }
         }
         /// <summary>
         /// Gets the playlist directory from the settings
@@ -39,7 +39,7 @@ namespace MSOE.MediaComplete.Lib
         /// <returns>playlist directory path</returns>
         public static string PlaylistDir
         {
-            get { return HomeDir + Settings.Default["PlaylistDir"]; }
+            get { return HomeDir + Settings.Default.PlaylistDir; }
         }
         /// <summary>
         /// gets the inbox directory path
@@ -47,8 +47,8 @@ namespace MSOE.MediaComplete.Lib
         /// <returns>inbox directory path</returns>
         public static string InboxDir
         {
-            get { return (string)Settings.Default["InboxDir"]; }
-            set { Settings.Default["InboxDir"] = value; }
+            get { return Settings.Default.InboxDir; }
+            set { Settings.Default.InboxDir = value; }
         }
 
         /// <summary>
@@ -57,8 +57,8 @@ namespace MSOE.MediaComplete.Lib
         /// <returns>the polling interval</returns>
         public static double PollingTime
         {
-            get { return Convert.ToDouble(Settings.Default["PollingTime"]); } 
-            set { Settings.Default["PollingTime"] = value; }
+            get { return Convert.ToDouble(Settings.Default.PollingTime); } 
+            set { Settings.Default.PollingTime = value; }
         }
 
         /// <summary>
@@ -68,8 +68,8 @@ namespace MSOE.MediaComplete.Lib
         /// false if not desired</returns>
         public static bool ShouldRemoveOnImport
         {
-            get { return (bool)Settings.Default["ShouldRemoveOnImport"]; }
-            set { Settings.Default["ShouldRemoveOnImport"] = value; }
+            get { return Settings.Default.ShouldRemoveOnImport; }
+            set { Settings.Default.ShouldRemoveOnImport = value; }
         }
 
         /// <summary>ShouldRemoveOnImport
@@ -78,8 +78,8 @@ namespace MSOE.MediaComplete.Lib
         /// <returns>IsPolling is true if polling is desired, false if not desired</returns>
         public static bool IsPolling
         {
-            get { return (bool)Settings.Default["IsPolling"]; }
-            set { Settings.Default["IsPolling"] = value; }
+            get { return Settings.Default.IsPolling; }
+            set { Settings.Default.IsPolling = value; }
         }
 
         /// <summary>
@@ -88,8 +88,8 @@ namespace MSOE.MediaComplete.Lib
         /// <returns>true if the dialog is to be shown, false if it should not show</returns>
         public static bool ShowInputDialog
         {
-            get { return (bool)Settings.Default["ShowInputDialog"]; }
-            set { Settings.Default["ShowInputDialog"] = value; }
+            get { return Settings.Default.ShowInputDialog; }
+            set { Settings.Default.ShowInputDialog = value; }
 
         }
         /// <summary>
@@ -98,14 +98,14 @@ namespace MSOE.MediaComplete.Lib
         /// <returns>IsSorting is true if automatically sorting is desired, false if not desired</returns>
         public static bool IsSorting
         {
-            get { return (bool)Settings.Default["IsSorting"]; }
-            set { Settings.Default["IsSorting"] = value; }
+            get { return Settings.Default.IsSorting; }
+            set { Settings.Default.IsSorting = value; }
         }
 
         public static string Layout
         {
-            get { return (string)Settings.Default["Layout"]; }
-            set { Settings.Default["Layout"] = value; }
+            get { return Settings.Default.Layout; }
+            set { Settings.Default.Layout = value; }
         }
         
         /// <summary>
@@ -116,7 +116,7 @@ namespace MSOE.MediaComplete.Lib
         {
             get
             {
-                var stringList = ((StringCollection)Settings.Default["SortingOrder"]).Cast<string>().ToList();
+                var stringList = (Settings.Default.SortingOrder).Cast<string>().ToList();
                 var metaAttrList = stringList.Select(x => (MetaAttribute)Enum.Parse(typeof(MetaAttribute), x)).ToList();
                 return metaAttrList;
             }
@@ -124,10 +124,16 @@ namespace MSOE.MediaComplete.Lib
             {
                 var collection = new StringCollection();
                 collection.AddRange(value.Select(x => x.ToString()).ToArray());
-                Settings.Default["SortingOrder"] = collection;
+                Settings.Default.SortingOrder = collection;
             }
             
         }
+
+        public static List<string> AllDirectories
+        {
+            get { return (Settings.Default.AllDirs).Split(';').ToList(); }
+            set { Settings.Default.AllDirs = value.Aggregate((x, y) => x + ";" + y); }
+        } 
 
         /// <summary>
         /// saves the settings

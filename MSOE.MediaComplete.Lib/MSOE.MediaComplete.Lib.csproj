@@ -77,6 +77,7 @@
     <Compile Include="Background\Queue.cs" />
     <Compile Include="Background\TaskAdder.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="FileMover.cs" />
     <Compile Include="Import\ImportTask.cs" />
     <Compile Include="Metadata\IdentifierTask.cs" />
     <Compile Include="Metadata\MetadataExtensions.cs" />
