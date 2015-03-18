@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows.Controls;
 using MSOE.MediaComplete.Lib;
 using consts = MSOE.MediaComplete.Lib.Constants;
@@ -36,7 +37,7 @@ namespace MSOE.MediaComplete.CustomControls
         {
             if (ParentItem != null)
             {
-                return ParentItem.GetPath() + Header + consts.PathSeparator;
+                return ParentItem.GetPath() + Header + Path.DirectorySeparatorChar;
             }
             return SettingWrapper.MusicDir;
             

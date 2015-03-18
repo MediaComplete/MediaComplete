@@ -19,7 +19,6 @@ using System.Globalization;
 namespace MSOE.MediaComplete
 {
     /// <summary>
-
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow
@@ -65,6 +64,8 @@ namespace MSOE.MediaComplete
             InitEvents();
 
             InitTreeView();
+
+            InitPlayer();
         }
 
         private void InitEvents()
