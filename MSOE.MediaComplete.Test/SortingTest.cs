@@ -49,7 +49,7 @@ namespace MSOE.MediaComplete.Test
             FileHelper.CreateFile(new DirectoryInfo(normalFilePath), Constants.FileTypes.ValidMp3);
 
             var subject = new Sorter(GetNormalSettings());
-            var task  = subject.CalculateActionsAsync();
+            var task = subject.CalculateActionsAsync();
             SpinWait.SpinUntil(() => task.IsCompleted);
 
             Assert.AreEqual(0, subject.UnsortableCount, "Sorter shouldn't have invalid files!");
@@ -250,7 +250,7 @@ namespace MSOE.MediaComplete.Test
         public void Sort_SortConfigSettingChanged_SortHappens()
         {
             var defaultSortOrder = SortHelper.GetDefault();
-            var newSortOrder = new List<MetaAttribute> {MetaAttribute.Album, MetaAttribute.Artist};
+            var newSortOrder = new List<MetaAttribute> { MetaAttribute.Album, MetaAttribute.Artist };
             SettingWrapper.IsSorting = true;
             SettingWrapper.SortOrder = defaultSortOrder;
             // ReSharper disable once ObjectCreationAsStatement
@@ -330,13 +330,13 @@ namespace MSOE.MediaComplete.Test
             while (!new FileInfo(secondFileDestination).Exists)
             {
             }
-            
+
             Assert.IsTrue(new FileInfo(secondFileDestination).Exists);
 
             while (new FileInfo(_homeDir.FullName + Path.DirectorySeparatorChar + "The Money Store" +
                                 Path.DirectorySeparatorChar + "Death Grips").Exists)
             {
-                
+
             }
             Thread.Sleep(200);
             Assert.IsTrue(new DirectoryInfo(_homeDir.FullName).GetDirectories().Length == 1);
