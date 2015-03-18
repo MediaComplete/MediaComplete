@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Properties;
-using consts = MSOE.MediaComplete.Lib.Constants;
 
 namespace MSOE.MediaComplete.Lib
 {
@@ -23,7 +23,7 @@ namespace MSOE.MediaComplete.Lib
         public static string HomeDir
         {
             get { return (string)Settings.Default["HomeDir"]; }
-            set { Settings.Default["HomeDir"] = value.EndsWith(consts.PathSeparator) ? value : value + consts.PathSeparator; }
+            set { Settings.Default["HomeDir"] = value.EndsWith(Path.DirectorySeparatorChar.ToString()) ? value : value + Path.DirectorySeparatorChar; }
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace MSOE.MediaComplete.Lib
             get
             {
                 var mDir = HomeDir + Settings.Default["MusicDir"];
-                return mDir.EndsWith(consts.PathSeparator) ? mDir : mDir + consts.PathSeparator;
+                return mDir.EndsWith(Path.DirectorySeparatorChar.ToString()) ? mDir : mDir + Path.DirectorySeparatorChar;
             }
         }
         /// <summary>
@@ -47,7 +47,7 @@ namespace MSOE.MediaComplete.Lib
             get
             {
                 var pDir = HomeDir + Settings.Default["PlaylistDir"];
-                return pDir.EndsWith(consts.PathSeparator) ? pDir : pDir + consts.PathSeparator;
+                return pDir.EndsWith(Path.DirectorySeparatorChar.ToString()) ? pDir : pDir + Path.DirectorySeparatorChar;
             }
         }
         /// <summary>
@@ -57,7 +57,7 @@ namespace MSOE.MediaComplete.Lib
         public static string InboxDir
         {
             get { return (string)Settings.Default["InboxDir"]; }
-            set { Settings.Default["InboxDir"] = value.EndsWith(consts.PathSeparator) ? value : value + consts.PathSeparator; }
+            set { Settings.Default["InboxDir"] = value.EndsWith(Path.DirectorySeparatorChar.ToString()) ? value : value + Path.DirectorySeparatorChar; }
         }
 
         /// <summary>

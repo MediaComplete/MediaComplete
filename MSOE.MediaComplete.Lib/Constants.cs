@@ -13,11 +13,6 @@ namespace MSOE.MediaComplete.Lib
 	    public const string FileDialogFilterStringSeparator = "|";
 
         /// <summary>
-        /// Used for backslashes in folder paths
-        /// </summary>
-	    public const string PathSeparator = "\\";
-
-        /// <summary>
         /// extension for mp3 files
         /// </summary>
         public const string Mp3FileExtension = ".mp3";
