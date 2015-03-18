@@ -78,6 +78,12 @@ namespace MSOE.MediaComplete
                 PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
                 return;
             }
+            catch (FileNotFoundException)
+            {
+                StatusBarHandler.Instance.ChangeStatusBarMessage("FileNotFound-Error", StatusBarHandler.StatusIcon.Error);
+                PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
+                return;
+            }
             PlayPauseButton.SetResourceReference(StyleProperty, "PauseButton");
         }
 
