@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Properties;
+using consts = MSOE.MediaComplete.Lib.Constants;
 
 namespace MSOE.MediaComplete.Lib
 {
@@ -22,7 +23,7 @@ namespace MSOE.MediaComplete.Lib
         public static string HomeDir
         {
             get { return (string)Settings.Default["HomeDir"]; }
-            set { Settings.Default["HomeDir"] = value; }
+            set { Settings.Default["HomeDir"] = value.EndsWith(consts.PathSeparator) ? value : value + consts.PathSeparator; }
         }
 
         /// <summary>
@@ -31,7 +32,11 @@ namespace MSOE.MediaComplete.Lib
         /// <returns>music directory path</returns>
         public static string MusicDir
         {
-            get { return HomeDir + Settings.Default["MusicDir"]; }
+            get
+            {
+                var mDir = HomeDir + Settings.Default["MusicDir"];
+                return mDir.EndsWith(consts.PathSeparator) ? mDir : mDir + consts.PathSeparator;
+            }
         }
         /// <summary>
         /// Gets the playlist directory from the settings
@@ -39,7 +44,11 @@ namespace MSOE.MediaComplete.Lib
         /// <returns>playlist directory path</returns>
         public static string PlaylistDir
         {
-            get { return HomeDir + Settings.Default["PlaylistDir"]; }
+            get
+            {
+                var pDir = HomeDir + Settings.Default["PlaylistDir"];
+                return pDir.EndsWith(consts.PathSeparator) ? pDir : pDir + consts.PathSeparator;
+            }
         }
         /// <summary>
         /// gets the inbox directory path
@@ -48,7 +57,7 @@ namespace MSOE.MediaComplete.Lib
         public static string InboxDir
         {
             get { return (string)Settings.Default["InboxDir"]; }
-            set { Settings.Default["InboxDir"] = value; }
+            set { Settings.Default["InboxDir"] = value.EndsWith(consts.PathSeparator) ? value : value + consts.PathSeparator; }
         }
 
         /// <summary>
