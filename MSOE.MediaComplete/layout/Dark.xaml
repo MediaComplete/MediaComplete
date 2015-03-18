@@ -428,7 +428,7 @@
     <Style TargetType="{x:Type GridSplitter}" x:Key="SplitterStyle">
         <Setter Property="Background" Value="#FF686868"></Setter>
     </Style>
-    <Style TargetType="{x:Type StackPanel}" x:Key="StackStyle">
+    <Style TargetType="{x:Type Panel}" x:Key="PanelStyle">
         <Setter Property="Background" Value="#FF3E3E42"/>
     </Style>
     <Style TargetType="{x:Type Menu}" x:Key="MenuStyle">

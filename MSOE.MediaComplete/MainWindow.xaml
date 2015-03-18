@@ -169,7 +169,7 @@
             </Border>
         </Grid>
 
-        <StackPanel Grid.Row="3" Grid.Column="0" Style="{DynamicResource StackStyle}">
+        <StackPanel Grid.Row="3" Grid.Column="0" Style="{DynamicResource PanelStyle}">
             <Slider />
             <StackPanel Height="75" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Height="60" Width="60" Style="{DynamicResource PreviousButton}" />
