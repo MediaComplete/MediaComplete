@@ -3,7 +3,7 @@
 namespace MSOE.MediaComplete.Test.Playlists
 {
     [Ignore]
-    public class PlaylistsTest
+    public class PlaylistServiceTest
     {
 
         #region GetAllPlaylists()
