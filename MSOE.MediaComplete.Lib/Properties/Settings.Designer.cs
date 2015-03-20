@@ -97,6 +97,18 @@ namespace MSOE.MediaComplete.Lib.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("layout\\Dark.xaml")]
+        public string Layout {
+            get {
+                return ((string)(this["Layout"]));
+            }
+            set {
+                this["Layout"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool ShouldRemoveOnImport {
             get {
@@ -128,18 +140,6 @@ namespace MSOE.MediaComplete.Lib.Properties {
             }
             set {
                 this["MusicDir"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("layout\\Pink.xaml")]
-        public string Layout {
-            get {
-                return ((string)(this["Layout"]));
-            }
-            set {
-                this["Layout"] = value;
             }
         }
         

@@ -59,7 +59,7 @@ namespace MSOE.MediaComplete
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void okButton_Click(object sender, RoutedEventArgs e)
+        private async void okButton_ClickAsync(object sender, RoutedEventArgs e)
         {
             SettingWrapper.ShowInputDialog =!StopShowingCheckBox.IsChecked.GetValueOrDefault(false);
 
@@ -91,7 +91,7 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void CancelButton_OnClick(object sender, RoutedEventArgs e)
         {
-            SettingWrapper.IsPolling =!StopShowingCheckBox.IsChecked.GetValueOrDefault((false));
+            SettingWrapper.IsPolling = !StopShowingCheckBox.IsChecked.GetValueOrDefault((false));
             Polling.Instance.Reset();
             DialogResult = false;
             SettingWrapper.Save();
