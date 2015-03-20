@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Properties;
@@ -31,7 +32,7 @@ namespace MSOE.MediaComplete.Lib
         /// <returns>music directory path</returns>
         public static string MusicDir
         {
-            get { return HomeDir + Settings.Default.MusicDir; }
+            get { return HomeDir + Settings.Default.MusicDir+Path.DirectorySeparatorChar; }
         }
         /// <summary>
         /// Gets the playlist directory from the settings
@@ -39,7 +40,7 @@ namespace MSOE.MediaComplete.Lib
         /// <returns>playlist directory path</returns>
         public static string PlaylistDir
         {
-            get { return HomeDir + Settings.Default.PlaylistDir; }
+            get { return HomeDir + Settings.Default.PlaylistDir + Path.DirectorySeparatorChar; }
         }
         /// <summary>
         /// gets the inbox directory path

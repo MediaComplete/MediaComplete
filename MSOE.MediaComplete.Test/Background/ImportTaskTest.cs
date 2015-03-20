@@ -4,6 +4,7 @@ using MSOE.MediaComplete.Lib.Import;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Sorting;
 using System.Collections.Generic;
+using MSOE.MediaComplete.Lib;
 
 namespace MSOE.MediaComplete.Test.Background
 {
@@ -21,7 +22,7 @@ namespace MSOE.MediaComplete.Test.Background
         public void Test_AddImportEmptyQueue_Added()
         {
             var queue = new List<List<Task>>();
-            var subject = new ImportTask(null, null, false);
+            var subject = new ImportTask(FileMover.GetFileMover(), null, null, false);
             TaskAdder.ResolveConflicts(subject, queue);
 
             Assert.AreEqual(1, queue.Count, "Queue doesn't have the right number of stages!");
@@ -43,7 +44,7 @@ namespace MSOE.MediaComplete.Test.Background
                 new List<Task>()
             };
 
-            var subject = new ImportTask(null, null, false);
+            var subject = new ImportTask(FileMover.GetFileMover(), null, null, false);
             TaskAdder.ResolveConflicts(subject, queue);
 
             Assert.AreEqual(4, queue.Count, "Queue doesn't have the right number of stages!");
@@ -69,11 +70,11 @@ namespace MSOE.MediaComplete.Test.Background
         {
             var queue = new List<List<Task>>
             {
-                new List<Task> {new ImportTask(null, null, false)},
+                new List<Task> {new ImportTask(FileMover.GetFileMover(), null, null, false)},
                 new List<Task> {new IdentifierTask(), new IdentifierTask()}
             };
 
-            var subject = new ImportTask(null, null, false);
+            var subject = new ImportTask(FileMover.GetFileMover(), null, null, false);
             TaskAdder.ResolveConflicts(subject, queue);
 
             Assert.AreEqual(2, queue.Count, "Queue doesn't have the right number of stages!");

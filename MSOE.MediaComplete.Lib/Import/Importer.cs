@@ -64,7 +64,7 @@ namespace MSOE.MediaComplete.Lib.Import
                 throw new InvalidImportException();
             }
 
-            var task = new ImportTask(_homeDir, files, isCopy);
+            var task = new ImportTask(FileMover.GetFileMover(), _homeDir, files, isCopy);
 
             Queue.Inst.Add(task);
 

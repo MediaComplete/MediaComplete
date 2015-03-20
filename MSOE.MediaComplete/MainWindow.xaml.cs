@@ -27,6 +27,7 @@ namespace MSOE.MediaComplete
         private readonly List<TextBox>_changedBoxes;
         private Settings _settings;
         private readonly Timer _refreshTimer;
+        private readonly FileMover _fileMover;
 
         public MainWindow()
         {
@@ -58,7 +59,7 @@ namespace MSOE.MediaComplete
 
                 Polling.Instance.Start();
             }
-            Directory.CreateDirectory(homeDir);
+            _fileMover = FileMover.GetFileMover();
             _refreshTimer = new Timer(TimerProc);
             
             
@@ -72,7 +73,7 @@ namespace MSOE.MediaComplete
             Polling.InboxFilesDetected += ImportFromInboxAsync;
             SettingWrapper.RaiseSettingEvent += HandleSettingEvent;
             // ReSharper disable once ObjectCreationAsStatement
-            new Sorter(null);
+            new Sorter(_fileMover, null);
         }
 
         private void HandleStatusBarChangeEvent(string format, string message, StatusBarHandler.StatusIcon icon, params object[] extraArgs)
@@ -338,7 +339,7 @@ namespace MSOE.MediaComplete
                 try
                 {
                     if (selection == null) continue;
-                    await MusicIdentifier.IdentifySong(selection.GetPath());
+                    await MusicIdentifier.IdentifySong(_fileMover, selection.GetPath());
                 }
                 catch (Exception ex)
                 {
@@ -364,7 +365,7 @@ namespace MSOE.MediaComplete
             {
                 try
                 {
-                    await MusicIdentifier.IdentifySong(((SongTreeViewItem)item).GetPath());
+                    await MusicIdentifier.IdentifySong(_fileMover, ((SongTreeViewItem)item).GetPath());
                 }
                 catch (Exception ex)
                 {
@@ -392,7 +393,7 @@ namespace MSOE.MediaComplete
                     .GetMusicFiles()
             };
 
-            var sorter = new Sorter(settings);
+            var sorter = new Sorter(_fileMover, settings);
             await sorter.CalculateActionsAsync();    
 
             if (sorter.Actions.Count == 0) // Nothing to do! Notify and return.

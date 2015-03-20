@@ -11,12 +11,7 @@ namespace MSOE.MediaComplete.Lib
         /// Used to separate human readable file filters from their regex counterparts when opening a dialog
         /// </summary>
 	    public const string FileDialogFilterStringSeparator = "|";
-
-        /// <summary>
-        /// Used for backslashes in folder paths
-        /// </summary>
-	    public const string PathSeparator = "\\";
-
+        
         /// <summary>
         /// User to filter music files
         /// </summary>

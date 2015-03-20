@@ -21,18 +21,18 @@ namespace MSOE.MediaComplete.Lib.Metadata
         private const string Path = "/api/v4/song/identify";
         private const string ApiKey = "MUIGA58IV1VQUOEJ5";
 
-        public static async Task<string> IdentifySong(string filename)
+        public static async Task<string> IdentifySong(FileMover fileMover, string filename)
         {
             StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Started", StatusBarHandler.StatusIcon.Working);
 
-            if (!System.IO.File.Exists(filename))
+            if (!fileMover.FileExists(filename))
             {
                 StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error-NoException", StatusBarHandler.StatusIcon.Error);
                 return null;
             }
             // We have to force "SampleAudio" onto a new thread, otherwise the main thread 
             // will lock while doing the expensive file reading and audio manipulation.
-            var audioData = await Task.Run(() => SampleAudio(filename));
+            var audioData = await Task.Run(() => SampleAudio(fileMover, filename));
             if (audioData == null)
             {
                 StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error-NoException", StatusBarHandler.StatusIcon.Error);
@@ -53,7 +53,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
             var strResponse = await response.Content.ReadAsStringAsync();
             var json = JObject.Parse(strResponse);
 
-            UpdateFileWithJson(json, File.Create(filename));
+            UpdateFileWithJson(json, fileMover.CreateTaglibFile(filename));
 
             var resp = json.SelectToken("response").ToString();
             StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Success", StatusBarHandler.StatusIcon.Success);
@@ -80,11 +80,11 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /*
          * Parses an MP3 file and pulls the first 30 seconds into the format needed for the Echonest code generator
          */
-        private static float[] SampleAudio(string filename)
+        private static float[] SampleAudio(FileMover fileMover, string filename)
         {
             var inFile = filename;
 
-            if (!System.IO.File.Exists(inFile)) return null;
+            if (!fileMover.FileExists(inFile)) return null;
 
             var result = new List<float>();
 

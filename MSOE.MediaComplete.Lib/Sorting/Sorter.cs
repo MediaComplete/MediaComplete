@@ -15,6 +15,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
     /// </summary>
     public class Sorter
     {
+        private static FileMover _fileMover;
         public List<IAction> Actions { get; private set; }
         public int UnsortableCount { get; private set; }
         public int MoveCount { get { return Actions.Count(a => a is MoveAction); } }
@@ -29,8 +30,9 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// magnitude and specifics of the move.
         /// </summary>
         /// <param name="settings">Sort settings</param>
-        public Sorter(SortSettings settings)
+        public Sorter(FileMover fileMover, SortSettings settings)
         {
+            _fileMover = fileMover;
             Settings = settings;
             Actions = new List<IAction>();
             UnsortableCount = 0;
@@ -67,7 +69,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                     if (!path.SequenceEqual(targetPath, new DirectoryEqualityComparer()))
                     {
                         // Check to see if the file already exists
-                        var srcMp3File = TagLib.File.Create(file.FullName);
+                        var srcMp3File = _fileMover.CreateTaglibFile(file.FullName);
                         var destDir = targetFile.Directory;
                         if (destDir.ContainsMusicFile(srcMp3File)) // If the file is already there
                         {
@@ -108,7 +110,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
             TagLib.File metadata;
             try
             {
-                metadata = TagLib.File.Create(file.FullName);
+                metadata = _fileMover.CreateTaglibFile(file.FullName);
             }
             catch (TagLib.CorruptFileException)
             {
@@ -144,7 +146,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                 Files = new DirectoryInfo(SettingWrapper.MusicDir).EnumerateFiles("*", SearchOption.AllDirectories)
                     .GetMusicFiles()
             };
-            var sorter = new Sorter(settings);
+            var sorter = new Sorter(FileMover.GetFileMover(), settings);
             sorter.PerformSort();
         }
 
@@ -163,7 +165,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                 Root = results.HomeDir,
                 Files = results.NewFiles
             };
-            var sorter = new Sorter(settings);
+            var sorter = new Sorter(FileMover.GetFileMover(), settings);
             sorter.PerformSort();
         }
 
@@ -188,8 +190,8 @@ namespace MSOE.MediaComplete.Lib.Sorting
                     return;
                 }
 
-                Directory.CreateDirectory(Dest.Directory.FullName);
-                File.Move(Source.FullName, Dest.FullName);
+                _fileMover.CreateDirectory(Dest.Directory.FullName);
+                _fileMover.MoveFile(Source.FullName, Dest.FullName);
             }
         }
 

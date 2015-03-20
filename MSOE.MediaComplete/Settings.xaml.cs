@@ -23,7 +23,8 @@ namespace MSOE.MediaComplete
         };
         private LayoutType _changedType;
         private bool _layoutHasChanged;
-        private List<string> allDirs; 
+        private readonly List<string> _allDirs;
+        private readonly FileMover _fileMover;
         public Settings()
         {
 
@@ -35,7 +36,8 @@ namespace MSOE.MediaComplete
             CheckboxShowImportDialog.IsChecked = SettingWrapper.ShowInputDialog;
             CheckBoxSorting.IsChecked = SettingWrapper.IsSorting;
             MoveOrCopy.IsChecked = SettingWrapper.ShouldRemoveOnImport;
-            allDirs = SettingWrapper.AllDirectories;
+            _allDirs = SettingWrapper.AllDirectories;
+            _fileMover = FileMover.GetFileMover();
             PollingCheckBoxChanged(CheckboxPolling, null);
             if (SettingWrapper.Layout.Equals(_layoutsDict[LayoutType.Pink]))
             {
@@ -87,12 +89,12 @@ namespace MSOE.MediaComplete
             }
             SettingWrapper.HomeDir = homeDir;
 
-            if (!allDirs.Contains(SettingWrapper.HomeDir))
+            if (!_allDirs.Contains(SettingWrapper.HomeDir))
             {
                 var tempPath = SettingWrapper.HomeDir + "temp"+new Random().Next();
-                FileMover.MoveDirectory(SettingWrapper.HomeDir, tempPath);
-                FileMover.MoveDirectory(tempPath, SettingWrapper.MusicDir);
-                allDirs.Add(SettingWrapper.HomeDir);
+                _fileMover.MoveDirectory(SettingWrapper.HomeDir, tempPath);
+                _fileMover.MoveDirectory(tempPath, SettingWrapper.MusicDir);
+                _allDirs.Add(SettingWrapper.HomeDir);
             }
 
             TxtboxSelectedFolder.Text = SettingWrapper.HomeDir;
@@ -166,13 +168,13 @@ namespace MSOE.MediaComplete
 
             SettingWrapper.SortOrder = newSortOrder;
             SettingWrapper.IsSorting = newIsSorted;
-            SettingWrapper.AllDirectories = allDirs;
+            SettingWrapper.AllDirectories = _allDirs;
             SettingWrapper.ShouldRemoveOnImport = MoveOrCopy.IsChecked.GetValueOrDefault(false);
 
             SettingWrapper.Save();
 
-            if (!Directory.Exists(SettingWrapper.MusicDir))
-                Directory.CreateDirectory(SettingWrapper.MusicDir);
+            if (!_fileMover.DirectoryExists(SettingWrapper.MusicDir))
+                _fileMover.CreateDirectory(SettingWrapper.MusicDir);
             Close();
         }
 

@@ -34,7 +34,7 @@ namespace MSOE.MediaComplete
             {
                 try
                 {
-                    var song = File.Create(((SongTreeViewItem) SongTree.SelectedItems[0]).GetPath());
+                    var song = _fileMover.CreateTaglibFile(((SongTreeViewItem) SongTree.SelectedItems[0]).GetPath());
                     SongTitle.Text = song.GetAttribute(MetaAttribute.SongTitle);
                     Album.Text = song.GetAttribute(MetaAttribute.Album);
                     Artist.Text = song.GetAttribute(MetaAttribute.Artist);
@@ -68,7 +68,7 @@ namespace MSOE.MediaComplete
                 {
                     try
                     {
-                        var song = File.Create(item.GetPath());
+                        var song = _fileMover.CreateTaglibFile(item.GetPath());
                         foreach (var metaAttribute in Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>().Where(metaAttribute => !finalAttributes.ContainsKey(metaAttribute)))
                         {
                             if (initalAttributes[metaAttribute] == null)
@@ -175,7 +175,7 @@ namespace MSOE.MediaComplete
             {
                 try
                 {
-                    var song = File.Create(item.GetPath());
+                    var song = _fileMover.CreateTaglibFile((item.GetPath()));
                     foreach (var changedBox in _changedBoxes)
                     {
                         if (changedBox.Equals(SongTitle))
