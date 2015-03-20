@@ -50,9 +50,9 @@ namespace MSOE.MediaComplete.Lib.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1")]
-        public string PollingTime {
+        public double PollingTime {
             get {
-                return ((string)(this["PollingTime"]));
+                return ((double)(this["PollingTime"]));
             }
             set {
                 this["PollingTime"] = value;
@@ -82,7 +82,7 @@ namespace MSOE.MediaComplete.Lib.Properties {
                 this["ShowInputDialog"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
@@ -92,6 +92,18 @@ namespace MSOE.MediaComplete.Lib.Properties {
             }
             set {
                 this["IsSorting"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("layout\\Dark.xaml")]
+        public string Layout {
+            get {
+                return ((string)(this["Layout"]));
+            }
+            set {
+                this["Layout"] = value;
             }
         }
         
@@ -128,18 +140,6 @@ namespace MSOE.MediaComplete.Lib.Properties {
             }
             set {
                 this["MusicDir"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("layout\\Dark.xaml")]
-        public string Layout {
-            get {
-                return ((string)(this["Layout"]));
-            }
-            set {
-                this["Layout"] = value;
             }
         }
         

@@ -20,16 +20,9 @@
     <Setting Name="IsSorting" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-<<<<<<< HEAD
-    <Setting Name="PlaylistDir" Type="System.String" Scope="User">
-      <Value Profile="(Default)">playlists</Value>
-    </Setting>
     <Setting Name="Layout" Type="System.String" Scope="User">
       <Value Profile="(Default)">layout\Dark.xaml</Value>
     </Setting>
-    <Setting Name="MusicDir" Type="System.String" Scope="User">
-      <Value Profile="(Default)">music</Value>
-=======
     <Setting Name="ShouldRemoveOnImport" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
@@ -39,16 +32,12 @@
     <Setting Name="MusicDir" Type="System.String" Scope="User">
       <Value Profile="(Default)">Music</Value>
     </Setting>
-    <Setting Name="Layout" Type="System.String" Scope="User">
-      <Value Profile="(Default)">layout\Pink.xaml</Value>
-    </Setting>
     <Setting Name="SortingOrder" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
   &lt;string&gt;Artist&lt;/string&gt;
   &lt;string&gt;Album&lt;/string&gt;
-&lt;/ArrayOfString&gt;</Value>lopment
->>>>>>> development
+&lt;/ArrayOfString&gt;</Value>
     </Setting>
   </Settings>
 </SettingsFile>
