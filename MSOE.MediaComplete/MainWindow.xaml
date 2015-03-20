@@ -88,7 +88,7 @@
             <controls:TreeViewEx x:Name="SongTree" Grid.Column="2" Margin="0,0,0,0" 
 				AutomationProperties.Name="Tree" 
 				ItemsSource="{Binding}" 
-                MouseUp="SongTree_OnMouseUp">
+                MouseUp="SongTree_OnMouseUp" MouseDoubleClick="SongTree_OnMouseDoubleClick">
                 <controls:TreeViewEx.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding}"  DataType="{x:Type customControls:SongTreeViewItem}">
                         <TextBlock Text="{Binding}"/>
@@ -96,6 +96,8 @@
                 </controls:TreeViewEx.ItemTemplate>
                 <controls:TreeViewEx.ContextMenu>
                     <ContextMenu StaysOpen="True">
+                        <MenuItem Header="{StaticResource ContextMenu-PlayMusic-Header}"
+							Click="ContextMenu_PlayMusic_Click" />
                         <MenuItem Header="{StaticResource ContextMenu-AutoIdMusic-Header}"
 							Click="ContextMenu_AutoIDMusic_ClickAsync" />
                     </ContextMenu>
@@ -169,12 +171,13 @@
             </Border>
         </Grid>
 
-        <StackPanel Grid.Row="3" Grid.Column="0" Style="{DynamicResource StackStyle}">
+        <StackPanel Grid.Row="3" Grid.Column="0" Style="{DynamicResource PanelStyle}">
             <Slider />
             <StackPanel Height="75" Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Height="60" Width="60" Style="{DynamicResource PreviousButton}" />
-                <Button Height="75" Width="75" Style="{DynamicResource PlayButton}" />
-                <Button Height="60" Width="60" Style="{DynamicResource SkipButton}" />
+                <Button Name="PreviousButton" Height="60" Width="60" Style="{DynamicResource PreviousButton}" Click="PreviousButton_OnClick"/>
+                <Button Name="PlayPauseButton" Height="75" Width="75" Click="PlayPauseButton_OnClick"/>
+                <Button Name="SkipButton" Height="60" Width="60" Style="{DynamicResource SkipButton}" Click="SkipButton_OnClick"/>
+                <Button Name="StopButton" Height="40" Width="40" Style="{DynamicResource StopButton}" Click="StopButton_OnClick"/>
                 <customControls:BackgroundYoutubePlayer></customControls:BackgroundYoutubePlayer>
             </StackPanel>
         </StackPanel>

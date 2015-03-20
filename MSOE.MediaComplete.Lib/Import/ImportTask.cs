@@ -25,8 +25,7 @@ namespace MSOE.MediaComplete.Lib.Import
         /// </summary>
         /// <param name="homeDir">The target library directory</param>
         /// <param name="files">An array of absolute filepaths to bring in.</param>
-        /// <param name="isCopy">If true, files will be replicated into the library. Otherwise, 
-        /// they will be "cut", removing the originals.</param>
+        /// <param name="isCopy">If true, files will be cut, else files will be copied</param>
         public ImportTask(DirectoryInfo homeDir, IEnumerable<FileInfo> files, bool isCopy)
         {
             Results = null;

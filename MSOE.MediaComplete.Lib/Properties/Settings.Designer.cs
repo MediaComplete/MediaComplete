@@ -82,7 +82,7 @@ namespace MSOE.MediaComplete.Lib.Properties {
                 this["ShowInputDialog"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
@@ -97,13 +97,37 @@ namespace MSOE.MediaComplete.Lib.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("playlists")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShouldRemoveOnImport {
+            get {
+                return ((bool)(this["ShouldRemoveOnImport"]));
+            }
+            set {
+                this["ShouldRemoveOnImport"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Playlists")]
         public string PlaylistDir {
             get {
                 return ((string)(this["PlaylistDir"]));
             }
             set {
                 this["PlaylistDir"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Music")]
+        public string MusicDir {
+            get {
+                return ((string)(this["MusicDir"]));
+            }
+            set {
+                this["MusicDir"] = value;
             }
         }
         
@@ -121,13 +145,15 @@ namespace MSOE.MediaComplete.Lib.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("music")]
-        public string MusicDir {
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\n<ArrayOfString xmlns:xsi=\"http://www.w3.o" +
+            "rg/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\n  <str" +
+            "ing>Artist</string>\n  <string>Album</string>\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection SortingOrder {
             get {
-                return ((string)(this["MusicDir"]));
+                return ((global::System.Collections.Specialized.StringCollection)(this["SortingOrder"]));
             }
             set {
-                this["MusicDir"] = value;
+                this["SortingOrder"] = value;
             }
         }
     }

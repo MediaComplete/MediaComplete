@@ -14,20 +14,37 @@ namespace MSOE.MediaComplete.Lib
         /// </summary>
 	    public const string FileDialogFilterStringSeparator = "|";
 
-        /// <summary>
-        /// Used for backslashes in folder paths
-        /// </summary>
         public static readonly string PathSeparator = Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture);
 
         /// <summary>
-        /// User to filter music files
+        /// extension for mp3 files
         /// </summary>
-        public static readonly IReadOnlyList<string> MusicFileExtensions = new List<string> { ".mp3", ".wma" }.AsReadOnly();
+        public const string Mp3FileExtension = ".mp3";
+
+        /// <summary>
+        /// extension for wma files
+        /// </summary>
+        public const string WmaFileExtension = ".wma";
+
+        /// <summary>
+        /// extension for wav files
+        /// </summary>
+        public const string WavFileExtension = ".wav";
 
         /// <summary>
         /// Used to filter and create playlist files
         /// </summary>
         public static readonly IReadOnlyList<string> PlaylistFileExtensions = new List<string> { ".m3u" }.AsReadOnly();
+
+        /// <summary>
+        /// User to filter music files
+        /// </summary>
+        public static readonly List<string> MusicFileExtensions = new List<string>
+        {
+            Mp3FileExtension, 
+            WmaFileExtension, 
+            //WavFileExtension TODO: for when supporting wav files
+        };
 
         /// <summary>
         /// The file dialog's wild card for extensions

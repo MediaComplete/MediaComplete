@@ -1,4 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.IO;
+using System.Linq;
+using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Properties;
 
 namespace MSOE.MediaComplete.Lib
@@ -18,7 +23,7 @@ namespace MSOE.MediaComplete.Lib
         public static string HomeDir
         {
             get { return (string)Settings.Default["HomeDir"]; }
-            set { Settings.Default["HomeDir"] = value; }
+            set { Settings.Default["HomeDir"] = value.EndsWith(Path.DirectorySeparatorChar.ToString()) ? value : value + Path.DirectorySeparatorChar; }
         }
 
         /// <summary>
@@ -27,7 +32,11 @@ namespace MSOE.MediaComplete.Lib
         /// <returns>music directory path</returns>
         public static string MusicDir
         {
-            get { return HomeDir + Settings.Default["MusicDir"]; }
+            get
+            {
+                var mDir = HomeDir + Settings.Default["MusicDir"];
+                return mDir.EndsWith(Path.DirectorySeparatorChar.ToString()) ? mDir : mDir + Path.DirectorySeparatorChar;
+            }
         }
         /// <summary>
         /// Gets the playlist directory from the settings
@@ -35,7 +44,11 @@ namespace MSOE.MediaComplete.Lib
         /// <returns>playlist directory path</returns>
         public static string PlaylistDir
         {
-            get { return HomeDir + Settings.Default["PlaylistDir"]; }
+            get
+            {
+                var pDir = HomeDir + Settings.Default["PlaylistDir"];
+                return pDir.EndsWith(Path.DirectorySeparatorChar.ToString()) ? pDir : pDir + Path.DirectorySeparatorChar;
+            }
         }
         /// <summary>
         /// gets the inbox directory path
@@ -44,7 +57,7 @@ namespace MSOE.MediaComplete.Lib
         public static string InboxDir
         {
             get { return (string)Settings.Default["InboxDir"]; }
-            set { Settings.Default["InboxDir"] = value; }
+            set { Settings.Default["InboxDir"] = value.EndsWith(Path.DirectorySeparatorChar.ToString()) ? value : value + Path.DirectorySeparatorChar; }
         }
 
         /// <summary>
@@ -58,6 +71,17 @@ namespace MSOE.MediaComplete.Lib
         }
 
         /// <summary>
+        /// gets the ShouldRemoveOnImport boolean from settings
+        /// </summary>
+        /// <returns>ShouldRemoveOnImport is true if you will remove the original file on import
+        /// false if not desired</returns>
+        public static bool ShouldRemoveOnImport
+        {
+            get { return (bool)Settings.Default["ShouldRemoveOnImport"]; }
+            set { Settings.Default["ShouldRemoveOnImport"] = value; }
+        }
+
+        /// <summary>ShouldRemoveOnImport
         /// gets the IsPolling boolean from settings
         /// </summary>
         /// <returns>IsPolling is true if polling is desired, false if not desired</returns>
@@ -93,6 +117,27 @@ namespace MSOE.MediaComplete.Lib
             set { Settings.Default["Layout"] = value; }
         }
         
+        /// <summary>
+        /// gets the SortOrder list from settings
+        /// </summary>
+        /// <returns>The order the sort will perform in</returns>
+        public static List<MetaAttribute> SortOrder
+        {
+            get
+            {
+                var stringList = ((StringCollection)Settings.Default["SortingOrder"]).Cast<string>().ToList();
+                var metaAttrList = stringList.Select(x => (MetaAttribute)Enum.Parse(typeof(MetaAttribute), x)).ToList();
+                return metaAttrList;
+            }
+            set
+            {
+                var collection = new StringCollection();
+                collection.AddRange(value.Select(x => x.ToString()).ToArray());
+                Settings.Default["SortingOrder"] = collection;
+            }
+            
+        }
+
         /// <summary>
         /// saves the settings
         /// </summary>
