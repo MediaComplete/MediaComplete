@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 
 namespace MSOE.MediaComplete.Lib
 {
@@ -11,6 +13,8 @@ namespace MSOE.MediaComplete.Lib
         /// Used to separate human readable file filters from their regex counterparts when opening a dialog
         /// </summary>
 	    public const string FileDialogFilterStringSeparator = "|";
+
+        public static readonly string PathSeparator = Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture);
 
         /// <summary>
         /// extension for mp3 files
@@ -26,6 +30,11 @@ namespace MSOE.MediaComplete.Lib
         /// extension for wav files
         /// </summary>
         public const string WavFileExtension = ".wav";
+
+        /// <summary>
+        /// Used to filter and create playlist files
+        /// </summary>
+        public static readonly IReadOnlyList<string> PlaylistFileExtensions = new List<string> { ".m3u" }.AsReadOnly();
 
         /// <summary>
         /// User to filter music files
