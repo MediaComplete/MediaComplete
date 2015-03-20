@@ -29,6 +29,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <see cref="Actions">MoveActions</see> can be accessed directly after to anticipate the
         /// magnitude and specifics of the move.
         /// </summary>
+        /// <param name="fileMover"></param>
         /// <param name="settings">Sort settings</param>
         public Sorter(FileMover fileMover, SortSettings settings)
         {

@@ -17,7 +17,7 @@ namespace MSOE.MediaComplete.Lib.Import
         private readonly DirectoryInfo _homeDir;
         private readonly IEnumerable<FileInfo> _files;
         private readonly bool _isCopy;
-        private FileMover _fileMover;
+        private readonly FileMover _fileMover;
 
         public ImportResults Results { get; set; }
 

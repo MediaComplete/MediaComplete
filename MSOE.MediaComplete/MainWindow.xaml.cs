@@ -60,6 +60,7 @@ namespace MSOE.MediaComplete
                 Polling.Instance.Start();
             }
             _fileMover = FileMover.GetFileMover();
+            _fileMover.CreateDirectory(homeDir);
             _refreshTimer = new Timer(TimerProc);
             
             
