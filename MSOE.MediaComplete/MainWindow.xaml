@@ -11,7 +11,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="MainWindowResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
-           
         </ResourceDictionary>
     </Window.Resources>
     <Grid Margin="0,0,0,0">
@@ -173,13 +172,93 @@
 
         <StackPanel Grid.Row="3" Grid.Column="0" Style="{DynamicResource StackStyle}">
             <Slider />
-            <StackPanel Height="75" Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Name="PreviousButton" Height="60" Width="60" Style="{DynamicResource PreviousButton}" Click="PreviousButton_OnClick"/>
-                <Button Name="PlayPauseButton" Height="75" Width="75" Click="PlayPauseButton_OnClick"/>
-                <Button Name="SkipButton" Height="60" Width="60" Style="{DynamicResource SkipButton}" Click="SkipButton_OnClick"/>
-                <Button Name="StopButton" Height="40" Width="40" Style="{DynamicResource StopButton}" Click="StopButton_OnClick"/>
-                <customControls:BackgroundYoutubePlayer></customControls:BackgroundYoutubePlayer>
-            </StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="31*"/>
+                    <ColumnDefinition Width="22*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Height="75" Orientation="Horizontal" HorizontalAlignment="Center" Grid.ColumnSpan="2" Margin="227,0,227.6,0.2">
+                    <Button Name="PreviousButton" Height="60" Width="60" Style="{DynamicResource PreviousButton}" Click="PreviousButton_OnClick"/>
+                    <Button Name="PlayPauseButton" Height="75" Width="75" Click="PlayPauseButton_OnClick"/>
+                    <Button Name="SkipButton" Height="60" Width="60" Style="{DynamicResource SkipButton}" Click="SkipButton_OnClick"/>
+                    <Button Name="StopButton" Height="40" Width="40" Style="{DynamicResource StopButton}" Click="StopButton_OnClick"/>
+                    <customControls:BackgroundYoutubePlayer></customControls:BackgroundYoutubePlayer>
+                </StackPanel>
+                <Slider Name="VolumeSlider" IsMoveToPointEnabled="True" Width="100" Value="50" Maximum="200" Height="40" Margin="0,18,7.6,17.2" HorizontalAlignment="Right" Grid.Column="1" ValueChanged="VolumeSlider_OnValueChanged">
+                    <Slider.Template>
+                        <ControlTemplate TargetType="{x:Type Slider}">
+                            <Grid>
+                                <Grid.Resources>
+                                    <Style x:Key="SeekValueFill" TargetType="{x:Type RepeatButton}">
+                                        <Setter Property="OverridesDefaultStyle" Value="true"/>
+                                        <Setter Property="IsTabStop" Value="false"/>
+                                        <Setter Property="Focusable" Value="false"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type RepeatButton}">
+                                                    <Rectangle Fill="Transparent"></Rectangle>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                    <Style x:Key="SeekRightFill" TargetType="{x:Type RepeatButton}">
+                                        <Setter Property="OverridesDefaultStyle" Value="true"/>
+                                        <Setter Property="IsTabStop" Value="false"/>
+                                        <Setter Property="Focusable" Value="false"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type RepeatButton}">
+                                                    <Rectangle Fill="Black" Opacity="0.5"/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Grid.Resources>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <Grid.Clip>
+                                    <PathGeometry>
+                                        <PathFigure StartPoint="0 40" IsClosed="True">
+                                            <LineSegment Point="100 40" />
+                                            <LineSegment Point="100 0" />
+                                        </PathFigure>
+                                    </PathGeometry>
+                                </Grid.Clip>
+
+                                <Rectangle Style="{DynamicResource VolumeFillColor}" />
+
+                                <Track x:Name="PART_Track" Grid.Row="1">
+                                    <Track.DecreaseRepeatButton>
+                                        <RepeatButton Command="{x:Static Slider.DecreaseLarge}" Style="{StaticResource SeekValueFill}" />
+                                    </Track.DecreaseRepeatButton>
+                                    <Track.IncreaseRepeatButton>
+                                        <RepeatButton Command="{x:Static Slider.IncreaseLarge}" Style="{StaticResource SeekRightFill}"/>
+                                    </Track.IncreaseRepeatButton>
+                                    <Track.Thumb>
+                                        <Thumb x:Name="Thumb" Width="5" Foreground="Black" Background="Black" BorderThickness="0" Margin="0" Padding="0">
+                                            <Thumb.Style>
+                                                <Style TargetType="Thumb">
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="Thumb">
+                                                                <Rectangle Cursor="Hand" Style="{DynamicResource VolumeBarColor}" />
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </Thumb.Style>
+                                        </Thumb>
+                                    </Track.Thumb>
+                                </Track>
+                            </Grid>
+                        </ControlTemplate>
+                    </Slider.Template>
+                </Slider>
+                <Label Name="VolumePercentLabel" Content="{Binding ElementName=VolumeSlider, Path=Value, Converter={StaticResource VolumeConverter}}" HorizontalAlignment="Left" Margin="167.8,18,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+            </Grid>
         </StackPanel>
         <StackPanel Grid.Row="4" Grid.Column="0" Height="22">
             <StatusBar Style="{DynamicResource StatusBarStyle}">

@@ -1,5 +1,6 @@
 ﻿using System;
 using MSOE.MediaComplete.Lib.Properties;
+using NAudio.Gui;
 
 namespace MSOE.MediaComplete.Lib
 {
@@ -101,7 +102,5 @@ namespace MSOE.MediaComplete.Lib
             Settings.Default.Save();
             RaiseSettingEvent.Invoke();
         }
-
-
     }
 }
