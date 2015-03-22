@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Properties;
+using NAudio.Gui;
 
 namespace MSOE.MediaComplete.Lib
 {
@@ -146,7 +147,5 @@ namespace MSOE.MediaComplete.Lib
             Settings.Default.Save();
             RaiseSettingEvent.Invoke();
         }
-
-
     }
 }

@@ -21,7 +21,6 @@ namespace MSOE.MediaComplete.Lib.Playing
         private static WaveStream GetWaveStream(FileInfo file)
         {
             if(file == null) throw new ArgumentNullException("file");
-            
             try
             {
                 return new AudioFileReader(file.FullName);
@@ -37,10 +36,14 @@ namespace MSOE.MediaComplete.Lib.Playing
             }
         }
 
-        public void Setup(FileInfo fileInfo, EventHandler<StoppedEventArgs> handler)
+        public void Setup(FileInfo fileInfo, EventHandler<StoppedEventArgs> handler, double currentVolume)
         {
             _waveOut = new WaveOut();
-            _waveOut.Init(_waveStream = GetWaveStream(fileInfo));
+
+            //_waveOut.Init(_waveStream = GetWaveStream(fileInfo));
+            var f = new AudioFileReader(fileInfo.FullName) {Volume = 2.0f};
+            ChangeVolume(currentVolume);
+            _waveOut.Init(_waveStream = f);
             _waveOut.PlaybackStopped += handler;
         }
 
@@ -72,6 +75,12 @@ namespace MSOE.MediaComplete.Lib.Playing
                 _waveStream = null;
             }
             return PlaybackState.Stopped;
+        }
+
+        public void ChangeVolume(double sliderVolume)
+        {
+            if (_waveOut != null)
+                _waveOut.Volume = (float)(sliderVolume/200.0);
         }
     }
 }
