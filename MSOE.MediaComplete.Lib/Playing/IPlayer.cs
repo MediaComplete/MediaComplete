@@ -30,6 +30,8 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// </summary>
         void Stop();
 
+        void Seek();
+
         //void Seek();
         /// <summary>
         /// fires when the playback has ended, ie. hitting the end of the file
@@ -40,5 +42,8 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// shows the state of the IPlayer
         /// </summary>
         PlaybackState PlaybackState { get; }
+
+        TimeSpan CurrentTime { get; }
+        TimeSpan TotalTime { get; }
     }
 }

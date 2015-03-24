@@ -10,5 +10,8 @@ namespace MSOE.MediaComplete.Lib.Playing
         PlaybackState Play();
         PlaybackState Pause();
         PlaybackState Stop();
+        PlaybackState Seek(TimeSpan timeToSeekTo);
+        TimeSpan TotalTime { get; }
+        TimeSpan CurrentTime { get; }
     }
 }

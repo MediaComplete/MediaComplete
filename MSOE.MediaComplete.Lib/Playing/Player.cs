@@ -89,12 +89,15 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// </summary>
         public event EventHandler PlaybackEnded;
 
-        //public void Seek()
-        //{
-        //    //TODO: MC-41 - Seeking functionality
-        //    throw new NotImplementedException("Seek is not yet implemented.");
-        //    //_waveStream.Seek(10000000, SeekOrigin.Current);//seeks ahead 10000000 bytes in the file?
-        //}
+        public void Seek()
+        {
+            //TODO: MC-41 - Seeking functionality
+            //throw new NotImplementedException("Seek is not yet implemented.");
+            _nAudioWrapper.Seek(new TimeSpan(0,2,0));//seeks ahead to 00:02:00
+        }
+
+        public TimeSpan CurrentTime { get { return _nAudioWrapper.CurrentTime; } }
+        public TimeSpan TotalTime { get { return _nAudioWrapper.TotalTime; } }
         #endregion
 
         #region private methods

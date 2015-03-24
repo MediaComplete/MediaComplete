@@ -73,5 +73,25 @@ namespace MSOE.MediaComplete.Lib.Playing
             }
             return PlaybackState.Stopped;
         }
+
+        public PlaybackState Seek(TimeSpan timeToSeekTo)
+        {
+            if (_waveOut == null || _waveStream == null) return PlaybackState.Stopped;
+            if (_waveStream.CanSeek)
+            {
+                _waveStream.CurrentTime = timeToSeekTo;
+            }
+            return _waveOut.PlaybackState;
+        }
+
+        public TimeSpan TotalTime
+        {
+            get { return _waveStream.TotalTime; }
+        }
+
+        public TimeSpan CurrentTime
+        {
+            get { return _waveStream.CurrentTime; }
+        }
     }
 }

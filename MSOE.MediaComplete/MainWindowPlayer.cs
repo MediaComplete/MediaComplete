@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
@@ -70,6 +71,9 @@ namespace MSOE.MediaComplete
             try
             {
                 _player.Play(new FileInfo(song.GetPath()));
+                TrackBar.Value = 0;
+                TrackBar.Maximum = _player.TotalTime.TotalSeconds;
+                TrackBar.SetBinding(TrackBar.ValueProperty, new Binding("TotalSeconds"));
                 StatusBarHandler.Instance.ChangeStatusBarMessage(null, StatusBarHandler.StatusIcon.None);
             }
             catch (CorruptFileException)
@@ -144,6 +148,7 @@ namespace MSOE.MediaComplete
         {
             //TODO: MC-34 or MC-35
             //throw new System.NotImplementedException();
+            _player.Seek();
         }
 
         /// <summary>
@@ -154,6 +159,17 @@ namespace MSOE.MediaComplete
         private void ContextMenu_PlayMusic_Click(object sender, RoutedEventArgs e)
         {
             PlaySelectedSong();
+        }
+
+        private void TrackBar_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            //throw new NotImplementedException();
+        }
+
+        private void TrackBar_OnPreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            var slider = sender as Slider;
+            var stuff = slider.Value;
         }
     }
 }
