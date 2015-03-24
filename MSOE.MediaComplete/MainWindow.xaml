@@ -173,18 +173,14 @@
         <StackPanel Grid.Row="3" Grid.Column="0" Style="{DynamicResource PanelStyle}">
             <Slider />
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="125*"/>
-                    <ColumnDefinition Width="125*"/>
-                </Grid.ColumnDefinitions>
-                <StackPanel Height="75" Orientation="Horizontal" HorizontalAlignment="Center" Grid.ColumnSpan="2" Margin="125,0,125,0">
+                <StackPanel Height="75" Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button Name="PreviousButton" Height="60" Width="60" Style="{DynamicResource PreviousButton}" Click="PreviousButton_OnClick"/>
                     <Button Name="PlayPauseButton" Height="75" Width="75" Click="PlayPauseButton_OnClick"/>
                     <Button Name="SkipButton" Height="60" Width="60" Style="{DynamicResource SkipButton}" Click="SkipButton_OnClick"/>
                     <Button Name="StopButton" Height="40" Width="40" Style="{DynamicResource StopButton}" Click="StopButton_OnClick"/>
                     <customControls:BackgroundYoutubePlayer></customControls:BackgroundYoutubePlayer>
                 </StackPanel>
-                <Slider Name="VolumeSlider" IsMoveToPointEnabled="True" Width="100" Value="50" Maximum="200" Height="40" Margin="0,18,7.6,17.2" HorizontalAlignment="Right" Grid.Column="1" ValueChanged="VolumeSlider_OnValueChanged">
+                <Slider Name="VolumeSlider" IsMoveToPointEnabled="True" Width="100" Value="50" Maximum="200" Height="40" HorizontalAlignment="Right" ValueChanged="VolumeSlider_OnValueChanged" Margin="0,0,20,0">
                     <Slider.Template>
                         <ControlTemplate TargetType="{x:Type Slider}">
                             <Grid>
@@ -215,10 +211,6 @@
                                     </Style>
                                 </Grid.Resources>
 
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-
                                 <Grid.Clip>
                                     <PathGeometry>
                                         <PathFigure StartPoint="0 40" IsClosed="True">
@@ -230,7 +222,7 @@
 
                                 <Rectangle Style="{DynamicResource VolumeFillColor}" />
 
-                                <Track x:Name="PART_Track" Grid.Row="1">
+                                <Track x:Name="PART_Track">
                                     <Track.DecreaseRepeatButton>
                                         <RepeatButton Command="{x:Static Slider.DecreaseLarge}" Style="{StaticResource SeekValueFill}" />
                                     </Track.DecreaseRepeatButton>
@@ -238,7 +230,7 @@
                                         <RepeatButton Command="{x:Static Slider.IncreaseLarge}" Style="{StaticResource SeekRightFill}"/>
                                     </Track.IncreaseRepeatButton>
                                     <Track.Thumb>
-                                        <Thumb x:Name="Thumb" Width="5" Foreground="Black" Background="Black" BorderThickness="0" Margin="0" Padding="0">
+                                        <Thumb x:Name="Thumb" Width="10" Foreground="Black" Background="Black" BorderThickness="0" Margin="0" Padding="0">
                                             <Thumb.Style>
                                                 <Style TargetType="Thumb">
                                                     <Setter Property="Template">
@@ -257,7 +249,7 @@
                         </ControlTemplate>
                     </Slider.Template>
                 </Slider>
-                <Label Name="VolumePercentLabel" Content="{Binding ElementName=VolumeSlider, Path=Value, Converter={StaticResource VolumeConverter}}" HorizontalAlignment="Right" Padding="20,15,55,10" VerticalAlignment="Top" Grid.Column="1"/>
+                <Label Name="VolumePercentLabel" Content="{Binding ElementName=VolumeSlider, Path=Value, Converter={StaticResource VolumeConverter}}" HorizontalAlignment="Right" Padding="20,15,55,10" VerticalAlignment="Top"/>
             </Grid>
         </StackPanel>
         <StackPanel Grid.Row="4" Grid.Column="0" Height="22">
