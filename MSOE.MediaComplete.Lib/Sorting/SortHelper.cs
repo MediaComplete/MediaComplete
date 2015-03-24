@@ -9,7 +9,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
     /// <summary>
     /// Helper class to assist with control of the Sort Order option and whether to Sort
     /// </summary>
-    public class SortHelper
+    public static class SortHelper
     {
         private static bool _shouldSort;
         /// <summary>

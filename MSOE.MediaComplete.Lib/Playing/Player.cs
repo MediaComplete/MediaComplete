@@ -1,5 +1,5 @@
 ﻿using System;
-using System.IO;
+using MSOE.MediaComplete.Lib.Songs;
 using NAudio.Wave;
 
 namespace MSOE.MediaComplete.Lib.Playing
@@ -46,18 +46,21 @@ namespace MSOE.MediaComplete.Lib.Playing
 
         #region IPlayer methods
         /// <summary>
-        /// sets up the player and plays the file
+        /// sets up the player and plays the song
         /// </summary>
-        /// <param name="file">file to play</param>
-        public void Play(FileInfo file)
+        /// <param name="song">song to play</param>
+        public void Play(AbstractSong song)
         {
-            if (file == null) throw new ArgumentNullException("file");
+            if (song == null) throw new ArgumentNullException("song");
 
             Stop();
 
-            _nAudioWrapper.Setup(file, WaveOutOnPlaybackStopped);
+            var localSong = song as LocalSong;
+            if (localSong != null)
+            {
+                _nAudioWrapper.Setup(localSong.File, WaveOutOnPlaybackStopped);
+            }
             PlaybackState = _nAudioWrapper.Play();
-            
         }
 
         /// <summary>

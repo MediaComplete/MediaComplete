@@ -6,6 +6,7 @@ using System.Windows.Input;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Playing;
+using MSOE.MediaComplete.Lib.Songs;
 using NAudio.Wave;
 using TagLib;
 
@@ -69,7 +70,7 @@ namespace MSOE.MediaComplete
             if (song == null) return;
             try
             {
-                _player.Play(new FileInfo(song.GetPath()));
+                _player.Play(new LocalSong(new FileInfo(song.GetPath())));
                 StatusBarHandler.Instance.ChangeStatusBarMessage(null, StatusBarHandler.StatusIcon.None);
             }
             catch (CorruptFileException)

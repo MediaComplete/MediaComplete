@@ -6,8 +6,9 @@ using MSOE.MediaComplete.Lib.Playing;
 using NAudio.Wave;
 using Ploeh.AutoFixture;
 using TagLib;
+using MSOE.MediaComplete.Lib.Songs;
 
-namespace MSOE.MediaComplete.Test
+namespace MSOE.MediaComplete.Test.Playing
 {
     [TestClass]
     public class PlayerTest
@@ -26,9 +27,9 @@ namespace MSOE.MediaComplete.Test
         {
             var mockNAudioWrapper = new Mock<INAudioWrapper>();
             var stuff = new Fixture().Create<string>();
-            var mockFile = new FileInfo(stuff);
+            var mockFile = new LocalSong(new FileInfo(stuff));
 
-            mockNAudioWrapper.Setup(m => m.Setup(mockFile, It.IsAny<EventHandler<StoppedEventArgs>>()));
+            mockNAudioWrapper.Setup(m => m.Setup(mockFile.File, It.IsAny<EventHandler<StoppedEventArgs>>()));
 
             var player = new Player(mockNAudioWrapper.Object);
             mockNAudioWrapper.Setup(m => m.Play()).Returns(PlaybackState.Playing);
@@ -57,9 +58,9 @@ namespace MSOE.MediaComplete.Test
         {
             var mockNAudioWrapper = new Mock<INAudioWrapper>();
             var stuff = new Fixture().Create<string>();
-            var mockFile = new FileInfo(stuff);
+            var mockFile = new LocalSong(new FileInfo(stuff));
 
-            mockNAudioWrapper.Setup(m => m.Setup(mockFile, It.IsAny<EventHandler<StoppedEventArgs>>()));
+            mockNAudioWrapper.Setup(m => m.Setup(mockFile.File, It.IsAny<EventHandler<StoppedEventArgs>>()));
 
             var player = new Player(mockNAudioWrapper.Object);
             mockNAudioWrapper.Setup(m => m.Play()).Returns(PlaybackState.Playing);
@@ -123,9 +124,9 @@ namespace MSOE.MediaComplete.Test
         {
             var mockNAudioWrapper = new Mock<INAudioWrapper>();
             var stuff = new Fixture().Create<string>();
-            var anyInvalidFile = new FileInfo(stuff);
+            var anyInvalidFile = new LocalSong(new FileInfo(stuff));
 
-            mockNAudioWrapper.Setup(m => m.Setup(anyInvalidFile, It.IsAny<EventHandler<StoppedEventArgs>>())).Throws(new CorruptFileException());
+            mockNAudioWrapper.Setup(m => m.Setup(anyInvalidFile.File, It.IsAny<EventHandler<StoppedEventArgs>>())).Throws(new CorruptFileException());
 
             var player = new Player(mockNAudioWrapper.Object);
             player.Play(anyInvalidFile);

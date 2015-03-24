@@ -47,5 +47,12 @@ namespace MSOE.MediaComplete.Lib.Songs
         /// </summary>
         /// <returns>A new media item</returns>
         public abstract MediaItem ToMediaItem();
+
+        /// <summary>
+        /// Enforces an equality check on all subsongs.
+        /// </summary>
+        /// <param name="other">Another object to compare to</param>
+        /// <returns>True if this is logically equivalent to other, false otherwise</returns>
+        public new abstract bool Equals(object other);
     }
 }
