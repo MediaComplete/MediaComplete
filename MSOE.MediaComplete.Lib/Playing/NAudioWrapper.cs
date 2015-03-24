@@ -23,7 +23,7 @@ namespace MSOE.MediaComplete.Lib.Playing
             if(file == null) throw new ArgumentNullException("file");
             try
             {
-                return new AudioFileReader(file.FullName);
+                return new AudioFileReader(file.FullName) { Volume = 2.0f };
             }
             catch (Exception ex)
             {
@@ -39,11 +39,9 @@ namespace MSOE.MediaComplete.Lib.Playing
         public void Setup(FileInfo fileInfo, EventHandler<StoppedEventArgs> handler, double currentVolume)
         {
             _waveOut = new WaveOut();
-
-            //_waveOut.Init(_waveStream = GetWaveStream(fileInfo));
-            var f = new AudioFileReader(fileInfo.FullName) {Volume = 2.0f};
+            var waveStream = GetWaveStream(fileInfo);
             ChangeVolume(currentVolume);
-            _waveOut.Init(_waveStream = f);
+            _waveOut.Init(_waveStream = waveStream);
             _waveOut.PlaybackStopped += handler;
         }
 

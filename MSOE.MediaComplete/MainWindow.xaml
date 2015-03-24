@@ -174,10 +174,10 @@
             <Slider />
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="31*"/>
-                    <ColumnDefinition Width="22*"/>
+                    <ColumnDefinition Width="125*"/>
+                    <ColumnDefinition Width="125*"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Height="75" Orientation="Horizontal" HorizontalAlignment="Center" Grid.ColumnSpan="2" Margin="227,0,227.6,0.2">
+                <StackPanel Height="75" Orientation="Horizontal" HorizontalAlignment="Center" Grid.ColumnSpan="2" Margin="125,0,125,0">
                     <Button Name="PreviousButton" Height="60" Width="60" Style="{DynamicResource PreviousButton}" Click="PreviousButton_OnClick"/>
                     <Button Name="PlayPauseButton" Height="75" Width="75" Click="PlayPauseButton_OnClick"/>
                     <Button Name="SkipButton" Height="60" Width="60" Style="{DynamicResource SkipButton}" Click="SkipButton_OnClick"/>
@@ -257,7 +257,7 @@
                         </ControlTemplate>
                     </Slider.Template>
                 </Slider>
-                <Label Name="VolumePercentLabel" Content="{Binding ElementName=VolumeSlider, Path=Value, Converter={StaticResource VolumeConverter}}" HorizontalAlignment="Left" Margin="167.8,18,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                <Label Name="VolumePercentLabel" Content="{Binding ElementName=VolumeSlider, Path=Value, Converter={StaticResource VolumeConverter}}" HorizontalAlignment="Right" Padding="20,15,55,10" VerticalAlignment="Top" Grid.Column="1"/>
             </Grid>
         </StackPanel>
         <StackPanel Grid.Row="4" Grid.Column="0" Height="22">

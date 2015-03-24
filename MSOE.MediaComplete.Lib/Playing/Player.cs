@@ -114,6 +114,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         //    throw new NotImplementedException("Seek is not yet implemented.");
         //    //_waveStream.Seek(10000000, SeekOrigin.Current);//seeks ahead 10000000 bytes in the file?
         //}
+
         #endregion
 
         #region private methods
