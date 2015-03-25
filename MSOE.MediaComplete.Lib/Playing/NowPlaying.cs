@@ -92,8 +92,13 @@ namespace MSOE.MediaComplete.Lib.Playing
             return _songs[Index];
         }
 
+        /// <summary>
+        /// Returns true if the queue has another song in the playlist, respective to looping and shuffling rules.
+        /// </summary>
+        /// <returns>True if calling NextSong() will return a song</returns>
         public bool HasNextSong()
         {
+            // TODO MC-38 MC-39 Looping and shuffling logic go here.
             return Index < _songs.Count-1 && Index >= 0;
         }
 
@@ -260,6 +265,10 @@ namespace MSOE.MediaComplete.Lib.Playing
             return false;
         }
 
+        /// <summary>
+        /// Returns the total number of songs currently in the playlist
+        /// </summary>
+        /// <returns>An integer count of the songs.</returns>
         public int SongCount()
         {
             return _songs.Count;

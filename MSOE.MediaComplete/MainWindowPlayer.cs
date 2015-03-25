@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
@@ -162,7 +160,11 @@ namespace MSOE.MediaComplete
             PlaySelectedSong(NowPlaying.Inst.CurrentSong());
         }
 
-
+        /// <summary>
+        /// Adds the selected song(s) to the now playing queue.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ContextMenu_AddSongToNowPlaying_Click(object sender, RoutedEventArgs e)
         {
             NowPlaying.Inst.Add((from SongTreeViewItem song in SongTree.SelectedItems
@@ -176,6 +178,12 @@ namespace MSOE.MediaComplete
             }
             
         }
+
+        /// <summary>
+        /// Adds the selected folder(s) of songs to the now playing queue.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ContextMenu_AddFolderToNowPlaying_Click(object sender, RoutedEventArgs e)
         {
             var initialCount = NowPlaying.Inst.SongCount();
@@ -188,6 +196,11 @@ namespace MSOE.MediaComplete
             }
         }
 
+        /// <summary>
+        /// Replaces the current now-playing queue with the selected folder(s).
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ContextMenu_PlayFolderMusic_Click(object sender, RoutedEventArgs e)
         {
             NowPlaying.Inst.Clear();
@@ -195,6 +208,9 @@ namespace MSOE.MediaComplete
             PlaySelectedSong(NowPlaying.Inst.CurrentSong());
         }
         
+        /// <summary>
+        /// Helper method to queue up songs from the song treeview
+        /// </summary>
         private void AddAllSongsToNowPlaying()
         {
             NowPlaying.Inst.Add((from SongTreeViewItem song in SongTree.Items
