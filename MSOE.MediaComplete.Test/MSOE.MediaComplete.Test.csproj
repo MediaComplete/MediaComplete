@@ -89,7 +89,7 @@
     <Compile Include="Background\SortingTaskTest.cs" />
     <Compile Include="MusicIdentifierTest.cs" />
     <Compile Include="Playing\PlayerTest.cs" />
-    <Compile Include="Playing\PlayQueueTest.cs" />
+    <Compile Include="Playing\NowPlayingTest.cs" />
     <Compile Include="Playlists\PlaylistServiceTest.cs" />
     <Compile Include="Playlists\PlaylistTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

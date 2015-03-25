@@ -57,7 +57,7 @@ namespace MSOE.MediaComplete
                     PauseSong();
                     break;
                 default:
-                    PlaySelectedSong();
+                    PlaySelectedSong(NowPlaying.Inst.CurrentSong());
                     break;
             }
         }
@@ -65,14 +65,13 @@ namespace MSOE.MediaComplete
         /// <summary>
         /// gets the selected song from the song tree and plays it with the Player
         /// </summary>
-        private void PlaySelectedSong()
+        private void PlaySelectedSong(AbstractSong song)
         {
             if (SongTree.SelectedItems == null) return;
-            var song = SongTree.SelectedItems.First() as SongTreeViewItem;
             if (song == null) return;
             try
             {
-                _player.Play(new LocalSong(new FileInfo(song.GetPath())));
+                _player.Play(song);
                 StatusBarHandler.Instance.ChangeStatusBarMessage(null, StatusBarHandler.StatusIcon.None);
             }
             catch (CorruptFileException)
@@ -134,7 +133,7 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void SongTree_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            PlaySelectedSong();
+            PlaySelectedSong(NowPlaying.Inst.CurrentSong());
         }
 
         private void PreviousButton_OnClick(object sender, RoutedEventArgs e)
@@ -156,31 +155,47 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void ContextMenu_PlaySongMusic_Click(object sender, RoutedEventArgs e)
         {
-            PlaySelectedSong();
+            NowPlaying.Inst.Clear();
+            NowPlaying.Inst.Add(new LocalSong(new FileInfo(((SongTreeViewItem)SongTree.SelectedItems[0]).GetPath())));
+            PlaySelectedSong(NowPlaying.Inst.CurrentSong());
         }
 
 
+        private void ContextMenu_AddSongToNowPlaying_Click(object sender, RoutedEventArgs e)
+        {
+            NowPlaying.Inst.Add((from SongTreeViewItem song in SongTree.SelectedItems
+                                 select new LocalSong(new FileInfo(song.GetPath())))
+                                    .Cast<AbstractSong>().ToList());
+            if (Player.Instance.PlaybackState.Equals(PlaybackState.Stopped))
+            {
+                PlaySelectedSong(NowPlaying.Inst.SongCount() > 1
+                    ? NowPlaying.Inst.NextSong()
+                    : NowPlaying.Inst.CurrentSong());
+            }
+            
+        }
         private void ContextMenu_AddFolderToNowPlaying_Click(object sender, RoutedEventArgs e)
         {
+            var initialCount = NowPlaying.Inst.SongCount();
             AddAllSongsToNowPlaying();
+            if (Player.Instance.PlaybackState.Equals(PlaybackState.Stopped))
+            {
+                PlaySelectedSong(NowPlaying.Inst.SongCount() > initialCount
+                    ? NowPlaying.Inst.NextSong()
+                    : NowPlaying.Inst.CurrentSong());
+            }
         }
 
         private void ContextMenu_PlayFolderMusic_Click(object sender, RoutedEventArgs e)
         {
             NowPlaying.Inst.Clear();
             AddAllSongsToNowPlaying();
+            PlaySelectedSong(NowPlaying.Inst.CurrentSong());
         }
-
+        
         private void AddAllSongsToNowPlaying()
         {
             NowPlaying.Inst.Add((from SongTreeViewItem song in SongTree.Items
-                                 select new LocalSong(new FileInfo(song.GetPath())))
-                                    .Cast<AbstractSong>().ToList());
-        }
-
-        private void ContextMenu_AddSongToNowPlaying_Click(object sender, RoutedEventArgs e)
-        {
-            NowPlaying.Inst.Add((from SongTreeViewItem song in SongTree.SelectedItems
                                  select new LocalSong(new FileInfo(song.GetPath())))
                                     .Cast<AbstractSong>().ToList());
         }

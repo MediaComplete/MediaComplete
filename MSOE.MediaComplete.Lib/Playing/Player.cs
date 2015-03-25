@@ -108,7 +108,14 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// <param name="stoppedEventArgs"></param>
         private void WaveOutOnPlaybackStopped(object sender, StoppedEventArgs stoppedEventArgs)
         {
-            if (PlaybackEnded != null) PlaybackEnded(sender, stoppedEventArgs);
+            if (NowPlaying.Inst.HasNextSong())
+            {
+                Play(NowPlaying.Inst.NextSong());
+            }
+            else
+            {
+                if (PlaybackEnded != null) PlaybackEnded(sender, stoppedEventArgs);
+            }
         }
         #endregion
     }
