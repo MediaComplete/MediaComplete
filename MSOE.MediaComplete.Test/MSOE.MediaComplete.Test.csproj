@@ -46,6 +46,22 @@
     <OutputPath>bin\x86\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="M3U.NET, Version=1.0.0.3, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\M3U.NET.1.0.0.3\lib\net45\M3U.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="Moq">
+      <HintPath>..\packages\Moq.4.2.1502.0911\lib\net40\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio">
+      <HintPath>..\packages\NAudio.1.7.1\lib\net35\NAudio.dll</HintPath>
+    </Reference>
+    <Reference Include="Ploeh.AutoFixture">
+      <HintPath>..\packages\AutoFixture.3.23.1\lib\net40\Ploeh.AutoFixture.dll</HintPath>
+    </Reference>
     <Reference Include="policy.2.0.taglib-sharp">
       <HintPath>..\packages\taglib.2.1.0.0\lib\policy.2.0.taglib-sharp.dll</HintPath>
     </Reference>
@@ -72,10 +88,15 @@
     <Compile Include="Background\QueueTest.cs" />
     <Compile Include="Background\SortingTaskTest.cs" />
     <Compile Include="MusicIdentifierTest.cs" />
+    <Compile Include="Playlists\PlaylistServiceTest.cs" />
+    <Compile Include="Playlists\PlaylistTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PollingTest.cs" />
+    <Compile Include="Songs\AbstractSongTest.cs" />
+    <Compile Include="Songs\LocalSongTest.cs" />
     <Compile Include="SortingTest.cs" />
     <Compile Include="ImporterTest.cs" />
+    <Compile Include="PlayerTest.cs" />
     <Compile Include="Util\Constants.cs" />
     <Compile Include="Util\FileHelper.cs" />
     <Compile Include="StatusBarTest.cs" />
@@ -107,6 +128,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="ReadMe.txt" />
+    <Content Include="Resources\ValidWavFile.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\ValidWmaFile.wma">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

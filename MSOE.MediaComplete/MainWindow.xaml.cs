@@ -19,7 +19,6 @@ using System.Globalization;
 namespace MSOE.MediaComplete
 {
     /// <summary>
-
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow
@@ -59,7 +58,7 @@ namespace MSOE.MediaComplete
 
                 Polling.Instance.Start();
             }
-            _fileMover = FileMover.GetFileMover();
+            _fileMover = FileMover.Instance;
             _fileMover.CreateDirectory(homeDir);
             _refreshTimer = new Timer(TimerProc);
             
@@ -67,6 +66,8 @@ namespace MSOE.MediaComplete
             InitEvents();
 
             InitTreeView();
+
+            InitPlayer();
         }
 
         private void InitEvents()
@@ -127,7 +128,7 @@ namespace MSOE.MediaComplete
             RefreshTreeView();
         }
 
-        private async void AddFile_Click(object sender, RoutedEventArgs e)
+        private async void AddFile_ClickAsync(object sender, RoutedEventArgs e)
         {
             var fileDialog = new WinForms.OpenFileDialog
             {
@@ -165,7 +166,7 @@ namespace MSOE.MediaComplete
             }
         }
 
-        private async void AddFolder_Click(object sender, RoutedEventArgs e)
+        private async void AddFolder_ClickAsync(object sender, RoutedEventArgs e)
         {
             var folderDialog = new WinForms.FolderBrowserDialog();
 
@@ -332,7 +333,7 @@ namespace MSOE.MediaComplete
             });
         }
 
-        private async void Toolbar_AutoIDMusic_Click(object sender, RoutedEventArgs e)
+        private async void Toolbar_AutoIDMusic_ClickAsync(object sender, RoutedEventArgs e)
         {
             // TODO (MC-45) mass ID of multi-selected songs and folders
             foreach (var selection in from object item in SongTree.SelectedItems select item as SongTreeViewItem)
@@ -340,7 +341,7 @@ namespace MSOE.MediaComplete
                 try
                 {
                     if (selection == null) continue;
-                    await MusicIdentifier.IdentifySong(_fileMover, selection.GetPath());
+                    await MusicIdentifier.IdentifySongAsync(_fileMover, selection.GetPath());
                 }
                 catch (Exception ex)
                 {
@@ -352,7 +353,7 @@ namespace MSOE.MediaComplete
             }
         }
 
-        private async void ContextMenu_AutoIDMusic_Click(object sender, RoutedEventArgs e)
+        private async void ContextMenu_AutoIDMusic_ClickAsync(object sender, RoutedEventArgs e)
         {
             // Access the targetted song 
             // TODO (MC-45) mass ID of multi-selected songs and folders
@@ -366,7 +367,7 @@ namespace MSOE.MediaComplete
             {
                 try
                 {
-                    await MusicIdentifier.IdentifySong(_fileMover, ((SongTreeViewItem)item).GetPath());
+                    await MusicIdentifier.IdentifySongAsync(_fileMover, ((SongTreeViewItem)item).GetPath());
                 }
                 catch (Exception ex)
                 {
@@ -384,7 +385,7 @@ namespace MSOE.MediaComplete
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void Toolbar_SortMusic_Click(object sender, RoutedEventArgs e)
+        private async void Toolbar_SortMusic_ClickAsync(object sender, RoutedEventArgs e)
         {
             // TODO (MC-43) obtain from settings file, make configurable
             var settings = new SortSettings

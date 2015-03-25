@@ -15,7 +15,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
     /// </summary>
     public class Sorter
     {
-        private static FileMover _fileMover;
+        private static IFileMover _fileMover;
         public List<IAction> Actions { get; private set; }
         public int UnsortableCount { get; private set; }
         public int MoveCount { get { return Actions.Count(a => a is MoveAction); } }
@@ -31,7 +31,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// </summary>
         /// <param name="fileMover"></param>
         /// <param name="settings">Sort settings</param>
-        public Sorter(FileMover fileMover, SortSettings settings)
+        public Sorter(IFileMover fileMover, SortSettings settings)
         {
             _fileMover = fileMover;
             Settings = settings;
@@ -147,7 +147,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                 Files = new DirectoryInfo(SettingWrapper.MusicDir).EnumerateFiles("*", SearchOption.AllDirectories)
                     .GetMusicFiles()
             };
-            var sorter = new Sorter(FileMover.GetFileMover(), settings);
+            var sorter = new Sorter(FileMover.Instance, settings);
             sorter.PerformSort();
         }
 
@@ -166,7 +166,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                 Root = results.HomeDir,
                 Files = results.NewFiles
             };
-            var sorter = new Sorter(FileMover.GetFileMover(), settings);
+            var sorter = new Sorter(FileMover.Instance, settings);
             sorter.PerformSort();
         }
 

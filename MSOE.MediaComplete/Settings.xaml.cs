@@ -24,7 +24,7 @@ namespace MSOE.MediaComplete
         private LayoutType _changedType;
         private bool _layoutHasChanged;
         private readonly List<string> _allDirs;
-        private readonly FileMover _fileMover;
+        private readonly IFileMover _fileMover;
         public Settings()
         {
 
@@ -37,7 +37,7 @@ namespace MSOE.MediaComplete
             CheckBoxSorting.IsChecked = SettingWrapper.IsSorting;
             MoveOrCopy.IsChecked = SettingWrapper.ShouldRemoveOnImport;
             _allDirs = SettingWrapper.AllDirectories;
-            _fileMover = FileMover.GetFileMover();
+            _fileMover = FileMover.Instance;
             PollingCheckBoxChanged(CheckboxPolling, null);
             if (SettingWrapper.Layout.Equals(_layoutsDict[LayoutType.Pink]))
             {

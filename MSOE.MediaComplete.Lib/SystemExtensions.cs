@@ -18,7 +18,7 @@ namespace MSOE.MediaComplete.Lib
         /// <returns></returns>
         public static IEnumerable<FileInfo> GetFilesOrCreateDir(this DirectoryInfo rootDirInfo)
         {
-            if (!rootDirInfo.Exists) FileMover.GetFileMover().CreateDirectory(rootDirInfo.FullName);
+            if (!rootDirInfo.Exists) FileMover.Instance.CreateDirectory(rootDirInfo.FullName);
                 
             return rootDirInfo.GetFiles();
         }

@@ -21,7 +21,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
                 return false;
             }
 
-            return dir.EnumerateFiles().GetMusicFiles().Any(f => matchFile.MusicFileEquals(FileMover.GetFileMover().CreateTaglibFile(f.FullName)));
+            return dir.EnumerateFiles().GetMusicFiles().Any(f => matchFile.MusicFileEquals(FileMover.Instance.CreateTaglibFile(f.FullName)));
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
             }
             try
             {
-                file.Save();
+                file.Save();//TODO: MC-185 add catch for save when editing a file while it is playing
             }
             catch (UnauthorizedAccessException)
             {

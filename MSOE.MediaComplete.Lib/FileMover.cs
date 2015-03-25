@@ -4,16 +4,11 @@ using TaglibFile = TagLib.File;
 
 namespace MSOE.MediaComplete.Lib
 {
-    public class FileMover
+    public class FileMover : IFileMover
     {
-        private static FileMover _instance;
+        public static readonly FileMover Instance = new FileMover();
         private FileMover() { }
-
-        public static FileMover GetFileMover()
-        {
-            return _instance ?? (_instance = new FileMover());
-        }
-
+        
         public void MoveDirectory(string source, string dest)
         {
             if(Directory.Exists(dest)) throw new IOException("Destination directory already exists");
@@ -66,5 +61,17 @@ namespace MSOE.MediaComplete.Lib
         {
             return File.Exists(fileName);
         }
+    }
+
+    public interface IFileMover
+    {
+        void CopyFile(FileInfo file, string newFile);
+        void MoveFile(FileInfo file, string newFile);
+        void MoveFile(string oldFile, string newFile);
+        void MoveDirectory(string source, string dest);
+        void CreateDirectory(string directory);
+        bool FileExists(string fileName);
+        bool DirectoryExists(string directory);
+        TaglibFile CreateTaglibFile(string fileName);
     }
 }

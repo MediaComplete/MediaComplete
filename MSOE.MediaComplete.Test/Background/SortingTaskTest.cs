@@ -38,9 +38,9 @@ namespace MSOE.MediaComplete.Test.Background
         {
             var queue = new List<List<Task>>
             {
-                new List<Task> {new ImportTask(FileMover.GetFileMover(), null, null, false)},
+                new List<Task> {new ImportTask(FileMover.Instance, null, null, false)},
                 new List<Task> {new IdentifierTask(), new IdentifierTask()},
-                new List<Task> {new IdentifierTask(), new ImportTask(FileMover.GetFileMover(), null, null, false)},
+                new List<Task> {new IdentifierTask(), new ImportTask(FileMover.Instance, null, null, false)},
                 new List<Task>()
             };
 
@@ -68,10 +68,10 @@ namespace MSOE.MediaComplete.Test.Background
         {
             var queue = new List<List<Task>>
             {
-                new List<Task> {new ImportTask(FileMover.GetFileMover(), null, null, false)},
+                new List<Task> {new ImportTask(FileMover.Instance, null, null, false)},
                 new List<Task> {new IdentifierTask(), new IdentifierTask()},
                 new List<Task> {new SortingTask(null)},
-                new List<Task> {new IdentifierTask(), new ImportTask(FileMover.GetFileMover(), null, null, false)}
+                new List<Task> {new IdentifierTask(), new ImportTask(FileMover.Instance, null, null, false)}
             };
 
             var subject = new SortingTask(null);
