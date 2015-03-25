@@ -18,7 +18,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        private static WaveStream GetWaveStream(FileInfo file)
+        private static WaveStream GetWaveStream(FileSystemInfo file)
         {
             if(file == null) throw new ArgumentNullException("file");
             
