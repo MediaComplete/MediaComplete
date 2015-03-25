@@ -12,9 +12,8 @@ namespace MSOE.MediaComplete
 {
     public partial class MainWindow
     {
-        private void PopulateMetadataForm()
+        private IEnumerable<TextBox> ClearBoxes()
         {
-            //Clear undo stack of each box
             var boxes = new TextBox[8];
             boxes[0] = SongTitle;
             boxes[1] = Album;
@@ -30,78 +29,62 @@ namespace MSOE.MediaComplete
                 while (box.CanUndo)
                     box.Undo();
             }
-            if (SongTree.SelectedItems.Count == 1)
+            return boxes;
+        }
+        private void PopulateMetadataForm()
+        {
+            var boxes = ClearBoxes();
+            var initalAttributes = new Dictionary<MetaAttribute, string>
+            {
+                {MetaAttribute.SongTitle, null},
+                {MetaAttribute.Album, null},
+                {MetaAttribute.Artist, null},
+                {MetaAttribute.SupportingArtist, null},
+                {MetaAttribute.Genre, null},
+                {MetaAttribute.TrackNumber, null},
+                {MetaAttribute.Year, null},
+                {MetaAttribute.Rating, null},
+                {MetaAttribute.AlbumArt, null}
+            };
+            var finalAttributes = new Dictionary<MetaAttribute, string>();
+            foreach ( SongTreeViewItem item in SongTree.SelectedItems)
             {
                 try
                 {
-                    var song = File.Create(((SongTreeViewItem) SongTree.SelectedItems[0]).GetPath());
-                    SongTitle.Text = song.GetAttribute(MetaAttribute.SongTitle);
-                    Album.Text = song.GetAttribute(MetaAttribute.Album);
-                    Artist.Text = song.GetAttribute(MetaAttribute.Artist);
-                    SuppArtist.Text = song.GetAttribute(MetaAttribute.Artist);
-                    Genre.Text = song.GetAttribute(MetaAttribute.Genre);
-                    Track.Text = song.GetAttribute(MetaAttribute.TrackNumber);
-                    Year.Text = song.GetAttribute(MetaAttribute.Year);
-                    Rating.Text = song.GetAttribute(MetaAttribute.Rating).Equals("-1") ? "" : song.GetAttribute(MetaAttribute.Rating);
+                    var song = File.Create(item.GetPath());
+                    foreach (var metaAttribute in Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>().Where(metaAttribute => !finalAttributes.ContainsKey(metaAttribute)))
+                    {
+                        if (initalAttributes[metaAttribute] == null)
+                            initalAttributes[metaAttribute] = song.GetAttribute(metaAttribute);
+                        else if (!initalAttributes[metaAttribute].Equals(song.GetAttribute(metaAttribute)))
+                        {
+                            initalAttributes[metaAttribute] = "-1";
+                        }
+                        if (initalAttributes[metaAttribute] == null) continue;
+                        if (!initalAttributes[metaAttribute].Equals("-1")) continue;
+                        finalAttributes.Add(metaAttribute, initalAttributes[metaAttribute]);
+                        initalAttributes.Remove(metaAttribute);
+                    }
                 }
                 catch (CorruptFileException)
                 {
                     StatusBarHandler.Instance.ChangeStatusBarMessage("CorruptFile-Error", StatusBarHandler.StatusIcon.Error);
                 }
             }
-            else
+            foreach (var attribute in initalAttributes.Where(attribute => !finalAttributes.ContainsKey(attribute.Key)))
             {
-                var initalAttributes = new Dictionary<MetaAttribute, string>
-                {
-                    {MetaAttribute.SongTitle, null},
-                    {MetaAttribute.Album, null},
-                    {MetaAttribute.Artist, null},
-                    {MetaAttribute.SupportingArtist, null},
-                    {MetaAttribute.Genre, null},
-                    {MetaAttribute.TrackNumber, null},
-                    {MetaAttribute.Year, null},
-                    {MetaAttribute.Rating, null},
-                    {MetaAttribute.AlbumArt, null}
-                };
-                var finalAttributes = new Dictionary<MetaAttribute, string>();
-                foreach ( SongTreeViewItem item in SongTree.SelectedItems)
-                {
-                    try
-                    {
-                        var song = File.Create(item.GetPath());
-                        foreach (var metaAttribute in Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>().Where(metaAttribute => !finalAttributes.ContainsKey(metaAttribute)))
-                        {
-                            if (initalAttributes[metaAttribute] == null)
-                                initalAttributes[metaAttribute] = song.GetAttribute(metaAttribute);
-                            else if (!initalAttributes[metaAttribute].Equals(song.GetAttribute(metaAttribute)))
-                            {
-                                initalAttributes[metaAttribute] = "-1";
-                            }
-                            if (initalAttributes[metaAttribute] == null) continue;
-                            if (!initalAttributes[metaAttribute].Equals("-1")) continue;
-                            finalAttributes.Add(metaAttribute, initalAttributes[metaAttribute]);
-                            initalAttributes.Remove(metaAttribute);
-                        }
-                    }
-                    catch (CorruptFileException)
-                    {
-                        StatusBarHandler.Instance.ChangeStatusBarMessage("CorruptFile-Error", StatusBarHandler.StatusIcon.Error);
-                    }
-                }
-                foreach (var attribute in initalAttributes.Where(attribute => !finalAttributes.ContainsKey(attribute.Key)))
-                {
-                    finalAttributes.Add(attribute.Key, initalAttributes[attribute.Key]);
-                }
-
-                SongTitle.Text = finalAttributes[MetaAttribute.SongTitle] == "-1" ?  Resources["VariousSongs"].ToString() : finalAttributes[MetaAttribute.SongTitle];
-                Album.Text = finalAttributes[MetaAttribute.Album] == "-1" ? Resources["VariousAlbums"].ToString() : finalAttributes[MetaAttribute.Album];
-                Artist.Text = finalAttributes[MetaAttribute.Artist] == "-1" ?  Resources["VariousArtists"].ToString() : finalAttributes[MetaAttribute.Artist];
-                SuppArtist.Text = finalAttributes[MetaAttribute.SupportingArtist] == "-1" ?  Resources["VariousArtists"].ToString() : finalAttributes[MetaAttribute.SupportingArtist];
-                Genre.Text = finalAttributes[MetaAttribute.Genre] == "-1" ?  Resources["VariousGenres"].ToString() : finalAttributes[MetaAttribute.Genre];
-                Track.Text = finalAttributes[MetaAttribute.TrackNumber] == "-1" ?  Resources["VariousTrackNumbers"].ToString() : finalAttributes[MetaAttribute.TrackNumber];
-                Year.Text = finalAttributes[MetaAttribute.Year] == "-1" ?  Resources["VariousYear"].ToString() : finalAttributes[MetaAttribute.Year];
-                Rating.Text = finalAttributes[MetaAttribute.Rating] == "-1" ?  Resources["VariousRatings"].ToString() : finalAttributes[MetaAttribute.Rating];
+                finalAttributes.Add(attribute.Key, initalAttributes[attribute.Key]);
             }
+
+            SongTitle.Text = finalAttributes[MetaAttribute.SongTitle] == "-1" ?  Resources["VariousSongs"].ToString() : finalAttributes[MetaAttribute.SongTitle];
+            Album.Text = finalAttributes[MetaAttribute.Album] == "-1" ? Resources["VariousAlbums"].ToString() : finalAttributes[MetaAttribute.Album];
+            Artist.Text = finalAttributes[MetaAttribute.Artist] == "-1" ?  Resources["VariousArtists"].ToString() : finalAttributes[MetaAttribute.Artist];
+            SuppArtist.Text = finalAttributes[MetaAttribute.SupportingArtist] == "-1" ?  Resources["VariousArtists"].ToString() : finalAttributes[MetaAttribute.SupportingArtist];
+            Genre.Text = finalAttributes[MetaAttribute.Genre] == "-1" ?  Resources["VariousGenres"].ToString() : finalAttributes[MetaAttribute.Genre];
+            Track.Text = finalAttributes[MetaAttribute.TrackNumber] == "-1" ?  Resources["VariousTrackNumbers"].ToString() : finalAttributes[MetaAttribute.TrackNumber];
+            Year.Text = finalAttributes[MetaAttribute.Year] == "-1" ?  Resources["VariousYear"].ToString() : finalAttributes[MetaAttribute.Year];
+            Rating.Text = finalAttributes[MetaAttribute.Rating] == "-1" ?  Resources["VariousRatings"].ToString() : finalAttributes[MetaAttribute.Rating];
+            
         }
 
 
