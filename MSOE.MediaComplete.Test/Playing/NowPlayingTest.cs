@@ -193,15 +193,50 @@ namespace MSOE.MediaComplete.Test.Playing
         }
         #endregion
 
+        #region HasNextSong()
         [TestMethod]
-        public void HasNextSong()
+        public void HasNextSong_AddSimple()
         {
             Assert.IsFalse(NowPlaying.Inst.HasNextSong());
             NowPlaying.Inst.Add(new LocalSong(new FileInfo("firstsong")));
+            Assert.IsFalse(NowPlaying.Inst.HasNextSong());
+            NowPlaying.Inst.Add(new LocalSong(new FileInfo("secondsong")));
             Assert.IsTrue(NowPlaying.Inst.HasNextSong());
             NowPlaying.Inst.NextSong();
             Assert.IsFalse(NowPlaying.Inst.HasNextSong());
-            }
+            NowPlaying.Inst.PreviousSong();
+            Assert.IsTrue(NowPlaying.Inst.HasNextSong());
+        }
+        [TestMethod]
+        public void HasNextSong_Move()
+        {
+            var song = new LocalSong(new FileInfo("firstsong"));
+            Assert.IsFalse(NowPlaying.Inst.HasNextSong());
+            NowPlaying.Inst.Add(song);
+            NowPlaying.Inst.Add(new LocalSong(new FileInfo("song2")));
+            Assert.IsTrue(NowPlaying.Inst.HasNextSong());
+            NowPlaying.Inst.Move(song, NowPlaying.Inst.SongCount() - 1);
+            Assert.IsFalse(NowPlaying.Inst.HasNextSong());
+            
+            NowPlaying.Inst.Move(song, 0);
+            Console.Out.Write(NowPlaying.Inst.CurrentSong());
+            Assert.IsTrue(NowPlaying.Inst.HasNextSong());
+        }
+
+        [TestMethod]
+        public void HasNextSong_ClearRemove()
+        {
+            Assert.IsFalse(NowPlaying.Inst.HasNextSong());
+            NowPlaying.Inst.Add(new LocalSong(new FileInfo("firstsong")));
+            Assert.IsFalse(NowPlaying.Inst.HasNextSong());
+            NowPlaying.Inst.Add(new LocalSong(new FileInfo("secondsong")));
+            Assert.IsTrue(NowPlaying.Inst.HasNextSong());
+            NowPlaying.Inst.Remove(0);
+            Assert.IsFalse(NowPlaying.Inst.HasNextSong());
+            NowPlaying.Inst.Clear();
+            Assert.IsFalse(NowPlaying.Inst.HasNextSong());
+        }
+        #endregion
 
         #region Add(AbstractSong)
 
