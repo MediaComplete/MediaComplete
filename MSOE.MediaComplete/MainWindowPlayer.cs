@@ -1,5 +1,7 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -60,6 +62,13 @@ namespace MSOE.MediaComplete
             }
         }
 
+        private Timer timer = new Timer(250);
+
+        private void CheckTimer(object obj, ElapsedEventArgs args)
+        {
+            Dispatcher.Invoke(() => TrackBar.Value = _player.CurrentTime.TotalSeconds);
+        }
+
         /// <summary>
         /// gets the selected song from the song tree and plays it with the Player
         /// </summary>
@@ -72,8 +81,11 @@ namespace MSOE.MediaComplete
             {
                 _player.Play(new FileInfo(song.GetPath()));
                 TrackBar.Value = 0;
+                TrackBar.Minimum = 0;
                 TrackBar.Maximum = _player.TotalTime.TotalSeconds;
-                TrackBar.SetBinding(TrackBar.ValueProperty, new Binding("TotalSeconds"));
+                TrackBar.DataContext = this;
+                timer.Start();
+                timer.Elapsed += CheckTimer;
                 StatusBarHandler.Instance.ChangeStatusBarMessage(null, StatusBarHandler.StatusIcon.None);
             }
             catch (CorruptFileException)
@@ -97,6 +109,8 @@ namespace MSOE.MediaComplete
         private void PauseSong()
         {
             _player.Pause();
+            timer.Elapsed -= CheckTimer;
+            timer.Stop();
             PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
         }
 
@@ -106,6 +120,8 @@ namespace MSOE.MediaComplete
         private void ResumePausedSong()
         {
             _player.Resume();
+            timer.Elapsed += CheckTimer;
+            timer.Start();
             PlayPauseButton.SetResourceReference(StyleProperty, "PauseButton");
         }
 
@@ -125,6 +141,8 @@ namespace MSOE.MediaComplete
         private void Stop()
         {
             _player.Stop();
+            timer.Elapsed -= CheckTimer;
+            timer.Stop();
             PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
         }
 
@@ -148,7 +166,7 @@ namespace MSOE.MediaComplete
         {
             //TODO: MC-34 or MC-35
             //throw new System.NotImplementedException();
-            _player.Seek();
+            //_player.Seek();
         }
 
         /// <summary>
@@ -161,15 +179,25 @@ namespace MSOE.MediaComplete
             PlaySelectedSong();
         }
 
-        private void TrackBar_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            //throw new NotImplementedException();
-        }
-
         private void TrackBar_OnPreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
             var slider = sender as Slider;
-            var stuff = slider.Value;
+            if (slider != null)
+            {
+                var seconds = slider.Value;
+                Dispatcher.Invoke(() =>
+                {
+                    _player.Seek(TimeSpan.FromSeconds(seconds));
+                    timer.Elapsed += CheckTimer;
+                    timer.Start();
+                });
+            }
+        }
+
+        private void TrackBar_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            timer.Elapsed -= CheckTimer;
+            timer.Stop();
         }
     }
 }

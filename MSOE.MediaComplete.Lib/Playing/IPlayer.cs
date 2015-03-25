@@ -30,7 +30,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// </summary>
         void Stop();
 
-        void Seek();
+        void Seek(TimeSpan timeToSeekTo);
 
         //void Seek();
         /// <summary>
