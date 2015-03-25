@@ -4,7 +4,7 @@
         xmlns:controls="clr-namespace:System.Windows.Controls;assembly=TreeViewEx"
         xmlns:customControls="clr-namespace:MSOE.MediaComplete.CustomControls"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="MSOE.MediaComplete.MainWindow"
-        Title="Media Complete" MinHeight="425" Width="695.731" MinWidth="613"
+        Title="Media Complete" MinHeight="430" Width="695.731" MinWidth="613"
         AutomationProperties.Name="Tree" d:DesignHeight="502.905" Icon="Resources/logo_small.ico">
     <Window.Resources>
         <ResourceDictionary>
@@ -19,7 +19,7 @@
             <RowDefinition Height="24" />
             <RowDefinition Height="24" />
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="100" />
+            <RowDefinition Height="105" />
             <RowDefinition Height="24"/>
         </Grid.RowDefinitions>
 
@@ -178,7 +178,7 @@
                     <ColumnDefinition Width="35"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="23"/>
                 </Grid.RowDefinitions>
                     <Slider Name="TrackBar" Style ="{DynamicResource HorizontalSlider}" Grid.Column="0" Minimum="0" Maximum="100" IsMoveToPointEnabled="True" PreviewMouseDown="TrackBar_OnPreviewMouseDown" PreviewMouseUp="TrackBar_OnPreviewMouseUp" />
                 <Label Grid.Column="1"></Label>
