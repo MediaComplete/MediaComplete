@@ -172,13 +172,23 @@
         </Grid>
 
         <StackPanel Grid.Row="3" Grid.Column="0" Style="{DynamicResource PanelStyle}">
-            <Slider Name="TrackBar" Minimum="0" Maximum="100" IsMoveToPointEnabled="True" PreviewMouseDown="TrackBar_OnPreviewMouseDown" PreviewMouseUp="TrackBar_OnPreviewMouseUp" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="578*"/>
+                    <ColumnDefinition Width="35"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="26"/>
+                </Grid.RowDefinitions>
+                    <Slider Name="TrackBar" Grid.Column="0" Minimum="0" Maximum="100" IsMoveToPointEnabled="True" PreviewMouseDown="TrackBar_OnPreviewMouseDown" PreviewMouseUp="TrackBar_OnPreviewMouseUp" />
+                <Label Grid.Column="1"></Label>
+            </Grid>
             <StackPanel Height="75" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Name="PreviousButton" Height="60" Width="60" Style="{DynamicResource PreviousButton}" Click="PreviousButton_OnClick"/>
                 <Button Name="PlayPauseButton" Height="75" Width="75" Click="PlayPauseButton_OnClick"/>
                 <Button Name="SkipButton" Height="60" Width="60" Style="{DynamicResource SkipButton}" Click="SkipButton_OnClick"/>
                 <Button Name="StopButton" Height="40" Width="40" Style="{DynamicResource StopButton}" Click="StopButton_OnClick"/>
-                <customControls:BackgroundYoutubePlayer></customControls:BackgroundYoutubePlayer>
+                <!--<customControls:BackgroundYoutubePlayer></customControls:BackgroundYoutubePlayer>-->
             </StackPanel>
         </StackPanel>
         <StackPanel Grid.Row="4" Grid.Column="0" Height="22">
