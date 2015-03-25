@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using MSOE.MediaComplete.CustomControls;
@@ -12,7 +13,7 @@ namespace MSOE.MediaComplete
 {
     public partial class MainWindow
     {
-        private IEnumerable<TextBox> ClearBoxes()
+        private Dictionary<MetaAttribute, string> SetupForm()
         {
             var boxes = new TextBox[8];
             boxes[0] = SongTitle;
@@ -29,12 +30,7 @@ namespace MSOE.MediaComplete
                 while (box.CanUndo)
                     box.Undo();
             }
-            return boxes;
-        }
-        private void PopulateMetadataForm()
-        {
-            var boxes = ClearBoxes();
-            var initalAttributes = new Dictionary<MetaAttribute, string>
+            return new Dictionary<MetaAttribute, string>
             {
                 {MetaAttribute.SongTitle, null},
                 {MetaAttribute.Album, null},
@@ -46,13 +42,21 @@ namespace MSOE.MediaComplete
                 {MetaAttribute.Rating, null},
                 {MetaAttribute.AlbumArt, null}
             };
+            
+        }
+        private void PopulateMetadataForm()
+        {
+            var initalAttributes = SetupForm();
             var finalAttributes = new Dictionary<MetaAttribute, string>();
+
             foreach ( SongTreeViewItem item in SongTree.SelectedItems)
             {
                 try
                 {
+                    if (initalAttributes.Count <= 1) break;
                     var song = File.Create(item.GetPath());
-                    foreach (var metaAttribute in Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>().Where(metaAttribute => !finalAttributes.ContainsKey(metaAttribute)))
+                    foreach (var metaAttribute in Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>()
+                                                                .Where(metaAttribute => !finalAttributes.ContainsKey(metaAttribute)))
                     {
                         if (initalAttributes[metaAttribute] == null)
                             initalAttributes[metaAttribute] = song.GetAttribute(metaAttribute);
@@ -75,18 +79,20 @@ namespace MSOE.MediaComplete
             {
                 finalAttributes.Add(attribute.Key, initalAttributes[attribute.Key]);
             }
-
-            SongTitle.Text = finalAttributes[MetaAttribute.SongTitle] == "-1" ?  Resources["VariousSongs"].ToString() : finalAttributes[MetaAttribute.SongTitle];
-            Album.Text = finalAttributes[MetaAttribute.Album] == "-1" ? Resources["VariousAlbums"].ToString() : finalAttributes[MetaAttribute.Album];
-            Artist.Text = finalAttributes[MetaAttribute.Artist] == "-1" ?  Resources["VariousArtists"].ToString() : finalAttributes[MetaAttribute.Artist];
-            SuppArtist.Text = finalAttributes[MetaAttribute.SupportingArtist] == "-1" ?  Resources["VariousArtists"].ToString() : finalAttributes[MetaAttribute.SupportingArtist];
-            Genre.Text = finalAttributes[MetaAttribute.Genre] == "-1" ?  Resources["VariousGenres"].ToString() : finalAttributes[MetaAttribute.Genre];
-            Track.Text = finalAttributes[MetaAttribute.TrackNumber] == "-1" ?  Resources["VariousTrackNumbers"].ToString() : finalAttributes[MetaAttribute.TrackNumber];
-            Year.Text = finalAttributes[MetaAttribute.Year] == "-1" ?  Resources["VariousYear"].ToString() : finalAttributes[MetaAttribute.Year];
-            Rating.Text = finalAttributes[MetaAttribute.Rating] == "-1" ?  Resources["VariousRatings"].ToString() : finalAttributes[MetaAttribute.Rating];
-            
+            SetFinalAttributes(finalAttributes);
         }
 
+        private void SetFinalAttributes(IReadOnlyDictionary<MetaAttribute, string> finalAttributes)
+        {
+            SongTitle.Text = finalAttributes[MetaAttribute.SongTitle] == "-1" ? Resources["VariousSongs"].ToString() : finalAttributes[MetaAttribute.SongTitle];
+            Album.Text = finalAttributes[MetaAttribute.Album] == "-1" ? Resources["VariousAlbums"].ToString() : finalAttributes[MetaAttribute.Album];
+            Artist.Text = finalAttributes[MetaAttribute.Artist] == "-1" ? Resources["VariousArtists"].ToString() : finalAttributes[MetaAttribute.Artist];
+            SuppArtist.Text = finalAttributes[MetaAttribute.SupportingArtist] == "-1" ? Resources["VariousArtists"].ToString() : finalAttributes[MetaAttribute.SupportingArtist];
+            Genre.Text = finalAttributes[MetaAttribute.Genre] == "-1" ? Resources["VariousGenres"].ToString() : finalAttributes[MetaAttribute.Genre];
+            Track.Text = finalAttributes[MetaAttribute.TrackNumber] == "-1" ? Resources["VariousTrackNumbers"].ToString() : finalAttributes[MetaAttribute.TrackNumber];
+            Year.Text = finalAttributes[MetaAttribute.Year] == "-1" ? Resources["VariousYear"].ToString() : finalAttributes[MetaAttribute.Year];
+            Rating.Text = finalAttributes[MetaAttribute.Rating] == "-1" ? Resources["VariousRatings"].ToString() : finalAttributes[MetaAttribute.Rating];
+        }
 
         private void ClearDetailPane()
         {
