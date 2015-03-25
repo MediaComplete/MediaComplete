@@ -11,7 +11,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="MainWindowResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
-           
+
         </ResourceDictionary>
     </Window.Resources>
     <Grid Margin="0,0,0,0">
@@ -78,6 +78,14 @@
                     </HierarchicalDataTemplate>
                 </controls:TreeViewEx.ItemTemplate>
 
+                <controls:TreeViewEx.ContextMenu>
+                    <ContextMenu StaysOpen="True">
+                        <MenuItem Header="{StaticResource ContextMenu-PlayMusic-Header}"
+							Click="ContextMenu_PlayFolderMusic_Click" />
+                        <MenuItem Header="{StaticResource ContextMenu-NowPlayingMusic-Header}"
+							Click="ContextMenu_AddFolderToNowPlaying_Click" />
+                    </ContextMenu>
+                </controls:TreeViewEx.ContextMenu>
             </controls:TreeViewEx>
             <GridSplitter Grid.Column="1" 
               HorizontalAlignment="Center" 
@@ -97,7 +105,9 @@
                 <controls:TreeViewEx.ContextMenu>
                     <ContextMenu StaysOpen="True">
                         <MenuItem Header="{StaticResource ContextMenu-PlayMusic-Header}"
-							Click="ContextMenu_PlayMusic_Click" />
+							Click="ContextMenu_PlaySongMusic_Click" />
+                        <MenuItem Header="{StaticResource ContextMenu-NowPlayingMusic-Header}"
+							Click="ContextMenu_AddSongToNowPlaying_Click" />
                         <MenuItem Header="{StaticResource ContextMenu-AutoIdMusic-Header}"
 							Click="ContextMenu_AutoIDMusic_ClickAsync" />
                     </ContextMenu>
@@ -173,12 +183,11 @@
 
         <StackPanel Grid.Row="3" Grid.Column="0" Style="{DynamicResource PanelStyle}">
             <Slider />
-            <StackPanel Height="75" Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Name="PreviousButton" Height="60" Width="60" Style="{DynamicResource PreviousButton}" Click="PreviousButton_OnClick"/>
-                <Button Name="PlayPauseButton" Height="75" Width="75" Click="PlayPauseButton_OnClick"/>
-                <Button Name="SkipButton" Height="60" Width="60" Style="{DynamicResource SkipButton}" Click="SkipButton_OnClick"/>
-                <Button Name="StopButton" Height="40" Width="40" Style="{DynamicResource StopButton}" Click="StopButton_OnClick"/>
-                <customControls:BackgroundYoutubePlayer></customControls:BackgroundYoutubePlayer>
+            <StackPanel Height="75" Orientation="Horizontal" HorizontalAlignment="Left" Margin="267,0,0,0" >
+                <Button x:Name="PreviousButton" Height="60" Width="60" Style="{DynamicResource PreviousButton}" Click="PreviousButton_OnClick"/>
+                <Button x:Name="PlayPauseButton" Height="75" Width="75" Click="PlayPauseButton_OnClick"/>
+                <Button x:Name="SkipButton" Height="60" Width="60" Style="{DynamicResource SkipButton}" Click="SkipButton_OnClick"/>
+                <Button x:Name="StopButton" Height="40" Width="40" Style="{DynamicResource StopButton}" Click="StopButton_OnClick"/>
             </StackPanel>
         </StackPanel>
         <StackPanel Grid.Row="4" Grid.Column="0" Height="22">

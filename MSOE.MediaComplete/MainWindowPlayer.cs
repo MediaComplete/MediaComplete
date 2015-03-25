@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -152,9 +154,35 @@ namespace MSOE.MediaComplete
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ContextMenu_PlayMusic_Click(object sender, RoutedEventArgs e)
+        private void ContextMenu_PlaySongMusic_Click(object sender, RoutedEventArgs e)
         {
             PlaySelectedSong();
+        }
+
+
+        private void ContextMenu_AddFolderToNowPlaying_Click(object sender, RoutedEventArgs e)
+        {
+            AddAllSongsToNowPlaying();
+        }
+
+        private void ContextMenu_PlayFolderMusic_Click(object sender, RoutedEventArgs e)
+        {
+            NowPlaying.Inst.Clear();
+            AddAllSongsToNowPlaying();
+        }
+
+        private void AddAllSongsToNowPlaying()
+        {
+            NowPlaying.Inst.Add((from SongTreeViewItem song in SongTree.Items
+                                 select new LocalSong(new FileInfo(song.GetPath())))
+                                    .Cast<AbstractSong>().ToList());
+        }
+
+        private void ContextMenu_AddSongToNowPlaying_Click(object sender, RoutedEventArgs e)
+        {
+            NowPlaying.Inst.Add((from SongTreeViewItem song in SongTree.SelectedItems
+                                 select new LocalSong(new FileInfo(song.GetPath())))
+                                    .Cast<AbstractSong>().ToList());
         }
     }
 }
