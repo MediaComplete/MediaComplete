@@ -157,7 +157,7 @@ namespace MSOE.MediaComplete
         private void CheckVolumeLevel()
         {
             if(VolumePercentLabel!=null)
-                VolumePercentLabel.FontWeight = VolumeSlider.Value > 100 ? FontWeights.Bold : FontWeights.Normal;
+                VolumePercentLabel.FontWeight = VolumeSlider.Value > 100 ? FontWeights.ExtraBold : FontWeights.Normal;
         }
 
         /// <summary>
