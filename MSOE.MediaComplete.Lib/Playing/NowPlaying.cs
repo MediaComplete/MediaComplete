@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using M3U.NET;
 using MSOE.MediaComplete.Lib.Playlists;
 using MSOE.MediaComplete.Lib.Songs;
@@ -153,7 +154,9 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// <exception cref="ArgumentNullException">If songs is null</exception>
         public void Add(IEnumerable<AbstractSong> songs)
         {
-            if (Index == -1) Index = 0;
+            if (songs == null)
+                throw new ArgumentNullException("songs", "Songs must not be null");
+            if (Index == -1 && songs.Any()) Index = 0;
             _songs.AddRange(songs);
         }
 
@@ -170,6 +173,10 @@ namespace MSOE.MediaComplete.Lib.Playing
             if (index <= Index)
             {
                 Index--;
+                if (Index < 0 && _songs.Count > 1)
+                {
+                    Index = 0;
+                }
             }
             _songs.RemoveAt(index);
         }
@@ -232,16 +239,18 @@ namespace MSOE.MediaComplete.Lib.Playing
             if (oldIndex < 0 || newIndex < 0 || oldIndex >= _songs.Count || newIndex >= _songs.Count)
                 throw new IndexOutOfRangeException("Index arguments must be within the range of the list.");
 
+            // Shift our pointer as well
+            if (oldIndex == Index)
+            {
+                Index = newIndex;
+            }
+
             // Increment if moving forward -- need to compensate since we're removing our old location.
             if (oldIndex < newIndex)
                 newIndex++;
 
             _songs.Insert(newIndex, _songs[oldIndex]);
             _songs.RemoveAt(oldIndex);
-            if (oldIndex == Index)
-            {
-                Index = newIndex;
-            }
         }
 
         /// <summary>
