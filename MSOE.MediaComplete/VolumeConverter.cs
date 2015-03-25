@@ -12,7 +12,9 @@ namespace MSOE.MediaComplete
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (((double) value/100.0).ToString("P", CultureInfo.InvariantCulture));
+            var nfi = new CultureInfo("en-US", false).NumberFormat;
+            nfi.PercentDecimalDigits = 0;
+            return (((double) value/100.0).ToString("P", nfi));
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
