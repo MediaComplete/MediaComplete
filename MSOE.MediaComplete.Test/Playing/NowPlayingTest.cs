@@ -93,6 +93,7 @@ namespace MSOE.MediaComplete.Test.Playing
             var song = NowPlaying.Inst.NextSong();
 
             Assert.IsNull(song, "Should not have conjured a song");
+            Assert.AreEqual(-1, NowPlaying.Inst.Index, "Index should still be -1.");
         }
 
         [TestMethod]
@@ -107,6 +108,7 @@ namespace MSOE.MediaComplete.Test.Playing
             var song = NowPlaying.Inst.NextSong();
 
             Assert.IsNull(song, "Should not have conjured a song");
+            Assert.AreEqual(1, NowPlaying.Inst.Index, "Index should still be 1.");
         }
 
         [TestMethod]
@@ -115,8 +117,6 @@ namespace MSOE.MediaComplete.Test.Playing
             var targetSong = new LocalSong(new FileInfo("notrealfile2"));
             NowPlaying.Inst.Add(new List<AbstractSong>
             {
-                //TYLER!!! I changed the way this behaves - when something is added <----- to a blank
-                //now playing list, the index automatically switches to 0. please account for this in your tests.
                 new LocalSong(new FileInfo("notrealfile")),
                 targetSong
             });
@@ -136,6 +136,7 @@ namespace MSOE.MediaComplete.Test.Playing
             var song = NowPlaying.Inst.PreviousSong();
 
             Assert.IsNull(song, "Should not have conjured a song");
+            Assert.AreEqual(-1, NowPlaying.Inst.Index, "Index should still be -1.");
         }
 
         [TestMethod]
@@ -149,6 +150,7 @@ namespace MSOE.MediaComplete.Test.Playing
             var song = NowPlaying.Inst.PreviousSong();
 
             Assert.IsNull(song, "Should not have conjured a song");
+            Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should still be 0.");
         }
 
         [TestMethod]
@@ -190,6 +192,7 @@ namespace MSOE.MediaComplete.Test.Playing
             NowPlaying.Inst.NextSong(); // Advance into the queue.
 
             Assert.AreSame(targetSong, NowPlaying.Inst.CurrentSong(), "Queue is pointing at the wrong song.");
+            Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should be 0");
         }
         #endregion
 
@@ -241,15 +244,16 @@ namespace MSOE.MediaComplete.Test.Playing
         #region Add(AbstractSong)
 
         [TestMethod]
-        public void Append_EmptyQueue_HasOneSong()
+        public void Add_EmptyQueue_HasOneSong()
         {
             NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong")));
 
             Assert.AreEqual(1, NowPlaying.Inst.Playlist.Songs.Count, "Queue not the right size!");
+            Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should have advanced to 0.");
         }
 
         [TestMethod]
-        public void Append_PopulatedQueue_AddedToEnd()
+        public void Add_PopulatedQueue_AddedToEnd()
         {
             NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong")));
             var targetSong = new LocalSong(new FileInfo("fakesong2"));
@@ -257,10 +261,11 @@ namespace MSOE.MediaComplete.Test.Playing
 
             Assert.AreEqual(2, NowPlaying.Inst.Playlist.Songs.Count, "Queue not the right size!");
             Assert.AreSame(targetSong, NowPlaying.Inst.Playlist.Songs[1], "Songs not in the right order!");
+            Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should have advanced to 0.");
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
-        public void Append_NullSong_Exception()
+        public void Add_NullSong_Exception()
         {
             NowPlaying.Inst.Add((AbstractSong)null);
         }
@@ -270,7 +275,7 @@ namespace MSOE.MediaComplete.Test.Playing
         #region Add(IEnumerable<AbstractSong>)
 
         [TestMethod]
-        public void Append_EmptyQueue_HasTwoSongs()
+        public void Add_EmptyQueue_HasTwoSongs()
         {
             var targetSong = new LocalSong(new FileInfo("fakesong2"));
             NowPlaying.Inst.Add(new List<AbstractSong>
@@ -281,18 +286,20 @@ namespace MSOE.MediaComplete.Test.Playing
 
             Assert.AreEqual(2, NowPlaying.Inst.Playlist.Songs.Count, "Queue not the right size!");
             Assert.AreSame(targetSong, NowPlaying.Inst.Playlist.Songs[1], "Songs not in the right order!");
+            Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should have advanced to 0.");
         }
 
         [TestMethod]
-        public void Append_EmptyList_NoSongsAdded()
+        public void Add_EmptyList_NoSongsAdded()
         {
             NowPlaying.Inst.Add(new List<AbstractSong>());
 
             Assert.AreEqual(0, NowPlaying.Inst.Playlist.Songs.Count, "Queue not the right size!");
+            Assert.AreEqual(-1, NowPlaying.Inst.Index, "Index should have remained at -1.");
         }
 
         [TestMethod]
-        public void Append_PopulatedQueue_SongsAtEnd()
+        public void Add_PopulatedQueue_SongsAtEnd()
         {
             NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong1")));
 
@@ -305,10 +312,11 @@ namespace MSOE.MediaComplete.Test.Playing
 
             Assert.AreEqual(3, NowPlaying.Inst.Playlist.Songs.Count, "Queue not the right size!");
             Assert.AreSame(targetSong, NowPlaying.Inst.Playlist.Songs[2], "Songs not in the right order!");
+            Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should have advanced to 0.");
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
-        public void Append_NullList_Exception()
+        public void Add_NullList_Exception()
         {
             NowPlaying.Inst.Add((IEnumerable<AbstractSong>)null);
         }
@@ -338,12 +346,24 @@ namespace MSOE.MediaComplete.Test.Playing
         }
 
         [TestMethod]
-        public void Remove_ValidArg_QueueShrink()
+        public void Remove_ValidArg_QueueEmpty()
         {
             NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong")));
             NowPlaying.Inst.Remove(0);
 
             Assert.AreEqual(0, NowPlaying.Inst.Playlist.Songs.Count, "Wrong number of songs!");
+            Assert.AreEqual(-1, NowPlaying.Inst.Index, "Index should have shrunk to -1.");
+        }
+
+        [TestMethod]
+        public void Remove_ValidArg_QueueShrink()
+        {
+            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong")));
+            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong2")));
+            NowPlaying.Inst.Remove(0);
+
+            Assert.AreEqual(1, NowPlaying.Inst.Playlist.Songs.Count, "Wrong number of songs!");
+            Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should have shrunk to 0.");
         }
 
         #endregion
@@ -365,6 +385,7 @@ namespace MSOE.MediaComplete.Test.Playing
 
             Assert.IsFalse(ret, "Fake song should not have been found.");
             Assert.AreEqual(1, NowPlaying.Inst.Playlist.Songs.Count, "Song should not have been removed");
+            Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should have advanced to 0.");
         }
 
         [TestMethod]
@@ -373,10 +394,11 @@ namespace MSOE.MediaComplete.Test.Playing
             var ret = NowPlaying.Inst.Remove(new LocalSong(new FileInfo("fakesong2")));
             Assert.IsFalse(ret, "Fake song should not have been found.");
             Assert.AreEqual(0, NowPlaying.Inst.Playlist.Songs.Count, "Queue should still be empty");
+            Assert.AreEqual(-1, NowPlaying.Inst.Index, "Index should have remained at -1.");
         }
 
         [TestMethod]
-        public void Remove_SongFound_ReturnsTrueAndSongRemoved()
+        public void Remove_SongFound_ReturnsTrueAndQueueEmptied()
         {
             NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong1")));
 
@@ -384,6 +406,20 @@ namespace MSOE.MediaComplete.Test.Playing
 
             Assert.IsTrue(ret, "Fake song should have been found.");
             Assert.AreEqual(0, NowPlaying.Inst.Playlist.Songs.Count, "Song should have been removed");
+            Assert.AreEqual(-1, NowPlaying.Inst.Index, "Index should have shrunk to -1.");
+        }
+
+        [TestMethod]
+        public void Remove_SongFound_ReturnsTrueAndSongRemoved()
+        {
+            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong1")));
+            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong2")));
+
+            var ret = NowPlaying.Inst.Remove(new LocalSong(new FileInfo("fakesong1")));
+
+            Assert.IsTrue(ret, "Fake song should have been found.");
+            Assert.AreEqual(1, NowPlaying.Inst.Playlist.Songs.Count, "Song should have been removed");
+            Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should have shrunk to 0.");
         }
 
         #endregion
@@ -406,6 +442,7 @@ namespace MSOE.MediaComplete.Test.Playing
             });
 
             Assert.AreEqual(0, NowPlaying.Inst.Playlist.Songs.Count, "Queue is the wrong size!");
+            Assert.AreEqual(-1, NowPlaying.Inst.Index, "Index should have remained at -1.");
         }
 
         [TestMethod]
@@ -417,6 +454,7 @@ namespace MSOE.MediaComplete.Test.Playing
 
             Assert.AreEqual(1, NowPlaying.Inst.Playlist.Songs.Count, "Queue is the wrong size!");
             Assert.AreSame(targetSong, NowPlaying.Inst.Playlist.Songs[0], "Song wasn't preserved!");
+            Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should have advanced to 0.");
         }
 
         [TestMethod]
@@ -433,6 +471,7 @@ namespace MSOE.MediaComplete.Test.Playing
 
             Assert.AreEqual(1, NowPlaying.Inst.Playlist.Songs.Count, "Queue is the wrong size!");
             Assert.AreSame(targetSong, NowPlaying.Inst.Playlist.Songs[0], "Song wasn't preserved!");
+            Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should have advanced to 0.");
         }
 
         #endregion
@@ -445,6 +484,7 @@ namespace MSOE.MediaComplete.Test.Playing
             NowPlaying.Inst.Clear();
 
             Assert.AreEqual(0, NowPlaying.Inst.Playlist.Songs.Count, "Queue is the wrong size!");
+            Assert.AreEqual(-1, NowPlaying.Inst.Index, "Index should have shrunk to -1.");
         }
 
         [TestMethod]
@@ -456,6 +496,7 @@ namespace MSOE.MediaComplete.Test.Playing
             NowPlaying.Inst.Clear();
 
             Assert.AreEqual(0, NowPlaying.Inst.Playlist.Songs.Count, "Queue is the wrong size!");
+            Assert.AreEqual(-1, NowPlaying.Inst.Index, "Index should have shrunk to -1.");
         }
 
         #endregion
@@ -502,6 +543,8 @@ namespace MSOE.MediaComplete.Test.Playing
 
             Assert.AreEqual(3, NowPlaying.Inst.Playlist.Songs.Count, "Queue isn't the right size!");
             Assert.AreSame(targetSong, NowPlaying.Inst.Playlist.Songs[1], "Song in the wrong place!");
+
+            Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should have advanced to 0.");
         }
 
         [TestMethod]
@@ -516,10 +559,11 @@ namespace MSOE.MediaComplete.Test.Playing
 
             Assert.AreEqual(3, NowPlaying.Inst.Playlist.Songs.Count, "Queue isn't the right size!");
             Assert.AreSame(targetSong, NowPlaying.Inst.Playlist.Songs[1], "Song in the wrong place!");
+            Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should have advanced to 0.");
         }
 
         [TestMethod]
-        public void Move_OldIndexSmallerThanNewIndex_MoveForwards()
+        public void Move_OldIndexSmallerThanNewIndex_MoveForwardsAndIndexUpdates()
         {
             var targetSong = new LocalSong(new FileInfo("fakesong1"));
             NowPlaying.Inst.Add(targetSong);
@@ -530,6 +574,7 @@ namespace MSOE.MediaComplete.Test.Playing
 
             Assert.AreEqual(3, NowPlaying.Inst.Playlist.Songs.Count, "Queue isn't the right size!");
             Assert.AreSame(targetSong, NowPlaying.Inst.Playlist.Songs[1], "Song in the wrong place!");
+            Assert.AreEqual(1, NowPlaying.Inst.Index, "Index should have shifted to 1.");
         }
 
         #endregion
@@ -569,6 +614,7 @@ namespace MSOE.MediaComplete.Test.Playing
 
             Assert.IsFalse(ret, "Song should not have been found!");
             Assert.AreEqual(2, NowPlaying.Inst.Playlist.Songs.Count, "Queue is wrong size!");
+            Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should have advanced to 0.");
         }
 
         [TestMethod]
@@ -584,6 +630,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.IsTrue(ret, "Song should have been found!");
             Assert.AreEqual(3, NowPlaying.Inst.Playlist.Songs.Count, "Queue is wrong size!");
             Assert.AreSame(targetSong, NowPlaying.Inst.Playlist.Songs[1], "Song wasn't moved!");
+            Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should have advanced to 0.");
         }
 
         [TestMethod]
@@ -599,10 +646,11 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.IsTrue(ret, "Song should have been found!");
             Assert.AreEqual(3, NowPlaying.Inst.Playlist.Songs.Count, "Queue is wrong size!");
             Assert.AreSame(targetSong, NowPlaying.Inst.Playlist.Songs[1], "Song wasn't moved!");
+            Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should have advanced to 0.");
         }
 
         [TestMethod]
-        public void Move_SongBehindIndex_MovesForward()
+        public void Move_SongBehindIndex_MovesForwardAndIndexUpdates()
         {
             var targetSong = new LocalSong(new FileInfo("fakesong1"));
             NowPlaying.Inst.Add(targetSong);
@@ -614,6 +662,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.IsTrue(ret, "Song should have been found!");
             Assert.AreEqual(3, NowPlaying.Inst.Playlist.Songs.Count, "Queue is wrong size!");
             Assert.AreSame(targetSong, NowPlaying.Inst.Playlist.Songs[1], "Song wasn't moved!");
+            Assert.AreEqual(1, NowPlaying.Inst.Index, "Index should have shifted to 1.");
         }
 
         #endregion
