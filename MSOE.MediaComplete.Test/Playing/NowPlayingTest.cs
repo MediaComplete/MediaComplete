@@ -193,6 +193,16 @@ namespace MSOE.MediaComplete.Test.Playing
         }
         #endregion
 
+        [TestMethod]
+        public void HasNextSong()
+        {
+            Assert.IsFalse(NowPlaying.Inst.HasNextSong());
+            NowPlaying.Inst.Add(new LocalSong(new FileInfo("firstsong")));
+            Assert.IsTrue(NowPlaying.Inst.HasNextSong());
+            NowPlaying.Inst.NextSong();
+            Assert.IsFalse(NowPlaying.Inst.HasNextSong());
+            }
+
         #region Add(AbstractSong)
 
         [TestMethod]
