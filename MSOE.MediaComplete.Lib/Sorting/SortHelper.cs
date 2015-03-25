@@ -19,7 +19,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <param name="newSort"> The new sort order</param>
         /// <param name="pastIsSorted"> The past automatic sort bool</param>
         /// <param name="newIsSorted"> The new automatic sort bool</param>
-        public static void SetSorting(List<MetaAttribute> pastSort, List<MetaAttribute> newSort, bool pastIsSorted, bool newIsSorted)
+        public static void SetSorting(IEnumerable<MetaAttribute> pastSort, IEnumerable<MetaAttribute> newSort, bool pastIsSorted, bool newIsSorted)
         {
             _shouldSort = (!pastSort.SequenceEqual(newSort) || !pastIsSorted) && newIsSorted;
         }
