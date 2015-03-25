@@ -23,7 +23,7 @@ namespace MSOE.MediaComplete.Lib
         public static string HomeDir
         {
             get { return (string)Settings.Default["HomeDir"]; }
-            set { Settings.Default["HomeDir"] = value.EndsWith(Path.DirectorySeparatorChar.ToString()) ? value : value + Path.DirectorySeparatorChar; }
+            set { Settings.Default["HomeDir"] = value.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal) ? value : value + Path.DirectorySeparatorChar; }
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace MSOE.MediaComplete.Lib
             get
             {
                 var mDir = HomeDir + Settings.Default["MusicDir"];
-                return mDir.EndsWith(Path.DirectorySeparatorChar.ToString()) ? mDir : mDir + Path.DirectorySeparatorChar;
+                return mDir.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal) ? mDir : mDir + Path.DirectorySeparatorChar;
             }
         }
         /// <summary>
@@ -47,7 +47,7 @@ namespace MSOE.MediaComplete.Lib
             get
             {
                 var pDir = HomeDir + Settings.Default["PlaylistDir"];
-                return pDir.EndsWith(Path.DirectorySeparatorChar.ToString()) ? pDir : pDir + Path.DirectorySeparatorChar;
+                return pDir.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal) ? pDir : pDir + Path.DirectorySeparatorChar;
             }
         }
         /// <summary>
@@ -57,7 +57,7 @@ namespace MSOE.MediaComplete.Lib
         public static string InboxDir
         {
             get { return (string)Settings.Default["InboxDir"]; }
-            set { Settings.Default["InboxDir"] = value.EndsWith(Path.DirectorySeparatorChar.ToString()) ? value : value + Path.DirectorySeparatorChar; }
+            set { Settings.Default["InboxDir"] = value.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal) ? value : value + Path.DirectorySeparatorChar; }
         }
 
         /// <summary>
