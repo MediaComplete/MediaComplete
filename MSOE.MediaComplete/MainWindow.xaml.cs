@@ -206,7 +206,7 @@ namespace MSOE.MediaComplete
                 SongTree.Items.Add(new SongTreeViewItem { Header = rootChild.Name, ParentItem = firstNode });
             }
 
-            //DataContext = firstNode;
+            DataContext = firstNode;
         }
 
         private void InitTreeView()

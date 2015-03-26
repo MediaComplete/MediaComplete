@@ -1,16 +1,21 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.Threading;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
+using System.Windows.Threading;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Playing;
 using NAudio.Wave;
 using TagLib;
+using Timer = System.Timers.Timer;
 
 namespace MSOE.MediaComplete
 {
@@ -29,6 +34,53 @@ namespace MSOE.MediaComplete
             PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
             _player = Player.Instance;
             _player.PlaybackEnded += AutomaticStop;
+
+            //TrackBar.AddHandler(PreviewMouseDownEvent, new MouseButtonEventHandler(TrackBar_OnPreviewMouseDown));
+            //TrackBar.AddHandler(PreviewMouseLeftButtonDownEvent, new MouseButtonEventHandler(TrackBar_OnPreviewMouseDown));
+
+            //Thumb t = TrackBar.
+
+            TrackBar.ApplyTemplate();
+
+            //TrackBar.dra
+
+            var thumb = (TrackBar.Template.FindName("PART_Track", TrackBar) as Track).Thumb;
+
+            thumb.AddHandler(MouseEnterEvent, new MouseEventHandler(Thumb_MouseEnter));
+            TrackBar.AddHandler(PreviewMouseDownEvent, new MouseButtonEventHandler(Thumb_MouseDown));
+            thumb.AddHandler(MouseDownEvent, new MouseButtonEventHandler(Thumb_MouseDown));
+            //thumb.AddHandler(MouseUpEvent, new MouseButtonEventHandler(Thumb_MouseUp));
+        }
+
+        private void Thumb_MouseDown(object sender, MouseButtonEventArgs args)
+        {
+            _trackBarUpdateTimer.Elapsed -= CheckTrackBarUpdateTimer;
+            _trackBarUpdateTimer.Stop();
+            _trackBarUpdateCancellationTokenSource.Cancel();
+            _trackBarUpdateCancellationTokenSource = new CancellationTokenSource();
+        }
+
+        private void Thumb_MouseUp(object sender, MouseButtonEventArgs args)
+        {
+            _trackBarUpdateTimer.Elapsed += CheckTrackBarUpdateTimer;
+            _trackBarUpdateTimer.Start();
+        }
+
+        private void Thumb_MouseEnter(object sender, MouseEventArgs e)
+        {
+            // found here: https://social.msdn.microsoft.com/Forums/vstudio/en-US/5fa7cbc2-c99f-4b71-b46c-f156bdf0a75a/making-the-slider-slide-with-one-click-anywhere-on-the-slider?forum=wpf
+            if (e.LeftButton == MouseButtonState.Pressed && e.MouseDevice.Captured == null)
+            {
+                // the left button is pressed on mouse enter
+                // but the mouse isn't captured, so the thumb
+                // must have been moved under the mouse in response
+                // to a click on the track.
+                // Generate a MouseLeftButtonDown event.
+                var args = new MouseButtonEventArgs(e.MouseDevice, e.Timestamp, MouseButton.Left);
+                Thumb_MouseDown(sender, args);
+                args.RoutedEvent = MouseDownEvent;
+                (sender as Thumb).RaiseEvent(args);
+            }
         }
 
         /// <summary>
@@ -62,11 +114,13 @@ namespace MSOE.MediaComplete
             }
         }
 
-        private Timer timer = new Timer(250);
+        private const int TimerFrequency = 100;
 
-        private void CheckTimer(object obj, ElapsedEventArgs args)
+        private readonly Timer _trackBarUpdateTimer = new Timer(TimerFrequency);
+        private CancellationTokenSource _trackBarUpdateCancellationTokenSource = new CancellationTokenSource();
+        private void CheckTrackBarUpdateTimer(object obj, ElapsedEventArgs args)
         {
-            Dispatcher.Invoke(() => TrackBar.Value = _player.CurrentTime.TotalSeconds);
+            Dispatcher.Invoke(() => TrackBar.Value = _player.CurrentTime.TotalMilliseconds, DispatcherPriority.DataBind, _trackBarUpdateCancellationTokenSource.Token, TimeSpan.FromMilliseconds(TimerFrequency));
         }
 
         /// <summary>
@@ -82,10 +136,10 @@ namespace MSOE.MediaComplete
                 _player.Play(new FileInfo(song.GetPath()));
                 TrackBar.Value = 0;
                 TrackBar.Minimum = 0;
-                TrackBar.Maximum = _player.TotalTime.TotalSeconds;
+                TrackBar.Maximum = _player.TotalTime.TotalMilliseconds;
                 TrackBar.DataContext = this;
-                timer.Start();
-                timer.Elapsed += CheckTimer;
+                _trackBarUpdateTimer.Start();
+                _trackBarUpdateTimer.Elapsed += CheckTrackBarUpdateTimer;
                 StatusBarHandler.Instance.ChangeStatusBarMessage(null, StatusBarHandler.StatusIcon.None);
             }
             catch (CorruptFileException)
@@ -109,8 +163,8 @@ namespace MSOE.MediaComplete
         private void PauseSong()
         {
             _player.Pause();
-            timer.Elapsed -= CheckTimer;
-            timer.Stop();
+            _trackBarUpdateTimer.Elapsed -= CheckTrackBarUpdateTimer;
+            _trackBarUpdateTimer.Stop();
             PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
         }
 
@@ -120,8 +174,8 @@ namespace MSOE.MediaComplete
         private void ResumePausedSong()
         {
             _player.Resume();
-            timer.Elapsed += CheckTimer;
-            timer.Start();
+            _trackBarUpdateTimer.Elapsed += CheckTrackBarUpdateTimer;
+            _trackBarUpdateTimer.Start();
             PlayPauseButton.SetResourceReference(StyleProperty, "PauseButton");
         }
 
@@ -141,8 +195,9 @@ namespace MSOE.MediaComplete
         private void Stop()
         {
             _player.Stop();
-            timer.Elapsed -= CheckTimer;
-            timer.Stop();
+            _trackBarUpdateTimer.Elapsed -= CheckTrackBarUpdateTimer;
+            _trackBarUpdateTimer.Stop();
+            TrackBar.Value = 0;
             PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
         }
 
@@ -179,25 +234,22 @@ namespace MSOE.MediaComplete
             PlaySelectedSong();
         }
 
-        private void TrackBar_OnPreviewMouseUp(object sender, MouseButtonEventArgs e)
+        private void TrackBar_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            var slider = sender as Slider;
-            if (slider != null)
+            var diff = Math.Abs(e.OldValue - e.NewValue);
+            if (diff > TimerFrequency*2)
             {
-                var seconds = slider.Value;
-                Dispatcher.Invoke(() =>
+                var slider = sender as Slider;
+                if (slider != null)
                 {
-                    _player.Seek(TimeSpan.FromSeconds(seconds));
-                    timer.Elapsed += CheckTimer;
-                    timer.Start();
-                });
+                    var milliseconds = slider.Value;
+                    Dispatcher.Invoke(() =>
+                    {
+                        _player.Seek(TimeSpan.FromMilliseconds(milliseconds));
+                    });
+                }
             }
-        }
 
-        private void TrackBar_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            timer.Elapsed -= CheckTimer;
-            timer.Stop();
         }
     }
 }
