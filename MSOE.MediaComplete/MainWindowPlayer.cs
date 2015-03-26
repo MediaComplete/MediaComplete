@@ -26,6 +26,7 @@ namespace MSOE.MediaComplete
             PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
             _player = Player.Instance;
             _player.PlaybackEnded += AutomaticStop;
+            _player.ChangeVolume(VolumeSlider.Value);
         }
 
         /// <summary>
@@ -144,6 +145,19 @@ namespace MSOE.MediaComplete
         {
             //TODO: MC-34 or MC-35
             //throw new System.NotImplementedException();
+        }
+
+        private void VolumeSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            CheckVolumeLevel();
+            if(_player!=null)
+                _player.ChangeVolume(VolumeSlider.Value);
+        }
+
+        private void CheckVolumeLevel()
+        {
+            if(VolumePercentLabel!=null)
+                VolumePercentLabel.FontWeight = VolumeSlider.Value > 100 ? FontWeights.ExtraBold : FontWeights.Normal;
         }
 
         /// <summary>
