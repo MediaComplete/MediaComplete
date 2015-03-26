@@ -180,7 +180,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="23"/>
                 </Grid.RowDefinitions>
-                    <Slider Name="TrackBar" Style ="{DynamicResource HorizontalSlider}" Grid.Column="0" Minimum="0" Maximum="100" IsMoveToPointEnabled="True" ValueChanged="TrackBar_OnValueChanged" PreviewMouseDown="Thumb_MouseDown" PreviewMouseUp="Thumb_MouseUp"/>
+                    <Slider Name="TrackBar" Cursor="Cross" Style ="{DynamicResource HorizontalSlider}" Grid.Column="0" Minimum="0" Maximum="100" IsMoveToPointEnabled="True" ValueChanged="TrackBar_OnValueChanged" PreviewMouseDown="Thumb_MouseDown" PreviewMouseUp="Thumb_MouseUp"/>
                 <Label Grid.Column="1"></Label>
             </Grid>
             <StackPanel Height="75" Orientation="Horizontal" HorizontalAlignment="Center">
