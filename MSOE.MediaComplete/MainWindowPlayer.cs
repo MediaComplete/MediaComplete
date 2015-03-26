@@ -132,7 +132,10 @@ namespace MSOE.MediaComplete
         private void SongTree_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             NowPlaying.Inst.Clear();
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo(((SongTreeViewItem)SongTree.SelectedItems[0]).GetPath())));
+            AddAllSongsToNowPlaying();
+            var songTreeViewItem = SongTree.SelectedItems[0] as SongTreeViewItem;
+            if (songTreeViewItem != null)
+                NowPlaying.Inst.JumpTo(new LocalSong(new FileInfo(songTreeViewItem.GetPath())));
             PlaySelectedSong(NowPlaying.Inst.CurrentSong());
         }
 
