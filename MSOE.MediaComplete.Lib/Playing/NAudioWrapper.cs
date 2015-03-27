@@ -104,6 +104,7 @@ namespace MSOE.MediaComplete.Lib.Playing
             {
                 _waveStream.CurrentTime = timeToSeekTo;
             }
+
             return _waveOut.PlaybackState;
         }
 

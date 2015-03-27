@@ -91,12 +91,17 @@ namespace MSOE.MediaComplete.Lib.Playing
 
         public void Seek(TimeSpan timeToSeekTo)
         {
-            //TODO: MC-41 - Seeking functionality
-            //throw new NotImplementedException("Seek is not yet implemented.");
-            _nAudioWrapper.Seek(timeToSeekTo);//seeks ahead to 00:02:00
+            _nAudioWrapper.Seek(timeToSeekTo);
         }
 
+        /// <summary>
+        /// gets the current time of the playing song
+        /// </summary>
         public TimeSpan CurrentTime { get { return _nAudioWrapper.CurrentTime; } }
+
+        /// <summary>
+        /// gets the total time of the playing song
+        /// </summary>
         public TimeSpan TotalTime { get { return _nAudioWrapper.TotalTime; } }
         #endregion
 
