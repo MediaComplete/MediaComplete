@@ -29,7 +29,6 @@ namespace MSOE.MediaComplete.Test.Playing
             var stuff = new Fixture().Create<string>();
             var mockFile = new LocalSong(new FileInfo(stuff));
 
-            mockNAudioWrapper.Setup(m => m.Setup(mockFile, It.IsAny<EventHandler<StoppedEventArgs>>()));
             mockNAudioWrapper.Setup(m => m.Setup(mockFile.File, It.IsAny<EventHandler<StoppedEventArgs>>(),1.0));
 
             var player = new Player(mockNAudioWrapper.Object);
