@@ -526,4 +526,101 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+
+    <Style TargetType="{x:Type Button}" x:Key="LoopButtonPressed" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Ellipse Style="{DynamicResource PressedEllipseStyle}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                        <Ellipse Height="17" Width="17" Fill="#FFF0EFF1" />
+                        <Ellipse Style="{DynamicResource PressedEllipseStyle}" Height="13" Width="13" />
+                        <Polygon Style="{DynamicResource PressedPolygonStyle}" Points="13,3 19,3 19,10 13,10" />
+                        <Polygon Points="10.5,6 12,13.5 14.25,9" Fill="#FFF0EFF1" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type Button}" x:Key="LoopButtonUnPressed" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Ellipse Style="{StaticResource EllipseStyle}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                        <Ellipse Height="17" Width="17" Fill="#FFF0EFF1" />
+                        <Ellipse Style="{StaticResource EllipseStyle}" Height="13" Width="13" />
+                        <Polygon Style="{DynamicResource PolygonStyle}" Points="13,3 19,3 19,10 13,10" />
+                        <Polygon Points="10.5,6 12,13.5 14.25,9" Fill="#FFF0EFF1" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type Button}" x:Key="LoopOneButton" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Ellipse Style="{DynamicResource PressedEllipseStyle}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                        <Ellipse Height="17" Width="17" Fill="#FFF0EFF1" />
+                        <Ellipse Style="{DynamicResource PressedEllipseStyle}" Height="13" Width="13" />
+                        <Polygon Style="{DynamicResource PressedPolygonStyle}" Points="13,3 19,3 19,10 13,10" />
+                        <Polygon Points="10.5,6 12,13.5 14.25,9" Fill="#FFF0EFF1" />
+                        <Polygon Points="17,4 13,6 15,6 15,11 17,11" Fill="#FFF0EFF1" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <Style x:Key="PolygonStyle" TargetType="{x:Type Polygon}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid,AncestorLevel=1}, Path=IsMouseOver}" Value="True">
+                <Setter Property="Fill" Value="#FF686868"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid,AncestorLevel=1}, Path=IsMouseOver}" Value="False">
+                <Setter Property="Fill" Value="#FF2D2D30"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="PressedEllipseStyle" TargetType="{x:Type Ellipse}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid,AncestorLevel=1}, Path=IsMouseOver}" Value="True">
+                <Setter Property="Fill" Value="#FF686868"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid,AncestorLevel=1}, Path=IsMouseOver}" Value="False">
+                <Setter Property="Fill" Value="Black"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="PressedPolygonStyle" TargetType="{x:Type Polygon}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid,AncestorLevel=1}, Path=IsMouseOver}" Value="True">
+                <Setter Property="Fill" Value="#FF686868"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid,AncestorLevel=1}, Path=IsMouseOver}" Value="False">
+                <Setter Property="Fill" Value="Black"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+
+
+    <Style TargetType="{x:Type Button}" x:Key="ShuffleButton" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Ellipse Style="{DynamicResource EllipseStyle}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                        <Polygon Points="10,4 7,8 9,8 9,13 19,18 19,24 21,24 21,18 11,13 11,8 13,8" Fill="#FFF0EFF1" />
+                        <Polygon Points="20,4 17,8 21,8 21,13 11,18 11,24 9,24 9,18 19,13 19,8 23,8" Fill="#FFF0EFF1" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

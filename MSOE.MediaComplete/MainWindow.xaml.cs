@@ -505,5 +505,27 @@ namespace MSOE.MediaComplete
                 HideMetadata.Content = "Hide";
             }
         }
+
+        private void LoopButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (sender.Equals(LoopButton))
+            {
+                LoopButtonPressed.Visibility = Visibility.Visible;
+                LoopButtonOne.Visibility = Visibility.Hidden;
+                LoopButton.Visibility = Visibility.Hidden;
+            }
+            else if (sender.Equals(LoopButtonPressed))
+            {
+                LoopButtonPressed.Visibility = Visibility.Hidden;
+                LoopButtonOne.Visibility = Visibility.Visible;
+                LoopButton.Visibility = Visibility.Hidden;
+            }
+            else if (sender.Equals(LoopButtonOne))
+            {
+                LoopButtonPressed.Visibility = Visibility.Hidden;
+                LoopButtonOne.Visibility = Visibility.Hidden;
+                LoopButton.Visibility = Visibility.Visible;
+            }
+        }
     }
 }

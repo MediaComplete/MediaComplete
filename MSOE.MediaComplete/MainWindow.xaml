@@ -215,6 +215,16 @@
         <StackPanel Grid.Row="3" Grid.Column="0" Style="{DynamicResource PanelStyle}">
             <Slider />
             <StackPanel Height="75" Orientation="Horizontal" HorizontalAlignment="Center" Margin="40,0,0,0" >
+                <Grid VerticalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <Button x:Name="LoopButton" Height="30" Width="30" Style="{DynamicResource LoopButtonUnPressed}" Click="LoopButton_OnClick" Grid.Row="0"/>
+                    <Button x:Name="LoopButtonPressed" Height="30" Width="30" Style="{DynamicResource LoopButtonPressed}" Click="LoopButton_OnClick" Grid.Row="0" Visibility="Hidden"/>
+                    <Button x:Name="LoopButtonOne" Height="30" Width="30" Style="{DynamicResource LoopOneButton}" Click="LoopButton_OnClick" Grid.Row="0" Visibility="Hidden"/>
+                    <Button x:Name="ShuffleButton" Height="30" Width="30" Style="{DynamicResource ShuffleButton}" Grid.Row="1"/>
+                </Grid>
                 <Button x:Name="PreviousButton" Height="60" Width="60" Style="{DynamicResource PreviousButton}" Click="PreviousButton_OnClick"/>
                 <Button x:Name="PlayPauseButton" Height="75" Width="75" Click="PlayPauseButton_OnClick"/>
                 <Button x:Name="SkipButton" Height="60" Width="60" Style="{DynamicResource SkipButton}" Click="SkipButton_OnClick"/>
