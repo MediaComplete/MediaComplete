@@ -53,12 +53,10 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// <summary>
         /// sets up the player and plays the song
         /// </summary>
-        /// <param name="song">song to play</param>
-        public void Play(AbstractSong song)
+        public void Play()
         {
-            if (song == null) throw new ArgumentNullException("song");
-
             Stop();
+            var song = NowPlaying.Inst.CurrentSong();
 
             var localSong = song as LocalSong;
             if (localSong != null)
@@ -131,7 +129,8 @@ namespace MSOE.MediaComplete.Lib.Playing
         {
             if (NowPlaying.Inst.HasNextSong())
             {
-                Play(NowPlaying.Inst.NextSong());
+                NowPlaying.Inst.NextSong();
+                Play();
             }
             else
             {

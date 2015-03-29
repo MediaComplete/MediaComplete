@@ -1,5 +1,4 @@
 ﻿using System;
-using MSOE.MediaComplete.Lib.Songs;
 using NAudio.Wave;
 
 namespace MSOE.MediaComplete.Lib.Playing
@@ -10,10 +9,9 @@ namespace MSOE.MediaComplete.Lib.Playing
     public interface IPlayer
     {
         /// <summary>
-        /// attempt to play the song specified, throw CorruptFileException when files are corrupt or not a playable type
+        /// Attempt to play from the Now Playing queue, throw CorruptFileException when files are corrupt or not a playable type
         /// </summary>
-        /// <param name="song"></param>
-        void Play(AbstractSong song);
+        void Play();
 
         /// <summary>
         /// pause the currently playing song

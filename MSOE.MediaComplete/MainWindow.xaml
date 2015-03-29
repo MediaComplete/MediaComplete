@@ -105,6 +105,10 @@
                     <ContextMenu StaysOpen="True">
                         <MenuItem Header="{StaticResource ContextMenu-PlayMusic-Header}"
 							Click="ContextMenu_PlaySongMusic_Click" />
+                        <MenuItem Header="{StaticResource ContextMenu-PlaySingle-Header}"
+							Click="ContextMenu_PlaySelectedSongs_Click" />
+                        <MenuItem Header="{StaticResource ContextMenu-PlayNext-Header}"
+							Click="ContextMenu_PlaySongNext_Click" />
                         <MenuItem Header="{StaticResource ContextMenu-NowPlayingMusic-Header}"
 							Click="ContextMenu_AddSongToNowPlaying_Click" />
                         <MenuItem Header="{StaticResource ContextMenu-AutoIdMusic-Header}"
