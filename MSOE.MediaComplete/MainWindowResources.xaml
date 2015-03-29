@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:system="clr-namespace:System;assembly=mscorlib" >
+                    xmlns:system="clr-namespace:System;assembly=mscorlib"
+                    xmlns:mediaComplete="clr-namespace:MSOE.MediaComplete">
 
     <!-- Put strings up here - this is where internationalization would occur. -->
     <system:String x:Key="Toolbar-AutoIdMusic-Tooltip">Restore Metadata</system:String>
@@ -55,6 +56,7 @@
     <system:String x:Key="EditButton">Edit</system:String>
     <system:String x:Key="CancelButton">Cancel</system:String>
 
+    <mediaComplete:VolumeConverter x:Key="VolumeConverter"/>
 
 
     <!-- Images -->

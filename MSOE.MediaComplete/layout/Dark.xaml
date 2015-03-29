@@ -502,4 +502,18 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style TargetType="{x:Type Rectangle}" x:Key="VolumeFillColor">
+        <Setter Property="Fill">
+            <Setter.Value>
+                #FFF0EFF1
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type Rectangle}" x:Key="VolumeBarColor">
+        <Setter Property="Fill">
+            <Setter.Value>
+                #FF2D2D30
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>
