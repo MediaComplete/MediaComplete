@@ -500,7 +500,7 @@ namespace MSOE.MediaComplete
             else if (!MetadataPanel.IsVisible)
             {
                 MetadataPanel.Visibility = Visibility.Visible;
-                MetadataColumn.Width = new GridLength(225);
+                MetadataColumn.Width = new GridLength(225, GridUnitType.Star);
                 MetadataColumn.MinWidth = 225;
                 HideMetadata.Content = "Hide";
             }
