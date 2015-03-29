@@ -55,7 +55,9 @@ namespace MSOE.MediaComplete
                     PauseSong();
                     break;
                 default:
-                    PlaySelectedSong(NowPlaying.Inst.CurrentSong());
+                    var song = NowPlaying.Inst.CurrentSong() ??
+                               new LocalSong(new FileInfo(((SongTreeViewItem) SongTree.SelectedItems[0]).GetPath()));
+                    PlaySelectedSong(song);
                     break;
             }
         }
