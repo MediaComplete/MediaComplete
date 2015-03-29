@@ -74,8 +74,8 @@ namespace MSOE.MediaComplete
 
         private void InitPlaylists()
         {
-            var nowPlaying = new ListViewItem{ Content= "Now Playing" };
-            PlaylisList.Items.Add(nowPlaying);
+            var nowPlaying = new PlaylistListItem{ Content= "Now Playing" };
+            PlaylistList.Items.Add(nowPlaying);
         }
 
         private void ShowNowPlaying()
@@ -446,15 +446,18 @@ namespace MSOE.MediaComplete
             if (PlaylistTab.IsSelected)
             {
                 PlaylistSongs.Visibility = Visibility.Visible;
+                PlaylistName.Visibility = Visibility.Visible;
                 SongList.Visibility = Visibility.Hidden;
-                PlaylisList.SelectedItem = PlaylisList.Items[0];
+                PlaylistList.SelectedItem = PlaylistList.Items[0];
                 _visibleList = PlaylistSongs;
-                ShowNowPlaying(); 
+                ShowNowPlaying();
+                PlaylistName.Content = ((PlaylistListItem)PlaylistList.SelectedItem).Content;
                 ClearDetailPane();
             }
             if (LibraryTab.IsSelected)
             {
                 PlaylistSongs.Visibility = Visibility.Hidden;
+                PlaylistName.Visibility = Visibility.Hidden;
                 SongList.Visibility = Visibility.Visible;
                 _visibleList = SongList;
             }
@@ -471,8 +474,9 @@ namespace MSOE.MediaComplete
 
         private void PlaylistList_OnMouseUp(object sender, MouseButtonEventArgs e)
         {
-            if(PlaylisList.SelectedIndex == 0)
+            if (PlaylistList.SelectedIndex == 0)
                 ShowNowPlaying();
+            PlaylistName.Content = ((PlaylistListItem) PlaylistList.SelectedItem).Content;
         }
 
         private void PlaylistSongs_OnMouseUp(object sender, MouseButtonEventArgs e)

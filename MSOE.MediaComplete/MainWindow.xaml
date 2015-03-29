@@ -91,7 +91,7 @@
                 </TabItem>
 
                 <TabItem Header="Playlists" x:Name="PlaylistTab">
-                    <ListView x:Name="PlaylisList"
+                    <ListView x:Name="PlaylistList"
 				        AutomationProperties.Name="Tree" 
 				        ItemsSource="{Binding}" 
                         SelectionMode="Single"
@@ -126,17 +126,21 @@
                     </ContextMenu>
                 </ListView.ContextMenu>
             </ListView>
-            <ListView x:Name="PlaylistSongs" Grid.Column="2" 
-				AutomationProperties.Name="Tree" 
-				ItemsSource="{Binding}" 
-                MouseUp="PlaylistSongs_OnMouseUp" MouseDoubleClick="PlaylistSongs_OnMouseDoubleClick"
-                SelectionMode="Single">
-                <ListView.ItemTemplate>
-                    <HierarchicalDataTemplate ItemsSource="{Binding}"  DataType="{x:Type customControls:SongListItem}">
-                        <TextBlock Text="{Binding}"/>
-                    </HierarchicalDataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+            <Grid Margin="0,0,0,0" Grid.Column="2" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="26" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Label x:Name="PlaylistName" Margin="-4" FontSize="16" FontWeight="ExtraBlack"/>
+                <ListView x:Name="PlaylistSongs" AutomationProperties.Name="Tree" ItemsSource="{Binding}" Grid.Row="1" 
+                          MouseUp="PlaylistSongs_OnMouseUp" MouseDoubleClick="PlaylistSongs_OnMouseDoubleClick" SelectionMode="Single" >
+                    <ListView.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding}"  DataType="{x:Type customControls:SongListItem}">
+                            <TextBlock Text="{Binding}"/>
+                        </HierarchicalDataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
             <GridSplitter Grid.Column="3" 
               HorizontalAlignment="Center" 
               VerticalAlignment="Stretch"
