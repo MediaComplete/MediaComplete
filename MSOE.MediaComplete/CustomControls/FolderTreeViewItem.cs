@@ -7,7 +7,7 @@ using System.IO;
 
 namespace MSOE.MediaComplete.CustomControls
 {
-    internal class FolderTreeViewItem : TreeViewItem
+    public class FolderTreeViewItem : TreeViewItem
     {
         public FolderTreeViewItem()
 		{

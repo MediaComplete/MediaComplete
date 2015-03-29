@@ -72,5 +72,15 @@ namespace MSOE.MediaComplete.Lib.Songs
             var otherSong = other as LocalSong;
             return otherSong != null && new FileLocationComparator().Equals(File, otherSong.File);
         }
+
+        public override string ToString()
+        {
+            return File.Name;
+        }
+
+        public override string GetPath()
+        {
+            return File.FullName; 
+        }
     }
 }

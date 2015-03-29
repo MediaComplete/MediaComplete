@@ -3,7 +3,7 @@ using System.Windows.Input;
 
 namespace MSOE.MediaComplete.CustomControls
 {
-    internal class SongTreeViewItem : TreeViewItem
+    public class SonglistListItem : SongListItem
     {
         protected override void OnPreviewMouseRightButtonDown(MouseButtonEventArgs e)
         {
@@ -14,12 +14,13 @@ namespace MSOE.MediaComplete.CustomControls
 
         public override string ToString()
         {
-            return (string)Header;
+
+            return (string) Content;
         }
 
-        public string GetPath()
+        public override string GetPath()
         {
-            return ParentItem.GetPath() + Header;
+            return ParentItem.GetPath() + Content;
         }
 
     }

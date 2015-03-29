@@ -65,7 +65,7 @@ namespace MSOE.MediaComplete
         /// </summary>
         private void PlaySelectedSong(AbstractSong song)
         {
-            if (SongTree.SelectedItems == null) return;
+            if (SongList.SelectedItems == null) return;
             if (song == null) return;
             try
             {
@@ -133,7 +133,7 @@ namespace MSOE.MediaComplete
         {
             NowPlaying.Inst.Clear();
             AddAllSongsToNowPlaying();
-            var songTreeViewItem = SongTree.SelectedItems[0] as SongTreeViewItem;
+            var songTreeViewItem = SongList.SelectedItems[0] as SonglistListItem;
             if (songTreeViewItem != null)
                 NowPlaying.Inst.JumpTo(new LocalSong(new FileInfo(songTreeViewItem.GetPath())));
             PlaySelectedSong(NowPlaying.Inst.CurrentSong());
@@ -159,7 +159,7 @@ namespace MSOE.MediaComplete
         private void ContextMenu_PlaySongMusic_Click(object sender, RoutedEventArgs e)
         {
             NowPlaying.Inst.Clear();
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo(((SongTreeViewItem)SongTree.SelectedItems[0]).GetPath())));
+            NowPlaying.Inst.Add(new LocalSong(new FileInfo(((SonglistListItem)SongList.SelectedItems[0]).GetPath())));
             PlaySelectedSong(NowPlaying.Inst.CurrentSong());
         }
 
@@ -170,7 +170,7 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void ContextMenu_AddSongToNowPlaying_Click(object sender, RoutedEventArgs e)
         {
-            NowPlaying.Inst.Add((from SongTreeViewItem song in SongTree.SelectedItems
+            NowPlaying.Inst.Add((from SonglistListItem song in SongList.SelectedItems
                                  select new LocalSong(new FileInfo(song.GetPath())))
                                     .Cast<AbstractSong>().ToList());
             if (Player.Instance.PlaybackState.Equals(PlaybackState.Stopped))
@@ -216,7 +216,7 @@ namespace MSOE.MediaComplete
         /// </summary>
         private void AddAllSongsToNowPlaying()
         {
-            NowPlaying.Inst.Add((from SongTreeViewItem song in SongTree.Items
+            NowPlaying.Inst.Add((from SonglistListItem song in SongList.Items
                                  select new LocalSong(new FileInfo(song.GetPath())))
                                     .Cast<AbstractSong>().ToList());
         }

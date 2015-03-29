@@ -13,6 +13,18 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style TargetType="{x:Type ListView}">
+        <Setter Property="Foreground" Value="#FFF0EFF1"/>
+        <Setter Property="Background" Value="#FF3E3E42"/>
+        <Setter Property="BorderBrush">
+            <Setter.Value>
+                <RadialGradientBrush>
+                    <GradientStop Color="#FF3E3E42" Offset="0"/>
+                    <GradientStop Color="#FF707070" Offset="1"/>
+                </RadialGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
     <LinearGradientBrush x:Key="NormalBrush" StartPoint="0,0" EndPoint="0,1">
         <GradientBrush.GradientStops>
@@ -171,6 +183,18 @@
             <Trigger Property="IsSelected" Value="False">
                 <Setter Property="BackgroundFocused" Value="Transparent"/>
                 <Setter Property="Foreground" Value="#FFF0EFF1" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="{x:Type ListViewItem}">
+        <Style.Triggers>
+            <Trigger Property="IsMouseDirectlyOver" Value="True">
+                <Setter Property="Background" Value="LightGray"/>
+                <Setter Property="Foreground" Value="#FF4D4D4D"/>
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Foreground" Value="LightGray"/>
+                <Setter Property="Background" Value="#FF4D4D4D"/>
             </Trigger>
         </Style.Triggers>
     </Style>

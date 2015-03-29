@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Globalization;
 using System.Linq;
+using System.Threading;
+using System.Windows.Media.Imaging;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using MSOE.MediaComplete.CustomControls;
+using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Import;
 using MSOE.MediaComplete.Lib.Metadata;
-using System.Threading;
-using WinForms = System.Windows.Forms;
-using System.Windows.Media.Imaging;
-using MSOE.MediaComplete.Lib;
-using System.Windows;
-using System.Windows.Input;
-using MSOE.MediaComplete.CustomControls;
+using MSOE.MediaComplete.Lib.Playing;
 using MSOE.MediaComplete.Lib.Sorting;
-using System.Windows.Controls;
 using Application = System.Windows.Application;
-using System.Globalization;
+using WinForms = System.Windows.Forms;
 
 namespace MSOE.MediaComplete
 {
@@ -65,9 +67,26 @@ namespace MSOE.MediaComplete
 
             InitTreeView();
 
+            InitPlaylists();
+
             InitPlayer();
         }
 
+        private void InitPlaylists()
+        {
+            var nowPlaying = new ListViewItem{ Content= "Now Playing" };
+            PlaylisList.Items.Add(nowPlaying);
+        }
+
+        private void ShowNowPlaying()
+        {
+            PlaylistSongs.Items.Clear();
+            NowPlaying.Inst.Playlist.Songs.ForEach(x => PlaylistSongs.Items.Add((new PlaylistListItem{Content = x, Path = x.GetPath()})));
+            PlaylistSongs.SelectedIndex = NowPlaying.Inst.Index;
+            if(NowPlaying.Inst.Index>0)
+                ((PlaylistListItem) PlaylistSongs.SelectedItem).Foreground = Brushes.LightSeaGreen;
+
+        }
         private void InitEvents()
         {
             Polling.InboxFilesDetected += ImportFromInboxAsync;
@@ -190,7 +209,7 @@ namespace MSOE.MediaComplete
             //Create Parent node
             var firstNode = new FolderTreeViewItem { Header = SettingWrapper.MusicDir, ParentItem = null};
 
-            SongTree.Items.Clear();
+            SongList.Items.Clear();
             var rootFiles = new DirectoryInfo(SettingWrapper.MusicDir).GetFilesOrCreateDir();
             var rootDirs = new DirectoryInfo(SettingWrapper.MusicDir).GetDirectories();
 
@@ -198,12 +217,12 @@ namespace MSOE.MediaComplete
             foreach (var rootChild in rootDirs)
             {   
                 //add each child to the root folder
-                firstNode.Children.Add(PopulateFromFolder(rootChild, SongTree, firstNode));
+                firstNode.Children.Add(PopulateFromFolder(rootChild, SongList, firstNode));
             }
 
             foreach (var rootChild in rootFiles.GetMusicFiles())
             {
-                SongTree.Items.Add(new SongTreeViewItem { Header = rootChild.Name, ParentItem = firstNode });
+                SongList.Items.Add(new SonglistListItem { Content = rootChild.Name, ParentItem = firstNode });
             }
 
             DataContext = firstNode;
@@ -242,7 +261,7 @@ namespace MSOE.MediaComplete
             
             foreach (var file in dirInfo.GetFilesOrCreateDir().GetMusicFiles())
             {
-                songTree.Items.Add(new SongTreeViewItem { Header = file.Name, ParentItem = dirItem });
+                songTree.Items.Add(new SonglistListItem { Content = file.Name, ParentItem = dirItem });
             }
             return dirItem;
         }
@@ -255,7 +274,7 @@ namespace MSOE.MediaComplete
                 PopulateSongTree(dir, songTree, dirItem, false);
             }
 
-            foreach (var x in dirInfo.GetFilesOrCreateDir().GetMusicFiles().Select(file => new SongTreeViewItem { Header = file.Name, ParentItem = dirItem }))
+            foreach (var x in dirInfo.GetFilesOrCreateDir().GetMusicFiles().Select(file => new SonglistListItem { Content = file.Name, ParentItem = dirItem }))
             {
                 songTree.Items.Add(x);
             }
@@ -271,7 +290,7 @@ namespace MSOE.MediaComplete
             FormCheck();
             if (FolderTree.SelectedItems != null && FolderTree.SelectedItems.Count > 0)
             {
-                SongTree.Items.Clear();
+                SongList.Items.Clear();
                 foreach (var folder in FolderTree.SelectedItems)
                 {
                     //current file
@@ -280,7 +299,7 @@ namespace MSOE.MediaComplete
                     var dirInfo = new DirectoryInfo((item.GetPath()));
                     if (!ContainsParent(item))
                     {
-                        PopulateSongTree(dirInfo, SongTree, item, true);
+                        PopulateSongTree(dirInfo, SongList, item, true);
                     }
                 }
             }
@@ -299,7 +318,7 @@ namespace MSOE.MediaComplete
         private void SongTree_OnMouseUp(object sender, MouseButtonEventArgs e)
         {
             FormCheck();
-            if(SongTree.SelectedItems.Count > 0)
+            if (SongList.SelectedItems.Count > 0)
                 PopulateMetadataForm();
             else
                 ClearDetailPane();
@@ -334,7 +353,7 @@ namespace MSOE.MediaComplete
         private async void Toolbar_AutoIDMusic_ClickAsync(object sender, RoutedEventArgs e)
         {
             // TODO (MC-45) mass ID of multi-selected songs and folders
-            foreach (var selection in from object item in SongTree.SelectedItems select item as SongTreeViewItem)
+            foreach (var selection in from object item in _visibleList.SelectedItems select item as SongListItem)
             {
                 try
                 {
@@ -361,11 +380,11 @@ namespace MSOE.MediaComplete
             var contextMenu = menuItem.Parent as ContextMenu;
             if (contextMenu == null)
                 return;
-            foreach (var item in SongTree.SelectedItems)
+            foreach (var item in SongList.SelectedItems)
             {
                 try
                 {
-                    await MusicIdentifier.IdentifySongAsync(((SongTreeViewItem)item).GetPath());
+                    await MusicIdentifier.IdentifySongAsync(((SonglistListItem)item).GetPath());
                 }
                 catch (Exception ex)
                 {
@@ -420,6 +439,49 @@ namespace MSOE.MediaComplete
             if (_changedBoxes.Contains((TextBox) sender) || SongTitle.IsReadOnly) return;
             _changedBoxes.Add((TextBox)sender);
             StatusBarHandler.Instance.ChangeStatusBarMessage("", StatusBarHandler.StatusIcon.None);
+        }
+
+        private void LeftFrame_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (PlaylistTab.IsSelected)
+            {
+                PlaylistSongs.Visibility = Visibility.Visible;
+                SongList.Visibility = Visibility.Hidden;
+                PlaylisList.SelectedItem = PlaylisList.Items[0];
+                _visibleList = PlaylistSongs;
+                ShowNowPlaying(); 
+                ClearDetailPane();
+            }
+            if (LibraryTab.IsSelected)
+            {
+                PlaylistSongs.Visibility = Visibility.Hidden;
+                SongList.Visibility = Visibility.Visible;
+                _visibleList = SongList;
+            }
+        }
+
+        private void PlaylistSongs_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var newCurrent = ((PlaylistListItem) PlaylistSongs.SelectedItem);
+            ((PlaylistListItem)PlaylistSongs.Items[NowPlaying.Inst.Index]).Foreground = newCurrent.Foreground;
+            NowPlaying.Inst.JumpTo(PlaylistSongs.SelectedIndex);
+            Player.Instance.Play(NowPlaying.Inst.CurrentSong());
+            newCurrent.Foreground = Brushes.LightSeaGreen;
+        }
+
+        private void PlaylistList_OnMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if(PlaylisList.SelectedIndex == 0)
+                ShowNowPlaying();
+        }
+
+        private void PlaylistSongs_OnMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            FormCheck();
+            if (PlaylistSongs.SelectedItems.Count > 0)
+                PopulateMetadataForm();
+            else
+                ClearDetailPane();
         }
     }
 }
