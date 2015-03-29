@@ -124,6 +124,7 @@ namespace MSOE.MediaComplete
         private void Stop()
         {
             _player.Stop();
+            NowPlaying.Inst.Clear();
             PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
         }
 
