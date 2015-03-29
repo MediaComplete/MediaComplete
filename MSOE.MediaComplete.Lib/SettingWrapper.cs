@@ -146,7 +146,5 @@ namespace MSOE.MediaComplete.Lib
             Settings.Default.Save();
             RaiseSettingEvent.Invoke();
         }
-
-
     }
 }

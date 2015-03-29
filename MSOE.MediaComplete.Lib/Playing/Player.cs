@@ -16,6 +16,11 @@ namespace MSOE.MediaComplete.Lib.Playing
         private static Player _instance;
 
         /// <summary>
+        /// the current volume of the player
+        /// </summary>
+        private static double _currentVolume = 1.0f;
+
+        /// <summary>
         /// gets the singleton instance of the Player
         /// </summary>
         public static Player Instance
@@ -48,17 +53,15 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// <summary>
         /// sets up the player and plays the song
         /// </summary>
-        /// <param name="song">song to play</param>
-        public void Play(AbstractSong song)
+        public void Play()
         {
-            if (song == null) throw new ArgumentNullException("song");
-
             Stop();
+            var song = NowPlaying.Inst.CurrentSong();
 
             var localSong = song as LocalSong;
             if (localSong != null)
             {
-                _nAudioWrapper.Setup(localSong.File, WaveOutOnPlaybackStopped);
+                _nAudioWrapper.Setup(localSong.File, WaveOutOnPlaybackStopped, _currentVolume);
             }
             PlaybackState = _nAudioWrapper.Play();
         }
@@ -92,12 +95,28 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// </summary>
         public event EventHandler PlaybackEnded;
 
+        /// <summary> 
+        /// changes the volume of a currently playing song
+        /// </summary>
+        /// <param name="newValue"></param>
+        public void ChangeVolume(double newValue)
+        {
+            if (PlaybackState != PlaybackState.Stopped)
+            {
+                _nAudioWrapper.ChangeVolume(newValue);
+                _currentVolume = newValue;
+            }
+            else
+                _currentVolume = newValue;
+        }
+
         //public void Seek()
         //{
         //    //TODO: MC-41 - Seeking functionality
         //    throw new NotImplementedException("Seek is not yet implemented.");
         //    //_waveStream.Seek(10000000, SeekOrigin.Current);//seeks ahead 10000000 bytes in the file?
         //}
+
         #endregion
 
         #region private methods
@@ -110,7 +129,8 @@ namespace MSOE.MediaComplete.Lib.Playing
         {
             if (NowPlaying.Inst.HasNextSong())
             {
-                Play(NowPlaying.Inst.NextSong());
+                NowPlaying.Inst.NextSong();
+                Play();
             }
             else
             {

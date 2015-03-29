@@ -468,7 +468,7 @@ namespace MSOE.MediaComplete
             var newCurrent = ((PlaylistListItem) PlaylistSongs.SelectedItem);
             ((PlaylistListItem)PlaylistSongs.Items[NowPlaying.Inst.Index]).Foreground = newCurrent.Foreground;
             NowPlaying.Inst.JumpTo(PlaylistSongs.SelectedIndex);
-            Player.Instance.Play(NowPlaying.Inst.CurrentSong());
+            Player.Instance.Play();
             newCurrent.Foreground = Brushes.LightSeaGreen;
         }
 

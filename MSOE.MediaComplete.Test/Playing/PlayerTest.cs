@@ -13,13 +13,10 @@ namespace MSOE.MediaComplete.Test.Playing
     [TestClass]
     public class PlayerTest
     {
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Play_NullFileInfo_ThrowArgumentNullException()
+        [TestInitialize]
+        public void Setup()
         {
-            var player = Player.Instance;
-            player.Play(null);
-            Assert.Fail("Play should have thrown an ArgumentNullException.");
+            NowPlaying.Inst.Clear();
         }
 
         [TestMethod]
@@ -29,12 +26,13 @@ namespace MSOE.MediaComplete.Test.Playing
             var stuff = new Fixture().Create<string>();
             var mockFile = new LocalSong(new FileInfo(stuff));
 
-            mockNAudioWrapper.Setup(m => m.Setup(mockFile.File, It.IsAny<EventHandler<StoppedEventArgs>>()));
+            mockNAudioWrapper.Setup(m => m.Setup(mockFile.File, It.IsAny<EventHandler<StoppedEventArgs>>(),1.0));
 
             var player = new Player(mockNAudioWrapper.Object);
             mockNAudioWrapper.Setup(m => m.Play()).Returns(PlaybackState.Playing);
 
-            player.Play(mockFile);
+            NowPlaying.Inst.Add(mockFile);
+            player.Play();
             Assert.AreEqual(PlaybackState.Playing, player.PlaybackState);
 
             mockNAudioWrapper.Setup(m => m.Pause()).Returns(PlaybackState.Paused);
@@ -60,12 +58,13 @@ namespace MSOE.MediaComplete.Test.Playing
             var stuff = new Fixture().Create<string>();
             var mockFile = new LocalSong(new FileInfo(stuff));
 
-            mockNAudioWrapper.Setup(m => m.Setup(mockFile.File, It.IsAny<EventHandler<StoppedEventArgs>>()));
+            mockNAudioWrapper.Setup(m => m.Setup(mockFile.File, It.IsAny<EventHandler<StoppedEventArgs>>(),1.0));
 
             var player = new Player(mockNAudioWrapper.Object);
             mockNAudioWrapper.Setup(m => m.Play()).Returns(PlaybackState.Playing);
 
-            player.Play(mockFile);
+            NowPlaying.Inst.Add(mockFile);
+            player.Play();
             Assert.AreEqual(PlaybackState.Playing, player.PlaybackState);
 
             mockNAudioWrapper.Setup(m => m.Stop()).Returns(PlaybackState.Stopped);
@@ -90,7 +89,7 @@ namespace MSOE.MediaComplete.Test.Playing
 
             mockNAudioWrapper.Setup(m => m.Play()).Returns(PlaybackState.Playing);
 
-            player.Play(mockFile);
+            player.Play();
             Assert.AreEqual(PlaybackState.Playing, player.PlaybackState);
 
             mockNAudioWrapper.Setup(m => m.Pause()).Returns(PlaybackState.Paused);
@@ -110,10 +109,10 @@ namespace MSOE.MediaComplete.Test.Playing
         {
             var mockNAudioWrapper = new Mock<INAudioWrapper>();
 
-            mockNAudioWrapper.Setup(m => m.Setup(null, It.IsAny<EventHandler<StoppedEventArgs>>())).Throws(new ArgumentNullException());
+            mockNAudioWrapper.Setup(m => m.Setup(null, It.IsAny<EventHandler<StoppedEventArgs>>(), 1.0)).Throws(new ArgumentNullException());
 
             var player = new Player(mockNAudioWrapper.Object);
-            player.Play(null);
+            player.Play();
 
             Assert.Fail("Play should not have handled the ArgumentNullException");
         }
@@ -126,10 +125,11 @@ namespace MSOE.MediaComplete.Test.Playing
             var stuff = new Fixture().Create<string>();
             var anyInvalidFile = new LocalSong(new FileInfo(stuff));
 
-            mockNAudioWrapper.Setup(m => m.Setup(anyInvalidFile.File, It.IsAny<EventHandler<StoppedEventArgs>>())).Throws(new CorruptFileException());
+            mockNAudioWrapper.Setup(m => m.Setup(anyInvalidFile.File, It.IsAny<EventHandler<StoppedEventArgs>>(),1.0)).Throws(new CorruptFileException());
 
             var player = new Player(mockNAudioWrapper.Object);
-            player.Play(anyInvalidFile);
+            NowPlaying.Inst.Add(anyInvalidFile);
+            player.Play();
 
             Assert.Fail("Play should not have handled the CorruptFileException");
         }
