@@ -476,7 +476,7 @@
     <Style TargetType="{x:Type Menu}" x:Key="MenuStyle">
         <Setter Property="Background" Value="#FFE3B3CF"/>
     </Style>
-    <Style TargetType="{x:Type ToolBarTray}" x:Key="ToolBarTrayStyle">
+    <Style TargetType="{x:Type ToolBarPanel}" x:Key="ToolBarPanelStyle">
         <Setter Property="Background" Value="#FFFFE0F3"/>
     </Style>
     <Style TargetType="{x:Type ToolBar}" x:Key="ToolBarStyle">

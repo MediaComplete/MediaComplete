@@ -22,7 +22,9 @@
             <RowDefinition Height="100" />
             <RowDefinition Height="24"/>
         </Grid.RowDefinitions>
-
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
         <Grid Grid.Row="0">
             <Menu Style="{DynamicResource MenuStyle}">
                 <Menu.Resources>
@@ -40,9 +42,9 @@
             </Menu>
             <TextBox Text="Search" Height="22" Width="180" HorizontalAlignment="Right"/>
         </Grid>
-        <ToolBarTray Grid.Row="1" Style="{DynamicResource ToolBarTrayStyle}">
-            <ToolBar Margin="0,0,0,0" Style="{DynamicResource ToolBarStyle}">
-                <Button x:Name="AddFile" ToolTip="Add File" VerticalAlignment="Center" Click="AddFile_ClickAsync">
+        <ToolBarPanel Grid.Row="1" Style="{DynamicResource ToolBarPanelStyle}" ToolBarTray.IsLocked="True" >
+            <ToolBar Style="{DynamicResource ToolBarStyle}" Grid.Row="1" OverflowMode="Never">
+                <Button x:Name="AddFile" ToolTip="Add File" VerticalAlignment="Center" Click="AddFile_ClickAsync" >
                     <Image Source="{StaticResource Toolbar-AddMusicFile-Icon}" />
                 </Button>
                 <Button x:Name="AddFolder" ToolTip="Add Folder" VerticalAlignment="Center" Click="AddFolder_ClickAsync">
@@ -53,19 +55,20 @@
                     <Image Source="{StaticResource Toolbar-AutoIdMusic-Icon}" />
                 </Button>
                 <Button x:Name="SortMusic" ToolTip="{StaticResource Toolbar-SortMusic-Tooltip}"
-                    ToolTipService.ShowOnDisabled='true'
-					VerticalAlignment="Center" Click="Toolbar_SortMusic_ClickAsync">
+                        ToolTipService.ShowOnDisabled='true'
+					    VerticalAlignment="Center" Click="Toolbar_SortMusic_ClickAsync">
                     <Image Source="{StaticResource Toolbar-SortMusic-Icon}" />
                 </Button>
             </ToolBar>
-        </ToolBarTray>
+        </ToolBarPanel>
+        <Button Grid.Row="1" HorizontalAlignment="Right" Width="35" Content="Hide" x:Name="HideMetadata" Click="HideMetaDataPanel"/>
         <Grid Margin="0,0,0,0" Grid.Row="2" Style="{DynamicResource GridStyle}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="260*" MinWidth="100"/>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="260*" MinWidth="200"/>
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="260*" MinWidth="225" />
+                <ColumnDefinition x:Name="MetadataColumn" Width="260*" MinWidth="225" />
             </Grid.ColumnDefinitions>
             <TabControl DockPanel.Dock="Top" Grid.Column="0" BorderThickness="0" Margin="0,0,0,-4" SelectionChanged="LeftFrame_SelectionChanged">
                 <TabItem Header="Library" x:Name="LibraryTab">
@@ -148,7 +151,7 @@
               Width="3"
               Style="{DynamicResource SplitterStyle}"/>
             <Border Grid.Column="4" BorderThickness="1" Height="Auto" Style="{DynamicResource BorderStyle}">
-                <DockPanel Height="Auto">
+                <DockPanel Height="Auto" x:Name="MetadataPanel">
                     <Grid Margin="0,0,0,0"  Height="Auto" Style="{DynamicResource DetailGridStyle}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="100" />

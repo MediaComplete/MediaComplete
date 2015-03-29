@@ -487,5 +487,23 @@ namespace MSOE.MediaComplete
             else
                 ClearDetailPane();
         }
+
+        private void HideMetaDataPanel(object sender, RoutedEventArgs e)
+        {
+            if (MetadataPanel.IsVisible)
+            {
+                MetadataPanel.Visibility = Visibility.Collapsed;
+                MetadataColumn.MinWidth = 0;
+                MetadataColumn.Width = new GridLength(0);
+                HideMetadata.Content = "Show";
+            }
+            else if (!MetadataPanel.IsVisible)
+            {
+                MetadataPanel.Visibility = Visibility.Visible;
+                MetadataColumn.Width = new GridLength(225);
+                MetadataColumn.MinWidth = 225;
+                HideMetadata.Content = "Hide";
+            }
+        }
     }
 }
