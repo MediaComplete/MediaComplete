@@ -203,10 +203,14 @@ namespace MSOE.MediaComplete
         {
             NowPlaying.Inst.Clear();
             AddAllSongsToNowPlaying();
-            var songTreeViewItem = SongList.SelectedItems[0] as SonglistListItem;
-            if (songTreeViewItem != null)
-                NowPlaying.Inst.JumpTo(new LocalSong(new FileInfo(songTreeViewItem.GetPath())));
-            Play();
+            if (SongTree.SelectedItems.Count > 0)
+            {
+                var songTreeViewItem = SongTree.SelectedItems[0] as SongTreeViewItem;
+                if (songTreeViewItem != null)
+                    NowPlaying.Inst.JumpTo(new LocalSong(new FileInfo(songTreeViewItem.GetPath())));
+                Play();
+
+            }
         }
 
         /// <summary>

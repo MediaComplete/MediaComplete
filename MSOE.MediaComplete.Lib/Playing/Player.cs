@@ -1,6 +1,7 @@
 ﻿using System;
 using MSOE.MediaComplete.Lib.Songs;
 using NAudio.Wave;
+using TagLib;
 
 namespace MSOE.MediaComplete.Lib.Playing
 {
@@ -129,8 +130,20 @@ namespace MSOE.MediaComplete.Lib.Playing
         {
             if (NowPlaying.Inst.HasNextSong())
             {
-                NowPlaying.Inst.NextSong();
-                Play();
+                var canPlay = true;
+                while (canPlay) { 
+                    NowPlaying.Inst.NextSong();
+                    try
+                    {
+                        Play();
+                        canPlay = false;
+                    }
+                    catch (CorruptFileException)
+                    {
+                        if (!NowPlaying.Inst.HasNextSong())
+                            canPlay = false;
+                    }
+                }
             }
             else
             {
