@@ -50,7 +50,7 @@ namespace MSOE.MediaComplete
         {
             var initalAttributes = SetupForm();
             var finalAttributes = new Dictionary<MetaAttribute, string>();
-            foreach (SongListItem item in _visibleList.SelectedItems)
+            foreach (AbstractSongItem item in _visibleList.SelectedItems)
             {
                 try
                 {
@@ -161,7 +161,7 @@ namespace MSOE.MediaComplete
             if (SongTitle.IsReadOnly) return;
             EditCancelButton.Content = Resources["EditButton"].ToString();
             ToggleReadOnlyFields(true);
-            foreach (SongListItem item in _visibleList.SelectedItems)
+            foreach (AbstractSongItem item in _visibleList.SelectedItems)
             {
                 try
                 {

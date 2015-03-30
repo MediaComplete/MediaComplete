@@ -116,7 +116,7 @@
                 MouseUp="SongTree_OnMouseUp" MouseDoubleClick="SongTree_OnMouseDoubleClick"
                 SelectionMode="Extended">
                 <ListView.ItemTemplate>
-                    <HierarchicalDataTemplate ItemsSource="{Binding}"  DataType="{x:Type customControls:SongListItem}">
+                    <HierarchicalDataTemplate ItemsSource="{Binding}"  DataType="{x:Type customControls:LibrarySongItem}">
                         <TextBlock Text="{Binding}"/>
                     </HierarchicalDataTemplate>
                 </ListView.ItemTemplate>
@@ -144,7 +144,7 @@
                 <ListView x:Name="PlaylistSongs" AutomationProperties.Name="Tree" ItemsSource="{Binding}" Grid.Row="1" 
                           MouseUp="PlaylistSongs_OnMouseUp" MouseDoubleClick="PlaylistSongs_OnMouseDoubleClick" SelectionMode="Single" >
                     <ListView.ItemTemplate>
-                        <HierarchicalDataTemplate ItemsSource="{Binding}"  DataType="{x:Type customControls:SongListItem}">
+                        <HierarchicalDataTemplate ItemsSource="{Binding}"  DataType="{x:Type customControls:AbstractSongItem}" >
                             <TextBlock Text="{Binding}"/>
                         </HierarchicalDataTemplate>
                     </ListView.ItemTemplate>

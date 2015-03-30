@@ -1,6 +1,7 @@
-﻿namespace MSOE.MediaComplete.CustomControls
+﻿
+namespace MSOE.MediaComplete.CustomControls
 {
-    public class PlaylistListItem : SongListItem
+    public class PlaylistItem : AbstractSongItem
     {
         public string Path { private get; set; }
         public void SetPath(string s)
@@ -11,5 +12,6 @@
         {
             return Path;
         }
+
     }
 }

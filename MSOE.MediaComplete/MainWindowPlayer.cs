@@ -49,7 +49,7 @@ namespace MSOE.MediaComplete
                     Pause();
                     break;
                 default:
-                    var newSongs = (from SongListItem song in SongList.SelectedItems
+                    var newSongs = (from LibrarySongItem song in SongList.SelectedItems
                                     select new LocalSong(new FileInfo(song.GetPath())));
                     if (newSongs.Any())
                     {
@@ -203,9 +203,9 @@ namespace MSOE.MediaComplete
         {
             NowPlaying.Inst.Clear();
             AddAllSongsToNowPlaying();
-            if (SongTree.SelectedItems.Count > 0)
+            if (SongList.SelectedItems.Count > 0)
             {
-                var songTreeViewItem = SongTree.SelectedItems[0] as SongTreeViewItem;
+                var songTreeViewItem = SongList.SelectedItems[0] as LibrarySongItem;
                 if (songTreeViewItem != null)
                     NowPlaying.Inst.JumpTo(new LocalSong(new FileInfo(songTreeViewItem.GetPath())));
                 Play();
@@ -306,7 +306,7 @@ namespace MSOE.MediaComplete
         /// </summary>
         private void AddAllSongsToNowPlaying()
         {
-            NowPlaying.Inst.Add((from SonglistListItem song in SongList.Items
+            NowPlaying.Inst.Add((from LibrarySongItem song in SongList.Items
                                  select new LocalSong(new FileInfo(song.GetPath()))));
         }
 
@@ -315,7 +315,7 @@ namespace MSOE.MediaComplete
         /// </summary>
         private void AddSelectedSongsToNowPlaying()
         {
-            NowPlaying.Inst.Add((from SongListItem song in SongList.SelectedItems
+            NowPlaying.Inst.Add((from LibrarySongItem song in SongList.SelectedItems
                                  select new LocalSong(new FileInfo(song.GetPath()))));
         }
         #endregion

@@ -74,20 +74,21 @@ namespace MSOE.MediaComplete
 
         private void InitPlaylists()
         {
-            var nowPlaying = new PlaylistListItem{ Content= "Now Playing" };
+            var nowPlaying = new PlaylistItem{ Content= "Now Playing", };
             PlaylistList.Items.Add(nowPlaying);
         }
 
         private void ShowNowPlaying()
         {
             PlaylistSongs.Items.Clear();
-            NowPlaying.Inst.Playlist.Songs.ForEach(x => PlaylistSongs.Items.Add((new PlaylistListItem{Content = x, Path = x.GetPath()})));
+            NowPlaying.Inst.Playlist.Songs.ForEach(x => PlaylistSongs.Items.Add((new PlaylistSongItem{Content = x, Path = x.GetPath()})));
             PlaylistSongs.SelectedIndex = NowPlaying.Inst.Index;
             if (NowPlaying.Inst.Index > 0)
             {
-                var newSong = ((PlaylistListItem)PlaylistSongs.SelectedItem);
-                newSong.FontWeight = FontWeights.UltraBold;
-                newSong.Foreground = (Brush)FindResource("CurrentSong");
+                
+                ((PlaylistSongItem)PlaylistSongs.SelectedItem).IsPlaying = true;
+                ((PlaylistSongItem)PlaylistSongs.SelectedItem).InvalidateProperty(AbstractSongItem.IsPlayingProperty);
+
             }
         }
         private void InitEvents()
@@ -225,7 +226,7 @@ namespace MSOE.MediaComplete
 
             foreach (var rootChild in rootFiles.GetMusicFiles())
             {
-                SongList.Items.Add(new SonglistListItem { Content = rootChild.Name, ParentItem = firstNode });
+                SongList.Items.Add(new LibrarySongItem { Content = rootChild.Name, ParentItem = firstNode });
             }
 
             DataContext = firstNode;
@@ -264,7 +265,7 @@ namespace MSOE.MediaComplete
             
             foreach (var file in dirInfo.GetFilesOrCreateDir().GetMusicFiles())
             {
-                songTree.Items.Add(new SonglistListItem { Content = file.Name, ParentItem = dirItem });
+                songTree.Items.Add(new LibrarySongItem { Content = file.Name, ParentItem = dirItem });
             }
             return dirItem;
         }
@@ -277,7 +278,7 @@ namespace MSOE.MediaComplete
                 PopulateSongTree(dir, songTree, dirItem, false);
             }
 
-            foreach (var x in dirInfo.GetFilesOrCreateDir().GetMusicFiles().Select(file => new SonglistListItem { Content = file.Name, ParentItem = dirItem }))
+            foreach (var x in dirInfo.GetFilesOrCreateDir().GetMusicFiles().Select(file => new LibrarySongItem { Content = file.Name, ParentItem = dirItem }))
             {
                 songTree.Items.Add(x);
             }
@@ -356,7 +357,7 @@ namespace MSOE.MediaComplete
         private async void Toolbar_AutoIDMusic_ClickAsync(object sender, RoutedEventArgs e)
         {
             // TODO (MC-45) mass ID of multi-selected songs and folders
-            foreach (var selection in from object item in _visibleList.SelectedItems select item as SongListItem)
+            foreach (var selection in from object item in _visibleList.SelectedItems select item as AbstractSongItem)
             {
                 try
                 {
@@ -387,7 +388,7 @@ namespace MSOE.MediaComplete
             {
                 try
                 {
-                    await MusicIdentifier.IdentifySongAsync(((SonglistListItem)item).GetPath());
+                    await MusicIdentifier.IdentifySongAsync(((LibrarySongItem)item).GetPath());
                 }
                 catch (Exception ex)
                 {
@@ -454,7 +455,7 @@ namespace MSOE.MediaComplete
                 PlaylistList.SelectedItem = PlaylistList.Items[0];
                 _visibleList = PlaylistSongs;
                 ShowNowPlaying();
-                PlaylistName.Content = ((PlaylistListItem)PlaylistList.SelectedItem).Content;
+                PlaylistName.Content = ((PlaylistItem)PlaylistList.SelectedItem).Content;
                 ClearDetailPane();
             }
             if (LibraryTab.IsSelected)
@@ -468,25 +469,22 @@ namespace MSOE.MediaComplete
 
         private void PlaylistSongs_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var newSong = ((PlaylistListItem) PlaylistSongs.SelectedItem);
-            var oldSong = ((PlaylistListItem) PlaylistSongs.Items[NowPlaying.Inst.Index]);
-            oldSong.Foreground = (Brush)FindResource("PrimaryTextBrush");
-            oldSong.FontWeight = FontWeights.Normal;
+            ((PlaylistSongItem)PlaylistSongs.SelectedItem).IsPlaying = true;
+            ((PlaylistSongItem)PlaylistSongs.Items[NowPlaying.Inst.Index]).IsPlaying = false;
             NowPlaying.Inst.JumpTo(PlaylistSongs.SelectedIndex);
             Player.Instance.Play();
-            newSong.FontWeight = FontWeights.UltraBold;
-            newSong.Foreground = (Brush)FindResource("CurrentSong");
         }
 
         private void PlaylistList_OnMouseUp(object sender, MouseButtonEventArgs e)
         {
             if (PlaylistList.SelectedIndex == 0)
                 ShowNowPlaying();
-            PlaylistName.Content = ((PlaylistListItem) PlaylistList.SelectedItem).Content;
+            PlaylistName.Content = ((PlaylistItem) PlaylistList.SelectedItem).Content;
         }
 
         private void PlaylistSongs_OnMouseUp(object sender, MouseButtonEventArgs e)
         {
+            ((PlaylistSongItem) PlaylistSongs.Items[NowPlaying.Inst.Index]).IsPlaying = true;
             FormCheck();
             if (PlaylistSongs.SelectedItems.Count > 0)
                 PopulateMetadataForm();
