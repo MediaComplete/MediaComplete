@@ -9,10 +9,15 @@ namespace MSOE.MediaComplete.CustomControls
     {
         public abstract string GetPath();
 
-        public bool IsPlaying { get; set; }
+        public bool IsPlaying
+        {
+            get { return (bool) GetValue(IsPlayingProperty); }
+            set { SetValue(IsPlayingProperty, value); }
+        }
 
-        public static readonly DependencyProperty IsPlayingProperty = DependencyProperty.RegisterAttached(
-        "IsPlaying", typeof(bool), typeof(AbstractSongItem), new PropertyMetadata(false));  
+        public static readonly DependencyProperty IsPlayingProperty = DependencyProperty.Register(
+        "IsPlaying", typeof(bool), typeof(AbstractSongItem), new PropertyMetadata(false));
+
     }
 
     class PlaylistSongItem : AbstractSongItem

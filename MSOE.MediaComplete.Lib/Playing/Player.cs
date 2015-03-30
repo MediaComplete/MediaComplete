@@ -128,6 +128,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// <param name="stoppedEventArgs"></param>
         private void WaveOutOnPlaybackStopped(object sender, StoppedEventArgs stoppedEventArgs)
         {
+            var oldIndex = NowPlaying.Inst.Index;
             if (NowPlaying.Inst.HasNextSong())
             {
                 var canPlay = true;
@@ -149,7 +150,17 @@ namespace MSOE.MediaComplete.Lib.Playing
             {
                 if (PlaybackEnded != null) PlaybackEnded(sender, stoppedEventArgs);
             }
+            var newIndex = NowPlaying.Inst.Index;
+            OnSongFinishedEvent(oldIndex, newIndex);
         }
+        public delegate void SongFinished(int oldPath, int newPath);
+
+        public event  SongFinished SongFinishedEvent = delegate { };
         #endregion
+
+        protected virtual void OnSongFinishedEvent(int oldIndex , int newIndex )
+        {
+            SongFinishedEvent(oldIndex, newIndex);
+        }
     }
 }

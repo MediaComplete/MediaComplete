@@ -76,6 +76,19 @@ namespace MSOE.MediaComplete
         {
             var nowPlaying = new PlaylistItem{ Content= "Now Playing", };
             PlaylistList.Items.Add(nowPlaying);
+            Player.Instance.SongFinishedEvent += UpdateColorEvent;
+        }
+
+        private void UpdateColorEvent(int oldIndex, int newIndex)
+        {
+            if (PlaylistList.SelectedIndex == 0) { 
+                var oldSong = ((PlaylistSongItem)PlaylistSongs.Items[oldIndex]);
+                var newSong = ((PlaylistSongItem)PlaylistSongs.Items[newIndex]);
+                oldSong.IsPlaying = false;
+                oldSong.InvalidateProperty(AbstractSongItem.IsPlayingProperty);
+                newSong.IsPlaying = true;
+                newSong.InvalidateProperty(AbstractSongItem.IsPlayingProperty);
+            }
         }
 
         private void ShowNowPlaying()
@@ -85,7 +98,6 @@ namespace MSOE.MediaComplete
             PlaylistSongs.SelectedIndex = NowPlaying.Inst.Index;
             if (NowPlaying.Inst.Index > 0)
             {
-                
                 ((PlaylistSongItem)PlaylistSongs.SelectedItem).IsPlaying = true;
                 ((PlaylistSongItem)PlaylistSongs.SelectedItem).InvalidateProperty(AbstractSongItem.IsPlayingProperty);
 
@@ -398,7 +410,6 @@ namespace MSOE.MediaComplete
                         StatusBarHandler.StatusIcon.Error);
                 }
             }
-            
         }
 
         /// <summary>

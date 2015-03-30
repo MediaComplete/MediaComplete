@@ -9,6 +9,7 @@
 
     <Style TargetType="{x:Type ListView}">
         <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
     </Style>
     
@@ -40,8 +41,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style TargetType="{x:Type customControls:AbstractSongItem}">
-        <Setter Property="Foreground" Value="DarkRed"/>
+    <Style TargetType="{x:Type customControls:PlaylistSongItem}">
         <Style.Triggers>
             <Trigger Property="IsMouseDirectlyOver" Value="True">
                 <Setter Property="Background" Value="{DynamicResource TextMouseOverBackgroundBrush}"/>
@@ -51,8 +51,25 @@
                 <Setter Property="Foreground" Value="{DynamicResource TextSelectedBackgroundBrush}"/>
                 <Setter Property="Background" Value="{DynamicResource TextSelectedForegroundBrush}"/>
             </Trigger>
-            <Trigger Property="IsSelected" Value="False">
-                <Setter Property="Foreground" Value="{DynamicResource DarkRed}"/>
+            <Trigger Property="IsPlaying" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource CurrentSong}"/>
+                <Setter Property="FontWeight" Value="ExtraBold"/>
+            </Trigger>
+            <Trigger Property="IsPlaying" Value="False">
+                <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+                <Setter Property="FontWeight" Value="Normal"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="{x:Type customControls:LibrarySongItem}">
+        <Style.Triggers>
+            <Trigger Property="IsMouseDirectlyOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource TextMouseOverBackgroundBrush}"/>
+                <Setter Property="Foreground" Value="{DynamicResource TextMouseOverForegroundBrush}"/>
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource TextSelectedBackgroundBrush}"/>
+                <Setter Property="Background" Value="{DynamicResource TextSelectedForegroundBrush}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
