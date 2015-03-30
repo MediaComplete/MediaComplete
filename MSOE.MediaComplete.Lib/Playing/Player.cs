@@ -1,6 +1,7 @@
 ﻿using System;
-using System.IO;
+using MSOE.MediaComplete.Lib.Songs;
 using NAudio.Wave;
+using TagLib;
 
 namespace MSOE.MediaComplete.Lib.Playing
 {
@@ -51,16 +52,18 @@ namespace MSOE.MediaComplete.Lib.Playing
 
         #region IPlayer methods
         /// <summary>
-        /// sets up the player and plays the file
+        /// sets up the player and plays the song
         /// </summary>
-        /// <param name="file">file to play</param>
-        public void Play(FileInfo file)
+        public void Play()
         {
-            if (file == null) throw new ArgumentNullException("file");
-
             Stop();
+            var song = NowPlaying.Inst.CurrentSong();
 
-            _nAudioWrapper.Setup(file, WaveOutOnPlaybackStopped, _currentVolume);
+            var localSong = song as LocalSong;
+            if (localSong != null)
+            {
+                _nAudioWrapper.Setup(localSong.File, WaveOutOnPlaybackStopped, _currentVolume);
+            }
             PlaybackState = _nAudioWrapper.Play();
         }
 
@@ -125,7 +128,27 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// <param name="stoppedEventArgs"></param>
         private void WaveOutOnPlaybackStopped(object sender, StoppedEventArgs stoppedEventArgs)
         {
-            if (PlaybackEnded != null) PlaybackEnded(sender, stoppedEventArgs);
+            if (NowPlaying.Inst.HasNextSong())
+            {
+                var canPlay = true;
+                while (canPlay) { 
+                    NowPlaying.Inst.NextSong();
+                    try
+                    {
+                        Play();
+                        canPlay = false;
+                    }
+                    catch (CorruptFileException)
+                    {
+                        if (!NowPlaying.Inst.HasNextSong())
+                            canPlay = false;
+                    }
+                }
+            }
+            else
+            {
+                if (PlaybackEnded != null) PlaybackEnded(sender, stoppedEventArgs);
+            }
         }
         #endregion
     }
