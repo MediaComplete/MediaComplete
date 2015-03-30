@@ -13,6 +13,18 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style TargetType="TreeView">
+        <Setter Property="Foreground" Value="#FFF0EFF1"/>
+        <Setter Property="Background" Value="#FF3E3E42"/>
+        <Setter Property="BorderBrush">
+            <Setter.Value>
+                <RadialGradientBrush>
+                    <GradientStop Color="#FF3E3E42" Offset="0"/>
+                    <GradientStop Color="#FF707070" Offset="1"/>
+                </RadialGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
     <LinearGradientBrush x:Key="NormalBrush" StartPoint="0,0" EndPoint="0,1">
         <GradientBrush.GradientStops>
@@ -174,6 +186,32 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+    <Style TargetType="TreeViewItem">
+        <Style.Triggers>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseOver" Value="True" />
+                    <Condition Property="IsSelected" Value="False" />
+                </MultiTrigger.Conditions>
+                <Setter Property="Background" Value="LightGray"/>
+                <Setter Property="BorderBrush" Value="LightGray"/>
+            </MultiTrigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Foreground" Value="#FF4D4D4D"/>
+                <Setter Property="BorderBrush" Value="LightGray"/>
+            </Trigger>
+        </Style.Triggers>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="Transparent"/>
+        
+        <Style.Resources>
+            <Style TargetType="Border">
+                <Setter Property="CornerRadius" Value="2"/>
+            </Style>
+        </Style.Resources>
+    </Style>
+    <Color x:Key="PlaylistTreeViewItemSelectedColor">LightGray</Color>
+    
     <Style TargetType="{x:Type Button}">
         <Setter Property="Background" Value="#FF2D2D30"/>
         <Setter Property="Foreground" Value="#FFF0EFF1" />

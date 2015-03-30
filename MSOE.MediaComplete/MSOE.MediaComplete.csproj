@@ -137,6 +137,7 @@
       <DependentUpon>InboxImportDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindowPlayer.cs" />
+    <Compile Include="MainWindowPlaylists.cs" />
     <Compile Include="Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>

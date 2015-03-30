@@ -20,6 +20,26 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style TargetType="TreeView">
+        <Setter Property="Foreground" Value="#FF8F1454"/>
+        <Setter Property="Background" >
+            <Setter.Value>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="White" Offset="0"/>
+                    <GradientStop Color="#FFFFD6EE" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="BorderBrush">
+            <Setter.Value>
+                <RadialGradientBrush>
+                    <GradientStop Color="#FF8F1454" Offset="0"/>
+                    <GradientStop Color="#FFFFD0EC" Offset="1"/>
+                </RadialGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
     <LinearGradientBrush x:Key="NormalBrush" StartPoint="0,0" EndPoint="0,1">
         <GradientBrush.GradientStops>
             <GradientStopCollection>
@@ -179,6 +199,33 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+    <Style TargetType="TreeViewItem">
+        <Style.Triggers>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseOver" Value="True" />
+                    <Condition Property="IsSelected" Value="False" />
+                </MultiTrigger.Conditions>
+                <Setter Property="Background" Value="LightPink"/>
+                <Setter Property="BorderBrush" Value="LightPink"/>
+                <Setter Property="Foreground" Value="DarkOrchid"/>
+            </MultiTrigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Foreground" Value="DarkOrchid"/>
+                <Setter Property="BorderBrush" Value="LightPink"/>
+            </Trigger>
+        </Style.Triggers>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="#FF8F1454"/>
+        
+        <Style.Resources>
+            <Style TargetType="Border">
+                <Setter Property="CornerRadius" Value="2"/>
+            </Style>
+        </Style.Resources>
+    </Style>
+    <Color x:Key="PlaylistTreeViewItemSelectedColor">LightPink</Color>
+
     <Style TargetType="{x:Type Button}">
         <Setter Property="Background" Value="#FFB94A84"/>
         <Setter Property="Foreground" Value="#FFF0EFF1" />

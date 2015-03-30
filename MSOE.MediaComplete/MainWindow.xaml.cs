@@ -59,11 +59,12 @@ namespace MSOE.MediaComplete
             }
             Directory.CreateDirectory(homeDir);
             _refreshTimer = new Timer(TimerProc);
-            
-            
+
             InitEvents();
 
             InitTreeView();
+
+            InitPlaylistTree();
 
             InitPlayer();
         }

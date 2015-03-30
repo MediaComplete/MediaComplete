@@ -3,7 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:System.Windows.Controls;assembly=TreeViewEx"
         xmlns:customControls="clr-namespace:MSOE.MediaComplete.CustomControls"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="MSOE.MediaComplete.MainWindow"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:playlists="clr-namespace:MSOE.MediaComplete.Lib.Playlists;assembly=MSOE.MediaComplete.Lib"
+    mc:Ignorable="d" x:Class="MSOE.MediaComplete.MainWindow"
         Title="Media Complete" MinHeight="425" Width="695.731" MinWidth="613"
         AutomationProperties.Name="Tree" d:DesignHeight="502.905" Icon="Resources/logo_small.ico">
     <Window.Resources>
@@ -58,7 +60,7 @@
                 </Button>
             </ToolBar>
         </ToolBarTray>
-        <Grid Margin="0,0,0,0" Grid.Row="2" >
+        <Grid Grid.Row="2" Style="{DynamicResource GridStyle}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="260*" MinWidth="100"/>
                 <ColumnDefinition Width="Auto" />
@@ -66,18 +68,42 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="260*" MinWidth="225" />
             </Grid.ColumnDefinitions>
-
-            <controls:TreeViewEx x:Name="FolderTree" Grid.Column="0" Margin="0,0,0,0" 
-				AutomationProperties.Name="Tree" 
-				MouseUp="FolderTree_OnMouseUp"
-				ItemsSource="{Binding Children}" >
-                <controls:TreeViewEx.ItemTemplate>
-                    <HierarchicalDataTemplate ItemsSource="{Binding Children}"  DataType="{x:Type customControls:FolderTreeViewItem}">
-                        <TextBlock Text="{Binding}"/>
-                    </HierarchicalDataTemplate>
-                </controls:TreeViewEx.ItemTemplate>
-
-            </controls:TreeViewEx>
+            <TabControl DockPanel.Dock="Top" Grid.Column="0" BorderThickness="0">
+                <TabItem Header="Library" x:Name="LibraryTab">
+                    <controls:TreeViewEx x:Name="FolderTree"
+				        AutomationProperties.Name="Tree" 
+				        MouseUp="FolderTree_OnMouseUp"
+				        ItemsSource="{Binding Children}" >
+                        <controls:TreeViewEx.ItemTemplate>
+                            <HierarchicalDataTemplate ItemsSource="{Binding Children}"  DataType="{x:Type customControls:FolderTreeViewItem}">
+                                <TextBlock Text="{Binding}"/>
+                            </HierarchicalDataTemplate>
+                        </controls:TreeViewEx.ItemTemplate>
+                    </controls:TreeViewEx>
+                </TabItem>
+                <TabItem Header="Playlists" x:Name="PlaylistTab">
+                    <TreeView Name="PlaylistTree">
+                        <TreeView.ItemTemplate>
+                            <HierarchicalDataTemplate >
+                                <HierarchicalDataTemplate.DataType>
+                                    <x:Type TypeName="playlists:Playlist" />
+                                </HierarchicalDataTemplate.DataType>
+                                <Border BorderThickness="2">
+                                    <TextBlock Text="{Binding Name}"/>
+                                </Border>
+                            </HierarchicalDataTemplate>
+                        </TreeView.ItemTemplate>
+                        <TreeView.Resources>
+                            <SolidColorBrush Color="{DynamicResource PlaylistTreeViewItemSelectedColor}" x:Key="{x:Static SystemColors.HighlightBrushKey}"/>
+                        </TreeView.Resources>
+                        <TreeView.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="{StaticResource ContextMenu-AddNewPlaylist-Header}" Click="ContextMenu_AddNewPlaylist_Click"></MenuItem>
+                            </ContextMenu>
+                        </TreeView.ContextMenu>
+                    </TreeView>
+                </TabItem>
+            </TabControl>
             <GridSplitter Grid.Column="1" 
               HorizontalAlignment="Center" 
               VerticalAlignment="Stretch"
