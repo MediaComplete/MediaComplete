@@ -104,20 +104,6 @@ namespace MSOE.MediaComplete.Test.Playing
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Play_NullFileInfo_ThrowsArgumentNullException()
-        {
-            var mockNAudioWrapper = new Mock<INAudioWrapper>();
-
-            mockNAudioWrapper.Setup(m => m.Setup(null, It.IsAny<EventHandler<StoppedEventArgs>>(), 1.0)).Throws(new ArgumentNullException());
-
-            var player = new Player(mockNAudioWrapper.Object);
-            player.Play();
-
-            Assert.Fail("Play should not have handled the ArgumentNullException");
-        }
-
-        [TestMethod]
         [ExpectedException(typeof(CorruptFileException))]
         public void Play_InvalidFileInfo_ThrowsCorruptFileException()
         {
