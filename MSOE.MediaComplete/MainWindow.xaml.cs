@@ -83,9 +83,12 @@ namespace MSOE.MediaComplete
             PlaylistSongs.Items.Clear();
             NowPlaying.Inst.Playlist.Songs.ForEach(x => PlaylistSongs.Items.Add((new PlaylistListItem{Content = x, Path = x.GetPath()})));
             PlaylistSongs.SelectedIndex = NowPlaying.Inst.Index;
-            if(NowPlaying.Inst.Index>0)
-                ((PlaylistListItem) PlaylistSongs.SelectedItem).Foreground = Brushes.LightSeaGreen;
-
+            if (NowPlaying.Inst.Index > 0)
+            {
+                var newSong = ((PlaylistListItem)PlaylistSongs.SelectedItem);
+                newSong.FontWeight = FontWeights.UltraBold;
+                newSong.Foreground = (Brush)FindResource("CurrentSong");
+            }
         }
         private void InitEvents()
         {
@@ -465,11 +468,14 @@ namespace MSOE.MediaComplete
 
         private void PlaylistSongs_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var newCurrent = ((PlaylistListItem) PlaylistSongs.SelectedItem);
-            ((PlaylistListItem)PlaylistSongs.Items[NowPlaying.Inst.Index]).Foreground = newCurrent.Foreground;
+            var newSong = ((PlaylistListItem) PlaylistSongs.SelectedItem);
+            var oldSong = ((PlaylistListItem) PlaylistSongs.Items[NowPlaying.Inst.Index]);
+            oldSong.Foreground = (Brush)FindResource("PrimaryTextBrush");
+            oldSong.FontWeight = FontWeights.Normal;
             NowPlaying.Inst.JumpTo(PlaylistSongs.SelectedIndex);
             Player.Instance.Play();
-            newCurrent.Foreground = Brushes.LightSeaGreen;
+            newSong.FontWeight = FontWeights.UltraBold;
+            newSong.Foreground = (Brush)FindResource("CurrentSong");
         }
 
         private void PlaylistList_OnMouseUp(object sender, MouseButtonEventArgs e)

@@ -10,6 +10,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="MainWindowResources.xaml" />
+                <ResourceDictionary Source="layout/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -39,7 +40,6 @@
                     <MenuItem Header="_Settings" Style="{DynamicResource MenuItemStyle}"/>
                 </MenuItem>
             </Menu>
-            <TextBox Text="Search" Height="22" Width="180" HorizontalAlignment="Right"/>
         </Grid>
         <ToolBarPanel Grid.Row="1" Style="{DynamicResource ToolBarPanelStyle}" ToolBarTray.IsLocked="True" >
             <ToolBar Style="{DynamicResource ToolBarStyle}" Grid.Row="1" OverflowMode="Never">
@@ -98,6 +98,9 @@
 				        ItemsSource="{Binding}" 
                         SelectionMode="Single"
                         MouseUp="PlaylistList_OnMouseUp"/>
+                </TabItem>
+                <TabItem Header="Search" x:Name="SearchTab">
+                    <TextBox Text="Search" Height="22"  VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
                 </TabItem>
             </TabControl>
            
