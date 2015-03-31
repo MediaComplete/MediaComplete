@@ -57,14 +57,14 @@
                                     </Image.ToolTip>
                                 </Image>
                             </StackPanel>
-                            <ScrollViewer HorizontalScrollBarVisibility="auto" VerticalScrollBarVisibility="auto" Width="auto" Height="175">
+                            <ScrollViewer HorizontalScrollBarVisibility="auto" VerticalScrollBarVisibility="auto" Width="auto" Height="140">
                                 <StackPanel>
                                     <StackPanel  x:Name="SortConfig" Orientation="Vertical">
                                     </StackPanel>
                                 </StackPanel>
                             </ScrollViewer>
                             <DockPanel Dock="Bottom">
-                                <Button Content="Restore Default Order" Width="150" Height="22" HorizontalAlignment="Right" Margin="8" Click="ResetDefault"></Button>
+                                <Button Content="Restore Default Order" Width="150" Height="22" HorizontalAlignment="Right" Click="ResetDefault"></Button>
                             </DockPanel>
                         </StackPanel>
                     </StackPanel>
