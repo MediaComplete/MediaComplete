@@ -66,6 +66,8 @@ namespace MSOE.MediaComplete
             InitTreeView();
 
             InitPlayer();
+
+            InitPlaylists();
         }
 
         private void InitEvents()
