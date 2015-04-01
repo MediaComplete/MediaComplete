@@ -27,6 +27,12 @@ namespace MSOE.MediaComplete
         private Settings _settings;
         private readonly Timer _refreshTimer;
 
+        private readonly FolderTreeViewItem _rootLibItem = new FolderTreeViewItem { Header = SettingWrapper.MusicDir, ParentItem = null };
+        public FolderTreeViewItem RootLibraryFolderItem
+        {
+            get { return _rootLibItem; }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -60,14 +66,11 @@ namespace MSOE.MediaComplete
             Directory.CreateDirectory(homeDir);
             _refreshTimer = new Timer(TimerProc);
             
-            
             InitEvents();
 
             InitTreeView();
 
             InitPlayer();
-
-            InitPlaylists();
         }
 
         private void InitEvents()
@@ -189,9 +192,6 @@ namespace MSOE.MediaComplete
         /// </summary>
         public void RefreshTreeView()
         {
-            //Create Parent node
-            var firstNode = new FolderTreeViewItem { Header = SettingWrapper.MusicDir, ParentItem = null};
-
             SongTree.Items.Clear();
             var rootFiles = new DirectoryInfo(SettingWrapper.MusicDir).GetFilesOrCreateDir();
             var rootDirs = new DirectoryInfo(SettingWrapper.MusicDir).GetDirectories();
@@ -200,15 +200,13 @@ namespace MSOE.MediaComplete
             foreach (var rootChild in rootDirs)
             {   
                 //add each child to the root folder
-                firstNode.Children.Add(PopulateFromFolder(rootChild, SongTree, firstNode));
+                _rootLibItem.Children.Add(PopulateFromFolder(rootChild, SongTree, _rootLibItem));
             }
 
             foreach (var rootChild in rootFiles.GetMusicFiles())
             {
-                SongTree.Items.Add(new SongTreeViewItem { Header = rootChild.Name, ParentItem = firstNode });
+                SongTree.Items.Add(new SongTreeViewItem { Header = rootChild.Name, ParentItem = _rootLibItem });
             }
-
-            DataContext = firstNode;
         }
 
         private void InitTreeView()

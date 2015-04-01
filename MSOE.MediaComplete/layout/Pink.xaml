@@ -442,9 +442,6 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style TargetType="{x:Type Menu}" x:Key="MenuStyle">
-        <Setter Property="Background" Value="#FFE3B3CF"/>
-    </Style>
     <Style TargetType="{x:Type ToolBarTray}" x:Key="ToolBarTrayStyle">
         <Setter Property="Background" Value="#FFFFE0F3"/>
     </Style>
@@ -499,4 +496,171 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <!-- Menu Bar -->
+    <Style TargetType="Menu">
+        <Setter Property="Background" Value="#FFE3B3CF"/>
+        <Setter Property="Foreground" Value="#FF8F1454"/>
+    </Style>
+
+    <!-- Menu Separator -->
+    <Style TargetType="{x:Type Separator}" x:Key="{x:Static MenuItem.SeparatorStyleKey}">
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="Background" Value="#FFFFD6EE" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Separator}">
+                    <Rectangle Margin="10,2,10,2" Height="1" Fill="#FF8F1454" HorizontalAlignment="Stretch"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- File/Edit Menu  -->
+    <ControlTemplate x:Key="{x:Static MenuItem.TopLevelHeaderTemplateKey}"
+                     TargetType="{x:Type MenuItem}">
+        <Border Name="Border" Padding="5,2,10,2" VerticalAlignment="Stretch">
+            <Grid>
+                <ContentPresenter Name="HeaderHost"
+                                    ContentSource="Header"
+                                    RecognizesAccessKey="True" />
+                <!-- Flyout menu -->
+                <Popup Name="Popup" 
+                        Placement="Bottom"
+                        IsOpen="{TemplateBinding IsSubmenuOpen}"
+                        AllowsTransparency="True"
+                        Focusable="False"
+                        PopupAnimation="Fade"
+                        HorizontalOffset="-5"
+                        VerticalOffset="5">
+                    <Border Name="SubmenuBorder"
+                            SnapsToDevicePixels="True"
+                            Background="#FFFFD6EE"
+                            Padding="0,5,0,5">
+                        <StackPanel IsItemsHost="True"
+                                KeyboardNavigation.DirectionalNavigation="Cycle" />
+                    </Border>
+                </Popup>
+            </Grid>
+        </Border>
+
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsHighlighted" Value="true">
+                <Setter TargetName="Border" Property="Background" Value="#FFCD6AA5" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <!-- Context Menu -->
+    <Style TargetType="{x:Type ContextMenu}">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContextMenu}">
+                    <Border BorderThickness="0"
+                            x:Name="Border"
+                            Background="Transparent"
+                            CornerRadius="4"
+                            Padding="0,10,0,10">
+                        <StackPanel ClipToBounds="True"
+                                    Orientation="Vertical"
+                                    IsItemsHost="True" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="Border"
+                                    Property="Background"
+                                    Value="#FFFFD6EE" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- SubmenuItem -->
+    <ControlTemplate x:Key="{x:Static MenuItem.SubmenuItemTemplateKey}"
+                     TargetType="{x:Type MenuItem}">
+        <Border Name="Border" Padding="20,0,20,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Shortcut" />
+                </Grid.ColumnDefinitions>
+                <ContentPresenter Name="HeaderHost"
+                                  Grid.Column="0"
+                                  ContentSource="Header"
+                                  RecognizesAccessKey="True" />
+                <TextBlock x:Name="InputGestureText"
+                           Grid.Column="1"
+                           Text="{TemplateBinding InputGestureText}"
+                           Margin="5,2,0,2"
+                           DockPanel.Dock="Right" />
+            </Grid>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsHighlighted" Value="true">
+                <Setter TargetName="Border"
+                        Property="Background"
+                        Value="#FFCD6AA5" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <!-- SubmenuHeader -->
+    <ControlTemplate x:Key="{x:Static MenuItem.SubmenuHeaderTemplateKey}"
+                     TargetType="{x:Type MenuItem}">
+        <Border Name="Border" Padding="20,0,5,0">
+            <StackPanel>
+                <!-- Header row -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Shortcut" />
+                        <ColumnDefinition Width="13" />
+                    </Grid.ColumnDefinitions>
+                    <ContentPresenter Name="HeaderHost"
+                                      Grid.Column="0"
+                                      ContentSource="Header"
+                                      RecognizesAccessKey="True" />
+                    <TextBlock x:Name="InputGestureText"
+                               Grid.Column="1"
+                               Text="{TemplateBinding InputGestureText}"
+                               Margin="5,2,2,2"
+                               DockPanel.Dock="Right" />
+                    <Path Grid.Column="2"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Data="M 0 0 L 0 7 L 4 3.5 Z"
+                          Fill="#FF8F1454" />
+                </Grid>
+                <!-- Flyout menu -->
+                <Popup Name="Popup" 
+                           Placement="Right"
+                           HorizontalOffset="-4"
+                           IsOpen="{TemplateBinding IsSubmenuOpen}"
+                           AllowsTransparency="True"
+                           Focusable="False"
+                           PopupAnimation="Fade">
+                    <Border Name="SubmenuBorder"
+                                SnapsToDevicePixels="True"
+                                Background="#FFFFD6EE"
+                                BorderBrush="#FFFFD6EE"
+                                BorderThickness="1" 
+                                CornerRadius="4"
+                                Padding="0,10,0,10">
+                        <StackPanel IsItemsHost="True"
+                                        KeyboardNavigation.DirectionalNavigation="Cycle" />
+                    </Border>
+                </Popup>
+            </StackPanel>
+        </Border>
+
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsHighlighted" Value="true">
+                <Setter TargetName="Border" Property="Background" Value="#FFCD6AA5" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
 </ResourceDictionary>

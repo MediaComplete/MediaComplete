@@ -11,7 +11,9 @@
     <system:String x:Key="ContextMenu-PlayMusic-Header">Play All</system:String>
     <system:String x:Key="ContextMenu-PlaySingle-Header">Play</system:String>
     <system:String x:Key="ContextMenu-PlayNext-Header">Play Next</system:String>
-    <system:String x:Key="ContextMenu-NowPlayingMusic-Header">Add to Now Playing</system:String>
+    <system:String x:Key="ContextMenu-NowPlayingMusic-Header">Now Playing</system:String>
+    <system:String x:Key="ContextMenu-AddTo-Header">Add to...</system:String>
+    <system:String x:Key="ContextMenu-NewPlaylist-Header">New Playlist</system:String>
     <system:String x:Key="Dialog-AddFile-MusicFilter">All Music Files (*.mp3, *.wma)</system:String>
     <system:String x:Key="Dialog-AddFile-Mp3Filter">MP3 Files (*.mp3)</system:String>
     <system:String x:Key="Dialog-AddFile-WmaFilter">WMA Files (*.wma)</system:String>
@@ -58,8 +60,9 @@
     <system:String x:Key="EditButton">Edit</system:String>
     <system:String x:Key="CancelButton">Cancel</system:String>
 
+    <!-- Converters -->
     <mediaComplete:VolumeConverter x:Key="VolumeConverter"/>
-
+    <mediaComplete:PlaylistsEmptyConverter x:Key="PlaylistsEmptyConverter"/>
 
     <!-- Images -->
     <BitmapImage x:Key="Toolbar-AddMusicFile-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
@@ -78,4 +81,8 @@
                  UriSource=".\Resources\Information.png" />
     <BitmapImage x:Key="Settings-Folder-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
                  UriSource=".\Resources\folder.png" />
+    
+    <!-- Misc. -->
+    <!-- See http://wilberbeast.com/2011/05/31/compositecollection-binding-problem/ -->
+    <CollectionViewSource x:Key="PlaylistsCollection" Source="{Binding Path=Playlists}" />
 </ResourceDictionary>

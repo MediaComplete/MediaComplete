@@ -47,5 +47,14 @@ namespace MSOE.MediaComplete.Lib.Playlists
         {
             _file.Delete();
         }
+
+        /// <summary>
+        /// Override of ToString, returns Name.
+        /// </summary>
+        /// <returns>The Name of this playlist.</returns>
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }
