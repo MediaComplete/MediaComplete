@@ -1,0 +1,47 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mediaComplete="clr-namespace:MSOE.MediaComplete"
+    mc:Ignorable="d" x:Class="MSOE.MediaComplete.WindowWrapper"
+        MinHeight="425" Width="695.731" MinWidth="613" WindowStyle="None" ResizeMode="NoResize"
+        AutomationProperties.Name="Tree" d:DesignHeight="502.905" Icon="../Resources/logo_small.ico"
+        Title="Media Complete">
+    <Border Margin="2">
+        <Border.Effect>
+            <DropShadowEffect Color="Black"
+                              Direction="270"
+                              BlurRadius="10"
+                              ShadowDepth="3" />
+        </Border.Effect>
+        <Grid Background="White">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="4" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="4" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="4" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="4" />
+            </Grid.ColumnDefinitions>
+            <DockPanel Grid.Row="1" Grid.Column="1">
+                <DockPanel DockPanel.Dock="Top" Background="Transparent" MouseDown="TitleBar_MouseDown">
+                    <Button DockPanel.Dock="Right" Click="CloseButton_Click">X</Button>
+                    <Button DockPanel.Dock="Right" Click="MaximizeButton_Click">Max</Button>
+                    <Button DockPanel.Dock="Right" Click="MinimizeButton_Click">Min</Button>
+                    <TextBlock HorizontalAlignment="Left" Margin="100,0,0,0">Media Complete</TextBlock>
+                </DockPanel>
+                <mediaComplete:MainWindow/>
+            </DockPanel>
+            <Rectangle Name="TopLeft" Fill="YellowGreen" Grid.Row="0" Grid.Column="0"/>
+            <Rectangle Name="Top" Fill="YellowGreen" Grid.Row="0" Grid.Column="1" />
+            <Rectangle Name="TopRight" Fill="YellowGreen" Grid.Row="0" Grid.Column="2" />
+            <Rectangle Name="Right" Fill="YellowGreen" Grid.Row="1" Grid.Column="2" />
+            <Rectangle Name="BottomRight" Fill="YellowGreen" Grid.Row="2" Grid.Column="2" />
+            <Rectangle Name="Bottom" Fill="YellowGreen" Grid.Row="2" Grid.Column="1" />
+            <Rectangle Name="BottomLeft" Fill="YellowGreen" Grid.Row="2" Grid.Column="0"/>
+            <Rectangle Name="Left" Fill="YellowGreen" Grid.Row="1" Grid.Column="0" />
+        </Grid>
+    </Border>
+</Window>

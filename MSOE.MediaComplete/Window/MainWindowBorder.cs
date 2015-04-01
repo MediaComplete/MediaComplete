@@ -4,7 +4,7 @@ using System.Windows.Input;
 // ReSharper disable once CheckNamespace
 namespace MSOE.MediaComplete
 {
-    public partial class MainWindow
+    public partial class WindowWrapper
     {
         /// <summary>
         /// TitleBar_MouseDown - Drag if single-click, resize if double-click
@@ -51,17 +51,7 @@ namespace MSOE.MediaComplete
         /// </summary>
         private void AdjustWindowSize()
         {
-            if (WindowState == WindowState.Maximized)
-            {
-                WindowState = WindowState.Normal;
-                MaxButton.Content = "1";
-            }
-            else
-            {
-                WindowState = WindowState.Maximized;
-                MinButton.Content = "2";
-            }
-
+            WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
         }
     }
 }

@@ -19,8 +19,8 @@ namespace MSOE.MediaComplete
     {
         private readonly Dictionary<LayoutType, string> _layoutsDict = new Dictionary<LayoutType, string>
         {
-            {LayoutType.Dark, "layout\\Dark.xaml"},
-            {LayoutType.Pink, "layout\\Pink.xaml"}
+            {LayoutType.Dark, "..\\layout\\Dark.xaml"},
+            {LayoutType.Pink, "..\\layout\\Pink.xaml"}
         };
         private LayoutType _changedType;
         private bool _layoutHasChanged;
