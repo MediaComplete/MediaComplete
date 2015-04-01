@@ -5,16 +5,17 @@
     xmlns:mediaComplete="clr-namespace:MSOE.MediaComplete"
     mc:Ignorable="d" x:Class="MSOE.MediaComplete.WindowWrapper"
         MinHeight="425" Width="695.731" MinWidth="613" WindowStyle="None" ResizeMode="NoResize"
-        AutomationProperties.Name="Tree" d:DesignHeight="502.905" Icon="../Resources/logo_small.ico"
+        AutomationProperties.Name="Tree" d:DesignHeight="502.905"
         Title="Media Complete">
-    <Border Margin="2">
+    <Border Margin="2" Background="{DynamicResource WindowBackgroundBrush}">
         <Border.Effect>
-            <DropShadowEffect Color="Black"
-                              Direction="270"
-                              BlurRadius="10"
-                              ShadowDepth="3" />
+            <DropShadowEffect 
+                Color="{DynamicResource WindowShadowColor}"
+                Direction="270"
+                BlurRadius="10"
+                ShadowDepth="0" />
         </Border.Effect>
-        <Grid Background="White">
+        <Grid Background="{DynamicResource WindowBackgroundBrush}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="4" />
                 <RowDefinition Height="*" />
@@ -26,22 +27,23 @@
                 <ColumnDefinition Width="4" />
             </Grid.ColumnDefinitions>
             <DockPanel Grid.Row="1" Grid.Column="1">
-                <DockPanel DockPanel.Dock="Top" Background="Transparent" MouseDown="TitleBar_MouseDown">
-                    <Button DockPanel.Dock="Right" Click="CloseButton_Click">X</Button>
-                    <Button DockPanel.Dock="Right" Click="MaximizeButton_Click">Max</Button>
-                    <Button DockPanel.Dock="Right" Click="MinimizeButton_Click">Min</Button>
-                    <TextBlock HorizontalAlignment="Left" Margin="100,0,0,0">Media Complete</TextBlock>
+                <DockPanel DockPanel.Dock="Top" Height="25" Background="Transparent" MouseDown="TitleBar_MouseDown">
+                    <Button DockPanel.Dock="Right" Click="CloseButton_Click" Style="{DynamicResource ExitButtonStyle}"/>
+                    <Button DockPanel.Dock="Right" Click="MaximizeButton_Click" Style="{DynamicResource FullscreenButtonStyle}" Name="MaxButton"/>
+                    <Button DockPanel.Dock="Right" Click="MinimizeButton_Click" Style="{DynamicResource MinButtonStyle}"/>
+                    <Image DockPanel.Dock="Left" Source="../Resources/logo_small.ico" Height="20" Width="20"/>
+                    <TextBlock FontSize="14" Foreground="{DynamicResource WindowTitleBrush}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0">Media Complete</TextBlock>
                 </DockPanel>
                 <mediaComplete:MainWindow/>
             </DockPanel>
-            <Rectangle Name="TopLeft" Fill="YellowGreen" Grid.Row="0" Grid.Column="0"/>
-            <Rectangle Name="Top" Fill="YellowGreen" Grid.Row="0" Grid.Column="1" />
-            <Rectangle Name="TopRight" Fill="YellowGreen" Grid.Row="0" Grid.Column="2" />
-            <Rectangle Name="Right" Fill="YellowGreen" Grid.Row="1" Grid.Column="2" />
-            <Rectangle Name="BottomRight" Fill="YellowGreen" Grid.Row="2" Grid.Column="2" />
-            <Rectangle Name="Bottom" Fill="YellowGreen" Grid.Row="2" Grid.Column="1" />
-            <Rectangle Name="BottomLeft" Fill="YellowGreen" Grid.Row="2" Grid.Column="0"/>
-            <Rectangle Name="Left" Fill="YellowGreen" Grid.Row="1" Grid.Column="0" />
+            <Rectangle Name="TopLeft" Grid.Row="0" Grid.Column="0" Fill="{DynamicResource WindowBackgroundBrush}"/>
+            <Rectangle Name="Top" Grid.Row="0" Grid.Column="1" Fill="{DynamicResource WindowBackgroundBrush}"/>
+            <Rectangle Name="TopRight" Grid.Row="0" Grid.Column="2" Fill="{DynamicResource WindowBackgroundBrush}"/>
+            <Rectangle Name="Right" Grid.Row="1" Grid.Column="2" Fill="{DynamicResource WindowBackgroundBrush}"/>
+            <Rectangle Name="BottomRight" Grid.Row="2" Grid.Column="2" Fill="{DynamicResource WindowBackgroundBrush}"/>
+            <Rectangle Name="Bottom" Grid.Row="2" Grid.Column="1" Fill="{DynamicResource WindowBackgroundBrush}"/>
+            <Rectangle Name="BottomLeft" Grid.Row="2" Grid.Column="0" Fill="{DynamicResource WindowBackgroundBrush}"/>
+            <Rectangle Name="Left" Grid.Row="1" Grid.Column="0" Fill="{DynamicResource WindowBackgroundBrush}"/>
         </Grid>
     </Border>
 </Window>

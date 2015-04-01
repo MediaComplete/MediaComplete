@@ -4,6 +4,7 @@ using MSOE.MediaComplete.Lib.Import;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Sorting;
 using System.Collections.Generic;
+using MSOE.MediaComplete.Lib;
 
 namespace MSOE.MediaComplete.Test.Background
 {
@@ -37,9 +38,9 @@ namespace MSOE.MediaComplete.Test.Background
         {
             var queue = new List<List<Task>>
             {
-                new List<Task> {new ImportTask(null, null, false)},
+                new List<Task> {new ImportTask(FileMover.Instance, null, null, false)},
                 new List<Task> {new IdentifierTask(), new IdentifierTask()},
-                new List<Task> {new IdentifierTask(), new ImportTask(null, null, false)},
+                new List<Task> {new IdentifierTask(), new ImportTask(FileMover.Instance, null, null, false)},
                 new List<Task>()
             };
 
@@ -67,10 +68,10 @@ namespace MSOE.MediaComplete.Test.Background
         {
             var queue = new List<List<Task>>
             {
-                new List<Task> {new ImportTask(null, null, false)},
+                new List<Task> {new ImportTask(FileMover.Instance, null, null, false)},
                 new List<Task> {new IdentifierTask(), new IdentifierTask()},
                 new List<Task> {new SortingTask(null)},
-                new List<Task> {new IdentifierTask(), new ImportTask(null, null, false)}
+                new List<Task> {new IdentifierTask(), new ImportTask(FileMover.Instance, null, null, false)}
             };
 
             var subject = new SortingTask(null);

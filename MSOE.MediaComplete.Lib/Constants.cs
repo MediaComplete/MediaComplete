@@ -13,7 +13,7 @@ namespace MSOE.MediaComplete.Lib
         /// Used to separate human readable file filters from their regex counterparts when opening a dialog
         /// </summary>
 	    public const string FileDialogFilterStringSeparator = "|";
-
+        
         public static readonly string PathSeparator = Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture);
 
         /// <summary>

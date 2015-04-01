@@ -52,6 +52,7 @@ namespace MSOE.MediaComplete
         private void AdjustWindowSize()
         {
             WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+            MaxButton.Style = (Style)TryFindResource(WindowState == WindowState.Maximized ? "RestoreDownButtonStyle" : "FullscreenButtonStyle");
         }
     }
 }

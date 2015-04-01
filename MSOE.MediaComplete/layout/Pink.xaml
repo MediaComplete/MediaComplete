@@ -1,6 +1,87 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:System.Windows.Controls;assembly=TreeViewEx">
+    <SolidColorBrush Color="#FFFFD0EC" x:Key="WindowBackgroundBrush"/>
+    <SolidColorBrush Color="#FF8F1454" x:Key="WindowTitleBrush"/>
+    <Color x:Key="WindowShadowColor">#FF8F1454</Color>
+    <!-- Exit button -->
+    <Style TargetType="Button" x:Key="ExitButtonStyle">
+        <Setter Property="Background" Value="{StaticResource WindowBackgroundBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid Background="{TemplateBinding Background}" Width="20" Height="20">
+                        <Polygon Points="4,4 9,10 4,16 6,16 10,11 14,16, 16,16 11,10 16,4 14,4 10,9 6,4" Fill="#FF8F1454" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#FFCD6AA5"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <!-- Minimize button -->
+    <Style TargetType="Button" x:Key="MinButtonStyle">
+        <Setter Property="Background" Value="{StaticResource WindowBackgroundBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid Background="{TemplateBinding Background}" Width="20" Height="20">
+                        <Polygon Points="4,12 16,12 16,14 4,14" Fill="#FF8F1454" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#FFCD6AA5"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <!-- Maximize (non-fullscreen state) button -->
+    <Style TargetType="Button" x:Key="FullscreenButtonStyle">
+        <Setter Property="Background" Value="{StaticResource WindowBackgroundBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid Background="{TemplateBinding Background}" Width="20" Height="20">
+                        <Polygon Points="4,7 16,7 16,4 4,4" Fill="#FF8F1454" />
+                        <Polygon Points="4,7 4,16 16,16 16,7 15,7 15,15 5,15 5,7" Fill="#FF8F1454" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#FFCD6AA5"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <!-- Maximize (fullscreen state) button -->
+    <Style TargetType="Button" x:Key="RestoreDownButtonStyle">
+        <Setter Property="Background" Value="{StaticResource WindowBackgroundBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid Background="{TemplateBinding Background}" Width="20" Height="20">
+                        <Polygon Points="4,10 13,10 13,8 4,8" Fill="#FF8F1454" />
+                        <Polygon Points="4,10 4,16 13,16 13,10 12,10 12,15 5,15 5,10" Fill="#FF8F1454" />
+                        <Polygon Points="7,7 16,7 16,5 7,5" Fill="#FF8F1454" />
+                        <Polygon Points="7,7 8,7 8,8 7,8" Fill="#FF8F1454" />
+                        <Polygon Points="15,7 15,11 13,11 13,12 16,12 16,7" Fill="#FF8F1454" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#FFCD6AA5"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
     <Style TargetType="{x:Type controls:TreeViewEx}">
         <Setter Property="Foreground" Value="#FF8F1454"/>
         <Setter Property="Background" >
@@ -77,8 +158,6 @@
     <SolidColorBrush x:Key="DisabledForegroundBrush" Color="white" />
 
     <SolidColorBrush x:Key="DisabledBackgroundBrush" Color="#FFFFD0EC" />
-
-    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#FFF" />
 
     <SolidColorBrush x:Key="SelectedBackgroundBrush" Color="#DDD" />
 

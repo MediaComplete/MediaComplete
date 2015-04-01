@@ -26,6 +26,7 @@ namespace MSOE.MediaComplete
         private readonly List<TextBox>_changedBoxes;
         private Settings _settings;
         private readonly Timer _refreshTimer;
+        private readonly FileMover _fileMover;
 
         public MainWindow()
         {
@@ -37,7 +38,6 @@ namespace MSOE.MediaComplete
             var homeDir = SettingWrapper.MusicDir ??
                           Path.GetPathRoot(Environment.SystemDirectory);
 
-            ChangeSortMusic();
             StatusBarHandler.Instance.RaiseStatusBarEvent += HandleStatusBarChangeEvent;
 
             if (!homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal))
@@ -57,7 +57,8 @@ namespace MSOE.MediaComplete
 
                 Polling.Instance.Start();
             }
-            Directory.CreateDirectory(homeDir);
+            _fileMover = FileMover.Instance;
+            _fileMover.CreateDirectory(homeDir);
             _refreshTimer = new Timer(TimerProc);
             
             
@@ -71,9 +72,8 @@ namespace MSOE.MediaComplete
         private void InitEvents()
         {
             Polling.InboxFilesDetected += ImportFromInboxAsync;
-            SettingWrapper.RaiseSettingEvent += HandleSettingEvent;
             // ReSharper disable once ObjectCreationAsStatement
-            new Sorter(null);
+            new Sorter(_fileMover, null);
         }
 
         private void HandleStatusBarChangeEvent(string format, string message, StatusBarHandler.StatusIcon icon, params object[] extraArgs)
@@ -333,7 +333,7 @@ namespace MSOE.MediaComplete
                 try
                 {
                     if (selection == null) continue;
-                    await MusicIdentifier.IdentifySongAsync(selection.GetPath());
+                    await MusicIdentifier.IdentifySongAsync(_fileMover, selection.GetPath());
                 }
                 catch (Exception ex)
                 {
@@ -359,7 +359,7 @@ namespace MSOE.MediaComplete
             {
                 try
                 {
-                    await MusicIdentifier.IdentifySongAsync(((SongTreeViewItem)item).GetPath());
+                    await MusicIdentifier.IdentifySongAsync(_fileMover, ((SongTreeViewItem)item).GetPath());
                 }
                 catch (Exception ex)
                 {
@@ -379,16 +379,15 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private async void Toolbar_SortMusic_ClickAsync(object sender, RoutedEventArgs e)
         {
-            // TODO (MC-43) obtain from settings file, make configurable
             var settings = new SortSettings
             {
                 SortOrder = SettingWrapper.SortOrder,
-                Root = new DirectoryInfo(SettingWrapper.MusicDir),
                 Files =  new DirectoryInfo(SettingWrapper.MusicDir).EnumerateFiles("*", SearchOption.AllDirectories)
-                    .GetMusicFiles()
+                    .GetMusicFiles(),
+                Root = new DirectoryInfo(SettingWrapper.MusicDir)
             };
 
-            var sorter = new Sorter(settings);
+            var sorter = new Sorter(_fileMover, settings);
             await sorter.CalculateActionsAsync();    
 
             if (sorter.Actions.Count == 0) // Nothing to do! Notify and return.

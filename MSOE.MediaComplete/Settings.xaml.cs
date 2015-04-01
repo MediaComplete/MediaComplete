@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Forms;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Sorting;
-using Button = System.Windows.Controls.Button;
 using ComboBox = System.Windows.Controls.ComboBox;
 
 namespace MSOE.MediaComplete
@@ -24,6 +23,8 @@ namespace MSOE.MediaComplete
         };
         private LayoutType _changedType;
         private bool _layoutHasChanged;
+        private readonly List<string> _allDirs;
+        private readonly IFileMover _fileMover;
         public Settings()
         {
 
@@ -35,6 +36,8 @@ namespace MSOE.MediaComplete
             CheckboxShowImportDialog.IsChecked = SettingWrapper.ShowInputDialog;
             CheckBoxSorting.IsChecked = SettingWrapper.IsSorting;
             MoveOrCopy.IsChecked = SettingWrapper.ShouldRemoveOnImport;
+            _allDirs = SettingWrapper.AllDirectories;
+            _fileMover = FileMover.Instance;
             PollingCheckBoxChanged(CheckboxPolling, null);
             if (SettingWrapper.Layout.Equals(_layoutsDict[LayoutType.Pink]))
             {
@@ -60,22 +63,42 @@ namespace MSOE.MediaComplete
         /// <param name="e">Type of event</param>
         private void BtnSelectFolder_Click(object sender, EventArgs e)
         {
-            var folderBrowserDialog1 = new FolderBrowserDialog();
-            var button = sender as Button;
+            var folderBrowserDialog1 = new FolderBrowserDialog
+            {
+                SelectedPath = SettingWrapper.InboxDir
+            };
             if (folderBrowserDialog1.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
 
-            if (button == null) return;
-            switch (button.Name)
-            {
-                case "BtnSelectFolder":
-                    TxtboxSelectedFolder.Text = folderBrowserDialog1.SelectedPath;
-                    break;
-                case "BtnInboxFolder":
-                    TxtInboxFolder.Text = folderBrowserDialog1.SelectedPath;
-                    break;
-            }
+            TxtInboxFolder.Text = folderBrowserDialog1.SelectedPath;
         }
 
+        private void BtnSelectHomeFolder_Click(object sender, RoutedEventArgs e)
+        {
+            var homeDirChooser = new FolderBrowserDialog
+            {
+                Description = Properties.Resources.Description,
+                SelectedPath = SettingWrapper.HomeDir
+            };
+
+            if (homeDirChooser.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+
+            var homeDir = homeDirChooser.SelectedPath;
+            if (homeDir != null && !homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.CurrentCulture), StringComparison.Ordinal))
+            {
+                homeDir += Path.DirectorySeparatorChar;
+            }
+            SettingWrapper.HomeDir = homeDir;
+
+            if (!_allDirs.Contains(SettingWrapper.HomeDir))
+            {
+                var tempPath = SettingWrapper.HomeDir + "temp"+new Random().Next();
+                _fileMover.MoveDirectory(SettingWrapper.HomeDir, tempPath);
+                _fileMover.MoveDirectory(tempPath, SettingWrapper.MusicDir);
+                _allDirs.Add(SettingWrapper.HomeDir);
+            }
+
+            TxtboxSelectedFolder.Text = SettingWrapper.HomeDir;
+        }
 
         /// <summary>
         /// The handler of the checkbox change event for the setting screen.
@@ -117,12 +140,6 @@ namespace MSOE.MediaComplete
         /// <param name="e">Type of event</param>
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
-            // add settings here as they are added to the UI
-            var homeDir = TxtboxSelectedFolder.Text;
-            if (homeDir != null && !homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.CurrentCulture), StringComparison.Ordinal))
-            {
-                homeDir += Path.DirectorySeparatorChar;
-            }
             var inboxDir = TxtInboxFolder.Text;
             if (!inboxDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.CurrentCulture), StringComparison.Ordinal))
             {
@@ -140,7 +157,6 @@ namespace MSOE.MediaComplete
                 _layoutHasChanged = false;
             }
             
-            SettingWrapper.HomeDir =homeDir;
             SettingWrapper.InboxDir =inboxDir;
             SettingWrapper.PollingTime = Convert.ToDouble(ComboBoxPollingTime.SelectedValue.ToString());
             SettingWrapper.IsPolling = CheckboxPolling.IsChecked.GetValueOrDefault(false);
@@ -152,13 +168,13 @@ namespace MSOE.MediaComplete
 
             SettingWrapper.SortOrder = newSortOrder;
             SettingWrapper.IsSorting = newIsSorted;
-
+            SettingWrapper.AllDirectories = _allDirs;
             SettingWrapper.ShouldRemoveOnImport = MoveOrCopy.IsChecked.GetValueOrDefault(false);
 
             SettingWrapper.Save();
 
-            if (!Directory.Exists(SettingWrapper.MusicDir))
-                Directory.CreateDirectory(SettingWrapper.MusicDir);
+            if (!_fileMover.DirectoryExists(SettingWrapper.MusicDir))
+                _fileMover.CreateDirectory(SettingWrapper.MusicDir);
             Close();
         }
 
@@ -211,5 +227,6 @@ namespace MSOE.MediaComplete
 
             SettingWrapper.Save();
         }
+
     }
 }
