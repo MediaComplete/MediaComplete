@@ -38,7 +38,6 @@ namespace MSOE.MediaComplete
             var homeDir = SettingWrapper.MusicDir ??
                           Path.GetPathRoot(Environment.SystemDirectory);
 
-            ChangeSortMusic();
             StatusBarHandler.Instance.RaiseStatusBarEvent += HandleStatusBarChangeEvent;
 
             if (!homeDir.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal))
@@ -73,7 +72,6 @@ namespace MSOE.MediaComplete
         private void InitEvents()
         {
             Polling.InboxFilesDetected += ImportFromInboxAsync;
-            SettingWrapper.RaiseSettingEvent += HandleSettingEvent;
             // ReSharper disable once ObjectCreationAsStatement
             new Sorter(_fileMover, null);
         }
@@ -87,18 +85,6 @@ namespace MSOE.MediaComplete
                 var sourceUri = new Uri("./Resources/" + icon + ".png", UriKind.Relative);
                 StatusIcon.Source = new BitmapImage(sourceUri);
             });
-        }
-
-        private void HandleSettingEvent()
-        {
-            ChangeSortMusic();
-        }
-
-        private void ChangeSortMusic()
-        {
-            var content = SettingWrapper.IsSorting ? Resources["Toolbar-SortMusic-Tooltip"].ToString() : Resources["Toolbar-SortMusicDisabled-Tooltip"].ToString();
-            SortMusic.ToolTip = content;
-            SortMusic.IsEnabled = SettingWrapper.IsSorting;
         }
 
         protected override void OnClosed(EventArgs e)
@@ -391,7 +377,8 @@ namespace MSOE.MediaComplete
             {
                 SortOrder = SettingWrapper.SortOrder,
                 Files =  new DirectoryInfo(SettingWrapper.MusicDir).EnumerateFiles("*", SearchOption.AllDirectories)
-                    .GetMusicFiles()
+                    .GetMusicFiles(),
+                Root = new DirectoryInfo(SettingWrapper.MusicDir)
             };
 
             var sorter = new Sorter(_fileMover, settings);

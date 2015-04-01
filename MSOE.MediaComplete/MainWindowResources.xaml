@@ -1,13 +1,17 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:system="clr-namespace:System;assembly=mscorlib" >
+                    xmlns:system="clr-namespace:System;assembly=mscorlib"
+                    xmlns:mediaComplete="clr-namespace:MSOE.MediaComplete">
 
     <!-- Put strings up here - this is where internationalization would occur. -->
     <system:String x:Key="Toolbar-AutoIdMusic-Tooltip">Restore Metadata</system:String>
     <system:String x:Key="Toolbar-SortMusic-Tooltip">Refresh the sorting of your library</system:String>
     <system:String x:Key="Toolbar-SortMusicDisabled-Tooltip">Sorting is disabled in Settings Menu</system:String>
     <system:String x:Key="ContextMenu-AutoIdMusic-Header">Restore Metadata</system:String>
-    <system:String x:Key="ContextMenu-PlayMusic-Header">Play</system:String>
+    <system:String x:Key="ContextMenu-PlayMusic-Header">Play All</system:String>
+    <system:String x:Key="ContextMenu-PlaySingle-Header">Play</system:String>
+    <system:String x:Key="ContextMenu-PlayNext-Header">Play Next</system:String>
+    <system:String x:Key="ContextMenu-NowPlayingMusic-Header">Add to Now Playing</system:String>
     <system:String x:Key="Dialog-AddFile-MusicFilter">All Music Files (*.mp3, *.wma)</system:String>
     <system:String x:Key="Dialog-AddFile-Mp3Filter">MP3 Files (*.mp3)</system:String>
     <system:String x:Key="Dialog-AddFile-WmaFilter">WMA Files (*.wma)</system:String>
@@ -54,6 +58,7 @@
     <system:String x:Key="EditButton">Edit</system:String>
     <system:String x:Key="CancelButton">Cancel</system:String>
 
+    <mediaComplete:VolumeConverter x:Key="VolumeConverter"/>
 
 
     <!-- Images -->

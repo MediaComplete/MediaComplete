@@ -81,6 +81,10 @@
     <ApplicationIcon>Resources\logo_small.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="M3U.NET, Version=1.0.0.3, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\M3U.NET.1.0.0.3\lib\net45\M3U.NET.dll</HintPath>
+    </Reference>
     <Reference Include="NAudio, Version=1.7.1.17, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NAudio.1.7.1\lib\net35\NAudio.dll</HintPath>
@@ -140,6 +144,7 @@
     <Compile Include="Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
+    <Compile Include="VolumeConverter.cs" />
     <Page Include="CustomControls\BackgroundYoutubePlayer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

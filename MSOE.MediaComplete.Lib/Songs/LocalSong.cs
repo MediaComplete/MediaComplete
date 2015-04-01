@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using M3U.NET;
+using MSOE.MediaComplete.Lib.Files;
 using TagLib;
 using File = TagLib.File;
 
@@ -11,7 +12,7 @@ namespace MSOE.MediaComplete.Lib.Songs
     /// </summary>
     public class LocalSong : AbstractSong
     {
-        private readonly FileInfo _file;
+        public FileInfo File { get; private set; }
 
         /// <summary>
         /// Constructs a LocalSong from a MediaItem
@@ -27,7 +28,7 @@ namespace MSOE.MediaComplete.Lib.Songs
         /// <param name="file">The file</param>
         public LocalSong(FileInfo file)
         {
-            _file = file;
+            File = file;
         }
         
         /// <summary>
@@ -39,7 +40,7 @@ namespace MSOE.MediaComplete.Lib.Songs
             File tagFile;
             try
             {
-                tagFile = File.Create(_file.FullName);
+                tagFile = TagLib.File.Create(File.FullName);
             }
             catch (Exception e)
             {
@@ -47,7 +48,7 @@ namespace MSOE.MediaComplete.Lib.Songs
                 {
                     // TODO MC-125 log
                     throw new FileNotFoundException(
-                        String.Format("File ({0}) was not found or is not a recognized music file.", _file.FullName), e);
+                        String.Format("File ({0}) was not found or is not a recognized music file.", File.FullName), e);
                 }
 
                 throw;
@@ -55,10 +56,26 @@ namespace MSOE.MediaComplete.Lib.Songs
 
             return new MediaItem
             {
-                Location = _file.FullName, 
+                Location = File.FullName, 
                 Inf = tagFile.Tag.FirstAlbumArtist + " - " + tagFile.Tag.Title, 
                 Runtime = (int?)tagFile.Properties.Duration.TotalSeconds
             };
+        }
+
+        /// <summary>
+        /// Compares two local songs based on whether they refer to the same file.
+        /// </summary>
+        /// <param name="other">Another object to check</param>
+        /// <returns>True if other is a local song referring to the same file, false otherwise.</returns>
+        public override bool Equals(object other)
+        {
+            var otherSong = other as LocalSong;
+            return otherSong != null && new FileLocationComparator().Equals(File, otherSong.File);
+        }
+
+        public override int GetHashCode()
+        {
+            return string.Format("{0}-{1}-{2}-{3}", File, File.FullName, File.DirectoryName, File.GetHashCode()).GetHashCode();
         }
     }
 }
