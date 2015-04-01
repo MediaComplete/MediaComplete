@@ -151,6 +151,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Compile Include="SettingsSortOrder.cs" />
+    <Page Include="layout\MainFrameStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="layout\PlayerControlStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="layout\Styles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

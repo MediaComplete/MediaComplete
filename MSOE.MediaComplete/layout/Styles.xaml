@@ -2,17 +2,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:System.Windows.Controls;assembly=TreeViewEx"
                     xmlns:customControls="clr-namespace:MSOE.MediaComplete.CustomControls">
-    <Style TargetType="{x:Type controls:TreeViewEx}">
-        <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
-    </Style>
-
-    <Style TargetType="{x:Type ListView}">
-        <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
-        <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
-    </Style>
-    
     <Style TargetType="{x:Type TabItem}">
         <Setter Property="Foreground" Value="{DynamicResource TabTextBrush}"/>
         <Setter Property="Template">
@@ -40,56 +29,6 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
-    <Style TargetType="{x:Type customControls:PlaylistSongItem}">
-        <Style.Triggers>
-            <Trigger Property="IsMouseDirectlyOver" Value="True">
-                <Setter Property="Background" Value="{DynamicResource TextMouseOverBackgroundBrush}"/>
-                <Setter Property="Foreground" Value="{DynamicResource TextMouseOverForegroundBrush}"/>
-            </Trigger>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource TextSelectedBackgroundBrush}"/>
-                <Setter Property="Background" Value="{DynamicResource TextSelectedForegroundBrush}"/>
-            </Trigger>
-            <Trigger Property="IsPlaying" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource CurrentSong}"/>
-                <Setter Property="FontWeight" Value="ExtraBold"/>
-            </Trigger>
-            <Trigger Property="IsPlaying" Value="False">
-                <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
-                <Setter Property="FontWeight" Value="Normal"/>
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-    <Style TargetType="{x:Type customControls:LibrarySongItem}">
-        <Style.Triggers>
-            <Trigger Property="IsMouseDirectlyOver" Value="True">
-                <Setter Property="Background" Value="{DynamicResource TextMouseOverBackgroundBrush}"/>
-                <Setter Property="Foreground" Value="{DynamicResource TextMouseOverForegroundBrush}"/>
-            </Trigger>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource TextSelectedBackgroundBrush}"/>
-                <Setter Property="Background" Value="{DynamicResource TextSelectedForegroundBrush}"/>
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-    <Style TargetType="{x:Type controls:TreeViewExItem}">
-        <Setter Property="BackgroundSelected" Value="{DynamicResource TextSelectedBackgroundBrush}"/>
-        <Setter Property="BackgroundSelectedPreview" Value="{DynamicResource TextSelectedBackgroundBrush}"/>
-        <Style.Triggers>
-            <Trigger Property="IsMouseDirectlyOver" Value="True">
-                <Setter Property="Background" Value="{DynamicResource TextMouseOverBackgroundBrush}"/>
-                <Setter Property="Foreground" Value="{DynamicResource TextMouseOverForegroundBrush}"/>
-            </Trigger>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="BackgroundFocused" Value="{DynamicResource TextSelectedBackgroundBrush}"/>
-                <Setter Property="Foreground" Value="{DynamicResource TextSelectedForegroundBrush}"/>
-            </Trigger>
-            <Trigger Property="IsSelected" Value="False">
-                <Setter Property="BackgroundFocused" Value="Transparent"/>
-                <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}" />
-            </Trigger>
-        </Style.Triggers>
     </Style>
     <Style TargetType="{x:Type Button}">
         <Setter Property="Background" Value="{DynamicResource ButtonDefaultBrush}"/>
@@ -293,12 +232,6 @@
 
             </Trigger>
         </Style.Triggers>
-    </Style>
-    <Style TargetType="{x:Type GridSplitter}" x:Key="SplitterStyle">
-        <Setter Property="Background" Value="Transparent"></Setter>
-    </Style>
-    <Style TargetType="{x:Type Panel}" x:Key="PanelStyle">
-        <Setter Property="Background" Value="{DynamicResource PanelBrush}"/>
     </Style>
     <Style TargetType="{x:Type Menu}" x:Key="MenuStyle">
         <Setter Property="Background" Value="{DynamicResource MenuBrush}"/>
