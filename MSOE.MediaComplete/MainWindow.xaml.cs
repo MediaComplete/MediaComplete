@@ -387,7 +387,6 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private async void Toolbar_SortMusic_ClickAsync(object sender, RoutedEventArgs e)
         {
-            // TODO (MC-43) obtain from settings file, make configurable
             var settings = new SortSettings
             {
                 SortOrder = SettingWrapper.SortOrder,
