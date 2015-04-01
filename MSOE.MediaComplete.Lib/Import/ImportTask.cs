@@ -16,22 +16,25 @@ namespace MSOE.MediaComplete.Lib.Import
     {
         private readonly DirectoryInfo _homeDir;
         private readonly IEnumerable<FileInfo> _files;
-        private readonly bool _isCopy;
+        private readonly bool _isMove;
+        private readonly IFileMover _fileMover;
 
         public ImportResults Results { get; set; }
 
         /// <summary>
         /// Constructs an Import background task with the given parameters
         /// </summary>
+        /// <param name="fileMover"></param>
         /// <param name="homeDir">The target library directory</param>
         /// <param name="files">An array of absolute filepaths to bring in.</param>
-        /// <param name="isCopy">If true, files will be cut, else files will be copied</param>
-        public ImportTask(DirectoryInfo homeDir, IEnumerable<FileInfo> files, bool isCopy)
+        /// <param name="isMove">If true, files will be cut, else files will be copied</param>
+        public ImportTask(IFileMover fileMover, DirectoryInfo homeDir, IEnumerable<FileInfo> files, bool isMove)
         {
+            _fileMover = fileMover;
             Results = null;
             _homeDir = homeDir;
             _files = files;
-            _isCopy = isCopy;
+            _isMove = isMove;
         }
 
         /// <summary>
@@ -60,16 +63,16 @@ namespace MSOE.MediaComplete.Lib.Import
                 foreach (var file in _files)
                 {
                     var newFile = _homeDir.FullName + Path.DirectorySeparatorChar + file.Name;
-                    if (File.Exists(newFile)) continue;
+                    if (_fileMover.FileExists(newFile)) continue;
                     try
                     {
-                        if (_isCopy)
+                        if (_isMove)
                         {
-                            file.CopyTo(newFile);
+                            _fileMover.MoveFile(file, newFile);
                         }
                         else
                         {
-                            file.MoveTo(newFile);
+                            _fileMover.CopyFile(file, newFile);
                         }
                         results.NewFiles.Add(new FileInfo(newFile));
                     }

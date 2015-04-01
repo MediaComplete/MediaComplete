@@ -123,6 +123,12 @@ namespace MSOE.MediaComplete.Lib.Playing
             return Index <= 0 ? null : _songs[--Index];
         }
 
+        public void InsertRange(int index, List<AbstractSong> songs)
+        {
+            if(songs==null) throw new ArgumentNullException();
+            if(index>_songs.Count || index <0) throw new IndexOutOfRangeException();
+            _songs.InsertRange(index, songs);
+        }
         /// <summary>
         /// Returns the currently selected song.
         /// </summary>

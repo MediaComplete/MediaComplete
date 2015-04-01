@@ -1,9 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Windows.Controls;
 using MSOE.MediaComplete.Lib;
 using consts = MSOE.MediaComplete.Lib.Constants;
-using System.IO;
 
 namespace MSOE.MediaComplete.CustomControls
 {

@@ -153,7 +153,7 @@
               HorizontalAlignment="Center" 
               VerticalAlignment="Stretch"
               ShowsPreview="true"
-              Width="3"
+              Width="3" x:Name="ContentSplitter"
               Style="{DynamicResource SplitterStyle}"/>
             <Border Grid.Column="4" BorderThickness="1" Height="Auto" Style="{DynamicResource BorderStyle}">
                 <DockPanel Height="Auto" x:Name="MetadataPanel">

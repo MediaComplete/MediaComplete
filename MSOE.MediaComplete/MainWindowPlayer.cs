@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -95,19 +96,9 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void ContextMenu_PlaySongNext_Click(object sender, RoutedEventArgs e)
         {
-            var initialCount = NowPlaying.Inst.SongCount();
-            AddSelectedSongsToNowPlaying();
-
-            var j = NowPlaying.Inst.Index + 1;
-            for (var i = initialCount; i < NowPlaying.Inst.SongCount(); i++)
-            {
-                NowPlaying.Inst.Move(i, j++);
-            }
-
-            if (_player.PlaybackState == PlaybackState.Stopped)
-            {
-                Play();
-            }
+            var list = (from LibrarySongItem song in SongList.SelectedItems select 
+                            new LocalSong(new FileInfo(song.GetPath()))).Cast<AbstractSong>().ToList();
+            NowPlaying.Inst.InsertRange(NowPlaying.Inst.Index+1, list);
         }
 
         /// <summary>

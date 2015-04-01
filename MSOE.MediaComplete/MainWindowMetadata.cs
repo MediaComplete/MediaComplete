@@ -165,7 +165,7 @@ namespace MSOE.MediaComplete
             {
                 try
                 {
-                    var song = File.Create(item.GetPath());
+                    var song = _fileMover.CreateTaglibFile((item.GetPath()));
                     foreach (var changedBox in _changedBoxes)
                     {
                         if (changedBox.Equals(SongTitle))
