@@ -15,6 +15,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
     /// </summary>
     public class Sorter
     {
+        private static IFileMover _fileMover;
         public List<IAction> Actions { get; private set; }
         public int UnsortableCount { get; private set; }
         public int MoveCount { get { return Actions.Count(a => a is MoveAction); } }
@@ -28,9 +29,11 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <see cref="Actions">MoveActions</see> can be accessed directly after to anticipate the
         /// magnitude and specifics of the move.
         /// </summary>
+        /// <param name="fileMover"></param>
         /// <param name="settings">Sort settings</param>
-        public Sorter(SortSettings settings)
+        public Sorter(IFileMover fileMover, SortSettings settings)
         {
+            _fileMover = fileMover;
             Settings = settings;
             Actions = new List<IAction>();
             UnsortableCount = 0;
@@ -67,7 +70,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                     if (!path.SequenceEqual(targetPath, new DirectoryEqualityComparer()))
                     {
                         // Check to see if the file already exists
-                        var srcMp3File = TagLib.File.Create(file.FullName);
+                        var srcMp3File = _fileMover.CreateTaglibFile(file.FullName);
                         var destDir = targetFile.Directory;
                         if (destDir.ContainsMusicFile(srcMp3File)) // If the file is already there
                         {
@@ -108,7 +111,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
             TagLib.File metadata;
             try
             {
-                metadata = TagLib.File.Create(file.FullName);
+                metadata = _fileMover.CreateTaglibFile(file.FullName);
             }
             catch (TagLib.CorruptFileException)
             {
@@ -136,15 +139,15 @@ namespace MSOE.MediaComplete.Lib.Sorting
         private static void Resort()
         {
             if (!SortHelper.GetSorting()) return;
-            
+
             var settings = new SortSettings
             {
                 SortOrder = SettingWrapper.SortOrder,
                 Root = new DirectoryInfo(SettingWrapper.MusicDir),
-                Files =  new DirectoryInfo(SettingWrapper.MusicDir).EnumerateFiles("*", SearchOption.AllDirectories)
+                Files = new DirectoryInfo(SettingWrapper.MusicDir).EnumerateFiles("*", SearchOption.AllDirectories)
                     .GetMusicFiles()
             };
-            var sorter = new Sorter(settings);
+            var sorter = new Sorter(FileMover.Instance, settings);
             sorter.PerformSort();
         }
 
@@ -152,7 +155,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// Sorts incoming files that have just been imported.
         /// </summary>
         /// <param name="results">The results of the triggering import</param>
-        public static void SortNewImports (ImportResults results)
+        public static void SortNewImports(ImportResults results)
         {
             if (!SettingWrapper.IsSorting) return;
             // TODO (MC-43) get settings from configuration
@@ -163,7 +166,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                 Root = results.HomeDir,
                 Files = results.NewFiles
             };
-            var sorter = new Sorter(settings);
+            var sorter = new Sorter(FileMover.Instance, settings);
             sorter.PerformSort();
         }
 
@@ -175,7 +178,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         {
             void Do();
         }
-        
+
         public class MoveAction : IAction
         {
             public FileInfo Source { get; set; }
@@ -188,8 +191,8 @@ namespace MSOE.MediaComplete.Lib.Sorting
                     return;
                 }
 
-                Directory.CreateDirectory(Dest.Directory.FullName);
-                File.Move(Source.FullName, Dest.FullName);
+                _fileMover.CreateDirectory(Dest.Directory.FullName);
+                _fileMover.MoveFile(Source.FullName, Dest.FullName);
             }
         }
 

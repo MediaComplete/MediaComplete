@@ -53,18 +53,18 @@ namespace MSOE.MediaComplete.Lib.Import
         /// Performs an asynchronous import operation.
         /// </summary>
         /// <param name="files">A list of full file paths to be imported</param>
-        /// <param name="isCopy">If true, files are copies and the original files remain in the source location. 
-        /// Otherwise, files are "cut" and removed from the source directory.</param>
+        /// <param name="isMove">If true, files are "cut" and removed from the source directory.
+        /// Otherwise, files are copied and the original files remain in the source location.</param>
         /// <returns>An awaitable task of ImportResults</returns>
         /// <exception cref="InvalidImportException">Thrown when files includes a file in the current home directory</exception>
-        public async Task<ImportResults> ImportFilesAsync(IEnumerable<FileInfo> files, bool isCopy)
+        public async Task<ImportResults> ImportFilesAsync(IEnumerable<FileInfo> files, bool isMove)
         {
             if (files.Any(f => f.HasParent(_homeDir)))
             {
                 throw new InvalidImportException();
             }
 
-            var task = new ImportTask(_homeDir, files, isCopy);
+            var task = new ImportTask(FileMover.Instance, _homeDir, files, isMove);
 
             Queue.Inst.Add(task);
 
