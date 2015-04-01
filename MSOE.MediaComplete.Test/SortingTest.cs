@@ -154,7 +154,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void Sort_ChangeDir_OldDirDeleted()
         {
-            var oldDir = Directory.CreateDirectory(_homeDir.FullName + Path.DirectorySeparatorChar + "oldDir");
+            var oldDir = Directory.CreateDirectory(_homeDir.FullName + Path.DirectorySeparatorChar +"Music"+Path.DirectorySeparatorChar + "oldDir");
             FileHelper.CreateFile(oldDir, Constants.FileTypes.ValidMp3);
             var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
