@@ -145,13 +145,13 @@ namespace MSOE.MediaComplete.Lib.Playing
                             canPlay = false;
                     }
                 }
+                var newIndex = NowPlaying.Inst.Index;
+                OnSongFinishedEvent(oldIndex, newIndex);
             }
             else
             {
                 if (PlaybackEnded != null) PlaybackEnded(sender, stoppedEventArgs);
             }
-            var newIndex = NowPlaying.Inst.Index;
-            OnSongFinishedEvent(oldIndex, newIndex);
         }
         public delegate void SongFinished(int oldPath, int newPath);
 
