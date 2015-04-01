@@ -280,15 +280,21 @@ namespace MSOE.MediaComplete
         private void TrackBar_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             var diff = Math.Abs(e.OldValue - e.NewValue);
+            var currentTime = TimeSpan.FromMilliseconds(e.NewValue);
+
+            CurrentTimeLabel.Content = string.Format("{0:D2}:{1:D2}:{2:D2}", currentTime.Hours, currentTime.Minutes, currentTime.Seconds);
+
+            var timeRemaining = _player.TotalTime.Subtract(currentTime);
+
+            RemainingTimeLabel.Content = string.Format("-{0:D2}:{1:D2}:{2:D2}", timeRemaining.Hours, timeRemaining.Minutes, timeRemaining.Seconds);
             if (diff > TimerFrequency*2)
             {
                 var slider = sender as Slider;
                 if (slider != null)
                 {
-                    var milliseconds = slider.Value;
                     Dispatcher.Invoke(() =>
                     {
-                        _player.Seek(TimeSpan.FromMilliseconds(milliseconds));
+                        _player.Seek(currentTime);
                     });
                 }
             }

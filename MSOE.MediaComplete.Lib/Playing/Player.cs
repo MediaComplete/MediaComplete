@@ -89,6 +89,10 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// </summary>
         public event EventHandler PlaybackEnded;
 
+        /// <summary>
+        /// calls the NAudioWrapper seek function
+        /// </summary>
+        /// <param name="timeToSeekTo"></param>
         public void Seek(TimeSpan timeToSeekTo)
         {
             _nAudioWrapper.Seek(timeToSeekTo);

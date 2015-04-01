@@ -174,14 +174,16 @@
         <StackPanel Grid.Row="3" Grid.Column="0" Style="{DynamicResource PanelStyle}">
             <Grid>
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="60"/>
                     <ColumnDefinition Width="578*"/>
-                    <ColumnDefinition Width="35"/>
+                    <ColumnDefinition Width="60"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="23"/>
                 </Grid.RowDefinitions>
-                    <Slider Name="TrackBar" Cursor="Cross" Style ="{DynamicResource HorizontalSlider}" Grid.Column="0" Minimum="0" Maximum="100" IsMoveToPointEnabled="True" ValueChanged="TrackBar_OnValueChanged" PreviewMouseDown="Thumb_MouseDown" PreviewMouseUp="Thumb_MouseUp"/>
-                <Label Grid.Column="1"></Label>
+                <Label Grid.Column="0" Name="CurrentTimeLabel"/>
+                <Slider Name="TrackBar" Margin="0,3,0,0"  Cursor="Cross" Style ="{DynamicResource HorizontalSlider}" Grid.Column="1" Minimum="0" Maximum="100" IsMoveToPointEnabled="True" ValueChanged="TrackBar_OnValueChanged" PreviewMouseDown="Thumb_MouseDown" PreviewMouseUp="Thumb_MouseUp"/>
+                <Label Grid.Column="2" Name="RemainingTimeLabel" HorizontalContentAlignment="Right" />
             </Grid>
             <StackPanel Height="75" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Name="PreviousButton" Height="60" Width="60" Style="{DynamicResource PreviousButton}" Click="PreviousButton_OnClick"/>
