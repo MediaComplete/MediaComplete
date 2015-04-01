@@ -11,6 +11,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="MainWindowResources.xaml" />
                 <ResourceDictionary Source="layout/Styles.xaml" />
+                <ResourceDictionary Source="layout/PlayerControlStyles.xaml" />
+                <ResourceDictionary Source="layout/MainFrameStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -155,7 +157,7 @@
               Style="{DynamicResource SplitterStyle}"/>
             <Border Grid.Column="4" BorderThickness="1" Height="Auto" Style="{DynamicResource BorderStyle}">
                 <DockPanel Height="Auto" x:Name="MetadataPanel">
-                    <Grid Margin="0,0,0,0"  Height="Auto" Style="{DynamicResource DetailGridStyle}">
+                    <Grid Margin="0,0,0,0"  Height="Auto" Style="{DynamicResource GridStyle}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="100" />
                             <ColumnDefinition Width="35" />
