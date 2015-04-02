@@ -49,12 +49,13 @@ namespace MSOE.MediaComplete
                     Pause();
                     break;
                 default:
-                    var newSongs = (from LibrarySongItem song in SongList.SelectedItems
+                    var newSongs = (from LibrarySongItem song in SongList.Items
                                     select new LocalSong(new FileInfo(song.GetPath())));
                     if (newSongs.Any())
                     {
                         NowPlaying.Inst.Clear();
                         NowPlaying.Inst.Add(newSongs);
+                        NowPlaying.Inst.JumpTo(SongList.SelectedIndex);
                     }
                     Play();
                     break;
@@ -82,6 +83,7 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void ContextMenu_PlaySelectedSongs_Click(object sender, RoutedEventArgs e)
         {
+            if (SongList.SelectedItems.Count == 0) return;
             NowPlaying.Inst.Clear();
             AddSelectedSongsToNowPlaying();
             Play();
