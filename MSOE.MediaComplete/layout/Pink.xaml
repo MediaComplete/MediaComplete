@@ -134,6 +134,7 @@
     <Brush x:Key="ToolbarBackgroundBrush">#FFFFE0F3</Brush>
     <Brush x:Key="PanelBrush">#FFE3B3CF</Brush>
     <Brush x:Key="MenuBrush">#FFE3B3CF</Brush>
+    <Brush x:Key="MenuBackgroundBrush">#FFDDEEFF</Brush>
 
     <Brush x:Key="TextBoxBackgroundDisabledBrush">Transparent</Brush>
     <Brush x:Key="TextBoxForegroundDisabledBrush">#FF8F1454</Brush>

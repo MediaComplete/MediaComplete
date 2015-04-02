@@ -506,7 +506,7 @@ namespace MSOE.MediaComplete
                 MetadataPanel.Visibility = Visibility.Collapsed;
                 MetadataColumn.MinWidth = 0;
                 MetadataColumn.Width = new GridLength(0);
-                HideMetadata.Content = "Show Details";
+                HideMetadata.Content = TryFindResource("Toolbar-ShowDetails-Content");
                 ContentSplitter.Visibility = Visibility.Collapsed;
             }
             else if (!MetadataPanel.IsVisible)
@@ -514,7 +514,7 @@ namespace MSOE.MediaComplete
                 MetadataPanel.Visibility = Visibility.Visible;
                 MetadataColumn.Width = new GridLength(225, GridUnitType.Star);
                 MetadataColumn.MinWidth = 225;
-                HideMetadata.Content = "Hide Details";
+                HideMetadata.Content = TryFindResource("Toolbar-HideDetails-Content"); 
                 ContentSplitter.Visibility = Visibility.Visible; 
             }
         }

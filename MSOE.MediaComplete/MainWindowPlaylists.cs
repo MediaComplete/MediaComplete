@@ -35,9 +35,21 @@ namespace MSOE.MediaComplete
             if (FolderTree.SelectedItems.Count <= 0)
                 return;
 
-            var list = FolderTree.SelectedItems.Count == 1 ? 
-                PlaylistService.CreatePlaylist(FolderTree.SelectedItems[0].ToString()) : 
-                PlaylistService.CreatePlaylist();
+            Playlist list = null;
+            if (FolderTree.SelectedItems.Count == 1)
+            {
+                try
+                {
+                    list = PlaylistService.CreatePlaylist(FolderTree.SelectedItems[0].ToString());
+                }
+                catch (IOException) // name already taken, just fall back on default name
+                {
+                }
+            }
+            if (list == null)
+            {
+                list = PlaylistService.CreatePlaylist();
+            }
 
             list.Songs.AddRange(from LibrarySongItem song in SongList.Items select new LocalSong(new FileInfo(song.GetPath())));
             list.Save();
@@ -55,9 +67,21 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void ContextMenu_AddSongsToNewPlaylist_Click(object sender, RoutedEventArgs e)
         {
-            var list = FolderTree.SelectedItems.Count == 1 ?
-                PlaylistService.CreatePlaylist(FolderTree.SelectedItems[0].ToString()) :
-                PlaylistService.CreatePlaylist();
+            Playlist list = null;
+            if (FolderTree.SelectedItems.Count == 1)
+            {
+                try
+                {
+                    list = PlaylistService.CreatePlaylist(FolderTree.SelectedItems[0].ToString());
+                }
+                catch (IOException) // name already taken, just fall back on default name
+                {
+                }
+            }
+            if (list == null)
+            {
+                list = PlaylistService.CreatePlaylist();
+            }
 
             var songs = SongList.SelectedItems.Count > 0 ? // No specific songs implies the whole thing
                 SongList.SelectedItems :
@@ -101,8 +125,11 @@ namespace MSOE.MediaComplete
         {
             if (FolderTree.SelectedItems.Count <= 0)
                 return;
-
-            var list = (Playlist)((MenuItem)sender).Header;
+            var list = ((MenuItem)sender).Header as Playlist;
+            if (list == null)
+            {
+                return;
+            }
 
             list.Songs.AddRange(from LibrarySongItem song in SongList.Items select new LocalSong(new FileInfo(song.GetPath())));
             list.Save();

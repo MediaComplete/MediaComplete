@@ -4,9 +4,14 @@
                     xmlns:mediaComplete="clr-namespace:MSOE.MediaComplete">
 
     <!-- Put strings up here - this is where internationalization would occur. -->
+    <system:String x:Key="Toolbar-AddFile-Tooltip">Add File(s)</system:String>
+    <system:String x:Key="Toolbar-AddFolder-Tooltip">Add Folder</system:String>
     <system:String x:Key="Toolbar-AutoIdMusic-Tooltip">Restore Metadata</system:String>
     <system:String x:Key="Toolbar-SortMusic-Tooltip">Refresh the sorting of your library</system:String>
     <system:String x:Key="Toolbar-SortMusicDisabled-Tooltip">Sorting is disabled in Settings Menu</system:String>
+    <system:String x:Key="Toolbar-HideDetails-Content">Hide Details</system:String>
+    <system:String x:Key="Toolbar-ShowDetails-Content">Show Details</system:String>
+    
     <system:String x:Key="ContextMenu-AutoIdMusic-Header">Restore Metadata</system:String>
     <system:String x:Key="ContextMenu-PlayMusic-Header">Play All</system:String>
     <system:String x:Key="ContextMenu-PlaySingle-Header">Play</system:String>

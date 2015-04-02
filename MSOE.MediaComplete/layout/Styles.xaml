@@ -34,7 +34,9 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <Border x:Name="bg" Background="{TemplateBinding Background}" BorderThickness="0">
+                    <Border x:Name="bg" Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}" 
+                            Margin="{TemplateBinding Margin}">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
@@ -46,6 +48,12 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style TargetType="Button" x:Key="ToolbarIconButton" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="Padding" Value="2"/>
+        <Setter Property="Margin" Value="1"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    
     <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="ToggleButton">
         <Grid>
             <Grid.ColumnDefinitions>
@@ -238,10 +246,7 @@
     <Style TargetType="{x:Type MenuItem}" x:Key="MenuItemStyle">
         <Setter Property="Foreground" Value="Black"/>
     </Style>
-    <Style TargetType="{x:Type ToolBarPanel}" x:Key="ToolBarPanelStyle">
-        <Setter Property="Background" Value="{DynamicResource ToolbarBackgroundBrush}"/>
-    </Style>
-    <Style TargetType="{x:Type ToolBar}" x:Key="ToolBarStyle">
+    <Style TargetType="{x:Type Panel}" x:Key="ToolBarPanelStyle">
         <Setter Property="Background" Value="{DynamicResource ToolbarBackgroundBrush}"/>
     </Style>
     <Style TargetType="{x:Type Grid}" x:Key="GridStyle">
@@ -267,4 +272,172 @@
     <Style TargetType="{x:Type Border}" x:Key="BorderStyle">
         <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
     </Style>
+
+    <!-- Menu Bar -->
+    <Style TargetType="Menu">
+        <Setter Property="Background" Value="{DynamicResource DefaultBackgroundBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+    </Style>
+
+    <!-- Menu Separator -->
+    <Style TargetType="{x:Type Separator}" x:Key="{x:Static MenuItem.SeparatorStyleKey}">
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="Background" Value="{DynamicResource MenuBackgroundBrush}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Separator}">
+                    <Rectangle Margin="10,2,10,2" Height="1" Fill="{DynamicResource PrimaryTextBrush}" HorizontalAlignment="Stretch"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- File/Edit Menu  -->
+    <ControlTemplate x:Key="{x:Static MenuItem.TopLevelHeaderTemplateKey}"
+                     TargetType="{x:Type MenuItem}">
+        <Border Name="Border" Padding="5,2,10,2" VerticalAlignment="Stretch">
+            <Grid>
+                <ContentPresenter Name="HeaderHost"
+                                    ContentSource="Header"
+                                    RecognizesAccessKey="True" />
+                <!-- Flyout menu -->
+                <Popup Name="Popup" 
+                        Placement="Bottom"
+                        IsOpen="{TemplateBinding IsSubmenuOpen}"
+                        AllowsTransparency="True"
+                        Focusable="False"
+                        PopupAnimation="Fade"
+                        HorizontalOffset="-5"
+                        VerticalOffset="5">
+                    <Border Name="SubmenuBorder"
+                            SnapsToDevicePixels="True"
+                            Background="{DynamicResource MenuBackgroundBrush}"
+                            Padding="0,5,0,5">
+                        <StackPanel IsItemsHost="True"
+                                KeyboardNavigation.DirectionalNavigation="Cycle" />
+                    </Border>
+                </Popup>
+            </Grid>
+        </Border>
+
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsHighlighted" Value="true">
+                <Setter TargetName="Border" Property="Background" Value="{DynamicResource ButtonDefaultHoverBrush}" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <!-- Context Menu -->
+    <Style TargetType="{x:Type ContextMenu}">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContextMenu}">
+                    <Border BorderThickness="0"
+                            x:Name="Border"
+                            Background="Transparent"
+                            CornerRadius="4"
+                            Padding="0,10,0,10">
+                        <StackPanel ClipToBounds="True"
+                                    Orientation="Vertical"
+                                    IsItemsHost="True" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="Border"
+                                    Property="Background"
+                                    Value="{DynamicResource MenuBackgroundBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- SubmenuItem -->
+    <ControlTemplate x:Key="{x:Static MenuItem.SubmenuItemTemplateKey}"
+                     TargetType="{x:Type MenuItem}">
+        <Border Name="Border" Padding="20,0,20,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Shortcut" />
+                </Grid.ColumnDefinitions>
+                <ContentPresenter Name="HeaderHost"
+                                  Grid.Column="0"
+                                  ContentSource="Header"
+                                  RecognizesAccessKey="True" />
+                <TextBlock x:Name="InputGestureText"
+                           Grid.Column="1"
+                           Text="{TemplateBinding InputGestureText}"
+                           Margin="5,2,0,2"
+                           DockPanel.Dock="Right" />
+            </Grid>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsHighlighted" Value="true">
+                <Setter TargetName="Border"
+                        Property="Background"
+                        Value="{DynamicResource ButtonDefaultHoverBrush}" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <!-- SubmenuHeader -->
+    <ControlTemplate x:Key="{x:Static MenuItem.SubmenuHeaderTemplateKey}"
+                    TargetType="{x:Type MenuItem}">
+        <Border Name="Border" Padding="20,0,5,0">
+            <StackPanel>
+                <!-- Header row -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Shortcut" />
+                        <ColumnDefinition Width="13" />
+                    </Grid.ColumnDefinitions>
+                    <ContentPresenter Name="HeaderHost"
+                                    Grid.Column="0"
+                                    ContentSource="Header"
+                                    RecognizesAccessKey="True" />
+                    <TextBlock x:Name="InputGestureText"
+                            Grid.Column="1"
+                            Text="{TemplateBinding InputGestureText}"
+                            Margin="5,2,2,2"
+                            DockPanel.Dock="Right" />
+                    <Path Grid.Column="2"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Data="M 0 0 L 0 7 L 4 3.5 Z"
+                        Fill="{DynamicResource PrimaryTextBrush}" />
+                </Grid>
+                <!-- Flyout menu -->
+                <Popup Name="Popup" 
+                        Placement="Right"
+                        HorizontalOffset="-4"
+                        IsOpen="{TemplateBinding IsSubmenuOpen}"
+                        AllowsTransparency="True"
+                        Focusable="False"
+                        PopupAnimation="Fade">
+                    <Border Name="SubmenuBorder"
+                            SnapsToDevicePixels="True"
+                            Background="{DynamicResource MenuBackgroundBrush}"
+                            BorderBrush="{DynamicResource MenuBackgroundBrush}"
+                            BorderThickness="1" 
+                            CornerRadius="4"
+                            Padding="0,10,0,10">
+                        <StackPanel IsItemsHost="True"
+                                    KeyboardNavigation.DirectionalNavigation="Cycle" />
+                    </Border>
+                </Popup>
+            </StackPanel>
+        </Border>
+
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsHighlighted" Value="true">
+                <Setter TargetName="Border" Property="Background" Value="{DynamicResource ButtonDefaultHoverBrush}" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
 </ResourceDictionary>

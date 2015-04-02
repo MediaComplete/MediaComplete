@@ -39,26 +39,32 @@
                 </MenuItem>
             </Menu>
         </Grid>
-        <ToolBarPanel Grid.Row="1" Style="{DynamicResource ToolBarPanelStyle}" ToolBarTray.IsLocked="True" >
-            <ToolBar Style="{DynamicResource ToolBarStyle}" Grid.Row="1" OverflowMode="Never">
-                            <Button x:Name="AddFile" ToolTip="Add File" VerticalAlignment="Center" Click="AddFile_ClickAsync" >
-                                <Image Source="{StaticResource Toolbar-AddMusicFile-Icon}" />
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Orientation="Horizontal"  Style="{DynamicResource ToolBarPanelStyle}" >
+                <Button ToolTip="{StaticResource Toolbar-AddFile-Tooltip}" Style="{StaticResource ToolbarIconButton}" Click="AddFile_ClickAsync" >
+                    <Image Source="{StaticResource Toolbar-AddMusicFile-Icon}" />
                 </Button>
-                <Button x:Name="AddFolder" ToolTip="Add Folder" VerticalAlignment="Center" Click="AddFolder_ClickAsync">
+                <Button ToolTip="{StaticResource Toolbar-AddFolder-Tooltip}" Style="{StaticResource ToolbarIconButton}" Click="AddFolder_ClickAsync">
                     <Image Source="{StaticResource Toolbar-AddMusicFolder-Icon}" />
                 </Button>
-                <Button x:Name="AutoIdentifyMusic" ToolTip="{StaticResource Toolbar-AutoIdMusic-Tooltip}"
-					VerticalAlignment="Center" Click="Toolbar_AutoIDMusic_ClickAsync">
+                <Button ToolTip="{StaticResource Toolbar-AutoIdMusic-Tooltip}"
+				    Style="{StaticResource ToolbarIconButton}" Click="Toolbar_AutoIDMusic_ClickAsync">
                     <Image Source="{StaticResource Toolbar-AutoIdMusic-Icon}" />
                 </Button>
-                <Button x:Name="SortMusic" ToolTip="{StaticResource Toolbar-SortMusic-Tooltip}"
-                        ToolTipService.ShowOnDisabled='true'
-					    VerticalAlignment="Center" Click="Toolbar_SortMusic_ClickAsync">
+                <Button ToolTip="{StaticResource Toolbar-SortMusic-Tooltip}"
+					    Style="{StaticResource ToolbarIconButton}" Click="Toolbar_SortMusic_ClickAsync">
                     <Image Source="{StaticResource Toolbar-SortMusic-Icon}" />
                 </Button>
-            </ToolBar>
-        </ToolBarPanel>
-        <Button Grid.Row="1" HorizontalAlignment="Right" Width="35" Content="Hide" x:Name="HideMetadata" Click="HideMetaDataPanel"/>
+            </StackPanel>
+            <DockPanel Grid.Column="1" HorizontalAlignment="Stretch" Style="{DynamicResource ToolBarPanelStyle}" >
+                <Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="5,1,5,1"
+                        x:Name="HideMetadata" Click="HideMetaDataPanel" Content="{StaticResource Toolbar-HideDetails-Content}" />
+            </DockPanel>
+        </Grid>
         <Grid Grid.Row="2" Style="{DynamicResource GridStyle}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="260*" MinWidth="100"/>
@@ -69,7 +75,7 @@
             </Grid.ColumnDefinitions>
             <TabControl DockPanel.Dock="Top" Grid.Column="0" BorderThickness="0" Margin="0,0,0,-4" SelectionChanged="LeftFrame_SelectionChanged">
                 <TabItem Header="Library" x:Name="LibraryTab">
-                    <controls:TreeViewEx x:Name="FolderTree" Margin="0,0,0,0" 
+                    <controls:TreeViewEx x:Name="FolderTree"
 				        AutomationProperties.Name="Tree" 
 				        MouseUp="FolderTree_OnMouseUp"
 				        ItemsSource="{Binding RootLibraryFolderItem.Children}" >
@@ -81,26 +87,26 @@
                         <controls:TreeViewEx.ContextMenu>
                             <ContextMenu StaysOpen="True">
                                 <MenuItem Header="{StaticResource ContextMenu-PlayMusic-Header}"
-							Click="ContextMenu_PlayFolderMusic_Click" />
-                            <MenuItem Header="{StaticResource ContextMenu-AddTo-Header}">
-                                <MenuItem.ItemsSource>
-                                    <CompositeCollection>
-                                        <MenuItem Header="{StaticResource ContextMenu-NowPlayingMusic-Header}"
-							            Click="ContextMenu_AddFolderToNowPlaying_Click" />
-                                        <MenuItem Header="{StaticResource ContextMenu-NewPlaylist-Header}"
-                                        Click="ContextMenu_AddFoldersToNewPlaylist_Click"/>
-                                        <Separator Visibility="{Binding Playlists, Converter={StaticResource PlaylistsEmptyConverter}}"/>
-                                        <CollectionContainer Collection="{Binding Source={StaticResource PlaylistsCollection}}"/>
-                                    </CompositeCollection>
-                                </MenuItem.ItemsSource>
-                                <MenuItem.ItemContainerStyle>
-                                    <Style TargetType="MenuItem">
-                                        <Setter Property="Header" Value="{Binding}"/>
-                                        <EventSetter Event="Click" Handler="ContextMenu_AddFoldersToPlaylist_Click"/>
-                                    </Style>
-                                </MenuItem.ItemContainerStyle>
-                            </MenuItem>
-                        </ContextMenu>
+							        Click="ContextMenu_PlayFolderMusic_Click" />
+                                <MenuItem Header="{StaticResource ContextMenu-AddTo-Header}">
+                                    <MenuItem.ItemsSource>
+                                        <CompositeCollection>
+                                            <MenuItem Header="{StaticResource ContextMenu-NowPlayingMusic-Header}"
+							                Click="ContextMenu_AddFolderToNowPlaying_Click" />
+                                            <MenuItem Header="{StaticResource ContextMenu-NewPlaylist-Header}"
+                                            Click="ContextMenu_AddFoldersToNewPlaylist_Click"/>
+                                            <Separator Visibility="{Binding Playlists, Converter={StaticResource PlaylistsEmptyConverter}}"/>
+                                            <CollectionContainer Collection="{Binding Source={StaticResource PlaylistsCollection}}"/>
+                                        </CompositeCollection>
+                                    </MenuItem.ItemsSource>
+                                    <MenuItem.ItemContainerStyle>
+                                        <Style TargetType="MenuItem">
+                                            <Setter Property="Header" Value="{Binding}"/>
+                                            <EventSetter Event="Click" Handler="ContextMenu_AddFoldersToPlaylist_Click"/>
+                                        </Style>
+                                    </MenuItem.ItemContainerStyle>
+                                </MenuItem>
+                            </ContextMenu>
                         </controls:TreeViewEx.ContextMenu>
                     </controls:TreeViewEx>
                 </TabItem>
