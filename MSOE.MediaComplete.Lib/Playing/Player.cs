@@ -151,6 +151,7 @@ namespace MSOE.MediaComplete.Lib.Playing
             else
             {
                 if (PlaybackEnded != null) PlaybackEnded(sender, stoppedEventArgs);
+                OnSongFinishedEvent(-1,-1);
             }
         }
         public delegate void SongFinished(int oldPath, int newPath);
@@ -158,7 +159,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         public event  SongFinished SongFinishedEvent = delegate { };
         #endregion
 
-        protected virtual void OnSongFinishedEvent(int oldIndex , int newIndex )
+        protected void OnSongFinishedEvent(int oldIndex , int newIndex )
         {
             SongFinishedEvent(oldIndex, newIndex);
         }

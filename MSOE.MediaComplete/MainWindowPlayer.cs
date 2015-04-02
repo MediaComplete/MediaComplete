@@ -97,7 +97,11 @@ namespace MSOE.MediaComplete
         {
             var list = (from LibrarySongItem song in SongList.SelectedItems select 
                             new LocalSong(new FileInfo(song.GetPath()))).Cast<AbstractSong>().ToList();
-            NowPlaying.Inst.InsertRange(NowPlaying.Inst.Index+1, list);
+            NowPlaying.Inst.InsertRange(NowPlaying.Inst.Index + 1, list);
+            if (_player.PlaybackState == PlaybackState.Stopped)
+            {
+                Play();
+            }
         }
 
         /// <summary>

@@ -8,7 +8,6 @@ using System.Windows.Media.Imaging;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Import;
@@ -82,7 +81,14 @@ namespace MSOE.MediaComplete
 
         private void UpdateColorEvent(int oldIndex, int newIndex)
         {
-            if (PlaylistList.SelectedIndex == 0) { 
+            if (oldIndex == -1 && newIndex == -1)
+            {
+                var song = (PlaylistSongItem) PlaylistSongs.Items[NowPlaying.Inst.Index];
+                song.IsPlaying = false;
+                song.InvalidateProperty(AbstractSongItem.IsPlayingProperty);
+            }
+            else if (PlaylistList.SelectedIndex == 0)
+            {
                 var oldSong = ((PlaylistSongItem)PlaylistSongs.Items[oldIndex]);
                 var newSong = ((PlaylistSongItem)PlaylistSongs.Items[newIndex]);
                 oldSong.IsPlaying = false;
