@@ -180,10 +180,11 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="23"/>
                 </Grid.RowDefinitions>
-                <Label Grid.Column="0" Name="CurrentTimeLabel"/>
+                <Label Grid.Column="0" Name="CurrentTimeLabel" Content="00:00"/>
                 <Slider Name="TrackBar" Margin="0,3,0,0"  Cursor="Cross" Style ="{DynamicResource HorizontalSlider}" Grid.Column="1" Minimum="0" Maximum="100" IsMoveToPointEnabled="True" ValueChanged="TrackBar_OnValueChanged" PreviewMouseDown="Thumb_MouseDown" PreviewMouseUp="Thumb_MouseUp"/>
-                <Label Grid.Column="2" Name="RemainingTimeLabel" HorizontalContentAlignment="Right" />
+                <Label Grid.Column="2" Name="RemainingTimeLabel" HorizontalContentAlignment="Right" Content="-00:00"/>
             </Grid>
+            <Grid>
                 <StackPanel Height="75" Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button Name="PreviousButton" Height="60" Width="60" Style="{DynamicResource PreviousButton}" Click="PreviousButton_OnClick"/>
                     <Button Name="PlayPauseButton" Height="75" Width="75" Click="PlayPauseButton_OnClick"/>
@@ -261,6 +262,7 @@
                     </Slider.Template>
                 </Slider>
                 <Label Name="VolumePercentLabel" Content="{Binding ElementName=VolumeSlider, Path=Value, Converter={StaticResource VolumeConverter}}" HorizontalAlignment="Right" Margin="0,22,101,10" VerticalAlignment="Top"/>
+            </Grid>
         </StackPanel>
         <StackPanel Grid.Row="4" Grid.Column="0" Height="22">
             <StatusBar Style="{DynamicResource StatusBarStyle}">
