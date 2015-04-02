@@ -151,6 +151,7 @@ namespace MSOE.MediaComplete.Lib.Playing
             else
             {
                 if (PlaybackEnded != null) PlaybackEnded(sender, stoppedEventArgs);
+                PlaybackState = PlaybackState.Stopped;
                 OnSongFinishedEvent(-1,-1);
             }
         }

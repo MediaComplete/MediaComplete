@@ -14,6 +14,7 @@ using MSOE.MediaComplete.Lib.Import;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Playing;
 using MSOE.MediaComplete.Lib.Sorting;
+using NAudio.Wave;
 using Application = System.Windows.Application;
 using WinForms = System.Windows.Forms;
 
@@ -62,7 +63,6 @@ namespace MSOE.MediaComplete
             _fileMover.CreateDirectory(homeDir);
             _refreshTimer = new Timer(TimerProc);
             
-            
             InitEvents();
 
             InitTreeView();
@@ -76,38 +76,39 @@ namespace MSOE.MediaComplete
         {
             var nowPlaying = new PlaylistItem{ Content= "Now Playing", };
             PlaylistList.Items.Add(nowPlaying);
+            _visibleList = SongList;
             Player.Instance.SongFinishedEvent += UpdateColorEvent;
         }
 
         private void UpdateColorEvent(int oldIndex, int newIndex)
         {
+            if (SongList.Visibility.Equals(Visibility.Visible)) return;
             if (oldIndex == -1 && newIndex == -1)
             {
                 var song = (PlaylistSongItem) PlaylistSongs.Items[NowPlaying.Inst.Index];
                 song.IsPlaying = false;
-                song.InvalidateProperty(AbstractSongItem.IsPlayingProperty);
             }
             else if (PlaylistList.SelectedIndex == 0)
             {
                 var oldSong = ((PlaylistSongItem)PlaylistSongs.Items[oldIndex]);
                 var newSong = ((PlaylistSongItem)PlaylistSongs.Items[newIndex]);
                 oldSong.IsPlaying = false;
-                oldSong.InvalidateProperty(AbstractSongItem.IsPlayingProperty);
                 newSong.IsPlaying = true;
-                newSong.InvalidateProperty(AbstractSongItem.IsPlayingProperty);
             }
         }
 
         private void ShowNowPlaying()
         {
-            PlaylistSongs.Items.Clear();
-            NowPlaying.Inst.Playlist.Songs.ForEach(x => PlaylistSongs.Items.Add((new PlaylistSongItem{Content = x, Path = x.GetPath()})));
-            PlaylistSongs.SelectedIndex = NowPlaying.Inst.Index;
-            if (NowPlaying.Inst.Index > -1)
-            {
-                ((PlaylistSongItem)PlaylistSongs.SelectedItem).IsPlaying = true;
-                ((PlaylistSongItem)PlaylistSongs.SelectedItem).InvalidateProperty(AbstractSongItem.IsPlayingProperty);
+            if (!_player.PlaybackState.Equals(PlaybackState.Stopped)) 
+            { 
+                PlaylistSongs.Items.Clear();
+                NowPlaying.Inst.Playlist.Songs.ForEach(x => PlaylistSongs.Items.Add((new PlaylistSongItem{Content = x, Path = x.GetPath()})));
+                PlaylistSongs.SelectedIndex = NowPlaying.Inst.Index;
+                if (NowPlaying.Inst.Index > -1 && !_player.PlaybackState.Equals(PlaybackState.Stopped))
+                {
+                    ((PlaylistSongItem)PlaylistSongs.SelectedItem).IsPlaying = true;
 
+                }
             }
         }
         private void InitEvents()
@@ -477,7 +478,7 @@ namespace MSOE.MediaComplete
             ((PlaylistSongItem)PlaylistSongs.SelectedItem).IsPlaying = true;
             ((PlaylistSongItem)PlaylistSongs.Items[NowPlaying.Inst.Index]).IsPlaying = false;
             NowPlaying.Inst.JumpTo(PlaylistSongs.SelectedIndex);
-            Player.Instance.Play();
+            Play();
         }
 
         private void PlaylistList_OnMouseUp(object sender, MouseButtonEventArgs e)
@@ -490,7 +491,6 @@ namespace MSOE.MediaComplete
         private void PlaylistSongs_OnMouseUp(object sender, MouseButtonEventArgs e)
         {
             if (PlaylistSongs.Items.Count == 0) return;
-            ((PlaylistSongItem) PlaylistSongs.Items[NowPlaying.Inst.Index]).IsPlaying = true;
             FormCheck();
             if (PlaylistSongs.SelectedItems.Count > 0)
                 PopulateMetadataForm();
