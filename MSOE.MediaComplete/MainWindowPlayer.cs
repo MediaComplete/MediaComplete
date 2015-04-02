@@ -95,11 +95,14 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void ContextMenu_PlaySongNext_Click(object sender, RoutedEventArgs e)
         {
+            var count = NowPlaying.Inst.SongCount();
             var list = (from LibrarySongItem song in SongList.SelectedItems select 
                             new LocalSong(new FileInfo(song.GetPath()))).Cast<AbstractSong>().ToList();
             NowPlaying.Inst.InsertRange(NowPlaying.Inst.Index + 1, list);
             if (_player.PlaybackState == PlaybackState.Stopped)
             {
+                if (count.Equals(NowPlaying.Inst.Index + 1))
+                    NowPlaying.Inst.NextSong();
                 Play();
             }
         }
