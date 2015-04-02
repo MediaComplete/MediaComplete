@@ -49,12 +49,13 @@ namespace MSOE.MediaComplete
                     Pause();
                     break;
                 default:
-                    var newSongs = (from SongTreeViewItem song in SongTree.SelectedItems
+                    var newSongs = (from LibrarySongItem song in SongList.Items
                                     select new LocalSong(new FileInfo(song.GetPath())));
                     if (newSongs.Any())
                     {
                         NowPlaying.Inst.Clear();
                         NowPlaying.Inst.Add(newSongs);
+                        NowPlaying.Inst.JumpTo(SongList.SelectedIndex);
                     }
                     Play();
                     break;
@@ -82,6 +83,7 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void ContextMenu_PlaySelectedSongs_Click(object sender, RoutedEventArgs e)
         {
+            if (SongList.SelectedItems.Count == 0) return;
             NowPlaying.Inst.Clear();
             AddSelectedSongsToNowPlaying();
             Play();
@@ -95,17 +97,14 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void ContextMenu_PlaySongNext_Click(object sender, RoutedEventArgs e)
         {
-            var initialCount = NowPlaying.Inst.SongCount();
-            AddSelectedSongsToNowPlaying();
-
-            var j = NowPlaying.Inst.Index + 1;
-            for (var i = initialCount; i < NowPlaying.Inst.SongCount(); i++)
-            {
-                NowPlaying.Inst.Move(i, j++);
-            }
-
+            var count = NowPlaying.Inst.SongCount();
+            var list = (from LibrarySongItem song in SongList.SelectedItems select 
+                            new LocalSong(new FileInfo(song.GetPath()))).Cast<AbstractSong>().ToList();
+            NowPlaying.Inst.InsertRange(NowPlaying.Inst.Index + 1, list);
             if (_player.PlaybackState == PlaybackState.Stopped)
             {
+                if (count.Equals(NowPlaying.Inst.Index + 1))
+                    NowPlaying.Inst.NextSong();
                 Play();
             }
         }
@@ -203,9 +202,9 @@ namespace MSOE.MediaComplete
         {
             NowPlaying.Inst.Clear();
             AddAllSongsToNowPlaying();
-            if (SongTree.SelectedItems.Count > 0)
+            if (SongList.SelectedItems.Count > 0)
             {
-                var songTreeViewItem = SongTree.SelectedItems[0] as SongTreeViewItem;
+                var songTreeViewItem = SongList.SelectedItems[0] as LibrarySongItem;
                 if (songTreeViewItem != null)
                     NowPlaying.Inst.JumpTo(new LocalSong(new FileInfo(songTreeViewItem.GetPath())));
                 Play();
@@ -269,6 +268,7 @@ namespace MSOE.MediaComplete
         {
             _player.Resume();
             PlayPauseButton.SetResourceReference(StyleProperty, "PauseButton");
+            
         }
 
         /// <summary>
@@ -279,6 +279,8 @@ namespace MSOE.MediaComplete
             _player.Stop();
             NowPlaying.Inst.Clear();
             PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
+            if(_visibleList.Equals(PlaylistSongs) && PlaylistList.SelectedIndex==0) 
+                PlaylistSongs.Items.Clear();
         }
 
         /// <summary>
@@ -305,7 +307,7 @@ namespace MSOE.MediaComplete
         /// </summary>
         private void AddAllSongsToNowPlaying()
         {
-            NowPlaying.Inst.Add((from SongTreeViewItem song in SongTree.Items
+            NowPlaying.Inst.Add((from LibrarySongItem song in SongList.Items
                                  select new LocalSong(new FileInfo(song.GetPath()))));
         }
 
@@ -314,7 +316,7 @@ namespace MSOE.MediaComplete
         /// </summary>
         private void AddSelectedSongsToNowPlaying()
         {
-            NowPlaying.Inst.Add((from SongTreeViewItem song in SongTree.SelectedItems
+            NowPlaying.Inst.Add((from LibrarySongItem song in SongList.SelectedItems
                                  select new LocalSong(new FileInfo(song.GetPath()))));
         }
         #endregion

@@ -7,7 +7,7 @@ using consts = MSOE.MediaComplete.Lib.Constants;
 
 namespace MSOE.MediaComplete.CustomControls
 {
-    internal class FolderTreeViewItem : TreeViewItem
+    public class FolderTreeViewItem : TreeViewItem
     {
         public FolderTreeViewItem()
 		{

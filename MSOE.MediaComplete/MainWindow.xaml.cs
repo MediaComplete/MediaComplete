@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Globalization;
 using System.Linq;
-using MSOE.MediaComplete.Lib.Import;
-using MSOE.MediaComplete.Lib.Metadata;
 using System.Threading;
-using WinForms = System.Windows.Forms;
 using System.Windows.Media.Imaging;
-using MSOE.MediaComplete.Lib;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using MSOE.MediaComplete.CustomControls;
+using MSOE.MediaComplete.Lib;
+using MSOE.MediaComplete.Lib.Import;
+using MSOE.MediaComplete.Lib.Metadata;
+using MSOE.MediaComplete.Lib.Playing;
 using MSOE.MediaComplete.Lib.Sorting;
-using System.Windows.Controls;
+using NAudio.Wave;
 using Application = System.Windows.Application;
-using System.Globalization;
+using WinForms = System.Windows.Forms;
 
 namespace MSOE.MediaComplete
 {
@@ -61,14 +63,54 @@ namespace MSOE.MediaComplete
             _fileMover.CreateDirectory(homeDir);
             _refreshTimer = new Timer(TimerProc);
             
-            
             InitEvents();
 
             InitTreeView();
 
+            InitPlaylists();
+
             InitPlayer();
         }
 
+        private void InitPlaylists()
+        {
+            var nowPlaying = new PlaylistItem{ Content= "Now Playing", };
+            PlaylistList.Items.Add(nowPlaying);
+            _visibleList = SongList;
+            Player.Instance.SongFinishedEvent += UpdateColorEvent;
+        }
+
+        private void UpdateColorEvent(int oldIndex, int newIndex)
+        {
+            if (SongList.Visibility.Equals(Visibility.Visible)) return;
+            if (oldIndex == -1 && newIndex == -1)
+            {
+                var song = (PlaylistSongItem) PlaylistSongs.Items[NowPlaying.Inst.Index];
+                song.IsPlaying = false;
+            }
+            else if (PlaylistList.SelectedIndex == 0)
+            {
+                var oldSong = ((PlaylistSongItem)PlaylistSongs.Items[oldIndex]);
+                var newSong = ((PlaylistSongItem)PlaylistSongs.Items[newIndex]);
+                oldSong.IsPlaying = false;
+                newSong.IsPlaying = true;
+            }
+        }
+
+        private void ShowNowPlaying()
+        {
+            if (!_player.PlaybackState.Equals(PlaybackState.Stopped)) 
+            { 
+                PlaylistSongs.Items.Clear();
+                NowPlaying.Inst.Playlist.Songs.ForEach(x => PlaylistSongs.Items.Add((new PlaylistSongItem{Content = x, Path = x.GetPath()})));
+                PlaylistSongs.SelectedIndex = NowPlaying.Inst.Index;
+                if (NowPlaying.Inst.Index > -1 && !_player.PlaybackState.Equals(PlaybackState.Stopped))
+                {
+                    ((PlaylistSongItem)PlaylistSongs.SelectedItem).IsPlaying = true;
+
+                }
+            }
+        }
         private void InitEvents()
         {
             Polling.InboxFilesDetected += ImportFromInboxAsync;
@@ -178,7 +220,7 @@ namespace MSOE.MediaComplete
             //Create Parent node
             var firstNode = new FolderTreeViewItem { Header = SettingWrapper.MusicDir, ParentItem = null};
 
-            SongTree.Items.Clear();
+            SongList.Items.Clear();
             var rootFiles = new DirectoryInfo(SettingWrapper.MusicDir).GetFilesOrCreateDir();
             var rootDirs = new DirectoryInfo(SettingWrapper.MusicDir).GetDirectories();
 
@@ -186,12 +228,12 @@ namespace MSOE.MediaComplete
             foreach (var rootChild in rootDirs)
             {   
                 //add each child to the root folder
-                firstNode.Children.Add(PopulateFromFolder(rootChild, SongTree, firstNode));
+                firstNode.Children.Add(PopulateFromFolder(rootChild, SongList, firstNode));
             }
 
             foreach (var rootChild in rootFiles.GetMusicFiles())
             {
-                SongTree.Items.Add(new SongTreeViewItem { Header = rootChild.Name, ParentItem = firstNode });
+                SongList.Items.Add(new LibrarySongItem { Content = rootChild.Name, ParentItem = firstNode });
             }
 
             DataContext = firstNode;
@@ -230,7 +272,7 @@ namespace MSOE.MediaComplete
             
             foreach (var file in dirInfo.GetFilesOrCreateDir().GetMusicFiles())
             {
-                songTree.Items.Add(new SongTreeViewItem { Header = file.Name, ParentItem = dirItem });
+                songTree.Items.Add(new LibrarySongItem { Content = file.Name, ParentItem = dirItem });
             }
             return dirItem;
         }
@@ -243,7 +285,7 @@ namespace MSOE.MediaComplete
                 PopulateSongTree(dir, songTree, dirItem, false);
             }
 
-            foreach (var x in dirInfo.GetFilesOrCreateDir().GetMusicFiles().Select(file => new SongTreeViewItem { Header = file.Name, ParentItem = dirItem }))
+            foreach (var x in dirInfo.GetFilesOrCreateDir().GetMusicFiles().Select(file => new LibrarySongItem { Content = file.Name, ParentItem = dirItem }))
             {
                 songTree.Items.Add(x);
             }
@@ -259,7 +301,7 @@ namespace MSOE.MediaComplete
             FormCheck();
             if (FolderTree.SelectedItems != null && FolderTree.SelectedItems.Count > 0)
             {
-                SongTree.Items.Clear();
+                SongList.Items.Clear();
                 foreach (var folder in FolderTree.SelectedItems)
                 {
                     //current file
@@ -268,7 +310,7 @@ namespace MSOE.MediaComplete
                     var dirInfo = new DirectoryInfo((item.GetPath()));
                     if (!ContainsParent(item))
                     {
-                        PopulateSongTree(dirInfo, SongTree, item, true);
+                        PopulateSongTree(dirInfo, SongList, item, true);
                     }
                 }
             }
@@ -287,7 +329,7 @@ namespace MSOE.MediaComplete
         private void SongTree_OnMouseUp(object sender, MouseButtonEventArgs e)
         {
             FormCheck();
-            if(SongTree.SelectedItems.Count > 0)
+            if (SongList.SelectedItems.Count > 0)
                 PopulateMetadataForm();
             else
                 ClearDetailPane();
@@ -322,7 +364,7 @@ namespace MSOE.MediaComplete
         private async void Toolbar_AutoIDMusic_ClickAsync(object sender, RoutedEventArgs e)
         {
             // TODO (MC-45) mass ID of multi-selected songs and folders
-            foreach (var selection in from object item in SongTree.SelectedItems select item as SongTreeViewItem)
+            foreach (var selection in from object item in _visibleList.SelectedItems select item as AbstractSongItem)
             {
                 try
                 {
@@ -349,11 +391,11 @@ namespace MSOE.MediaComplete
             var contextMenu = menuItem.Parent as ContextMenu;
             if (contextMenu == null)
                 return;
-            foreach (var item in SongTree.SelectedItems)
+            foreach (var item in SongList.SelectedItems)
             {
                 try
                 {
-                    await MusicIdentifier.IdentifySongAsync(_fileMover, ((SongTreeViewItem)item).GetPath());
+                    await MusicIdentifier.IdentifySongAsync(_fileMover, ((LibrarySongItem)item).GetPath());
                 }
                 catch (Exception ex)
                 {
@@ -363,7 +405,6 @@ namespace MSOE.MediaComplete
                         StatusBarHandler.StatusIcon.Error);
                 }
             }
-            
         }
 
         /// <summary>
@@ -407,6 +448,96 @@ namespace MSOE.MediaComplete
             if (_changedBoxes.Contains((TextBox) sender) || SongTitle.IsReadOnly) return;
             _changedBoxes.Add((TextBox)sender);
             StatusBarHandler.Instance.ChangeStatusBarMessage("", StatusBarHandler.StatusIcon.None);
+        }
+
+        private void LeftFrame_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (PlaylistTab.IsSelected)
+            {
+                PlaylistSongs.Visibility = Visibility.Visible;
+                PlaylistName.Visibility = Visibility.Visible;
+                SongList.Visibility = Visibility.Hidden;
+                PlaylistList.SelectedItem = PlaylistList.Items[0];
+                _visibleList = PlaylistSongs;
+                ShowNowPlaying();
+                PlaylistName.Content = ((PlaylistItem)PlaylistList.SelectedItem).Content;
+                ClearDetailPane();
+            }
+            if (LibraryTab.IsSelected)
+            {
+                PlaylistSongs.Visibility = Visibility.Hidden;
+                PlaylistName.Visibility = Visibility.Hidden;
+                SongList.Visibility = Visibility.Visible;
+                _visibleList = SongList;
+            }
+        }
+
+        private void PlaylistSongs_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (PlaylistSongs.SelectedItems.Count == 0) return;
+            ((PlaylistSongItem)PlaylistSongs.SelectedItem).IsPlaying = true;
+            ((PlaylistSongItem)PlaylistSongs.Items[NowPlaying.Inst.Index]).IsPlaying = false;
+            NowPlaying.Inst.JumpTo(PlaylistSongs.SelectedIndex);
+            Play();
+        }
+
+        private void PlaylistList_OnMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (PlaylistList.SelectedIndex == 0)
+                ShowNowPlaying();
+            PlaylistName.Content = ((PlaylistItem) PlaylistList.SelectedItem).Content;
+        }
+
+        private void PlaylistSongs_OnMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (PlaylistSongs.Items.Count == 0) return;
+            FormCheck();
+            if (PlaylistSongs.SelectedItems.Count > 0)
+                PopulateMetadataForm();
+            else
+                ClearDetailPane();
+        }
+
+        private void HideMetaDataPanel(object sender, RoutedEventArgs e)
+        {
+            if (MetadataPanel.IsVisible)
+            {
+                MetadataPanel.Visibility = Visibility.Collapsed;
+                MetadataColumn.MinWidth = 0;
+                MetadataColumn.Width = new GridLength(0);
+                HideMetadata.Content = "Show Details";
+                ContentSplitter.Visibility = Visibility.Collapsed;
+            }
+            else if (!MetadataPanel.IsVisible)
+            {
+                MetadataPanel.Visibility = Visibility.Visible;
+                MetadataColumn.Width = new GridLength(225, GridUnitType.Star);
+                MetadataColumn.MinWidth = 225;
+                HideMetadata.Content = "Hide Details";
+                ContentSplitter.Visibility = Visibility.Visible; 
+            }
+        }
+
+        private void LoopButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (sender.Equals(LoopButton))
+            {
+                LoopButtonPressed.Visibility = Visibility.Visible;
+                LoopButtonOne.Visibility = Visibility.Hidden;
+                LoopButton.Visibility = Visibility.Hidden;
+            }
+            else if (sender.Equals(LoopButtonPressed))
+            {
+                LoopButtonPressed.Visibility = Visibility.Hidden;
+                LoopButtonOne.Visibility = Visibility.Visible;
+                LoopButton.Visibility = Visibility.Hidden;
+            }
+            else if (sender.Equals(LoopButtonOne))
+            {
+                LoopButtonPressed.Visibility = Visibility.Hidden;
+                LoopButtonOne.Visibility = Visibility.Hidden;
+                LoopButton.Visibility = Visibility.Visible;
+            }
         }
     }
 }

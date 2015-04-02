@@ -175,6 +175,7 @@ namespace MSOE.MediaComplete
 
             if (!_fileMover.DirectoryExists(SettingWrapper.MusicDir))
                 _fileMover.CreateDirectory(SettingWrapper.MusicDir);
+            
             Close();
         }
 
