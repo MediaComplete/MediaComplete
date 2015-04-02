@@ -39,7 +39,7 @@ namespace MSOE.MediaComplete
                 PlaylistService.CreatePlaylist(FolderTree.SelectedItems[0].ToString()) : 
                 PlaylistService.CreatePlaylist();
 
-            list.Songs.AddRange(from SongTreeViewItem song in SongTree.Items select new LocalSong(new FileInfo(song.GetPath())));
+            list.Songs.AddRange(from LibrarySongItem song in SongList.Items select new LocalSong(new FileInfo(song.GetPath())));
             list.Save();
             _playlists.Add(list);
             // TODO MC-207 flow to rename
@@ -59,11 +59,11 @@ namespace MSOE.MediaComplete
                 PlaylistService.CreatePlaylist(FolderTree.SelectedItems[0].ToString()) :
                 PlaylistService.CreatePlaylist();
 
-            var songs = SongTree.SelectedItems.Count > 0 ? // No specific songs implies the whole thing
-                SongTree.SelectedItems :
-                SongTree.Items;
+            var songs = SongList.SelectedItems.Count > 0 ? // No specific songs implies the whole thing
+                SongList.SelectedItems :
+                SongList.Items;
 
-            list.Songs.AddRange(from SongTreeViewItem song in songs select new LocalSong(new FileInfo(song.GetPath())));
+            list.Songs.AddRange(from LibrarySongItem song in songs select new LocalSong(new FileInfo(song.GetPath())));
             list.Save();
             _playlists.Add(list);
             // TODO MC-207 flow to rename
@@ -83,11 +83,11 @@ namespace MSOE.MediaComplete
                 return;
             }
 
-            var songs = SongTree.SelectedItems.Count > 0 ? // No specific songs implies the whole thing
-                SongTree.SelectedItems :
-                SongTree.Items;
+            var songs = SongList.SelectedItems.Count > 0 ? // No specific songs implies the whole thing
+                SongList.SelectedItems :
+                SongList.Items;
 
-            list.Songs.AddRange(from SongTreeViewItem song in songs select new LocalSong(new FileInfo(song.GetPath())));
+            list.Songs.AddRange(from LibrarySongItem song in songs select new LocalSong(new FileInfo(song.GetPath())));
             list.Save();
         }
 
@@ -104,7 +104,7 @@ namespace MSOE.MediaComplete
 
             var list = (Playlist)((MenuItem)sender).Header;
 
-            list.Songs.AddRange(from SongTreeViewItem song in SongTree.Items select new LocalSong(new FileInfo(song.GetPath())));
+            list.Songs.AddRange(from LibrarySongItem song in SongList.Items select new LocalSong(new FileInfo(song.GetPath())));
             list.Save();
         }
     }

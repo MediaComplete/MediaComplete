@@ -59,5 +59,15 @@ namespace MSOE.MediaComplete.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Music and Playlist folders will be created within the folder you choose. Your existing files will be moved appropriately..
+        /// </summary>
+        public static string Description {
+            get {
+                return ResourceManager.GetString("Settings_BtnSelectHomeFolder_Click_Music_and_Playlist_folders_will_be_created_wit" +
+                        "hin_the_folder_you_choose__Your_existing_files_will_be_moved_appropriately_", resourceCulture);
+            }
+        }
     }
 }
