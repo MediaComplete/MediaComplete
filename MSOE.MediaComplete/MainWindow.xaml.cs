@@ -97,7 +97,7 @@ namespace MSOE.MediaComplete
             PlaylistSongs.Items.Clear();
             NowPlaying.Inst.Playlist.Songs.ForEach(x => PlaylistSongs.Items.Add((new PlaylistSongItem{Content = x, Path = x.GetPath()})));
             PlaylistSongs.SelectedIndex = NowPlaying.Inst.Index;
-            if (NowPlaying.Inst.Index > 0)
+            if (NowPlaying.Inst.Index > -1)
             {
                 ((PlaylistSongItem)PlaylistSongs.SelectedItem).IsPlaying = true;
                 ((PlaylistSongItem)PlaylistSongs.SelectedItem).InvalidateProperty(AbstractSongItem.IsPlayingProperty);
