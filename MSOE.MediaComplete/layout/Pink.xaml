@@ -485,7 +485,20 @@
             </Setter.Value>
         </Setter>
     </Style>
-
+    <Style TargetType="{x:Type Rectangle}" x:Key="VolumeFillColor">
+        <Setter Property="Fill">
+            <Setter.Value>
+                #FFCD6AA5
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type Rectangle}" x:Key="VolumeBarColor">
+        <Setter Property="Fill">
+            <Setter.Value>
+                #FF2D2D30
+            </Setter.Value>
+        </Setter>
+    </Style>
 
     <Style x:Key="SliderRepeatButton" TargetType="RepeatButton">
         <Setter Property="SnapsToDevicePixels" Value="true" />

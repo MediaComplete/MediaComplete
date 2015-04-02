@@ -15,7 +15,7 @@
             Style="{DynamicResource TextBlockStyle}"/>
         <CheckBox Name="StopShowingCheckBox" Margin="10,50,0,0" Content="Don't show this message again." Style="{DynamicResource CheckBoxStyle}"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-            <Button Name="OkButton" Click="okButton_Click" IsDefault="True" MinWidth="65" Margin="0,0,0,10">Yes</Button>
+            <Button Name="OkButton" Click="okButton_ClickAsync" IsDefault="True" MinWidth="65" Margin="0,0,0,10">Yes</Button>
             <Button Name="CancelButton" Click="CancelButton_OnClick" IsCancel="True"  MinWidth="65" Margin="10,0,10,10">No</Button>
         </StackPanel>
     </Grid>

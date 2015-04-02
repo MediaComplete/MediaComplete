@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Net.Sockets;
 using System.Windows;
 using TinyWebServer;
 
@@ -11,18 +12,20 @@ namespace MSOE.MediaComplete.CustomControls
     /// </summary>
     public partial class BackgroundYoutubePlayer
     {
-        public const string Url = "http://localhost:65465/BackgroundYoutubePlayer/";
+        public const string Url = "http://localhost:{0}/BackgroundYoutubePlayer/";
 
         public BackgroundYoutubePlayer()
         {
             InitializeComponent();
-            var embeddedServer = new WebServer(ServePage, Url);
-            embeddedServer.Run();
 
-            YoutubeBrowser.Source = new Uri(Url);
+            var url = String.Format(Url, FreeTcpPort());
+
+            var embeddedServer = new WebServer(ServePage, url);
+            embeddedServer.Run();
+            YoutubeBrowser.Source = new Uri(url);
         }
 
-        public string ServePage(HttpListenerRequest request)
+        public static string ServePage(HttpListenerRequest request)
         {
             var html = "";
             var uri = new Uri("/CustomControls/BackgroundYoutubePlayer.html", UriKind.Relative);
@@ -37,6 +40,21 @@ namespace MSOE.MediaComplete.CustomControls
             }
 
             return html;
+        }
+
+        /// <summary>
+        /// Returns the next free TCP port on this machine. 
+        /// 
+        /// Code adapted from http://stackoverflow.com/questions/138043
+        /// </summary>
+        /// <returns>The next open TCP port</returns>
+        private static int FreeTcpPort()
+        {
+            var l = new TcpListener(IPAddress.Loopback, 0);
+            l.Start();
+            var port = ((IPEndPoint)l.LocalEndpoint).Port;
+            l.Stop();
+            return port;
         }
     }
 }

@@ -6,11 +6,12 @@ namespace MSOE.MediaComplete.Lib.Playing
 {
     public interface INAudioWrapper
     {
-        void Setup(FileInfo fileInfo, EventHandler<StoppedEventArgs> handler);
+        void Setup(FileInfo fileInfo, EventHandler<StoppedEventArgs> handler, double currentVolume);
         PlaybackState Play();
         PlaybackState Pause();
         PlaybackState Stop();
         PlaybackState Seek(TimeSpan timeToSeekTo);
+        void ChangeVolume(double sliderVolume);
         TimeSpan TotalTime { get; }
         TimeSpan CurrentTime { get; }
     }

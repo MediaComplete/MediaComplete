@@ -16,6 +16,11 @@ namespace MSOE.MediaComplete.Lib.Playing
         private static Player _instance;
 
         /// <summary>
+        /// the current volume of the player
+        /// </summary>
+        private static double _currentVolume = 1.0f;
+
+        /// <summary>
         /// gets the singleton instance of the Player
         /// </summary>
         public static Player Instance
@@ -55,9 +60,8 @@ namespace MSOE.MediaComplete.Lib.Playing
 
             Stop();
 
-            _nAudioWrapper.Setup(file, WaveOutOnPlaybackStopped);
+            _nAudioWrapper.Setup(file, WaveOutOnPlaybackStopped, _currentVolume);
             PlaybackState = _nAudioWrapper.Play();
-            
         }
 
         /// <summary>
@@ -107,6 +111,22 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// gets the total time of the playing song
         /// </summary>
         public TimeSpan TotalTime { get { return _nAudioWrapper.TotalTime; } }
+        
+        /// <summary> 
+        /// changes the volume of a currently playing song
+        /// </summary>
+        /// <param name="newValue"></param>
+        public void ChangeVolume(double newValue)
+        {
+            if (PlaybackState != PlaybackState.Stopped)
+            {
+                _nAudioWrapper.ChangeVolume(newValue);
+                _currentVolume = newValue;
+            }
+            else
+                _currentVolume = newValue;
+        }
+
         #endregion
 
         #region private methods

@@ -31,11 +31,17 @@ namespace MSOE.MediaComplete.Lib.Playing
         void Stop();
 
         /// <summary>
+        /// Changes the volume of the currently playing song
+        /// </summary>
+        /// <param name="newValue"></param>
+        void ChangeVolume(double newValue);
+
+        /// <summary>
         /// seeks to the given time within a song
         /// </summary>
         /// <param name="timeToSeekTo"></param>
         void Seek(TimeSpan timeToSeekTo);
-
+        
         /// <summary>
         /// fires when the playback has ended, ie. hitting the end of the file
         /// </summary>

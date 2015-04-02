@@ -47,7 +47,7 @@ namespace MSOE.MediaComplete
             PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
             _player = Player.Instance;
             _player.PlaybackEnded += AutomaticStop;
-
+            _player.ChangeVolume(VolumeSlider.Value);
             TrackBar.ApplyTemplate();
 
             var track = TrackBar.Template.FindName("PART_Track", TrackBar) as Track;
@@ -262,6 +262,19 @@ namespace MSOE.MediaComplete
             //throw new System.NotImplementedException();
         }
 
+        private void VolumeSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            CheckVolumeLevel();
+            if(_player!=null)
+                _player.ChangeVolume(VolumeSlider.Value);
+        }
+
+        private void CheckVolumeLevel()
+        {
+            if(VolumePercentLabel!=null)
+                VolumePercentLabel.FontWeight = VolumeSlider.Value > 100 ? FontWeights.ExtraBold : FontWeights.Normal;
+        }
+
         /// <summary>
         /// plays the selected song on the context menu "Play" option
         /// </summary>
@@ -282,21 +295,19 @@ namespace MSOE.MediaComplete
             var diff = Math.Abs(e.OldValue - e.NewValue);
             var currentTime = TimeSpan.FromMilliseconds(e.NewValue);
 
-            CurrentTimeLabel.Content = string.Format("{0:D2}:{1:D2}:{2:D2}", currentTime.Hours, currentTime.Minutes, currentTime.Seconds);
+            var formatString = _player.TotalTime.TotalHours >= 1 ? "{0:D2}:{1:D2}:{2:D2}" : "{1:D2}:{2:D2}";
+
+            CurrentTimeLabel.Content = string.Format(formatString, (int)currentTime.TotalHours, currentTime.Minutes, currentTime.Seconds);
 
             var timeRemaining = _player.TotalTime.Subtract(currentTime);
 
-            RemainingTimeLabel.Content = string.Format("-{0:D2}:{1:D2}:{2:D2}", timeRemaining.Hours, timeRemaining.Minutes, timeRemaining.Seconds);
+            RemainingTimeLabel.Content = string.Format("-" + formatString, (int)timeRemaining.TotalHours, timeRemaining.Minutes, timeRemaining.Seconds);
             if (diff > TimerFrequency*2)
             {
-                var slider = sender as Slider;
-                if (slider != null)
+                Dispatcher.Invoke(() =>
                 {
-                    Dispatcher.Invoke(() =>
-                    {
-                        _player.Seek(currentTime);
-                    });
-                }
+                    _player.Seek(currentTime);
+                });
             }
 
         }
