@@ -6,7 +6,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TabItem}">
                     <Grid>
-                        <Border  Name="Border" Margin="0,0,-4,0" BorderThickness="1,1,1,1" CornerRadius="2,12,0,0" >
+                        <Border Name="Border" Margin="0,0,-4,0" BorderThickness="1,1,1,1" CornerRadius="2,12,0,0" >
                             <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center" HorizontalAlignment="Center" ContentSource="Header" Margin="12,2,12,2" RecognizesAccessKey="True"/>
                         </Border>
                     </Grid>
@@ -52,6 +52,28 @@
         <Setter Property="Padding" Value="2"/>
         <Setter Property="Margin" Value="1"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <Style TargetType="{x:Type Button}" x:Key="SaveButtonStyle">
+        <Setter Property="Background" Value="{DynamicResource ButtonDefaultBrush}"/>
+        <Setter Property="Padding" Value="2"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Rectangle Name="bg" Height="20" Width="20" Fill="{DynamicResource ButtonDefaultBrush}"/>
+                        <Polygon Points="4,4 4,16 16,16 16,6 14,4" Fill="{DynamicResource ButtonAccentBrush}" />
+                        <Polygon Points="6,5 6,8 13,8 13,5" Fill="{DynamicResource ButtonDefaultHoverBrush}" />
+                        <Polygon Points="5,10 5,15 15,15 15,10" Fill="{DynamicResource ButtonDefaultHoverBrush}" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Fill" Value="{DynamicResource ButtonDefaultHoverBrush}" TargetName="bg"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
     
     <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="ToggleButton">

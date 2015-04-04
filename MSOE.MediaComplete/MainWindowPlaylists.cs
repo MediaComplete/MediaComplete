@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using MSOE.MediaComplete.CustomControls;
+using MSOE.MediaComplete.Lib.Playing;
 using MSOE.MediaComplete.Lib.Playlists;
 using MSOE.MediaComplete.Lib.Songs;
 
@@ -133,6 +134,22 @@ namespace MSOE.MediaComplete
 
             list.Songs.AddRange(from LibrarySongItem song in SongList.Items select new LocalSong(new FileInfo(song.GetPath())));
             list.Save();
+        }
+
+        /// <summary>
+        /// Saves the currently playing queue as a playlist
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SaveAsPlaylist_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (NowPlaying.Inst.SongCount() < 1)
+                return;
+
+            var list = PlaylistService.CreatePlaylist();
+            list.Songs.AddRange(NowPlaying.Inst.Playlist.Songs);
+            list.Save();
+            // TODO MC-207 flow to rename
         }
     }
 }

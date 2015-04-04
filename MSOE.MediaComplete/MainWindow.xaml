@@ -73,7 +73,8 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition x:Name="MetadataColumn" Width="260*" MinWidth="225" />
             </Grid.ColumnDefinitions>
-            <TabControl DockPanel.Dock="Top" Grid.Column="0" BorderThickness="0" Margin="0,0,0,-4" SelectionChanged="LeftFrame_SelectionChanged">
+            <TabControl Name="LeftFrameTabControl" DockPanel.Dock="Top" Grid.Column="0" BorderThickness="0" Margin="0,0,0,-4" 
+                        SelectionChanged="LeftFrame_SelectionChanged">
                 <TabItem Header="Library" x:Name="LibraryTab">
                     <controls:TreeViewEx x:Name="FolderTree"
 				        AutomationProperties.Name="Tree" 
@@ -111,12 +112,17 @@
                     </controls:TreeViewEx>
                 </TabItem>
 
-                <TabItem Header="Playlists" x:Name="PlaylistTab">
+                <TabItem Header="Playlists" Name="PlaylistTab">
                     <ListView x:Name="PlaylistList"
-				        AutomationProperties.Name="Tree" 
-				        ItemsSource="{Binding}" 
+				        AutomationProperties.Name="Tree"
                         SelectionMode="Single"
-                        MouseUp="PlaylistList_OnMouseUp"/>
+                        MouseUp="PlaylistList_OnMouseUp">
+                        <ListView.ItemsSource>
+                            <CompositeCollection>
+                                <ListViewItem Name="NowPlayingItem" Content="{StaticResource NowPlaying}"/>
+                            </CompositeCollection>
+                        </ListView.ItemsSource>
+                    </ListView>
                 </TabItem>
                 <TabItem Header="Search" x:Name="SearchTab">
                     <TextBox Text="Search" Height="22"  VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
@@ -167,13 +173,20 @@
                     </ContextMenu>
                 </ListView.ContextMenu>
             </ListView>
-            <Grid Margin="0,0,0,0" Grid.Column="2" >
+            <Grid Grid.Column="2" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="26" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <Label x:Name="PlaylistName" Margin="-4" FontSize="16" FontWeight="ExtraBlack"/>
-                <ListView x:Name="PlaylistSongs" AutomationProperties.Name="Tree" ItemsSource="{Binding}" Grid.Row="1" 
+                <DockPanel Grid.Row="0" Visibility="{Binding IsSelected, ElementName=PlaylistTab, Converter={StaticResource BoolToVis}}">
+                    <Label Margin="-4" FontSize="16" FontWeight="ExtraBlack" Content="{Binding SelectedItem.Content, ElementName=PlaylistList}"/>
+                    <Button Click="SaveAsPlaylist_OnClick" ToolTip="{StaticResource SaveNowPlaying-Tooltip}"
+                            Style="{DynamicResource SaveButtonStyle}"
+                            Visibility="{Binding IsSelected, ElementName=NowPlayingItem, Converter={StaticResource BoolToVis}}"
+                            HorizontalAlignment="Right" 
+                            VerticalAlignment="Center" />
+                </DockPanel>
+                <ListView x:Name="PlaylistSongs" AutomationProperties.Name="Tree" Grid.Row="1" 
                           MouseUp="PlaylistSongs_OnMouseUp" MouseDoubleClick="PlaylistSongs_OnMouseDoubleClick" SelectionMode="Single" >
                     <ListView.ItemTemplate>
                         <HierarchicalDataTemplate ItemsSource="{Binding}"  DataType="{x:Type customControls:PlaylistSongItem}" >
