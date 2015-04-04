@@ -148,6 +148,7 @@ namespace MSOE.MediaComplete
 
             var list = PlaylistService.CreatePlaylist();
             list.Songs.AddRange(NowPlaying.Inst.Playlist.Songs);
+            _playlists.Add(list);
             list.Save();
             // TODO MC-207 flow to rename
         }

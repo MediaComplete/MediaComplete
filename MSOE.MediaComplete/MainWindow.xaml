@@ -39,32 +39,29 @@
                 </MenuItem>
             </Menu>
         </Grid>
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="100"/>
-            </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0" Orientation="Horizontal"  Style="{DynamicResource ToolBarPanelStyle}" >
-                <Button ToolTip="{StaticResource Toolbar-AddFile-Tooltip}" Style="{StaticResource ToolbarIconButton}" Click="AddFile_ClickAsync" >
+        <DockPanel Grid.Row="1" ZIndex="10" Style="{DynamicResource ToolBarPanelStyle}" >
+            <Button VerticalAlignment="Bottom" Padding="5,1,5,1" DockPanel.Dock="Right" x:Name="HideMetadata" Click="HideMetaDataPanel"
+                    Content="{StaticResource Toolbar-HideDetails-Content}" Style="{StaticResource ShowHideDetailsButtonStyle}"
+                    Margin="0,0,0,-1"/>
+            <DockPanel HorizontalAlignment="Stretch" LastChildFill="False">
+                <Button ToolTip="{StaticResource Toolbar-AddFile-Tooltip}" DockPanel.Dock="Left"
+                        Style="{StaticResource ToolbarIconButton}" Click="AddFile_ClickAsync" >
                     <Image Source="{StaticResource Toolbar-AddMusicFile-Icon}" />
                 </Button>
-                <Button ToolTip="{StaticResource Toolbar-AddFolder-Tooltip}" Style="{StaticResource ToolbarIconButton}" Click="AddFolder_ClickAsync">
+                <Button ToolTip="{StaticResource Toolbar-AddFolder-Tooltip}" DockPanel.Dock="Left" 
+                        Style="{StaticResource ToolbarIconButton}" Click="AddFolder_ClickAsync">
                     <Image Source="{StaticResource Toolbar-AddMusicFolder-Icon}" />
                 </Button>
-                <Button ToolTip="{StaticResource Toolbar-AutoIdMusic-Tooltip}"
+                <Button ToolTip="{StaticResource Toolbar-AutoIdMusic-Tooltip}" DockPanel.Dock="Left"
 				    Style="{StaticResource ToolbarIconButton}" Click="Toolbar_AutoIDMusic_ClickAsync">
                     <Image Source="{StaticResource Toolbar-AutoIdMusic-Icon}" />
                 </Button>
-                <Button ToolTip="{StaticResource Toolbar-SortMusic-Tooltip}"
+                <Button ToolTip="{StaticResource Toolbar-SortMusic-Tooltip}" DockPanel.Dock="Left"
 					    Style="{StaticResource ToolbarIconButton}" Click="Toolbar_SortMusic_ClickAsync">
                     <Image Source="{StaticResource Toolbar-SortMusic-Icon}" />
                 </Button>
-            </StackPanel>
-            <DockPanel Grid.Column="1" HorizontalAlignment="Stretch" Style="{DynamicResource ToolBarPanelStyle}" >
-                <Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="5,1,5,1"
-                        x:Name="HideMetadata" Click="HideMetaDataPanel" Content="{StaticResource Toolbar-HideDetails-Content}" />
             </DockPanel>
-        </Grid>
+        </DockPanel>
         <Grid Grid.Row="2" Style="{DynamicResource GridStyle}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="260*" MinWidth="100"/>
@@ -181,7 +178,7 @@
                 <DockPanel Grid.Row="0" Visibility="{Binding IsSelected, ElementName=PlaylistTab, Converter={StaticResource BoolToVis}}">
                     <Label Margin="-4" FontSize="16" FontWeight="ExtraBlack" Content="{Binding SelectedItem.Content, ElementName=PlaylistList}"/>
                     <Button Click="SaveAsPlaylist_OnClick" ToolTip="{StaticResource SaveNowPlaying-Tooltip}"
-                            Style="{DynamicResource SaveButtonStyle}"
+                            Style="{StaticResource SaveButtonStyle}"
                             Visibility="{Binding IsSelected, ElementName=NowPlayingItem, Converter={StaticResource BoolToVis}}"
                             HorizontalAlignment="Right" 
                             VerticalAlignment="Center" />
