@@ -85,13 +85,18 @@
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Grid>
                         <Rectangle Name="bg" Height="20" Width="20" Fill="{DynamicResource BackgroundBrush}"/>
-                        <Polygon Points="4,4 4,16 16,16 16,6 14,4" Fill="{DynamicResource ButtonAccentBrush}" />
-                        <Polygon Points="6,5 6,8 13,8 13,5" Fill="{DynamicResource ButtonDefaultHoverBrush}" />
-                        <Polygon Points="5,10 5,15 15,15 15,10" Fill="{DynamicResource ButtonDefaultHoverBrush}" />
+                        <Polygon Name="fg" Points="4,4 4,16 16,16 16,6 14,4" Fill="{DynamicResource ButtonAccentBrush}" />
+                        <Polygon Name="p1" Points="6,5 6,8 13,8 13,5" Fill="{DynamicResource ButtonDefaultHoverBrush}" />
+                        <Polygon Name="p2" Points="5,10 5,15 15,15 15,10" Fill="{DynamicResource ButtonDefaultHoverBrush}" />
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Fill" Value="{DynamicResource ButtonDefaultHoverBrush}" TargetName="bg"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Fill" Value="{DynamicResource ButtonDefaultHoverBrush}" TargetName="fg"/>
+                            <Setter Property="Fill" Value="{DynamicResource ButtonDefaultBrush}" TargetName="p1"/>
+                            <Setter Property="Fill" Value="{DynamicResource ButtonDefaultBrush}" TargetName="p2"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

@@ -150,6 +150,7 @@ namespace MSOE.MediaComplete
             list.Songs.AddRange(NowPlaying.Inst.Playlist.Songs);
             _playlists.Add(list);
             list.Save();
+            _nowPlayingDirty.Value = false;
             // TODO MC-207 flow to rename
         }
     }

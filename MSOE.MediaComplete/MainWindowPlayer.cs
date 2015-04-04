@@ -30,6 +30,12 @@ namespace MSOE.MediaComplete
             _player.ChangeVolume(VolumeSlider.Value);
         }
 
+        /// <summary>
+        /// A bindable flag for the now playing queue
+        /// </summary>
+        public ObservableBool NowPlayingDirty { get { return _nowPlayingDirty; } }
+        private readonly ObservableBool _nowPlayingDirty = new ObservableBool { Value = true };
+
         #region Event Handlers
         /// <summary>
         /// Starts, pauses, or resumes the playback appropriately based on the state of the player. 
@@ -101,6 +107,7 @@ namespace MSOE.MediaComplete
             var list = (from LibrarySongItem song in SongList.SelectedItems select 
                             new LocalSong(new FileInfo(song.GetPath()))).Cast<AbstractSong>().ToList();
             NowPlaying.Inst.InsertRange(NowPlaying.Inst.Index + 1, list);
+            _nowPlayingDirty.Value = true;
             if (_player.PlaybackState == PlaybackState.Stopped)
             {
                 if (count.Equals(NowPlaying.Inst.Index + 1))
@@ -309,6 +316,7 @@ namespace MSOE.MediaComplete
         {
             NowPlaying.Inst.Add((from LibrarySongItem song in SongList.Items
                                  select new LocalSong(new FileInfo(song.GetPath()))));
+            _nowPlayingDirty.Value = true;
         }
 
         /// <summary>
@@ -318,6 +326,7 @@ namespace MSOE.MediaComplete
         {
             NowPlaying.Inst.Add((from LibrarySongItem song in SongList.SelectedItems
                                  select new LocalSong(new FileInfo(song.GetPath()))));
+            _nowPlayingDirty.Value = true;
         }
         #endregion
     }
