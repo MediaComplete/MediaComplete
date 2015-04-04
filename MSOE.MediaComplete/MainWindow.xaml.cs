@@ -224,6 +224,7 @@ namespace MSOE.MediaComplete
         public void RefreshTreeView()
         {
             SongList.Items.Clear();
+            _rootLibItem.Children.Clear();
             var rootFiles = new DirectoryInfo(SettingWrapper.MusicDir).GetFilesOrCreateDir();
             var rootDirs = new DirectoryInfo(SettingWrapper.MusicDir).GetDirectories();
 
