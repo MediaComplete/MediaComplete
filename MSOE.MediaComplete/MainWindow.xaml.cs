@@ -68,37 +68,12 @@ namespace MSOE.MediaComplete
             _fileMover = FileMover.Instance;
             _fileMover.CreateDirectory(homeDir);
             _refreshTimer = new Timer(TimerProc);
-            
+
             InitEvents();
 
             InitTreeView();
 
-            InitPlaylists();
-
             InitPlayer();
-        }
-
-        private void InitPlaylists()
-        {
-            _visibleList = SongList;
-            Player.Instance.SongFinishedEvent += UpdateColorEvent;
-        }
-
-        private void UpdateColorEvent(int oldIndex, int newIndex)
-        {
-            if (SongList.Visibility.Equals(Visibility.Visible)) return;
-            if (oldIndex == -1 && newIndex == -1)
-            {
-                var song = (PlaylistSongItem) PlaylistSongs.Items[NowPlaying.Inst.Index];
-                song.IsPlaying = false;
-            }
-            else if (PlaylistList.SelectedIndex == 0)
-            {
-                var oldSong = ((PlaylistSongItem)PlaylistSongs.Items[oldIndex]);
-                var newSong = ((PlaylistSongItem)PlaylistSongs.Items[newIndex]);
-                oldSong.IsPlaying = false;
-                newSong.IsPlaying = true;
-            }
         }
 
         private void ShowNowPlaying()
@@ -253,6 +228,8 @@ namespace MSOE.MediaComplete
             watcher.Renamed += OnChanged;
 
             watcher.EnableRaisingEvents = true;
+
+            _visibleList = SongList;
         }
 
         /// <summary>
@@ -292,7 +269,7 @@ namespace MSOE.MediaComplete
         }
 
         /// <summary>
-        /// MouseClick Listener for the FolderTree
+        /// Updates the song list based on the folder selection
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -322,11 +299,11 @@ namespace MSOE.MediaComplete
         }
 
         /// <summary>
-        /// MouseClick Listener for the FolderTree
+        /// Updates the metadata form based on the song list selection
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void SongTree_OnMouseUp(object sender, MouseButtonEventArgs e)
+        private void SongList_OnMouseUp(object sender, MouseButtonEventArgs e)
         {
             FormCheck();
             if (SongList.SelectedItems.Count > 0)
@@ -511,28 +488,6 @@ namespace MSOE.MediaComplete
                 MetadataColumn.MinWidth = 225;
                 HideMetadata.Content = TryFindResource("Toolbar-HideDetails-Content"); 
                 ContentSplitter.Visibility = Visibility.Visible; 
-            }
-        }
-
-        private void LoopButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            if (sender.Equals(LoopButton))
-            {
-                LoopButtonPressed.Visibility = Visibility.Visible;
-                LoopButtonOne.Visibility = Visibility.Hidden;
-                LoopButton.Visibility = Visibility.Hidden;
-            }
-            else if (sender.Equals(LoopButtonPressed))
-            {
-                LoopButtonPressed.Visibility = Visibility.Hidden;
-                LoopButtonOne.Visibility = Visibility.Visible;
-                LoopButton.Visibility = Visibility.Hidden;
-            }
-            else if (sender.Equals(LoopButtonOne))
-            {
-                LoopButtonPressed.Visibility = Visibility.Hidden;
-                LoopButtonOne.Visibility = Visibility.Hidden;
-                LoopButton.Visibility = Visibility.Visible;
             }
         }
     }

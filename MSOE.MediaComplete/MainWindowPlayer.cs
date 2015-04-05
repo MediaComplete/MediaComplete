@@ -28,6 +28,7 @@ namespace MSOE.MediaComplete
             _player = Player.Instance;
             _player.PlaybackEnded += AutomaticStop;
             _player.ChangeVolume(VolumeSlider.Value);
+            Player.Instance.SongFinishedEvent += UpdateColorEvent;
         }
 
         /// <summary>
@@ -65,6 +66,28 @@ namespace MSOE.MediaComplete
                     }
                     Play();
                     break;
+            }
+        }
+
+        /// <summary>
+        /// Update the highlighted song in the Now Playing queue when a song ends.
+        /// </summary>
+        /// <param name="oldIndex"></param>
+        /// <param name="newIndex"></param>
+        private void UpdateColorEvent(int oldIndex, int newIndex)
+        {
+            if (SongList.Visibility.Equals(Visibility.Visible)) return;
+            if (oldIndex == -1 && newIndex == -1)
+            {
+                var song = (PlaylistSongItem)PlaylistSongs.Items[NowPlaying.Inst.Index];
+                song.IsPlaying = false;
+            }
+            else if (PlaylistList.SelectedIndex == 0)
+            {
+                var oldSong = ((PlaylistSongItem)PlaylistSongs.Items[oldIndex]);
+                var newSong = ((PlaylistSongItem)PlaylistSongs.Items[newIndex]);
+                oldSong.IsPlaying = false;
+                newSong.IsPlaying = true;
             }
         }
 
@@ -229,6 +252,33 @@ namespace MSOE.MediaComplete
             CheckVolumeLevel();
             if (_player != null)
                 _player.ChangeVolume(VolumeSlider.Value);
+        }
+
+        /// <summary>
+        /// Toggles between looping modes - loop entire, loop one, no loop
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LoopButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (sender.Equals(LoopButton))
+            {
+                LoopButtonPressed.Visibility = Visibility.Visible;
+                LoopButtonOne.Visibility = Visibility.Hidden;
+                LoopButton.Visibility = Visibility.Hidden;
+            }
+            else if (sender.Equals(LoopButtonPressed))
+            {
+                LoopButtonPressed.Visibility = Visibility.Hidden;
+                LoopButtonOne.Visibility = Visibility.Visible;
+                LoopButton.Visibility = Visibility.Hidden;
+            }
+            else if (sender.Equals(LoopButtonOne))
+            {
+                LoopButtonPressed.Visibility = Visibility.Hidden;
+                LoopButtonOne.Visibility = Visibility.Hidden;
+                LoopButton.Visibility = Visibility.Visible;
+            }
         }
 
         #endregion

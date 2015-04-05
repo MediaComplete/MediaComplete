@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
-using MSOE.MediaComplete.Lib.Playlists;
 
 namespace MSOE.MediaComplete
 {
@@ -24,18 +21,18 @@ namespace MSOE.MediaComplete
     }
 
     /// <summary>
-    /// Returns Visibility based on whether an ObservableCollection of Playlists contains elements.
+    /// Returns Visibility based on an integer argument (such as a collection count)
     /// </summary>
-    public class PlaylistsEmptyConverter : IValueConverter
+    public class IfZeroCollapsedConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var playlists = value as ObservableCollection<Playlist>;
-            if (playlists == null)
+            var count = value as int?;
+            if (count == null)
             {
                 return Visibility.Collapsed;
             }
-            return playlists.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
+            return count == 0 ? Visibility.Collapsed : Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

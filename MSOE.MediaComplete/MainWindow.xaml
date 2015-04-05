@@ -92,7 +92,7 @@
 							                Click="ContextMenu_AddFolderToNowPlaying_Click" />
                                             <MenuItem Header="{StaticResource ContextMenu-NewPlaylist-Header}"
                                             Click="ContextMenu_AddFoldersToNewPlaylist_Click"/>
-                                            <Separator Visibility="{Binding Playlists, Converter={StaticResource PlaylistsEmptyConverter}}"/>
+                                            <Separator Visibility="{Binding Playlists.Count, Converter={StaticResource IfZeroCollapsed}}"/>
                                             <CollectionContainer Collection="{Binding Source={StaticResource PlaylistsCollection}}"/>
                                         </CompositeCollection>
                                     </MenuItem.ItemsSource>
@@ -132,7 +132,7 @@
               Width="3"
               Style="{DynamicResource SplitterStyle}"/>
             <ListView x:Name="SongList" Grid.Column="2" AutomationProperties.Name="Tree" BorderThickness="1,0,1,0"
-                      MouseUp="SongTree_OnMouseUp" MouseDoubleClick="SongTree_OnMouseDoubleClick" SelectionMode="Extended">
+                      MouseUp="SongList_OnMouseUp" MouseDoubleClick="SongTree_OnMouseDoubleClick" SelectionMode="Extended">
                 <ListView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding}"  DataType="{x:Type customControls:LibrarySongItem}">
                         <TextBlock Text="{Binding}"/>
@@ -153,7 +153,7 @@
 							            Click="ContextMenu_AddSongToNowPlaying_Click" />
                                     <MenuItem Header="{StaticResource ContextMenu-NewPlaylist-Header}"
                                         Click="ContextMenu_AddSongsToNewPlaylist_Click"/>
-                                    <Separator Visibility="{Binding Playlists, Converter={StaticResource PlaylistsEmptyConverter}}"/>
+                                    <Separator Visibility="{Binding Playlists.Count, Converter={StaticResource IfZeroCollapsed}}"/>
                                     <CollectionContainer Collection="{Binding Source={StaticResource PlaylistsCollection}}"/>
                                 </CompositeCollection>
                             </MenuItem.ItemsSource>
