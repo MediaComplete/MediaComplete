@@ -126,6 +126,7 @@
     <Brush x:Key="TextMouseOverBackgroundBrush">LightGray</Brush>
     <Brush x:Key="TextMouseOverForegroundBrush">#FF4D4D4D</Brush>
     <Brush x:Key="ButtonAccentBrush">#FFF0EFF1</Brush>
+    <Brush x:Key="ButtonAccent2Brush">#FFCCCCCC</Brush>
     <Brush x:Key="ButtonDefaultBrush">#FF2D2D30</Brush>
     <Brush x:Key="ButtonDefaultHoverBrush">#FF686868</Brush>
     <Brush x:Key="ButtonToggledBrush">Black</Brush>
@@ -134,14 +135,16 @@
     <Brush x:Key="ToolbarBackgroundBrush">#FF686868</Brush>
     <Brush x:Key="PanelBrush">#FF3E3E42</Brush>
     <Brush x:Key="MenuBrush">#FF4B4B4B</Brush>
+    <Brush x:Key="FlatBackgroundBrush">#FF3E3E42</Brush>
     <Brush x:Key="BackgroundBrush">#FF3E3E42</Brush>
+    <Brush x:Key="MenuBackgroundBrush">#FF2D2D30</Brush>
     <Brush x:Key="TextBoxBackgroundDisabledBrush">Transparent</Brush>
     <Brush x:Key="TextBoxForegroundDisabledBrush">#FFF0EFF1</Brush>
     <Brush x:Key="TextBoxBorderDisabledBrush">Transparent</Brush>
     <Brush x:Key="TextBoxBackgroundBrush">#FF686868</Brush>
     <Brush x:Key="TextBoxForegroundBrush">#FFF0EFF1</Brush>
     <Brush x:Key="TextBoxBorderBrush">#FFE3E9EF</Brush>
-   
+
     <Brush x:Key="CurrentSong">LightSeaGreen</Brush>
 
     <RadialGradientBrush x:Key="BorderBrush">

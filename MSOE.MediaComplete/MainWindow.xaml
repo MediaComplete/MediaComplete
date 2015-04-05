@@ -3,9 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:System.Windows.Controls;assembly=TreeViewEx"
         xmlns:customControls="clr-namespace:MSOE.MediaComplete.CustomControls"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="MSOE.MediaComplete.MainWindow"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" x:Class="MSOE.MediaComplete.MainWindow"
         Title="Media Complete" MinHeight="425" Width="695.731" MinWidth="613"
-        AutomationProperties.Name="Tree" d:DesignHeight="502.905" Icon="Resources/logo_small.ico">
+        AutomationProperties.Name="Tree" d:DesignHeight="502.905" Icon="Resources/logo_small.ico"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -16,7 +18,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <Grid Margin="0,0,0,0">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="24" />
             <RowDefinition Height="24" />
@@ -28,42 +30,38 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid Grid.Row="0">
-            <Menu Style="{DynamicResource MenuStyle}">
-                <Menu.Resources>
-                    <Style TargetType="MenuItem">
-                        <Setter Property="BorderThickness" Value="0"></Setter>
-                    </Style>
-                </Menu.Resources>
+            <Menu>
                 <MenuItem Header="_File">
-                    <MenuItem Header="_Exit" Style="{DynamicResource MenuItemStyle}"/>
+                    <MenuItem Header="_Exit"/>
                 </MenuItem>
                 <MenuItem Header="_Edit" Click="MenuItem_Click">
-                    <MenuItem.Resources></MenuItem.Resources>
-                    <MenuItem Header="_Settings" Style="{DynamicResource MenuItemStyle}"/>
+                    <MenuItem Header="_Settings"/>
                 </MenuItem>
             </Menu>
         </Grid>
-        <ToolBarPanel Grid.Row="1" Style="{DynamicResource ToolBarPanelStyle}" ToolBarTray.IsLocked="True" >
-            <ToolBar Style="{DynamicResource ToolBarStyle}" Grid.Row="1" OverflowMode="Never">
-                <Button x:Name="AddFile" ToolTip="Add File" VerticalAlignment="Center" Click="AddFile_ClickAsync" >
+        <DockPanel Grid.Row="1" ZIndex="10" Style="{DynamicResource ToolBarPanelStyle}" >
+            <Button VerticalAlignment="Bottom" Padding="5,1,5,1" DockPanel.Dock="Right" x:Name="HideMetadata" Click="HideMetaDataPanel"
+                    Content="{StaticResource Toolbar-HideDetails-Content}" Style="{StaticResource ShowHideDetailsButtonStyle}"/>
+            <DockPanel HorizontalAlignment="Stretch" LastChildFill="False">
+                <Button ToolTip="{StaticResource Toolbar-AddFile-Tooltip}" DockPanel.Dock="Left"
+                        Style="{StaticResource ToolbarIconButton}" Click="AddFile_ClickAsync" >
                     <Image Source="{StaticResource Toolbar-AddMusicFile-Icon}" />
                 </Button>
-                <Button x:Name="AddFolder" ToolTip="Add Folder" VerticalAlignment="Center" Click="AddFolder_ClickAsync">
+                <Button ToolTip="{StaticResource Toolbar-AddFolder-Tooltip}" DockPanel.Dock="Left" 
+                        Style="{StaticResource ToolbarIconButton}" Click="AddFolder_ClickAsync">
                     <Image Source="{StaticResource Toolbar-AddMusicFolder-Icon}" />
                 </Button>
-                <Button x:Name="AutoIdentifyMusic" ToolTip="{StaticResource Toolbar-AutoIdMusic-Tooltip}"
-					VerticalAlignment="Center" Click="Toolbar_AutoIDMusic_ClickAsync">
+                <Button ToolTip="{StaticResource Toolbar-AutoIdMusic-Tooltip}" DockPanel.Dock="Left"
+				    Style="{StaticResource ToolbarIconButton}" Click="Toolbar_AutoIDMusic_ClickAsync">
                     <Image Source="{StaticResource Toolbar-AutoIdMusic-Icon}" />
                 </Button>
-                <Button x:Name="SortMusic" ToolTip="{StaticResource Toolbar-SortMusic-Tooltip}"
-                        ToolTipService.ShowOnDisabled='true'
-					    VerticalAlignment="Center" Click="Toolbar_SortMusic_ClickAsync">
+                <Button ToolTip="{StaticResource Toolbar-SortMusic-Tooltip}" DockPanel.Dock="Left"
+					    Style="{StaticResource ToolbarIconButton}" Click="Toolbar_SortMusic_ClickAsync">
                     <Image Source="{StaticResource Toolbar-SortMusic-Icon}" />
                 </Button>
-            </ToolBar>
-        </ToolBarPanel>
-        <Button Grid.Row="1" HorizontalAlignment="Right" Width="35" Content="Hide" x:Name="HideMetadata" Click="HideMetaDataPanel"/>
-        <Grid Margin="0,0,0,0" Grid.Row="2" Style="{DynamicResource GridStyle}">
+            </DockPanel>
+        </DockPanel>
+        <Grid Grid.Row="2" Style="{DynamicResource GridStyle}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="260*" MinWidth="100"/>
                 <ColumnDefinition Width="Auto" />
@@ -71,35 +69,56 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition x:Name="MetadataColumn" Width="260*" MinWidth="225" />
             </Grid.ColumnDefinitions>
-            <TabControl DockPanel.Dock="Top" Grid.Column="0" BorderThickness="0" Margin="0,0,0,-4" SelectionChanged="LeftFrame_SelectionChanged">
+            <TabControl Name="LeftFrameTabControl" DockPanel.Dock="Top" Grid.Column="0" BorderThickness="0" Margin="0,0,0,-4" 
+                        SelectionChanged="LeftFrame_SelectionChanged">
                 <TabItem Header="Library" x:Name="LibraryTab">
-                    <controls:TreeViewEx x:Name="FolderTree" Margin="0,0,0,0" 
+                    <controls:TreeViewEx x:Name="FolderTree"
 				        AutomationProperties.Name="Tree" 
 				        MouseUp="FolderTree_OnMouseUp"
-				        ItemsSource="{Binding Children}" >
+				        ItemsSource="{Binding RootLibraryFolderItem.Children}" >
                         <controls:TreeViewEx.ItemTemplate>
                             <HierarchicalDataTemplate ItemsSource="{Binding Children}"  DataType="{x:Type customControls:FolderTreeViewItem}">
                                 <TextBlock Text="{Binding}"/>
                             </HierarchicalDataTemplate>
                         </controls:TreeViewEx.ItemTemplate>
-
                         <controls:TreeViewEx.ContextMenu>
                             <ContextMenu StaysOpen="True">
                                 <MenuItem Header="{StaticResource ContextMenu-PlayMusic-Header}"
-							Click="ContextMenu_PlayFolderMusic_Click" />
-                                <MenuItem Header="{StaticResource ContextMenu-NowPlayingMusic-Header}"
-							Click="ContextMenu_AddFolderToNowPlaying_Click" />
+							        Click="ContextMenu_PlayFolderMusic_Click" />
+                                <MenuItem Header="{StaticResource ContextMenu-AddTo-Header}">
+                                    <MenuItem.ItemsSource>
+                                        <CompositeCollection>
+                                            <MenuItem Header="{StaticResource ContextMenu-NowPlayingMusic-Header}"
+							                Click="ContextMenu_AddFolderToNowPlaying_Click" />
+                                            <MenuItem Header="{StaticResource ContextMenu-NewPlaylist-Header}"
+                                            Click="ContextMenu_AddFoldersToNewPlaylist_Click"/>
+                                            <Separator Visibility="{Binding Playlists.Count, Converter={StaticResource IfZeroCollapsed}}"/>
+                                            <CollectionContainer Collection="{Binding Source={StaticResource PlaylistsCollection}}"/>
+                                        </CompositeCollection>
+                                    </MenuItem.ItemsSource>
+                                    <MenuItem.ItemContainerStyle>
+                                        <Style TargetType="MenuItem">
+                                            <Setter Property="Header" Value="{Binding}"/>
+                                            <EventSetter Event="Click" Handler="ContextMenu_AddFoldersToPlaylist_Click"/>
+                                        </Style>
+                                    </MenuItem.ItemContainerStyle>
+                                </MenuItem>
                             </ContextMenu>
                         </controls:TreeViewEx.ContextMenu>
                     </controls:TreeViewEx>
                 </TabItem>
 
-                <TabItem Header="Playlists" x:Name="PlaylistTab">
+                <TabItem Header="Playlists" Name="PlaylistTab">
                     <ListView x:Name="PlaylistList"
-				        AutomationProperties.Name="Tree" 
-				        ItemsSource="{Binding}" 
+				        AutomationProperties.Name="Tree"
                         SelectionMode="Single"
-                        MouseUp="PlaylistList_OnMouseUp"/>
+                        MouseUp="PlaylistList_OnMouseUp">
+                        <ListView.ItemsSource>
+                            <CompositeCollection>
+                                <ListViewItem Name="NowPlayingItem" Content="{StaticResource NowPlaying}"/>
+                            </CompositeCollection>
+                        </ListView.ItemsSource>
+                    </ListView>
                 </TabItem>
                 <TabItem Header="Search" x:Name="SearchTab">
                     <TextBox Text="Search" Height="22"  VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
@@ -112,8 +131,8 @@
               ShowsPreview="true"
               Width="3"
               Style="{DynamicResource SplitterStyle}"/>
-            <ListView x:Name="SongList" Grid.Column="2" AutomationProperties.Name="Tree" ItemsSource="{Binding}" 
-                      MouseUp="SongTree_OnMouseUp" MouseDoubleClick="SongTree_OnMouseDoubleClick" SelectionMode="Extended">
+            <ListView x:Name="SongList" Grid.Column="2" AutomationProperties.Name="Tree" BorderThickness="1,0,1,0"
+                      MouseUp="SongList_OnMouseUp" MouseDoubleClick="SongTree_OnMouseDoubleClick" SelectionMode="Extended">
                 <ListView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding}"  DataType="{x:Type customControls:LibrarySongItem}">
                         <TextBlock Text="{Binding}"/>
@@ -127,20 +146,44 @@
 							Click="ContextMenu_PlaySelectedSongs_Click" />
                         <MenuItem Header="{StaticResource ContextMenu-PlayNext-Header}"
 							Click="ContextMenu_PlaySongNext_Click" />
-                        <MenuItem Header="{StaticResource ContextMenu-NowPlayingMusic-Header}"
-							Click="ContextMenu_AddSongToNowPlaying_Click" />
+                        <MenuItem Header="{StaticResource ContextMenu-AddTo-Header}">
+                            <MenuItem.ItemsSource>
+                                <CompositeCollection>
+                                    <MenuItem Header="{StaticResource ContextMenu-NowPlayingMusic-Header}"
+							            Click="ContextMenu_AddSongToNowPlaying_Click" />
+                                    <MenuItem Header="{StaticResource ContextMenu-NewPlaylist-Header}"
+                                        Click="ContextMenu_AddSongsToNewPlaylist_Click"/>
+                                    <Separator Visibility="{Binding Playlists.Count, Converter={StaticResource IfZeroCollapsed}}"/>
+                                    <CollectionContainer Collection="{Binding Source={StaticResource PlaylistsCollection}}"/>
+                                </CompositeCollection>
+                            </MenuItem.ItemsSource>
+                            <MenuItem.ItemContainerStyle>
+                                <Style TargetType="MenuItem">
+                                    <Setter Property="Header" Value="{Binding}"/>
+                                    <EventSetter Event="Click" Handler="ContextMenu_AddSongsToPlaylist_Click"/>
+                                </Style>
+                            </MenuItem.ItemContainerStyle>
+                        </MenuItem>
                         <MenuItem Header="{StaticResource ContextMenu-AutoIdMusic-Header}"
 							Click="ContextMenu_AutoIDMusic_ClickAsync" />
                     </ContextMenu>
                 </ListView.ContextMenu>
             </ListView>
-            <Grid Margin="0,0,0,0" Grid.Column="2" >
+            <Grid Grid.Column="2" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="26" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <Label x:Name="PlaylistName" Margin="-4" FontSize="16" FontWeight="ExtraBlack"/>
-                <ListView x:Name="PlaylistSongs" AutomationProperties.Name="Tree" ItemsSource="{Binding}" Grid.Row="1" 
+                <DockPanel Grid.Row="0" Visibility="{Binding IsSelected, ElementName=PlaylistTab, Converter={StaticResource BoolToVis}}">
+                    <Label Margin="-4" FontSize="16" FontWeight="ExtraBlack" Content="{Binding SelectedItem.Content, ElementName=PlaylistList}"/>
+                    <Button Click="SaveAsPlaylist_OnClick" ToolTip="{StaticResource SaveNowPlaying-Tooltip}"
+                            Style="{StaticResource SaveButtonStyle}"
+                            Visibility="{Binding IsSelected, ElementName=NowPlayingItem, Converter={StaticResource BoolToVis}}"
+                            IsEnabled="{Binding NowPlayingDirty.Value}"
+                            HorizontalAlignment="Right" 
+                            VerticalAlignment="Center" />
+                </DockPanel>
+                <ListView x:Name="PlaylistSongs" AutomationProperties.Name="Tree" Grid.Row="1" BorderThickness="1,0,1,0"
                           MouseUp="PlaylistSongs_OnMouseUp" MouseDoubleClick="PlaylistSongs_OnMouseDoubleClick" SelectionMode="Single" >
                     <ListView.ItemTemplate>
                         <HierarchicalDataTemplate ItemsSource="{Binding}"  DataType="{x:Type customControls:PlaylistSongItem}" >
@@ -155,9 +198,9 @@
               ShowsPreview="true"
               Width="3" x:Name="ContentSplitter"
               Style="{DynamicResource SplitterStyle}"/>
-            <Border Grid.Column="4" BorderThickness="1" Height="Auto" Style="{DynamicResource BorderStyle}">
+            <Border Grid.Column="4" BorderThickness="1,0,0,0" Height="Auto" Style="{DynamicResource BorderStyle}">
                 <DockPanel Height="Auto" x:Name="MetadataPanel">
-                    <Grid Margin="0,0,0,0"  Height="Auto" Style="{DynamicResource GridStyle}">
+                    <Grid Height="Auto" Style="{DynamicResource GridStyle}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="100" />
                             <ColumnDefinition Width="35" />

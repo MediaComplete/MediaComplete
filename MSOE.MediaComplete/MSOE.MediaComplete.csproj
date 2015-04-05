@@ -131,6 +131,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters.cs" />
     <Compile Include="CustomControls\BackgroundYoutubePlayer.xaml.cs">
       <DependentUpon>BackgroundYoutubePlayer.xaml</DependentUpon>
     </Compile>
@@ -142,10 +143,11 @@
       <DependentUpon>InboxImportDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindowPlayer.cs" />
+    <Compile Include="MainWindowPlaylists.cs" />
+    <Compile Include="ObservableBool.cs" />
     <Compile Include="Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="VolumeConverter.cs" />
     <Page Include="CustomControls\BackgroundYoutubePlayer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
