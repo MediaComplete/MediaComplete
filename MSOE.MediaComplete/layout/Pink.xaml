@@ -126,6 +126,7 @@
     <Brush x:Key="TextMouseOverBackgroundBrush">LightPink</Brush>
     <Brush x:Key="TextMouseOverForegroundBrush">DarkOrchid</Brush>
     <Brush x:Key="ButtonAccentBrush">#FFF0EFF1</Brush>
+    <Brush x:Key="ButtonAccent2Brush">#FFF0EFF1</Brush>
     <Brush x:Key="ButtonDefaultBrush">#FFB94A84</Brush>
     <Brush x:Key="ButtonDefaultHoverBrush">#FFEC48B9</Brush>
     <Brush x:Key="ButtonToggledBrush">DeepPink</Brush>
@@ -134,6 +135,7 @@
     <Brush x:Key="ToolbarBackgroundBrush">#FFFFE0F3</Brush>
     <Brush x:Key="PanelBrush">#FFE3B3CF</Brush>
     <Brush x:Key="MenuBrush">#FFE3B3CF</Brush>
+    <Brush x:Key="MenuBackgroundBrush">#FFDDEEFF</Brush>
 
     <Brush x:Key="TextBoxBackgroundDisabledBrush">Transparent</Brush>
     <Brush x:Key="TextBoxForegroundDisabledBrush">#FF8F1454</Brush>
@@ -144,6 +146,7 @@
 
     <Brush x:Key="CurrentSong">DeepSkyBlue</Brush>
 
+    <Brush x:Key="FlatBackgroundBrush">White</Brush>
     <LinearGradientBrush x:Key="BackgroundBrush" EndPoint="0.5,1" StartPoint="0.5,0">
         <GradientStop Color="White" Offset="0"/>
         <GradientStop Color="#FFFFD6EE" Offset="1"/>
@@ -153,7 +156,6 @@
         <GradientStop Color="#FF8F1454" Offset="0"/>
         <GradientStop Color="#FFFFD0EC" Offset="1"/>
     </RadialGradientBrush>
-
 
     <Brush x:Key="StatusBarBackgroundBrush">#FFFFEBF7</Brush>
 
