@@ -84,12 +84,13 @@ namespace MSOE.MediaComplete
         {
             var diff = Math.Abs(e.OldValue - e.NewValue);
             var currentTime = TimeSpan.FromMilliseconds(e.NewValue);
+            var totalTime = TimeSpan.FromMilliseconds(TrackBar.Maximum);
 
-            var formatString = _player.TotalTime.TotalHours >= 1 ? "{0:D2}:{1:D2}:{2:D2}" : "{1:D2}:{2:D2}";
+            var formatString = totalTime.TotalHours >= 1 ? "{0:D2}:{1:D2}:{2:D2}" : "{1:D2}:{2:D2}";
 
             CurrentTimeLabel.Content = string.Format(formatString, (int)currentTime.TotalHours, currentTime.Minutes, currentTime.Seconds);
 
-            var timeRemaining = _player.TotalTime.Subtract(currentTime);
+            var timeRemaining = totalTime.Subtract(currentTime);
 
             RemainingTimeLabel.Content = string.Format("-" + formatString, (int)timeRemaining.TotalHours, timeRemaining.Minutes, timeRemaining.Seconds);
             if (diff > TimerFrequency * 2)
@@ -489,6 +490,8 @@ namespace MSOE.MediaComplete
         /// <param name="eventArgs"></param>
         private void AutomaticStop(object sender, EventArgs eventArgs)
         {
+            TrackBar.Maximum = 0;
+            TrackBar.Value = 0;
             PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
         }
 
