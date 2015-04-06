@@ -143,9 +143,9 @@
     <Brush x:Key="TextBoxBackgroundBrush">#FF686868</Brush>
     <Brush x:Key="TextBoxForegroundBrush">#FFF0EFF1</Brush>
     <Brush x:Key="TextBoxBorderBrush">#FFE3E9EF</Brush>
-
     <Brush x:Key="CurrentSong">LightSeaGreen</Brush>
-
+    <Brush x:Key="ToolbarButtonPrimaryBrush">#FFCCCCCC</Brush>
+    <Brush x:Key="ToolbarButtonAccentBrush">#FF3E3E42</Brush>
     <RadialGradientBrush x:Key="BorderBrush">
         <GradientStop Color="#FF3E3E42" Offset="0"/>
         <GradientStop Color="#FF707070" Offset="1"/>

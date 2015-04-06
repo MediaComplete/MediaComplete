@@ -44,21 +44,13 @@
                     Content="{StaticResource Toolbar-HideDetails-Content}" Style="{StaticResource ShowHideDetailsButtonStyle}"/>
             <DockPanel HorizontalAlignment="Stretch" LastChildFill="False">
                 <Button ToolTip="{StaticResource Toolbar-AddFile-Tooltip}" DockPanel.Dock="Left"
-                        Style="{StaticResource ToolbarIconButton}" Click="AddFile_ClickAsync" >
-                    <Image Source="{StaticResource Toolbar-AddMusicFile-Icon}" />
-                </Button>
+                        Style="{DynamicResource ToolbarImportFile}" Click="AddFile_ClickAsync" />
                 <Button ToolTip="{StaticResource Toolbar-AddFolder-Tooltip}" DockPanel.Dock="Left" 
-                        Style="{StaticResource ToolbarIconButton}" Click="AddFolder_ClickAsync">
-                    <Image Source="{StaticResource Toolbar-AddMusicFolder-Icon}" />
-                </Button>
+                        Style="{DynamicResource ToolbarImportFolder}" Click="AddFolder_ClickAsync"/>
                 <Button ToolTip="{StaticResource Toolbar-AutoIdMusic-Tooltip}" DockPanel.Dock="Left"
-				    Style="{StaticResource ToolbarIconButton}" Click="Toolbar_AutoIDMusic_ClickAsync">
-                    <Image Source="{StaticResource Toolbar-AutoIdMusic-Icon}" />
-                </Button>
+				        Style="{DynamicResource ToolbarPopulateMetadata}" Click="Toolbar_AutoIDMusic_ClickAsync"/>
                 <Button ToolTip="{StaticResource Toolbar-SortMusic-Tooltip}" DockPanel.Dock="Left"
-					    Style="{StaticResource ToolbarIconButton}" Click="Toolbar_SortMusic_ClickAsync">
-                    <Image Source="{StaticResource Toolbar-SortMusic-Icon}" />
-                </Button>
+					    Style="{StaticResource ToolbarSort}" Click="Toolbar_SortMusic_ClickAsync"/>
             </DockPanel>
         </DockPanel>
         <Grid Grid.Row="2" Style="{DynamicResource GridStyle}">
