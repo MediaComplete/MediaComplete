@@ -119,27 +119,5 @@ namespace MSOE.MediaComplete.Test.Playing
 
             Assert.Fail("Play should not have handled the CorruptFileException");
         }
-
-        //[TestMethod]
-        //[ExpectedException(typeof(CorruptFileException))]
-        //public void Seek_ProperTimeSpan_PropagatesAsExpected()
-        //{
-        //    var mockNAudioWrapper = new Mock<INAudioWrapper>();
-        //    var stuff = new Fixture().Create<string>();
-        //    var anyValidFile = new FileInfo(stuff);
-        //
-        //    mockNAudioWrapper.Setup(m => m.Setup(anyValidFile, It.IsAny<EventHandler<StoppedEventArgs>>()));
-        //
-        //    var player = new Player(mockNAudioWrapper.Object);
-        //    player.Play(anyValidFile);
-        //
-        //    var seekTime = TimeSpan.FromSeconds(55);
-        //
-        //    mockNAudioWrapper.Setup(m => m.Seek(seekTime)).Returns(PlaybackState.Playing);
-        //    
-        //    player.Seek(seekTime);
-        //
-        //    //assert what?
-        //}
     }
 }

@@ -30,7 +30,6 @@ namespace MSOE.MediaComplete.CustomControls
         {
             return (string) Header;
         }
-        public int myInt = 10;
 
         /// <summary>
         /// Used to recursively determine the folder's path
