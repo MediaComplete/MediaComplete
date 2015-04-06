@@ -14,7 +14,7 @@ namespace MSOE.MediaComplete.Lib.Songs
         private static readonly IReadOnlyDictionary<string, Type> TypeDictionary = new Dictionary<string, Type>
         {
             // MP3/WMA file regex
-            { @".*\.[" + Constants.MusicFileExtensions.Aggregate((x, y) => x + "|" + y) + "]", typeof (LocalSong) }
+            {@".*\.[" + Constants.MusicFileExtensions.Aggregate((x, y) => x + "|" + y) + "]", typeof (LocalSong)}
             // Future - youtube URLs regex
         };
 
@@ -32,10 +32,11 @@ namespace MSOE.MediaComplete.Lib.Songs
                 var hits = new Regex(regex.Key).Matches(mediaItem.Location).Count;
                 if (hits > 0)
                 {
-                    var constructor = regex.Value.GetConstructor(new[] { typeof(MediaItem) });
+                    var constructor = regex.Value.GetConstructor(new[] {typeof (MediaItem)});
                     if (constructor != null)
-                        return (AbstractSong)constructor.Invoke(new object[] { mediaItem });
-                    throw new InvalidCastException(String.Format("Missing MediaItem constructor for AbstractSong subclass {0}", regex.Value));
+                        return (AbstractSong) constructor.Invoke(new object[] {mediaItem});
+                    throw new InvalidCastException(
+                        String.Format("Missing MediaItem constructor for AbstractSong subclass {0}", regex.Value));
                 }
             }
 
@@ -47,5 +48,14 @@ namespace MSOE.MediaComplete.Lib.Songs
         /// </summary>
         /// <returns>A new media item</returns>
         public abstract MediaItem ToMediaItem();
+
+        /// <summary>
+        /// Enforces an equality check on all subsongs.
+        /// </summary>
+        /// <param name="other">Another object to compare to</param>
+        /// <returns>True if this is logically equivalent to other, false otherwise</returns>
+        public new abstract bool Equals(object other);
+
+        public abstract string GetPath();
     }
 }

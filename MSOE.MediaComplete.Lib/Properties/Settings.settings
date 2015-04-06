@@ -39,5 +39,8 @@
   &lt;string&gt;Album&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
+    <Setting Name="AllDirs" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\library\</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

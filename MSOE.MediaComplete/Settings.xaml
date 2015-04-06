@@ -7,6 +7,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="MainWindowResources.xaml" />
+                <ResourceDictionary Source="layout/Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -29,8 +30,8 @@
                                 <ColumnDefinition Width="100" />
                             </Grid.ColumnDefinitions>
                             <TextBox x:Name="TxtboxSelectedFolder" Grid.Column="0" IsReadOnly="True" />
-                            <Button x:Name="BtnSelectFolder" Grid.Column="1" Content="Select Directory"
-                                    Click="BtnSelectFolder_Click" HorizontalAlignment="Right" Width="100" />
+                            <Button x:Name="BtnSelectHomeFolder" Grid.Column="1" Content="Select Directory"
+                                    Click="BtnSelectHomeFolder_Click" HorizontalAlignment="Right" Width="100" />
                         </Grid>
                     </StackPanel>
                 </Border>
