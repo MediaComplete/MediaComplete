@@ -131,13 +131,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Window\BorderPosition.cs" />
-    <Compile Include="Window\WindowBorder.cs" />
-    <Compile Include="Window\WindowResizer.cs" />
+    <Compile Include="CustomWindow\BorderPosition.cs" />
+    <Compile Include="CustomWindow\CustomControl1.cs" />
+    <Compile Include="CustomWindow\MainWindowWrapper.xaml.cs">
+      <DependentUpon>MainWindowWrapper.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomWindow\WindowBorder.cs" />
+    <Compile Include="CustomWindow\WindowResizer.cs" />
     <Compile Include="CustomControls\BackgroundYoutubePlayer.xaml.cs">
       <DependentUpon>BackgroundYoutubePlayer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Window\MainWindowBorder.cs" />
+    <Compile Include="CustomWindow\MainWindowBorder.cs" />
     <Compile Include="MainWindowMetadata.cs" />
     <Compile Include="CustomControls\FolderTreeViewItem.cs" />
     <Compile Include="CustomControls\SongTreeViewItem.cs" />
@@ -149,7 +153,7 @@
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
     <Compile Include="VolumeConverter.cs" />
-    <Compile Include="Window\WindowWrapper.xaml.cs">
+    <Compile Include="CustomWindow\WindowWrapper.xaml.cs">
       <DependentUpon>WindowWrapper.xaml</DependentUpon>
     </Compile>
     <Page Include="CustomControls\BackgroundYoutubePlayer.xaml">
@@ -189,9 +193,17 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Window\WindowWrapper.xaml">
+    <Page Include="CustomWindow\MainWindowWrapper.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomWindow\WindowWrapper.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>

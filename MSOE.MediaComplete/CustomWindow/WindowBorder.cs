@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace MSOE.MediaComplete.Border
+namespace MSOE.MediaComplete.CustomWindow
 {
     /// <summary>
     /// Represents a Framework element which is acting as a border for a window.

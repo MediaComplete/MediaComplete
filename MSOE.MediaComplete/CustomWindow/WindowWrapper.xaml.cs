@@ -1,17 +1,22 @@
 ﻿using System.Windows;
-using MSOE.MediaComplete.Border;
 
-namespace MSOE.MediaComplete
+namespace MSOE.MediaComplete.CustomWindow
 {
     /// <summary>
     /// Interaction logic for WindowWrapper.xaml
     /// </summary>
-    public partial class WindowWrapper : Window
+    public partial class WindowWrapper
     {
         public WindowWrapper()
         {
             InitializeComponent();
-            new WindowResizer(this,
+            Loaded += SetupResize;
+        }
+
+        private void SetupResize(object sender, RoutedEventArgs e)
+        {
+            // ReSharper disable once ObjectCreationAsStatement
+            new WindowResizer(Window.GetWindow(this),
                 new WindowBorder(BorderPosition.TopLeft, TopLeft),
                 new WindowBorder(BorderPosition.Top, Top),
                 new WindowBorder(BorderPosition.TopRight, TopRight),

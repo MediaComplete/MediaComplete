@@ -2,7 +2,7 @@
 using System.Windows.Input;
 
 // ReSharper disable once CheckNamespace
-namespace MSOE.MediaComplete
+namespace MSOE.MediaComplete.CustomWindow
 {
     public partial class WindowWrapper
     {
@@ -43,7 +43,7 @@ namespace MSOE.MediaComplete
         /// </summary>
         private void MinimizeButton_Click(object sender, RoutedEventArgs e)
         {
-            WindowState = WindowState.Minimized;
+            Window.GetWindow(this).WindowState = WindowState.Minimized;
         }
 
         /// <summary>
@@ -51,8 +51,9 @@ namespace MSOE.MediaComplete
         /// </summary>
         private void AdjustWindowSize()
         {
-            WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
-            MaxButton.Style = (Style)TryFindResource(WindowState == WindowState.Maximized ? "RestoreDownButtonStyle" : "FullscreenButtonStyle");
+            var window = Window.GetWindow(this);
+            window.WindowState = window.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+            MaxButton.Style = (Style)TryFindResource(window.WindowState == WindowState.Maximized ? "RestoreDownButtonStyle" : "FullscreenButtonStyle");
         }
     }
 }

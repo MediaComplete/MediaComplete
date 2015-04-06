@@ -1,4 +1,4 @@
-﻿namespace MSOE.MediaComplete.Border
+﻿namespace MSOE.MediaComplete.CustomWindow
 {
     /// <summary>
     /// Determines the position of a window border.
