@@ -456,9 +456,9 @@ namespace MSOE.MediaComplete
             Play();
         }
 
-        private void PlaylistList_SelectionChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private void PlaylistTree_SelectionChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (PlaylistTree.SelectedItem.Equals(NowPlayingItem))
+            if (NowPlayingItem.IsSelected)
                 ShowNowPlaying();
             e.Handled = true;
         }

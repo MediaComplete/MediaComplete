@@ -76,7 +76,7 @@
 				        MouseUp="FolderTree_OnMouseUp"
 				        ItemsSource="{Binding RootLibraryFolderItem.Children}" >
                         <controls:TreeViewEx.ItemTemplate>
-                            <HierarchicalDataTemplate ItemsSource="{Binding Children}"  DataType="{x:Type customControls:FolderTreeViewItem}">
+                            <HierarchicalDataTemplate ItemsSource="{Binding Children}" DataType="{x:Type customControls:FolderTreeViewItem}">
                                 <TextBlock Text="{Binding}"/>
                             </HierarchicalDataTemplate>
                         </controls:TreeViewEx.ItemTemplate>
@@ -109,7 +109,7 @@
 
                 <TabItem Header="Playlists" Name="PlaylistTab">
                     <TreeView x:Name="PlaylistTree" 
-                        SelectedItemChanged="PlaylistList_SelectionChanged">
+                        SelectedItemChanged="PlaylistTree_SelectionChanged">
                         <TreeView.ItemsSource>
                             <CompositeCollection>
                                 <TreeViewItem Name="NowPlayingItem" Header="{StaticResource NowPlaying}"/>
@@ -172,14 +172,18 @@
                     <RowDefinition Height="26" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <DockPanel Grid.Row="0" Visibility="{Binding IsSelected, ElementName=PlaylistTab, Converter={StaticResource BoolToVis}}">
-                    <Label Name="MyLabel" Margin="-4" FontSize="16" FontWeight="ExtraBlack" Content="{Binding SelectedItem.Header, ElementName=PlaylistTree}"/>
+                <DockPanel Grid.Row="0" LastChildFill="True" Visibility="{Binding IsSelected, ElementName=PlaylistTab, Converter={StaticResource BoolToVis}}">
+                    <Label Margin="-4" FontSize="15" FontWeight="ExtraBlack" Content="{Binding ElementName=PlaylistTree, Path=SelectedItem.Header}" 
+                           Visibility="{Binding IsSelected, ElementName=NowPlayingItem, Converter={StaticResource BoolToVis}}"/>
                     <Button Click="SaveAsPlaylist_OnClick" ToolTip="{StaticResource SaveNowPlaying-Tooltip}"
+                            Visibility="{Binding ElementName=NowPlayingItem, Path=IsSelected, Converter={StaticResource BoolToVis}}"
                             Style="{StaticResource SaveButtonStyle}"
-                            Visibility="{Binding IsSelected, ElementName=NowPlayingItem, Converter={StaticResource BoolToVis}}"
                             IsEnabled="{Binding NowPlayingDirty.Value}"
-                            HorizontalAlignment="Right" 
+                            DockPanel.Dock="Right"
                             VerticalAlignment="Center" />
+                    <TextBox VerticalAlignment="Center" DockPanel.Dock="Left" FontSize="14" FontWeight="ExtraBlack" 
+                             Text="{Binding ElementName=PlaylistTree, Path=SelectedItem.Title}" Style="{StaticResource PlaylistNameTextbox}"
+                             Visibility="{Binding IsSelected, ElementName=NowPlayingItem, Converter={StaticResource NotBoolToVis}}"/>
                 </DockPanel>
                 <ListView x:Name="PlaylistSongs" Grid.Row="1" BorderThickness="1,0,1,0"
                           MouseUp="PlaylistSongs_OnMouseUp" MouseDoubleClick="PlaylistSongs_OnMouseDoubleClick" SelectionMode="Single" >

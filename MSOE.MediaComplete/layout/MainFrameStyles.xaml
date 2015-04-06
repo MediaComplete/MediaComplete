@@ -2,6 +2,9 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:System.Windows.Controls;assembly=TreeViewEx"
                     xmlns:customControls="clr-namespace:MSOE.MediaComplete.CustomControls">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Styles.xaml" />
+    </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="{x:Type controls:TreeViewEx}">
         <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
@@ -92,6 +95,11 @@
             </Style>
         </Style.Resources>
     </Style>
+
+    <Style TargetType="{x:Type TextBox}" x:Key="PlaylistNameTextbox" BasedOn="{StaticResource {x:Type TextBox}}">
+        <Setter Property="Background" Value="{DynamicResource PanelBrush}"/>
+    </Style>
+    
     <Style TargetType="{x:Type GridSplitter}" x:Key="SplitterStyle">
         <Setter Property="Background" Value="Transparent"></Setter>
     </Style>

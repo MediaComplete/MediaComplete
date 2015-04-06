@@ -72,6 +72,7 @@
     <mediaComplete:VolumeConverter x:Key="VolumeConverter"/>
     <mediaComplete:IfZeroCollapsedConverter x:Key="IfZeroCollapsed"/>
     <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    <mediaComplete:NotBooleanToVisibilityConverter x:Key="NotBoolToVis"/>
 
     <!-- Images -->
     <BitmapImage x:Key="Toolbar-AddMusicFile-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"

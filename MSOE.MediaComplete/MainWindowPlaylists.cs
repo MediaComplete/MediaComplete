@@ -19,30 +19,10 @@ namespace MSOE.MediaComplete
         /// <summary>
         /// Bindable list of Playlists. Gets used in context menus and elsewhere.
         /// </summary>
-        public ObservableCollection<Playlist> Playlists {
-            get { return _playlists; }
-        }
+        public ObservableCollection<Playlist> Playlists { get { return _playlists; } }
         private readonly ObservableCollection<Playlist> _playlists = new ObservableCollection<Playlist>(PlaylistService.GetAllPlaylists());
 
-        private void InitPlaylists()
-        {
-            Playlists.Insert(0, NowPlaying.Inst.Playlist);
-        }
-
         #region Event handlers
-
-        /// <summary>
-        /// Creates a new playlist and shows it in the treeview.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ContextMenu_AddNewPlaylist_Click(object sender, RoutedEventArgs e)
-        {
-            var p = PlaylistService.CreatePlaylist();
-            p.Save();
-            PlaylistTree.Items.Add(p);
-            // TODO MC-207 flow into rename
-        }
 
         /// <summary>
         /// Creates a new playlist and populates it based on the selected folders. If no folder is 

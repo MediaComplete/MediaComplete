@@ -40,4 +40,21 @@ namespace MSOE.MediaComplete
             throw new NotImplementedException();
         }
     }
+
+    /// <summary>
+    /// Inverse of the MS provided BooleanToVisibilityConverter
+    /// </summary>
+    public class NotBooleanToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var boolVal = value as bool?;
+            return boolVal != null && !boolVal.Value ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
