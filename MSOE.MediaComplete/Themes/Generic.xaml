@@ -3,10 +3,14 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:customWindow="clr-namespace:MSOE.MediaComplete.CustomWindow">
 
-    <Style TargetType="{x:Type customWindow:CustomControl1}">
+    <BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
+    
+    <Style TargetType="{x:Type customWindow:BaseWindow}">
+        <Setter Property="WindowStyle" Value="None"/>
+        <Setter Property="ResizeMode" Value="NoResize"/>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type customWindow:CustomControl1}">
+                <ControlTemplate TargetType="{x:Type customWindow:BaseWindow}">
                     <Border Margin="2" Background="{DynamicResource WindowBackgroundBrush}">
                         <Border.Effect>
                             <DropShadowEffect 
@@ -29,23 +33,26 @@
                             <DockPanel Grid.Row="1" Grid.Column="1">
                                 <DockPanel Name="PART_TitleBar" DockPanel.Dock="Top" Height="25" Background="Transparent">
                                     <Button Name="PART_ExitButton" DockPanel.Dock="Right" Style="{DynamicResource ExitButtonStyle}"/>
-                                    <Button Name="PART_MaxButton" DockPanel.Dock="Right" Style="{DynamicResource FullscreenButtonStyle}"/>
-                                    <Button Name="PART_MinButton" DockPanel.Dock="Right" Style="{DynamicResource MinButtonStyle}"/>
+                                    <Button Name="PART_MaxButton" DockPanel.Dock="Right" Style="{DynamicResource FullscreenButtonStyle}"
+                                            Visibility="{TemplateBinding AllowMaximize, Converter={StaticResource BoolToVisConverter}}"/>
+                                    <Button Name="PART_MinButton" DockPanel.Dock="Right" Style="{DynamicResource MinButtonStyle}"
+                                            Visibility="{TemplateBinding AllowMinimize, Converter={StaticResource BoolToVisConverter}}"/>
                                     <Image DockPanel.Dock="Left" Source="../Resources/logo_small.ico" Height="20" Width="20"/>
-                                    <TextBlock FontSize="14" Foreground="{DynamicResource WindowTitleBrush}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0">Media Complete</TextBlock>
+                                    <TextBlock FontSize="14" Foreground="{DynamicResource WindowTitleBrush}" HorizontalAlignment="Left" 
+                                               VerticalAlignment="Center" Margin="5,0,0,0" Text="{TemplateBinding Title}"/>
                                 </DockPanel>
                                 <AdornerDecorator>
                                     <ContentPresenter/>
                                 </AdornerDecorator>
                             </DockPanel>
-                            <Rectangle Name="TopLeft" Grid.Row="0" Grid.Column="0" Fill="{DynamicResource WindowBackgroundBrush}"/>
-                            <Rectangle Name="Top" Grid.Row="0" Grid.Column="1" Fill="{DynamicResource WindowBackgroundBrush}"/>
-                            <Rectangle Name="TopRight" Grid.Row="0" Grid.Column="2" Fill="{DynamicResource WindowBackgroundBrush}"/>
-                            <Rectangle Name="Right" Grid.Row="1" Grid.Column="2" Fill="{DynamicResource WindowBackgroundBrush}"/>
-                            <Rectangle Name="BottomRight" Grid.Row="2" Grid.Column="2" Fill="{DynamicResource WindowBackgroundBrush}"/>
-                            <Rectangle Name="Bottom" Grid.Row="2" Grid.Column="1" Fill="{DynamicResource WindowBackgroundBrush}"/>
-                            <Rectangle Name="BottomLeft" Grid.Row="2" Grid.Column="0" Fill="{DynamicResource WindowBackgroundBrush}"/>
-                            <Rectangle Name="Left" Grid.Row="1" Grid.Column="0" Fill="{DynamicResource WindowBackgroundBrush}"/>
+                            <Rectangle Name="PART_TopLeftBorderHandle" Grid.Row="0" Grid.Column="0" Fill="{DynamicResource WindowBackgroundBrush}"/>
+                            <Rectangle Name="PART_TopBorderHandle" Grid.Row="0" Grid.Column="1" Fill="{DynamicResource WindowBackgroundBrush}"/>
+                            <Rectangle Name="PART_TopRightBorderHandle" Grid.Row="0" Grid.Column="2" Fill="{DynamicResource WindowBackgroundBrush}"/>
+                            <Rectangle Name="PART_RightBorderHandle" Grid.Row="1" Grid.Column="2" Fill="{DynamicResource WindowBackgroundBrush}"/>
+                            <Rectangle Name="PART_BottomRightBorderHandle" Grid.Row="2" Grid.Column="2" Fill="{DynamicResource WindowBackgroundBrush}"/>
+                            <Rectangle Name="PART_BottomBorderHandle" Grid.Row="2" Grid.Column="1" Fill="{DynamicResource WindowBackgroundBrush}"/>
+                            <Rectangle Name="PART_BottomLeftBorderHandle" Grid.Row="2" Grid.Column="0" Fill="{DynamicResource WindowBackgroundBrush}"/>
+                            <Rectangle Name="PART_LeftBorderHandle" Grid.Row="1" Grid.Column="0" Fill="{DynamicResource WindowBackgroundBrush}"/>
                         </Grid>
                     </Border>
                 </ControlTemplate>
