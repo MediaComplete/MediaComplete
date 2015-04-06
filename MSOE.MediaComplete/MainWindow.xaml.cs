@@ -296,7 +296,6 @@ namespace MSOE.MediaComplete
                 RefreshTreeView();
             }
             ClearDetailPane();
-            e.Handled = true;
         }
 
         /// <summary>
