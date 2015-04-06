@@ -4,12 +4,22 @@
                     xmlns:mediaComplete="clr-namespace:MSOE.MediaComplete">
 
     <!-- Put strings up here - this is where internationalization would occur. -->
+    <system:String x:Key="Toolbar-AddFile-Tooltip">Add File(s)</system:String>
+    <system:String x:Key="Toolbar-AddFolder-Tooltip">Add Folder</system:String>
     <system:String x:Key="Toolbar-AutoIdMusic-Tooltip">Restore Metadata</system:String>
     <system:String x:Key="Toolbar-SortMusic-Tooltip">Refresh the sorting of your library</system:String>
     <system:String x:Key="Toolbar-SortMusicDisabled-Tooltip">Sorting is disabled in Settings Menu</system:String>
+    <system:String x:Key="Toolbar-HideDetails-Content">Hide Details</system:String>
+    <system:String x:Key="Toolbar-ShowDetails-Content">Show Details</system:String>
+    
     <system:String x:Key="ContextMenu-AutoIdMusic-Header">Restore Metadata</system:String>
-    <system:String x:Key="ContextMenu-PlayMusic-Header">Play</system:String>
-    <system:String x:Key="ContextMenu-AddNewPlaylist-Header">New Playlist</system:String>
+    <system:String x:Key="ContextMenu-PlayMusic-Header">Play All</system:String>
+    <system:String x:Key="ContextMenu-PlaySingle-Header">Play</system:String>
+    <system:String x:Key="ContextMenu-PlayNext-Header">Play Next</system:String>
+    <system:String x:Key="ContextMenu-NowPlayingMusic-Header">Now Playing</system:String>
+    <system:String x:Key="ContextMenu-AddTo-Header">Add to...</system:String>
+    <system:String x:Key="ContextMenu-NewPlaylist-Header">New Playlist</system:String>
+
     <system:String x:Key="Dialog-AddFile-MusicFilter">All Music Files (*.mp3, *.wma)</system:String>
     <system:String x:Key="Dialog-AddFile-Mp3Filter">MP3 Files (*.mp3)</system:String>
     <system:String x:Key="Dialog-AddFile-WmaFilter">WMA Files (*.wma)</system:String>
@@ -43,6 +53,8 @@
     <system:String x:Key="UnauthorizedAccess-Error">A system protected file could not be imported</system:String>
     <system:String x:Key="FailedImport-Error">There was a failure importing</system:String>
 
+    <system:String x:Key="NowPlaying">Now Playing</system:String>
+    <system:String x:Key="SaveNowPlaying-Tooltip">Save this queue as a playlist</system:String>
 
     <system:String x:Key="VariousSongs">Various Songs</system:String>
     <system:String x:Key="VariousAlbums">Various Albums</system:String>
@@ -56,8 +68,10 @@
     <system:String x:Key="EditButton">Edit</system:String>
     <system:String x:Key="CancelButton">Cancel</system:String>
 
+    <!-- Converters -->
     <mediaComplete:VolumeConverter x:Key="VolumeConverter"/>
-
+    <mediaComplete:IfZeroCollapsedConverter x:Key="IfZeroCollapsed"/>
+    <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
     <!-- Images -->
     <BitmapImage x:Key="Toolbar-AddMusicFile-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
@@ -76,4 +90,8 @@
                  UriSource=".\Resources\Information.png" />
     <BitmapImage x:Key="Settings-Folder-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
                  UriSource=".\Resources\folder.png" />
+    
+    <!-- Misc. -->
+    <!-- See http://wilberbeast.com/2011/05/31/compositecollection-binding-problem/ -->
+    <CollectionViewSource x:Key="PlaylistsCollection" Source="{Binding Path=Playlists}" />
 </ResourceDictionary>

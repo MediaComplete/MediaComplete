@@ -20,7 +20,7 @@
             var player;
             function onYouTubeIframeAPIReady() {
                 document.getElementById('debug').innerText = "Youtube Ready";
-                player = new YT.Player('player', {
+                player = new window.YT.Player('player', {
                     height: '390',
                     width: '640',
                     videoId: 'T9KAJKoR1sA',
@@ -44,7 +44,7 @@
             var done = false;
             function onPlayerStateChange(event) {
                 document.getElementById('debug').innerText = "Player Changed";
-                if (event.data === YT.PlayerState.PLAYING && !done) {
+                if (event.data === window.YT.PlayerState.PLAYING && !done) {
                     setTimeout(stopVideo, 12000);
                     done = true;
                 }

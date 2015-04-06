@@ -67,7 +67,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                         TriggerUpdate(this);
                     }
                 }
-                Sorter.Settings.Root.ScrubEmptyDirectories();
+                new DirectoryInfo(SettingWrapper.MusicDir).ScrubEmptyDirectories();
 
                 if (Error == null)
                 {

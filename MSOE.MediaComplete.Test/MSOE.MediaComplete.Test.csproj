@@ -88,6 +88,8 @@
     <Compile Include="Background\QueueTest.cs" />
     <Compile Include="Background\SortingTaskTest.cs" />
     <Compile Include="MusicIdentifierTest.cs" />
+    <Compile Include="Playing\PlayerTest.cs" />
+    <Compile Include="Playing\NowPlayingTest.cs" />
     <Compile Include="Playlists\PlaylistServiceTest.cs" />
     <Compile Include="Playlists\PlaylistTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -96,7 +98,6 @@
     <Compile Include="Songs\LocalSongTest.cs" />
     <Compile Include="SortingTest.cs" />
     <Compile Include="ImporterTest.cs" />
-    <Compile Include="PlayerTest.cs" />
     <Compile Include="Util\Constants.cs" />
     <Compile Include="Util\FileHelper.cs" />
     <Compile Include="StatusBarTest.cs" />

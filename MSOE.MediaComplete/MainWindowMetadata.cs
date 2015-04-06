@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Metadata;
@@ -12,6 +13,7 @@ namespace MSOE.MediaComplete
 {
     public partial class MainWindow
     {
+        private ListView _visibleList;
         private Dictionary<MetaAttribute, string> SetupForm()
         {
             var boxes = new TextBox[8];
@@ -29,6 +31,7 @@ namespace MSOE.MediaComplete
                 while (box.CanUndo)
                     box.Undo();
             }
+
             return new Dictionary<MetaAttribute, string>
             {
                 {MetaAttribute.SongTitle, null},
@@ -41,14 +44,13 @@ namespace MSOE.MediaComplete
                 {MetaAttribute.Rating, null},
                 {MetaAttribute.AlbumArt, null}
             };
-            
         }
+
         private void PopulateMetadataForm()
         {
             var initalAttributes = SetupForm();
             var finalAttributes = new Dictionary<MetaAttribute, string>();
-
-            foreach ( SongTreeViewItem item in SongTree.SelectedItems)
+            foreach (AbstractSongItem item in _visibleList.SelectedItems)
             {
                 try
                 {
@@ -111,7 +113,7 @@ namespace MSOE.MediaComplete
         private void Edit_OnClick(object sender, RoutedEventArgs e)
         {
 
-            if (EditCancelButton.Content.Equals(Resources["EditButton"].ToString()) && SongTree.SelectedItems.Count > 0)
+            if (EditCancelButton.Content.Equals(Resources["EditButton"].ToString()) && _visibleList.SelectedItems.Count > 0)
             {
                 EditCancelButton.Content = Resources["CancelButton"].ToString();
                 ToggleReadOnlyFields(false);
@@ -159,11 +161,11 @@ namespace MSOE.MediaComplete
             if (SongTitle.IsReadOnly) return;
             EditCancelButton.Content = Resources["EditButton"].ToString();
             ToggleReadOnlyFields(true);
-            foreach (SongTreeViewItem item in SongTree.SelectedItems)
+            foreach (AbstractSongItem item in _visibleList.SelectedItems)
             {
                 try
                 {
-                    var song = File.Create(item.GetPath());
+                    var song = _fileMover.CreateTaglibFile((item.GetPath()));
                     foreach (var changedBox in _changedBoxes)
                     {
                         if (changedBox.Equals(SongTitle))
@@ -204,6 +206,7 @@ namespace MSOE.MediaComplete
                 {
                     StatusBarHandler.Instance.ChangeStatusBarMessage("Save-Error", StatusBarHandler.StatusIcon.Error);
                 }
+            
             }
             _changedBoxes.Clear();
             PopulateMetadataForm();

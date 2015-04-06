@@ -118,4 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Settings_BtnSelectHomeFolder_Click_Music_and_Playlist_folders_will_be_created_within_the_folder_you_choose__Your_existing_files_will_be_moved_appropriately_" xml:space="preserve">
+    <value>Music and Playlist folders will be created within the folder you choose. Your existing files will be moved appropriately.</value>
+  </data>
 </root>

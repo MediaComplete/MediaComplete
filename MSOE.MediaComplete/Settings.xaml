@@ -7,14 +7,15 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="MainWindowResources.xaml" />
+                <ResourceDictionary Source="layout/Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <DockPanel Style="{DynamicResource PanelStyle}">
+    <DockPanel Background="{DynamicResource PanelBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <StackPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" Orientation="Horizontal"
                     VerticalAlignment="Bottom">
-            <Button x:Name="BtnCancel" Margin="5" Content="Cancel" Click="BtnCancel_OnClick" Width="75" Height="22" />
-            <Button x:Name="BtnSave" Margin="5" Content="Save" Click="BtnSave_Click" Width="75" Height="22" />
+            <Button x:Name="BtnCancel" Margin="4" Content="Cancel" Click="BtnCancel_OnClick" Width="75" Height="32" />
+            <Button x:Name="BtnSave" Margin="4" Content="Save" Click="BtnSave_Click" Width="75" Height="32" />
         </StackPanel>
         <TabControl DockPanel.Dock="Top">
             <TabItem Header="Library" Padding="10,3,10,3">
@@ -29,8 +30,8 @@
                                 <ColumnDefinition Width="100" />
                             </Grid.ColumnDefinitions>
                             <TextBox x:Name="TxtboxSelectedFolder" Grid.Column="0" IsReadOnly="True" />
-                            <Button x:Name="BtnSelectFolder" Grid.Column="1" Content="Select Directory"
-                                    Click="BtnSelectFolder_Click" HorizontalAlignment="Right" Width="100" />
+                            <Button x:Name="BtnSelectHomeFolder" Grid.Column="1" Content="Select Directory"
+                                    Click="BtnSelectHomeFolder_Click" HorizontalAlignment="Right" Width="100" />
                         </Grid>
                     </StackPanel>
                 </Border>

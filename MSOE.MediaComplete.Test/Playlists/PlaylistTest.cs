@@ -19,7 +19,7 @@ namespace MSOE.MediaComplete.Test.Playlists
             subject.Save();
 
             mock.Verify(m => m.Save(true), Times.Once);
-            Assert.AreEqual(testName, subject.Name, "Name wasn't preserved!");
+            Assert.AreEqual(testName, subject.Title, "Title wasn't preserved!");
         }
 
         [Test]
@@ -32,7 +32,7 @@ namespace MSOE.MediaComplete.Test.Playlists
             subject.Save();
 
             mock.Verify(m => m.Save(true), Times.Once);
-            Assert.AreEqual(testName, subject.Name, "Name wasn't preserved!");
+            Assert.AreEqual(testName, subject.Title, "Title wasn't preserved!");
         }
 
         [Test]
@@ -45,7 +45,7 @@ namespace MSOE.MediaComplete.Test.Playlists
             subject.Delete();
 
             mock.Verify(m => m.Delete(), Times.Once);
-            Assert.AreEqual(testName, subject.Name, "Name wasn't preserved!");
+            Assert.AreEqual(testName, subject.Title, "Title wasn't preserved!");
         }
 
         [Test]
@@ -60,7 +60,7 @@ namespace MSOE.MediaComplete.Test.Playlists
 
             mock.Verify(m => m.Save(true), Times.Once);
             mock.Verify(m => m.Delete(), Times.Once);
-            Assert.AreEqual(testName, subject.Name, "Name wasn't preserved!");
+            Assert.AreEqual(testName, subject.Title, "Title wasn't preserved!");
         }
 
         [Test]
@@ -74,7 +74,7 @@ namespace MSOE.MediaComplete.Test.Playlists
             // Disabled since the set operation is the only thing we actually do with it.
             var subject = new Playlist(mock.Object);
 
-            subject.Name = newName;
+            subject.Title = newName;
 
             mock.VerifySet(m => m.Name = It.IsAny<string>(), Times.Once);
         }
@@ -88,7 +88,7 @@ namespace MSOE.MediaComplete.Test.Playlists
             var subject = new Playlist(mock.Object);
 
             subject.Save();
-            subject.Name = newName;
+            subject.Title = newName;
 
             mock.Verify(m => m.Save(true), Times.Once);
             mock.VerifySet(m => m.Name = It.IsAny<string>(), Times.Once);
