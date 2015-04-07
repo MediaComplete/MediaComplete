@@ -157,78 +157,10 @@
 
     <Brush x:Key="VolumeFillBrush">#FFF0EFF1</Brush>
     <Brush x:Key="VolumeBarBrush">#FF2D2D30</Brush>
-    <!--Everything related to this slider style is lifted straight from 
-            http://stackoverflow.com/questions/25136114/custom-wpf-slider-with-image-as-thumb
-            because it looks exactly how we need it to -->
-    <Style x:Key="SliderRepeatButton" TargetType="RepeatButton">
-        <Setter Property="SnapsToDevicePixels" Value="true" />
-        <Setter Property="OverridesDefaultStyle" Value="true" />
-        <Setter Property="IsTabStop" Value="false" />
-        <Setter Property="Focusable" Value="false" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="RepeatButton">
-                    <Border  BorderThickness="1" BorderBrush="Black" Background="Black" Height="5"/>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-    <Style x:Key="SliderRepeatButton1" TargetType="RepeatButton">
-        <Setter Property="SnapsToDevicePixels" Value="true" />
-        <Setter Property="OverridesDefaultStyle" Value="true" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="RepeatButton">
-                    <Border SnapsToDevicePixels="True" Background="Green"  BorderThickness="1" BorderBrush="YellowGreen" Height="5"/>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <Style x:Key="SliderThumb" TargetType="Thumb">
-        <Setter Property="SnapsToDevicePixels" Value="true" />
-        <Setter Property="OverridesDefaultStyle" Value="true" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Thumb">
-                    <Ellipse Height="15" Width="15" Fill="#FF686868"></Ellipse>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <ControlTemplate x:Key="Slider"  TargetType="Slider">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Track Grid.Row="1" x:Name="PART_Track"   >
-                <Track.DecreaseRepeatButton>
-                    <RepeatButton Style="{StaticResource SliderRepeatButton1}"  Command="Slider.DecreaseLarge" />
-                </Track.DecreaseRepeatButton>
-                <Track.Thumb>
-                    <Thumb Style="{StaticResource SliderThumb}"  />
-                </Track.Thumb>
-                <Track.IncreaseRepeatButton>
-                    <RepeatButton Style="{StaticResource SliderRepeatButton}" Command="Slider.IncreaseLarge" />
-                </Track.IncreaseRepeatButton>
-            </Track>
-        </Grid>
-    </ControlTemplate>
-
-    <Style x:Key="HorizontalSlider" TargetType="{x:Type Slider}">
-        <Setter Property="Focusable" Value="False"/>
-        <Setter Property="SnapsToDevicePixels" Value="true" />
-        <Setter Property="OverridesDefaultStyle" Value="true" />
-        <Style.Triggers>
-            <Trigger Property="Orientation" Value="Horizontal">
-                <Setter Property="MinHeight" Value="21" />
-                <Setter Property="MinWidth" Value="104" />
-                <Setter Property="Template" Value="{StaticResource Slider}" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
     
+    <Brush x:Key="RepeatButtonBrush">Black</Brush>
+    <Brush x:Key="RepeatButton1BorderBrush">Green</Brush>
+    <Brush x:Key="RepeatButton1BackgroundBrush">YellowGreen</Brush>
+
+    <Brush x:Key="SliderThumbBrush">#FF686868</Brush>
 </ResourceDictionary>
