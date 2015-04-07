@@ -3,6 +3,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:customWindow="clr-namespace:MSOE.MediaComplete.CustomWindow">
 
+    <!-- Special Window template needs to be here, so the application can find it on startup. 
+         Other resource files don't get pulled in until MainWindow.xaml is processed. -->
+    
     <BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
     
     <Style TargetType="{x:Type customWindow:BaseWindow}">
@@ -11,15 +14,8 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type customWindow:BaseWindow}">
-                    <Border Margin="2" Background="{DynamicResource WindowBackgroundBrush}">
-                        <Border.Effect>
-                            <DropShadowEffect 
-                                Color="{DynamicResource WindowShadowColor}"
-                                Direction="270"
-                                BlurRadius="10"
-                                ShadowDepth="0" />
-                        </Border.Effect>
-                        <Grid Background="{DynamicResource WindowBackgroundBrush}">
+                    <Border Padding="2" Background="{DynamicResource WindowBorderBrush}">
+                        <Grid Background="{DynamicResource DefaultBackgroundBrush}">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="4" />
                                 <RowDefinition Height="*" />
@@ -38,21 +34,21 @@
                                     <Button Name="PART_MinButton" DockPanel.Dock="Right" Style="{DynamicResource MinButtonStyle}"
                                             Visibility="{TemplateBinding AllowMinimize, Converter={StaticResource BoolToVisConverter}}"/>
                                     <Image DockPanel.Dock="Left" Source="../Resources/logo_small.ico" Height="20" Width="20"/>
-                                    <TextBlock FontSize="14" Foreground="{DynamicResource WindowTitleBrush}" HorizontalAlignment="Left" 
+                                    <TextBlock FontSize="14" Foreground="{DynamicResource PrimaryTextBrush}" HorizontalAlignment="Left" 
                                                VerticalAlignment="Center" Margin="5,0,0,0" Text="{TemplateBinding Title}"/>
                                 </DockPanel>
                                 <AdornerDecorator>
                                     <ContentPresenter/>
                                 </AdornerDecorator>
                             </DockPanel>
-                            <Rectangle Name="PART_TopLeftBorderHandle" Grid.Row="0" Grid.Column="0" Fill="{DynamicResource WindowBackgroundBrush}"/>
-                            <Rectangle Name="PART_TopBorderHandle" Grid.Row="0" Grid.Column="1" Fill="{DynamicResource WindowBackgroundBrush}"/>
-                            <Rectangle Name="PART_TopRightBorderHandle" Grid.Row="0" Grid.Column="2" Fill="{DynamicResource WindowBackgroundBrush}"/>
-                            <Rectangle Name="PART_RightBorderHandle" Grid.Row="1" Grid.Column="2" Fill="{DynamicResource WindowBackgroundBrush}"/>
-                            <Rectangle Name="PART_BottomRightBorderHandle" Grid.Row="2" Grid.Column="2" Fill="{DynamicResource WindowBackgroundBrush}"/>
-                            <Rectangle Name="PART_BottomBorderHandle" Grid.Row="2" Grid.Column="1" Fill="{DynamicResource WindowBackgroundBrush}"/>
-                            <Rectangle Name="PART_BottomLeftBorderHandle" Grid.Row="2" Grid.Column="0" Fill="{DynamicResource WindowBackgroundBrush}"/>
-                            <Rectangle Name="PART_LeftBorderHandle" Grid.Row="1" Grid.Column="0" Fill="{DynamicResource WindowBackgroundBrush}"/>
+                            <Rectangle Name="PART_TopLeftBorderHandle" Grid.Row="0" Grid.Column="0" Fill="{DynamicResource DefaultBackgroundBrush}"/>
+                            <Rectangle Name="PART_TopBorderHandle" Grid.Row="0" Grid.Column="1" Fill="{DynamicResource DefaultBackgroundBrush}"/>
+                            <Rectangle Name="PART_TopRightBorderHandle" Grid.Row="0" Grid.Column="2" Fill="{DynamicResource DefaultBackgroundBrush}"/>
+                            <Rectangle Name="PART_RightBorderHandle" Grid.Row="1" Grid.Column="2" Fill="{DynamicResource DefaultBackgroundBrush}"/>
+                            <Rectangle Name="PART_BottomRightBorderHandle" Grid.Row="2" Grid.Column="2" Fill="{DynamicResource DefaultBackgroundBrush}"/>
+                            <Rectangle Name="PART_BottomBorderHandle" Grid.Row="2" Grid.Column="1" Fill="{DynamicResource DefaultBackgroundBrush}"/>
+                            <Rectangle Name="PART_BottomLeftBorderHandle" Grid.Row="2" Grid.Column="0" Fill="{DynamicResource DefaultBackgroundBrush}"/>
+                            <Rectangle Name="PART_LeftBorderHandle" Grid.Row="1" Grid.Column="0" Fill="{DynamicResource DefaultBackgroundBrush}"/>
                         </Grid>
                     </Border>
                 </ControlTemplate>

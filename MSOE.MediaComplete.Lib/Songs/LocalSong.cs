@@ -77,5 +77,16 @@ namespace MSOE.MediaComplete.Lib.Songs
         {
             return string.Format("{0}-{1}-{2}-{3}", File, File.FullName, File.DirectoryName, File.GetHashCode()).GetHashCode();
         }
+
+
+        public override string ToString()
+        {
+            return File.Name;
+        }
+
+        public override string GetPath()
+        {
+            return File.FullName; 
+        }
     }
 }

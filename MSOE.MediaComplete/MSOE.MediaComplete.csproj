@@ -135,25 +135,40 @@
     <Compile Include="CustomWindow\BorderPosition.cs" />
     <Compile Include="CustomWindow\WindowBorder.cs" />
     <Compile Include="CustomWindow\WindowResizer.cs" />
+    <Compile Include="Converters.cs" />
     <Compile Include="CustomControls\BackgroundYoutubePlayer.xaml.cs">
       <DependentUpon>BackgroundYoutubePlayer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomControls\PlaylistItem.cs" />
+    <Compile Include="CustomControls\SongItems.cs" />
     <Compile Include="MainWindowMetadata.cs" />
     <Compile Include="CustomControls\FolderTreeViewItem.cs" />
-    <Compile Include="CustomControls\SongTreeViewItem.cs" />
     <Compile Include="InboxImportDialog.xaml.cs">
       <DependentUpon>InboxImportDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindowPlayer.cs" />
+    <Compile Include="MainWindowPlaylists.cs" />
+    <Compile Include="ObservableBool.cs" />
     <Compile Include="Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="VolumeConverter.cs" />
     <Page Include="CustomControls\BackgroundYoutubePlayer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Compile Include="SettingsSortOrder.cs" />
+    <Page Include="layout\MainFrameStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="layout\PlayerControlStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="layout\Styles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="layout\Dark.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -8,14 +8,15 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="MainWindowResources.xaml" />
+                <ResourceDictionary Source="layout/Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <DockPanel Style="{DynamicResource PanelStyle}">
+    <DockPanel Background="{DynamicResource PanelBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <StackPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" Orientation="Horizontal"
                     VerticalAlignment="Bottom">
-            <Button x:Name="BtnCancel" Margin="5" Content="Cancel" Click="BtnCancel_OnClick" Width="75" Height="22" />
-            <Button x:Name="BtnSave" Margin="5" Content="Save" Click="BtnSave_Click" Width="75" Height="22" />
+            <Button x:Name="BtnCancel" Margin="4" Content="Cancel" Click="BtnCancel_OnClick" Width="75" Height="32" />
+            <Button x:Name="BtnSave" Margin="4" Content="Save" Click="BtnSave_Click" Width="75" Height="32" />
         </StackPanel>
         <TabControl DockPanel.Dock="Top">
             <TabItem Header="Library" Padding="10,3,10,3">

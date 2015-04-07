@@ -666,5 +666,71 @@ namespace MSOE.MediaComplete.Test.Playing
         }
 
         #endregion
+
+
+        [TestMethod]
+        public void InsertSingle()
+        {
+            var secondSong = new LocalSong(new FileInfo("newSong"));
+            var list = new List<AbstractSong> { secondSong };
+            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong1")));
+            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong2")));
+            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong3")));
+            Assert.IsTrue(NowPlaying.Inst.SongCount() == 3);
+            NowPlaying.Inst.InsertRange(1, list);
+            Assert.IsTrue(NowPlaying.Inst.SongCount() == 4);
+            Assert.AreEqual(NowPlaying.Inst.NextSong().GetPath(), secondSong.GetPath());
+        }
+
+
+        [TestMethod]
+        public void InsertMany()
+        {
+            var secondSong = new LocalSong(new FileInfo("newSong"));
+            var thirdSong = new LocalSong(new FileInfo("newerSong"));
+            var fourthSong = new LocalSong(new FileInfo("newerSong2"));
+            var fifthSong = new LocalSong(new FileInfo("notreallyanewSong"));
+            var list = new List<AbstractSong> { secondSong,thirdSong,fourthSong,fifthSong };
+            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong1")));
+            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong2")));
+            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong3")));
+            Assert.IsTrue(NowPlaying.Inst.SongCount() == 3);
+            NowPlaying.Inst.InsertRange(1, list);
+            Assert.IsTrue(NowPlaying.Inst.SongCount() == 7);
+            Assert.AreEqual(NowPlaying.Inst.NextSong().GetPath(), secondSong.GetPath());
+            Assert.AreEqual(NowPlaying.Inst.NextSong().GetPath(), thirdSong.GetPath());
+            Assert.AreEqual(NowPlaying.Inst.NextSong().GetPath(), fourthSong.GetPath());
+            Assert.AreEqual(NowPlaying.Inst.NextSong().GetPath(), fifthSong.GetPath());
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        public void InsertNull()
+        {
+            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong3")));
+            NowPlaying.Inst.InsertRange(1, null);
+        }
+        [TestMethod, ExpectedException(typeof(IndexOutOfRangeException))]
+        public void InsertIndexTooBig()
+        {
+            var secondSong = new FileInfo("newSong");
+            var list = new List<AbstractSong> { new LocalSong(secondSong) };
+            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong1")));
+            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong2")));
+            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong3")));
+            Assert.IsTrue(NowPlaying.Inst.SongCount() == 3);
+            NowPlaying.Inst.InsertRange(8, list);
+        }
+        [TestMethod, ExpectedException(typeof(IndexOutOfRangeException))]
+        public void InsertIndexTooSmall()
+        {
+            var secondSong = new FileInfo("newSong");
+            var list = new List<AbstractSong> { new LocalSong(secondSong) };
+            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong1")));
+            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong2")));
+            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong3")));
+            Assert.IsTrue(NowPlaying.Inst.SongCount() == 3);
+            NowPlaying.Inst.InsertRange(-1, list);
+        }
+
     }
 }
