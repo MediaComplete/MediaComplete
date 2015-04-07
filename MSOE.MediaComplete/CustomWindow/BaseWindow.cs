@@ -50,35 +50,35 @@ namespace MSOE.MediaComplete.CustomWindow
 
         public override void OnApplyTemplate()
         {
-            var dependencyObject = GetTemplateChild("PART_ExitButton");
-            if (dependencyObject != null)
+            var exitButton = GetTemplateChild("PART_ExitButton") as Button;
+            if (exitButton != null)
             {
-                (dependencyObject as Button).Click += CloseButton_Click;
+                exitButton.Click += CloseButton_Click;
             }
 
             if (AllowMinimize)
             {
-                dependencyObject = GetTemplateChild("PART_MinButton");
-                if (dependencyObject != null)
+                var minButton = GetTemplateChild("PART_MinButton") as Button;
+                if (minButton != null)
                 {
-                    (dependencyObject as Button).Click += MinimizeButton_Click;
+                    minButton.Click += MinimizeButton_Click;
                 }
             }
 
             if (AllowMaximize)
             {
-                dependencyObject = GetTemplateChild("PART_MaxButton");
-                if (dependencyObject != null)
+                var maxButton = GetTemplateChild("PART_MaxButton") as Button;
+                if (maxButton != null)
                 {
-                    _maxButton = dependencyObject as Button;
+                    _maxButton = maxButton;
                     _maxButton.Click += MaximizeButton_Click;
                 }
             }
 
-            dependencyObject = GetTemplateChild("PART_TitleBar");
-            if (dependencyObject != null)
+            var titleBarPanel = GetTemplateChild("PART_TitleBar") as DockPanel;
+            if (titleBarPanel != null)
             {
-                (dependencyObject as DockPanel).MouseDown += TitleBar_MouseDown;
+                titleBarPanel.MouseDown += TitleBar_MouseDown;
             }
 
             if (AllowResize)
@@ -100,6 +100,8 @@ namespace MSOE.MediaComplete.CustomWindow
             base.OnApplyTemplate();
         }
 
+        #region Event Handlers
+
         /// <summary>
         /// TitleBar_MouseDown - Drag if single-click, resize if double-click
         /// </summary>
@@ -108,7 +110,10 @@ namespace MSOE.MediaComplete.CustomWindow
             if (e.ChangedButton == MouseButton.Left)
                 if (e.ClickCount == 2)
                 {
-                    AdjustWindowSize();
+                    if (AllowMaximize)
+                    {
+                        AdjustWindowSize();
+                    }
                 }
                 else
                 {
@@ -149,5 +154,7 @@ namespace MSOE.MediaComplete.CustomWindow
             if (_maxButton != null)
                 _maxButton.Style = (Style)TryFindResource(WindowState == WindowState.Maximized ? "RestoreDownButtonStyle" : "FullscreenButtonStyle");
         }
+
+        #endregion
     }
 }

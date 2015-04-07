@@ -21,7 +21,7 @@ namespace MSOE.MediaComplete.CustomWindow
         /// Defines the cursors that should be used when the mouse is hovering
         /// over a border in each position.
         /// </summary>
-        private readonly Dictionary<BorderPosition, Cursor> cursors = new Dictionary<BorderPosition, Cursor>
+        private readonly Dictionary<BorderPosition, Cursor> _cursors = new Dictionary<BorderPosition, Cursor>
         {
             { BorderPosition.Left, Cursors.SizeWE },
             { BorderPosition.Right, Cursors.SizeWE },
@@ -36,12 +36,12 @@ namespace MSOE.MediaComplete.CustomWindow
         /// <summary>
         /// The borders for the window.
         /// </summary>
-        private readonly WindowBorder[] borders;
+        private readonly WindowBorder[] _borders;
 
         /// <summary>
         /// The handle to the window.
         /// </summary>
-        private HwndSource hwndSource;
+        private HwndSource _hwndSource;
 
         /// <summary>
         /// The WPF window.
@@ -66,7 +66,7 @@ namespace MSOE.MediaComplete.CustomWindow
             }
 
             _window = window;
-            this.borders = borders;
+            _borders = borders;
 
             foreach (var border in borders)
             {
@@ -75,19 +75,19 @@ namespace MSOE.MediaComplete.CustomWindow
                 border.Element.MouseLeave += ResetCursor;
             }
 
-            window.SourceInitialized += (o, e) => hwndSource = (HwndSource)PresentationSource.FromVisual((Visual)o);
+            window.SourceInitialized += (o, e) => _hwndSource = (HwndSource)PresentationSource.FromVisual((Visual)o);
         }
 
         /// <summary>
         /// Sticks a message on the message queue.
         /// </summary>
         /// <param name="hWnd"></param>
-        /// <param name="Msg"></param>
+        /// <param name="msg"></param>
         /// <param name="wParam"></param>
         /// <param name="lParam"></param>
         /// <returns></returns>
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        private static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+        private static extern IntPtr SendMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
         /// <summary>
         /// Puts a resize message on the message queue for the specified border position.
@@ -95,7 +95,7 @@ namespace MSOE.MediaComplete.CustomWindow
         /// <param name="direction"></param>
         private void ResizeWindow(BorderPosition direction)
         {
-            SendMessage(hwndSource.Handle, 0x112, (IntPtr)direction, IntPtr.Zero);
+            SendMessage(_hwndSource.Handle, 0x112, (IntPtr)direction, IntPtr.Zero);
         }
 
         /// <summary>
@@ -118,8 +118,8 @@ namespace MSOE.MediaComplete.CustomWindow
         /// <param name="e"></param>
         private void Resize(object sender, MouseButtonEventArgs e)
         {
-            var border = borders.Single(b => b.Element.Equals(sender));
-            _window.Cursor = cursors[border.Position];
+            var border = _borders.Single(b => b.Element.Equals(sender));
+            _window.Cursor = _cursors[border.Position];
             ResizeWindow(border.Position);
         }
 
@@ -130,93 +130,8 @@ namespace MSOE.MediaComplete.CustomWindow
         /// <param name="e"></param>
         private void DisplayResizeCursor(object sender, MouseEventArgs e)
         {
-            var border = borders.Single(b => b.Element.Equals(sender));
-            _window.Cursor = cursors[border.Position];
+            var border = _borders.Single(b => b.Element.Equals(sender));
+            _window.Cursor = _cursors[border.Position];
         }
-
-        #region Handle min/max
-
-        // Code adapated from http://stackoverflow.com/questions/1718666
-        internal enum WM
-        {
-            WINDOWPOSCHANGING = 0x0046
-        }
-
-        internal enum SWP
-        {
-            NOMOVE = 0x0002
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        internal struct WINDOWPOS
-        {
-            public IntPtr hwnd;
-            public IntPtr hwndInsertAfter;
-            public int x;
-            public int y;
-            public int cx;
-            public int cy;
-            public int flags;
-        }
-
-        private void Window_SourceInitialized(object sender, EventArgs ea)
-        {
-            HwndSource hwndSource = (HwndSource)HwndSource.FromVisual((Window)sender);
-            hwndSource.AddHook(DragHook);
-        }
-
-        private IntPtr DragHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handeled)
-        {
-            switch ((WM)msg)
-            {
-                case WM.WINDOWPOSCHANGING:
-                    {
-                        WINDOWPOS pos = (WINDOWPOS)Marshal.PtrToStructure(lParam, typeof(WINDOWPOS));
-                        if ((pos.flags & (int)SWP.NOMOVE) != 0)
-                        {
-                            return IntPtr.Zero;
-                        }
-
-                        Window wnd = (Window)HwndSource.FromHwnd(hwnd).RootVisual;
-                        if (wnd == null)
-                        {
-                            return IntPtr.Zero;
-                        }
-
-                        bool changedPos = false;
-
-                        // ***********************
-                        // Here you check the values inside the pos structure
-                        // if you want to override them just change the pos
-                        // structure and set changedPos to true
-                        // ***********************
-
-                        // this is a simplified version that doesn't work in high-dpi settings
-                        // pos.cx and pos.cy are in "device pixels" and MinWidth and MinHeight 
-                        // are in "WPF pixels" (WPF pixels are always 1/96 of an inch - if your
-                        // system is configured correctly).
-                        if (pos.cx < _window.MinWidth) { pos.cx = (int)_window.MinWidth; changedPos = true; }
-                        if (pos.cy < _window.MinHeight) { pos.cy = (int)_window.MinHeight; changedPos = true; }
-
-
-                        // ***********************
-                        // end of "logic"
-                        // ***********************
-
-                        if (!changedPos)
-                        {
-                            return IntPtr.Zero;
-                        }
-
-                        Marshal.StructureToPtr(pos, lParam, true);
-                        handeled = true;
-                    }
-                    break;
-            }
-
-            return IntPtr.Zero;
-        }
-
-        #endregion
     }
 }
