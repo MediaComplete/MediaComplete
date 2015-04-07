@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
     <LinearGradientBrush x:Key="NormalBrush" StartPoint="0,0" EndPoint="0,1">
         <GradientBrush.GradientStops>
             <GradientStopCollection>
@@ -62,7 +63,7 @@
 
     <SolidColorBrush x:Key="SelectedBackgroundBrush" Color="#DDD" />
 
-    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FF8F1454"/>
+    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="LightPink"/>
 
     <!-- Border Brushes -->
 
@@ -136,6 +137,9 @@
     <Brush x:Key="PanelBrush">#FFE3B3CF</Brush>
     <Brush x:Key="MenuBrush">#FFE3B3CF</Brush>
     <Brush x:Key="MenuBackgroundBrush">#FFDDEEFF</Brush>
+
+    <Brush x:Key="ToolbarButtonPrimaryBrush">#FFEC48B9</Brush>
+    <Brush x:Key="ToolbarButtonAccentBrush">#FF8F1454</Brush>
 
     <Brush x:Key="TextBoxBackgroundDisabledBrush">Transparent</Brush>
     <Brush x:Key="TextBoxForegroundDisabledBrush">#FF8F1454</Brush>

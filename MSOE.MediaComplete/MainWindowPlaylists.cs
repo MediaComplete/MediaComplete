@@ -11,6 +11,7 @@ using MSOE.MediaComplete.Lib.Songs;
 namespace MSOE.MediaComplete
 {
     /// <summary>
+    /// Handles logic in the Playlists treeview tab.
     /// Contains methods and properties related to playlists and playlist handling.
     /// </summary>
     public partial class MainWindow
@@ -18,10 +19,10 @@ namespace MSOE.MediaComplete
         /// <summary>
         /// Bindable list of Playlists. Gets used in context menus and elsewhere.
         /// </summary>
-        public ObservableCollection<Playlist> Playlists {
-            get { return _playlists; }
-        }
+        public ObservableCollection<Playlist> Playlists { get { return _playlists; } }
         private readonly ObservableCollection<Playlist> _playlists = new ObservableCollection<Playlist>(PlaylistService.GetAllPlaylists());
+
+        #region Event handlers
 
         /// <summary>
         /// Creates a new playlist and populates it based on the selected folders. If no folder is 
@@ -153,5 +154,7 @@ namespace MSOE.MediaComplete
             _nowPlayingDirty.Value = false;
             // TODO MC-207 flow to rename
         }
+
+        #endregion
     }
 }

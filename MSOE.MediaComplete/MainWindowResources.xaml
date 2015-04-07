@@ -19,6 +19,7 @@
     <system:String x:Key="ContextMenu-NowPlayingMusic-Header">Now Playing</system:String>
     <system:String x:Key="ContextMenu-AddTo-Header">Add to...</system:String>
     <system:String x:Key="ContextMenu-NewPlaylist-Header">New Playlist</system:String>
+
     <system:String x:Key="Dialog-AddFile-MusicFilter">All Music Files (*.mp3, *.wma)</system:String>
     <system:String x:Key="Dialog-AddFile-Mp3Filter">MP3 Files (*.mp3)</system:String>
     <system:String x:Key="Dialog-AddFile-WmaFilter">WMA Files (*.wma)</system:String>
@@ -71,6 +72,7 @@
     <mediaComplete:VolumeConverter x:Key="VolumeConverter"/>
     <mediaComplete:IfZeroCollapsedConverter x:Key="IfZeroCollapsed"/>
     <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    <mediaComplete:NotBooleanToVisibilityConverter x:Key="NotBoolToVis"/>
 
     <!-- Images -->
     <BitmapImage x:Key="Toolbar-AddMusicFile-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"

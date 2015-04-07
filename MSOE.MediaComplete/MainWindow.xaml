@@ -1,13 +1,13 @@
 ﻿<Window
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="clr-namespace:System.Windows.Controls;assembly=TreeViewEx"
-        xmlns:customControls="clr-namespace:MSOE.MediaComplete.CustomControls"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" x:Class="MSOE.MediaComplete.MainWindow"
-        Title="Media Complete" MinHeight="425" Width="695.731" MinWidth="613"
-        AutomationProperties.Name="Tree" d:DesignHeight="502.905" Icon="Resources/logo_small.ico"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:System.Windows.Controls;assembly=TreeViewEx"
+    xmlns:customControls="clr-namespace:MSOE.MediaComplete.CustomControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" x:Class="MSOE.MediaComplete.MainWindow"
+    Title="Media Complete" MinHeight="425" Width="695.731" MinWidth="613"
+    d:DesignHeight="502.905" Icon="Resources/logo_small.ico"
+    DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -44,21 +44,13 @@
                     Content="{StaticResource Toolbar-HideDetails-Content}" Style="{StaticResource ShowHideDetailsButtonStyle}"/>
             <DockPanel HorizontalAlignment="Stretch" LastChildFill="False">
                 <Button ToolTip="{StaticResource Toolbar-AddFile-Tooltip}" DockPanel.Dock="Left"
-                        Style="{StaticResource ToolbarIconButton}" Click="AddFile_ClickAsync" >
-                    <Image Source="{StaticResource Toolbar-AddMusicFile-Icon}" />
-                </Button>
+                        Style="{DynamicResource ToolbarImportFile}" Click="AddFile_ClickAsync" />
                 <Button ToolTip="{StaticResource Toolbar-AddFolder-Tooltip}" DockPanel.Dock="Left" 
-                        Style="{StaticResource ToolbarIconButton}" Click="AddFolder_ClickAsync">
-                    <Image Source="{StaticResource Toolbar-AddMusicFolder-Icon}" />
-                </Button>
+                        Style="{DynamicResource ToolbarImportFolder}" Click="AddFolder_ClickAsync"/>
                 <Button ToolTip="{StaticResource Toolbar-AutoIdMusic-Tooltip}" DockPanel.Dock="Left"
-				    Style="{StaticResource ToolbarIconButton}" Click="Toolbar_AutoIDMusic_ClickAsync">
-                    <Image Source="{StaticResource Toolbar-AutoIdMusic-Icon}" />
-                </Button>
+				        Style="{DynamicResource ToolbarPopulateMetadata}" Click="Toolbar_AutoIDMusic_ClickAsync"/>
                 <Button ToolTip="{StaticResource Toolbar-SortMusic-Tooltip}" DockPanel.Dock="Left"
-					    Style="{StaticResource ToolbarIconButton}" Click="Toolbar_SortMusic_ClickAsync">
-                    <Image Source="{StaticResource Toolbar-SortMusic-Icon}" />
-                </Button>
+					    Style="{StaticResource ToolbarSort}" Click="Toolbar_SortMusic_ClickAsync"/>
             </DockPanel>
         </DockPanel>
         <Grid Grid.Row="2" Style="{DynamicResource GridStyle}">
@@ -73,11 +65,10 @@
                         SelectionChanged="LeftFrame_SelectionChanged">
                 <TabItem Header="Library" x:Name="LibraryTab">
                     <controls:TreeViewEx x:Name="FolderTree"
-				        AutomationProperties.Name="Tree" 
 				        MouseUp="FolderTree_OnMouseUp"
 				        ItemsSource="{Binding RootLibraryFolderItem.Children}" >
                         <controls:TreeViewEx.ItemTemplate>
-                            <HierarchicalDataTemplate ItemsSource="{Binding Children}"  DataType="{x:Type customControls:FolderTreeViewItem}">
+                            <HierarchicalDataTemplate ItemsSource="{Binding Children}" DataType="{x:Type customControls:FolderTreeViewItem}">
                                 <TextBlock Text="{Binding}"/>
                             </HierarchicalDataTemplate>
                         </controls:TreeViewEx.ItemTemplate>
@@ -109,16 +100,15 @@
                 </TabItem>
 
                 <TabItem Header="Playlists" Name="PlaylistTab">
-                    <ListView x:Name="PlaylistList"
-				        AutomationProperties.Name="Tree"
-                        SelectionMode="Single"
-                        MouseUp="PlaylistList_OnMouseUp">
-                        <ListView.ItemsSource>
+                    <TreeView x:Name="PlaylistTree" 
+                        SelectedItemChanged="PlaylistTree_SelectionChanged">
+                        <TreeView.ItemsSource>
                             <CompositeCollection>
-                                <ListViewItem Name="NowPlayingItem" Content="{StaticResource NowPlaying}"/>
+                                <TreeViewItem Name="NowPlayingItem" Header="{StaticResource NowPlaying}"/>
+                                <CollectionContainer Collection="{Binding Source={StaticResource PlaylistsCollection}}"/>
                             </CompositeCollection>
-                        </ListView.ItemsSource>
-                    </ListView>
+                        </TreeView.ItemsSource>
+                    </TreeView>
                 </TabItem>
                 <TabItem Header="Search" x:Name="SearchTab">
                     <TextBox Text="Search" Height="22"  VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
@@ -131,7 +121,7 @@
               ShowsPreview="true"
               Width="3"
               Style="{DynamicResource SplitterStyle}"/>
-            <ListView x:Name="SongList" Grid.Column="2" AutomationProperties.Name="Tree" BorderThickness="1,0,1,0"
+            <ListView x:Name="SongList" Grid.Column="2" BorderThickness="1,0,1,0"
                       MouseUp="SongList_OnMouseUp" MouseDoubleClick="SongTree_OnMouseDoubleClick" SelectionMode="Extended">
                 <ListView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding}"  DataType="{x:Type customControls:LibrarySongItem}">
@@ -174,16 +164,20 @@
                     <RowDefinition Height="26" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <DockPanel Grid.Row="0" Visibility="{Binding IsSelected, ElementName=PlaylistTab, Converter={StaticResource BoolToVis}}">
-                    <Label Margin="-4" FontSize="16" FontWeight="ExtraBlack" Content="{Binding SelectedItem.Content, ElementName=PlaylistList}"/>
+                <DockPanel Grid.Row="0" LastChildFill="True" Visibility="{Binding IsSelected, ElementName=PlaylistTab, Converter={StaticResource BoolToVis}}">
+                    <Label Margin="-4" FontSize="15" FontWeight="ExtraBlack" Content="{Binding ElementName=PlaylistTree, Path=SelectedItem.Header}" 
+                           Visibility="{Binding IsSelected, ElementName=NowPlayingItem, Converter={StaticResource BoolToVis}}"/>
                     <Button Click="SaveAsPlaylist_OnClick" ToolTip="{StaticResource SaveNowPlaying-Tooltip}"
+                            Visibility="{Binding ElementName=NowPlayingItem, Path=IsSelected, Converter={StaticResource BoolToVis}}"
                             Style="{StaticResource SaveButtonStyle}"
-                            Visibility="{Binding IsSelected, ElementName=NowPlayingItem, Converter={StaticResource BoolToVis}}"
                             IsEnabled="{Binding NowPlayingDirty.Value}"
-                            HorizontalAlignment="Right" 
+                            DockPanel.Dock="Right"
                             VerticalAlignment="Center" />
+                    <TextBox VerticalAlignment="Center" DockPanel.Dock="Left" FontSize="14" FontWeight="ExtraBlack" 
+                             Text="{Binding ElementName=PlaylistTree, Path=SelectedItem.Title}" Style="{StaticResource PlaylistNameTextbox}"
+                             Visibility="{Binding IsSelected, ElementName=NowPlayingItem, Converter={StaticResource NotBoolToVis}}"/>
                 </DockPanel>
-                <ListView x:Name="PlaylistSongs" AutomationProperties.Name="Tree" Grid.Row="1" BorderThickness="1,0,1,0"
+                <ListView x:Name="PlaylistSongs" Grid.Row="1" BorderThickness="1,0,1,0"
                           MouseUp="PlaylistSongs_OnMouseUp" MouseDoubleClick="PlaylistSongs_OnMouseDoubleClick" SelectionMode="Single" >
                     <ListView.ItemTemplate>
                         <HierarchicalDataTemplate ItemsSource="{Binding}"  DataType="{x:Type customControls:PlaylistSongItem}" >
