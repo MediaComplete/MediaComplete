@@ -1,14 +1,20 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Threading;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Playing;
 using MSOE.MediaComplete.Lib.Songs;
 using NAudio.Wave;
 using TagLib;
+using Timer = System.Timers.Timer;
 
 namespace MSOE.MediaComplete
 {
@@ -20,6 +26,21 @@ namespace MSOE.MediaComplete
         private IPlayer _player;
 
         /// <summary>
+        /// frequency in milliseconds at which to update the trackbar position based on the current time of the song
+        /// </summary>
+        private const int TimerFrequency = 100;
+
+        /// <summary>
+        /// Timer to fire the update of the trackbar position
+        /// </summary>
+        private readonly Timer _trackBarUpdateTimer = new Timer(TimerFrequency);
+
+        /// <summary>
+        /// token source used to cancel dispatched trackbar position update events
+        /// </summary>
+        private CancellationTokenSource _trackBarUpdateCancellationTokenSource = new CancellationTokenSource();
+
+        /// <summary>
         /// initializes the player
         /// </summary>
         private void InitPlayer()
@@ -29,6 +50,22 @@ namespace MSOE.MediaComplete
             _player.PlaybackEnded += AutomaticStop;
             _player.ChangeVolume(VolumeSlider.Value);
             Player.Instance.SongFinishedEvent += UpdateColorEvent;
+            Player.Instance.SongFinishedEvent += ResetTrackBar;
+            TrackBar.ApplyTemplate();
+
+            var track = TrackBar.Template.FindName("PART_Track", TrackBar) as Track;
+            if (track != null)
+            {
+                var thumb = track.Thumb;
+
+                thumb.AddHandler(MouseEnterEvent, new MouseEventHandler(Thumb_MouseEnter));
+                TrackBar.AddHandler(PreviewMouseDownEvent, new MouseButtonEventHandler(Thumb_MouseDown));
+                thumb.AddHandler(MouseDownEvent, new MouseButtonEventHandler(Thumb_MouseDown));
+            }
+            else
+            {
+                throw new ApplicationException("Trackbar instance doesn't exist");
+            }
         }
 
         /// <summary>
@@ -38,6 +75,78 @@ namespace MSOE.MediaComplete
         private readonly ObservableBool _nowPlayingDirty = new ObservableBool { Value = true };
 
         #region Event Handlers
+        /// <summary>
+        /// tell the player to seek if the difference in the old and new times is much larger than expected from playing
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TrackBar_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var diff = Math.Abs(e.OldValue - e.NewValue);
+            var currentTime = TimeSpan.FromMilliseconds(e.NewValue);
+            var totalTime = TimeSpan.FromMilliseconds(TrackBar.Maximum);
+
+            var formatString = totalTime.TotalHours >= 1 ? "{0:D2}:{1:D2}:{2:D2}" : "{1:D2}:{2:D2}";
+
+            CurrentTimeLabel.Content = string.Format(formatString, (int)currentTime.TotalHours, currentTime.Minutes, currentTime.Seconds);
+
+            var timeRemaining = totalTime.Subtract(currentTime);
+
+            RemainingTimeLabel.Content = string.Format("-" + formatString, (int)timeRemaining.TotalHours, timeRemaining.Minutes, timeRemaining.Seconds);
+            if (diff > TimerFrequency * 2)
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    _player.Seek(currentTime);
+                });
+            }
+        }
+
+        /// <summary>
+        /// stops listening to the trackbar update event timer, cancels all pending trackbar updates and reinstantiates the cancellation token for future use
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void Thumb_MouseDown(object sender, MouseButtonEventArgs args)
+        {
+            StopListeningToUpdateTrackbar();
+        }
+
+
+
+        /// <summary>
+        /// starts listening to the tarckbar update timer
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void Thumb_MouseUp(object sender, MouseButtonEventArgs args)
+        {
+            StartListeningToUpdateTrackbar();
+        }
+
+        /// <summary>
+        /// capture mouse events if the thumb moves under the cursor while the left mouse button is pressed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Thumb_MouseEnter(object sender, MouseEventArgs e)
+        {
+            // inital idea for this function found here: https://social.msdn.microsoft.com/Forums/vstudio/en-US/5fa7cbc2-c99f-4b71-b46c-f156bdf0a75a/making-the-slider-slide-with-one-click-anywhere-on-the-slider?forum=wpf
+            if (e.LeftButton == MouseButtonState.Pressed && e.MouseDevice.Captured == null)
+            {
+                // the left button is pressed on mouse enter
+                // but the mouse isn't captured, so the thumb
+                // must have been moved under the mouse in response
+                // to a click on the track.
+                // Generate a MouseLeftButtonDown event.
+                var args = new MouseButtonEventArgs(e.MouseDevice, e.Timestamp, MouseButton.Left);
+                Thumb_MouseDown(sender, args);
+                args.RoutedEvent = MouseDownEvent;
+                var thumb = sender as Thumb;
+                if (thumb != null) thumb.RaiseEvent(args);
+            }
+        }
+		
         /// <summary>
         /// Starts, pauses, or resumes the playback appropriately based on the state of the player. 
         /// 
@@ -91,8 +200,27 @@ namespace MSOE.MediaComplete
             }
         }
 
-        #region Context Menu Playing
 
+        /// <summary>
+        /// dispatches an action to update the trackbar value with the songs current position
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="args"></param>
+        private void CheckTrackBarUpdateTimer(object obj, ElapsedEventArgs args)
+        {
+            try
+            {
+                Dispatcher.Invoke(() => TrackBar.Value = _player.CurrentTime.TotalMilliseconds,
+                    DispatcherPriority.DataBind, _trackBarUpdateCancellationTokenSource.Token);
+            }
+            catch (TaskCanceledException)
+            {
+                //swallow and continue
+                //if the task was cancelled, then I don't have to worry about doing it anymore
+            }
+        }
+
+        #region Context Menu Playing
         /// <summary>
         /// Plays all the songs in the view, from context menu "Play All" option
         /// </summary>
@@ -280,7 +408,6 @@ namespace MSOE.MediaComplete
                 LoopButton.Visibility = Visibility.Visible;
             }
         }
-
         #endregion
 
         #region Private Helpers
@@ -292,6 +419,7 @@ namespace MSOE.MediaComplete
             try
             {
                 _player.Play();
+                ResetTrackBar();
                 StatusBarHandler.Instance.ChangeStatusBarMessage(null, StatusBarHandler.StatusIcon.None);
             }
             catch (CorruptFileException)
@@ -315,6 +443,7 @@ namespace MSOE.MediaComplete
         private void Pause()
         {
             _player.Pause();
+            StopListeningToUpdateTrackbar();
             PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
         }
 
@@ -324,6 +453,7 @@ namespace MSOE.MediaComplete
         private void Resume()
         {
             _player.Resume();
+            StartListeningToUpdateTrackbar();
             PlayPauseButton.SetResourceReference(StyleProperty, "PauseButton");
             
         }
@@ -334,6 +464,10 @@ namespace MSOE.MediaComplete
         private void Stop()
         {
             _player.Stop();
+            StopListeningToUpdateTrackbar();
+            TrackBar.Maximum = 1;
+            TrackBar.Value = 0;
+            TrackBar.IsEnabled = false;
             NowPlaying.Inst.Clear();
             PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
             if (_visibleList.Equals(PlaylistSongs) && NowPlayingItem.IsSelected) 
@@ -347,6 +481,8 @@ namespace MSOE.MediaComplete
         /// <param name="eventArgs"></param>
         private void AutomaticStop(object sender, EventArgs eventArgs)
         {
+            TrackBar.Maximum = 0;
+            TrackBar.Value = 0;
             PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
         }
 
@@ -377,6 +513,50 @@ namespace MSOE.MediaComplete
             NowPlaying.Inst.Add((from LibrarySongItem song in SongList.SelectedItems
                                  select new LocalSong(new FileInfo(song.GetPath()))));
             _nowPlayingDirty.Value = true;
+        }
+
+        /// <summary>
+        /// helper method to unsubscribe, stop and cancel the trackbar update timer event
+        /// </summary>
+        private void StopListeningToUpdateTrackbar()
+        {
+            _trackBarUpdateTimer.Elapsed -= CheckTrackBarUpdateTimer;
+            _trackBarUpdateTimer.Stop();
+            _trackBarUpdateCancellationTokenSource.Cancel();
+            _trackBarUpdateCancellationTokenSource = new CancellationTokenSource();
+        }
+
+        /// <summary>
+        /// helper method to subscribe and start the trackbar update timer event
+        /// </summary>
+        private void StartListeningToUpdateTrackbar()
+        {
+            _trackBarUpdateTimer.Elapsed += CheckTrackBarUpdateTimer;
+            _trackBarUpdateTimer.Start();
+        }
+
+        /// <summary>
+        /// helper to reset the track bar
+        /// </summary>
+        /// <param name="oldpath">not used, required to subscribe to SongFinishedEvent</param>
+        /// <param name="newpath">not used, required to subscribe to SongFinishedEvent</param>
+        private void ResetTrackBar(int oldpath, int newpath)
+        {
+            ResetTrackBar();
+        }
+
+        /// <summary>
+        /// resets the track bar to its initial state at the beginning of playing a song
+        /// </summary>
+        private void ResetTrackBar()
+        {
+            TrackBar.IsEnabled = true;
+            TrackBar.Value = 0;
+            TrackBar.Minimum = 0;
+            TrackBar.Maximum = _player.TotalTime.TotalMilliseconds;
+            TrackBar.DataContext = this;
+            _trackBarUpdateTimer.Start();
+            _trackBarUpdateTimer.Elapsed += CheckTrackBarUpdateTimer;
         }
         #endregion
     }

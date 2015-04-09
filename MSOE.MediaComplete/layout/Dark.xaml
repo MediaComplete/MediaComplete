@@ -155,4 +155,10 @@
 
     <Brush x:Key="VolumeFillBrush">#FFF0EFF1</Brush>
     <Brush x:Key="VolumeBarBrush">#FF2D2D30</Brush>
+    
+    <Brush x:Key="RepeatButtonBrush">Black</Brush>
+    <Brush x:Key="RepeatButton1BorderBrush">Green</Brush>
+    <Brush x:Key="RepeatButton1BackgroundBrush">YellowGreen</Brush>
+
+    <Brush x:Key="SliderThumbBrush">#FF686868</Brush>
 </ResourceDictionary>

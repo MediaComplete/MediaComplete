@@ -23,7 +23,7 @@
             <RowDefinition Height="24" />
             <RowDefinition Height="24" />
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="100" />
+            <RowDefinition Height="105" />
             <RowDefinition Height="24"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -255,7 +255,19 @@
         </Grid>
 
         <StackPanel Grid.Row="3" Grid.Column="0" Style="{DynamicResource PanelStyle}">
-            <Slider />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="578*"/>
+                    <ColumnDefinition Width="60"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="23"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Column="0" Name="CurrentTimeLabel" Content="00:00"/>
+                <Slider Name="TrackBar" Margin="0,3,0,0"  Cursor="Cross" Style ="{DynamicResource HorizontalSlider}" Grid.Column="1" Minimum="0" Maximum="100" IsMoveToPointEnabled="True" ValueChanged="TrackBar_OnValueChanged" PreviewMouseDown="Thumb_MouseDown" PreviewMouseUp="Thumb_MouseUp"/>
+                <Label Grid.Column="2" Name="RemainingTimeLabel" HorizontalContentAlignment="Right" Content="-00:00"/>
+            </Grid>
             <Grid>
                 <StackPanel Height="75" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10,0,0,0" >
                     <Grid VerticalAlignment="Center">
