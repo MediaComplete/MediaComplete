@@ -434,7 +434,7 @@ namespace MSOE.MediaComplete
                 PlaylistSongs.Visibility = Visibility.Visible;
                 SongList.Visibility = Visibility.Hidden;
                 _visibleList = PlaylistSongs;
-                PlaylistList.SelectedItem = PlaylistList.Items[0];
+                NowPlayingItem.IsSelected = true;
                 ShowNowPlaying();
                 ClearDetailPane();
             }
@@ -455,10 +455,11 @@ namespace MSOE.MediaComplete
             Play();
         }
 
-        private void PlaylistList_OnMouseUp(object sender, MouseButtonEventArgs e)
+        private void PlaylistTree_SelectionChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (PlaylistList.SelectedItem.Equals(NowPlayingItem))
+            if (NowPlayingItem.IsSelected)
                 ShowNowPlaying();
+            e.Handled = true;
         }
 
         private void PlaylistSongs_OnMouseUp(object sender, MouseButtonEventArgs e)

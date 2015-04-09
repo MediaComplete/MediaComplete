@@ -15,7 +15,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
 
         public List<AbstractSong> Songs { get; private set; }
         
-        public string Name
+        public string Title
         {
             get { return _file.Name; }
             set { _file.Name = value; }
@@ -60,12 +60,12 @@ namespace MSOE.MediaComplete.Lib.Playlists
         }
 
         /// <summary>
-        /// Override of ToString, returns Name.
+        /// Override of ToString, returns Title.
         /// </summary>
-        /// <returns>The Name of this playlist.</returns>
+        /// <returns>The Title of this playlist.</returns>
         public override string ToString()
         {
-            return Name;
+            return Title;
         }
     }
 }

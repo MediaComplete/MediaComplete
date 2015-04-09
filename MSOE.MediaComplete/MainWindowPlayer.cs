@@ -191,7 +191,7 @@ namespace MSOE.MediaComplete
                 var song = (PlaylistSongItem)PlaylistSongs.Items[NowPlaying.Inst.Index];
                 song.IsPlaying = false;
             }
-            else if (PlaylistList.SelectedIndex == 0)
+            else if (NowPlayingItem.IsSelected)
             {
                 var oldSong = ((PlaylistSongItem)PlaylistSongs.Items[oldIndex]);
                 var newSong = ((PlaylistSongItem)PlaylistSongs.Items[newIndex]);
@@ -470,7 +470,7 @@ namespace MSOE.MediaComplete
             TrackBar.IsEnabled = false;
             NowPlaying.Inst.Clear();
             PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
-            if(_visibleList.Equals(PlaylistSongs) && PlaylistList.SelectedIndex==0) 
+            if (_visibleList.Equals(PlaylistSongs) && NowPlayingItem.IsSelected) 
                 PlaylistSongs.Items.Clear();
         }
 
