@@ -50,12 +50,12 @@ namespace MSOE.MediaComplete
         {
             var initalAttributes = SetupForm();
             var finalAttributes = new Dictionary<MetaAttribute, string>();
-            foreach (AbstractSongItem item in _visibleList.SelectedItems)
+            foreach (SongListItem item in _visibleList.SelectedItems)
             {
                 try
                 {
                     if (initalAttributes.Count <= 1) break;
-                    var song = File.Create(item.GetPath());
+                    var song = File.Create(item.Data.GetPath());
                     foreach (var metaAttribute in Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>()
                                                                 .Where(metaAttribute => !finalAttributes.ContainsKey(metaAttribute)))
                     {
@@ -161,11 +161,11 @@ namespace MSOE.MediaComplete
             if (SongTitle.IsReadOnly) return;
             EditCancelButton.Content = Resources["EditButton"].ToString();
             ToggleReadOnlyFields(true);
-            foreach (AbstractSongItem item in _visibleList.SelectedItems)
+            foreach (SongListItem item in _visibleList.SelectedItems)
             {
                 try
                 {
-                    var song = _fileMover.CreateTaglibFile((item.GetPath()));
+                    var song = _fileMover.CreateTaglibFile((item.Data.GetPath()));
                     foreach (var changedBox in _changedBoxes)
                     {
                         if (changedBox.Equals(SongTitle))

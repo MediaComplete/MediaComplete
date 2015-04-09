@@ -6,7 +6,6 @@ using System.Windows.Input;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Playing;
-using MSOE.MediaComplete.Lib.Songs;
 using NAudio.Wave;
 using TagLib;
 
@@ -57,7 +56,7 @@ namespace MSOE.MediaComplete
                     break;
                 default:
                     var newSongs = (from LibrarySongItem song in SongList.Items
-                                    select new LocalSong(new FileInfo(song.GetPath())));
+                                    select song.Data);
                     if (newSongs.Any())
                     {
                         NowPlaying.Inst.Clear();
@@ -79,13 +78,13 @@ namespace MSOE.MediaComplete
             if (SongList.Visibility.Equals(Visibility.Visible)) return;
             if (oldIndex == -1 && newIndex == -1)
             {
-                var song = (PlaylistSongItem)PlaylistSongs.Items[NowPlaying.Inst.Index];
+                var song = (SongListItem)PlaylistSongs.Items[NowPlaying.Inst.Index];
                 song.IsPlaying = false;
             }
             else if (NowPlayingItem.IsSelected)
             {
-                var oldSong = ((PlaylistSongItem)PlaylistSongs.Items[oldIndex]);
-                var newSong = ((PlaylistSongItem)PlaylistSongs.Items[newIndex]);
+                var oldSong = ((SongListItem)PlaylistSongs.Items[oldIndex]);
+                var newSong = ((SongListItem)PlaylistSongs.Items[newIndex]);
                 oldSong.IsPlaying = false;
                 newSong.IsPlaying = true;
             }
@@ -128,7 +127,7 @@ namespace MSOE.MediaComplete
         {
             var count = NowPlaying.Inst.SongCount();
             var list = (from LibrarySongItem song in SongList.SelectedItems select 
-                            new LocalSong(new FileInfo(song.GetPath()))).Cast<AbstractSong>().ToList();
+                            song.Data).ToList();
             NowPlaying.Inst.InsertRange(NowPlaying.Inst.Index + 1, list);
             _nowPlayingDirty.Value = true;
             if (_player.PlaybackState == PlaybackState.Stopped)
@@ -236,7 +235,7 @@ namespace MSOE.MediaComplete
             {
                 var songTreeViewItem = SongList.SelectedItems[0] as LibrarySongItem;
                 if (songTreeViewItem != null)
-                    NowPlaying.Inst.JumpTo(new LocalSong(new FileInfo(songTreeViewItem.GetPath())));
+                    NowPlaying.Inst.JumpTo(songTreeViewItem.Data);
                 Play();
 
             }
@@ -364,8 +363,8 @@ namespace MSOE.MediaComplete
         /// </summary>
         private void AddAllSongsToNowPlaying()
         {
-            NowPlaying.Inst.Add((from LibrarySongItem song in SongList.Items
-                                 select new LocalSong(new FileInfo(song.GetPath()))));
+            NowPlaying.Inst.Add(from LibrarySongItem song in SongList.Items
+                                 select song.Data);
             _nowPlayingDirty.Value = true;
         }
 
@@ -374,8 +373,8 @@ namespace MSOE.MediaComplete
         /// </summary>
         private void AddSelectedSongsToNowPlaying()
         {
-            NowPlaying.Inst.Add((from LibrarySongItem song in SongList.SelectedItems
-                                 select new LocalSong(new FileInfo(song.GetPath()))));
+            NowPlaying.Inst.Add(from LibrarySongItem song in SongList.SelectedItems
+                                 select song.Data);
             _nowPlayingDirty.Value = true;
         }
         #endregion

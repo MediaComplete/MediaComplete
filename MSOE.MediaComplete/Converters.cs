@@ -1,7 +1,13 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
+using MSOE.MediaComplete.CustomControls;
+using MSOE.MediaComplete.Lib;
+using MSOE.MediaComplete.Lib.Metadata;
 
 namespace MSOE.MediaComplete
 {

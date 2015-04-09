@@ -53,7 +53,7 @@ namespace MSOE.MediaComplete
                 list = PlaylistService.CreatePlaylist();
             }
 
-            list.Songs.AddRange(from LibrarySongItem song in SongList.Items select new LocalSong(new FileInfo(song.GetPath())));
+            list.Songs.AddRange(from LibrarySongItem song in SongList.Items select song.Data);
             list.Save();
             _playlists.Add(list);
             // TODO MC-207 flow to rename
@@ -89,7 +89,7 @@ namespace MSOE.MediaComplete
                 SongList.SelectedItems :
                 SongList.Items;
 
-            list.Songs.AddRange(from LibrarySongItem song in songs select new LocalSong(new FileInfo(song.GetPath())));
+            list.Songs.AddRange(from LibrarySongItem song in songs select song.Data);
             list.Save();
             _playlists.Add(list);
             // TODO MC-207 flow to rename
@@ -113,7 +113,7 @@ namespace MSOE.MediaComplete
                 SongList.SelectedItems :
                 SongList.Items;
 
-            list.Songs.AddRange(from LibrarySongItem song in songs select new LocalSong(new FileInfo(song.GetPath())));
+            list.Songs.AddRange(from LibrarySongItem song in songs select song.Data);
             list.Save();
         }
 
@@ -133,7 +133,7 @@ namespace MSOE.MediaComplete
                 return;
             }
 
-            list.Songs.AddRange(from LibrarySongItem song in SongList.Items select new LocalSong(new FileInfo(song.GetPath())));
+            list.Songs.AddRange(from LibrarySongItem song in SongList.Items select song.Data);
             list.Save();
         }
 
