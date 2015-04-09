@@ -335,8 +335,7 @@ namespace MSOE.MediaComplete
             _player.Stop();
             NowPlaying.Inst.Clear();
             PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
-            if (_visibleList.Equals(PlaylistSongs) && NowPlayingItem.IsSelected) 
-                PlaylistSongs.Items.Clear();
+            PlaylistSongs.Items.Clear();
         }
 
         /// <summary>

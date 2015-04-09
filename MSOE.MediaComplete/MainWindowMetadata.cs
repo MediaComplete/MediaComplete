@@ -14,6 +14,8 @@ namespace MSOE.MediaComplete
     public partial class MainWindow
     {
         private ListView _visibleList;
+        private readonly List<TextBox> _changedBoxes = new List<TextBox>();
+
         private Dictionary<MetaAttribute, string> SetupForm()
         {
             var boxes = new TextBox[8];
@@ -44,6 +46,12 @@ namespace MSOE.MediaComplete
                 {MetaAttribute.Rating, null},
                 {MetaAttribute.AlbumArt, null}
             };
+        }
+
+        private void TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (_changedBoxes.Contains((TextBox)sender) || SongTitle.IsReadOnly) return;
+            _changedBoxes.Add((TextBox)sender);
         }
 
         private void PopulateMetadataForm()

@@ -34,14 +34,14 @@
                 <MenuItem Header="_File">
                     <MenuItem Header="_Exit"/>
                 </MenuItem>
-                <MenuItem Header="_Edit" Click="MenuItem_Click">
+                <MenuItem Header="_Edit" Click="SettingsMenuItem_Click">
                     <MenuItem Header="_Settings"/>
                 </MenuItem>
             </Menu>
         </Grid>
         <DockPanel Grid.Row="1" ZIndex="10" Style="{DynamicResource ToolBarPanelStyle}" >
-            <Button VerticalAlignment="Bottom" Padding="5,1,5,1" DockPanel.Dock="Right" x:Name="HideMetadata" Click="HideMetaDataPanel"
-                    Content="{StaticResource Toolbar-HideDetails-Content}" Style="{StaticResource ShowHideDetailsButtonStyle}"/>
+            <ToggleButton VerticalAlignment="Bottom" DockPanel.Dock="Right" x:Name="HideMetadata" Click="HideMetaDataPanel"
+                    ToolTip="{StaticResource Toolbar-HideDetails-Content}" Style="{StaticResource ShowHideDetailsButtonStyle}"/>
             <DockPanel HorizontalAlignment="Stretch" LastChildFill="False">
                 <Button ToolTip="{StaticResource Toolbar-AddFile-Tooltip}" DockPanel.Dock="Left"
                         Style="{DynamicResource ToolbarImportFile}" Click="AddFile_ClickAsync" />
@@ -121,10 +121,10 @@
               ShowsPreview="true"
               Width="3"
               Style="{DynamicResource SplitterStyle}"/>
-            <ListView x:Name="SongList" Grid.Column="2" BorderThickness="1,0,1,0" 
+            <ListView x:Name="SongList" Grid.Column="2" BorderThickness="1,0,1,0" SelectionMode="Extended"
                       Visibility="{Binding ElementName=LibraryTab, Path=IsSelected, Converter={StaticResource BoolToVis}}"
-                      ItemsSource="{Binding Songs.View}"
-                      MouseUp="SongList_OnMouseUp" MouseDoubleClick="SongTree_OnMouseDoubleClick" SelectionMode="Extended">
+                      ItemsSource="{Binding Songs.View}" MouseDoubleClick="SongTree_OnMouseDoubleClick"
+                      SelectionChanged="SongList_OnSelectionChanged" >
                 <ListView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding}"  DataType="{x:Type customControls:SongListItem}">
                         <TextBlock Text="{Binding}"/>
@@ -191,11 +191,12 @@
             <GridSplitter Grid.Column="3" 
               HorizontalAlignment="Center" 
               VerticalAlignment="Stretch"
-              ShowsPreview="true"
-              Width="3" x:Name="ContentSplitter"
+              ShowsPreview="true" Width="3" 
+              Visibility="{Binding ElementName=HideMetadata, Path=IsChecked, Converter={StaticResource NotBoolToVis}}"
               Style="{DynamicResource SplitterStyle}"/>
             <Border Grid.Column="4" BorderThickness="1,0,0,0" Height="Auto" Style="{DynamicResource BorderStyle}">
-                <DockPanel Height="Auto" x:Name="MetadataPanel">
+                <DockPanel Height="Auto" x:Name="MetadataPanel" 
+                           Visibility="{Binding ElementName=HideMetadata, Path=IsChecked, Converter={StaticResource NotBoolToVis}}">
                     <Grid Height="Auto" Style="{DynamicResource GridStyle}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="100" />
