@@ -47,7 +47,7 @@ namespace MSOE.MediaComplete
         {
             _files = files;
             var inst = Instance(newOwner);
-            inst.MessageTextBlock.Text = "Found " + _files.Count() + " file(s).\nWould you like to import them now?";
+            inst.MessageTextBlock.Text = String.Format(newOwner.Resources["Dialog-Polling-Prompt"].ToString(), _files.Count());
             if (!inst.IsVisible)
             {
                 inst.ShowDialog();

@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Runtime.InteropServices;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Shapes;
@@ -47,6 +49,7 @@ namespace MSOE.MediaComplete.CustomWindow
         #endregion
 
         private Button _maxButton;
+        private System.Windows.Point? _mousePosition; // Tracks starting mouse position in a drag
 
         public override void OnApplyTemplate()
         {
@@ -79,6 +82,10 @@ namespace MSOE.MediaComplete.CustomWindow
             if (titleBarPanel != null)
             {
                 titleBarPanel.MouseDown += TitleBar_MouseDown;
+                if (AllowMaximize)
+                {
+                    titleBarPanel.MouseMove += TitleBar_MouseMove;
+                }
             }
 
             if (AllowResize)
@@ -108,7 +115,8 @@ namespace MSOE.MediaComplete.CustomWindow
         private void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
-                if (e.ClickCount == 2)
+            {
+                if (e.ClickCount == 2) // Double-click, just toggle
                 {
                     if (AllowMaximize)
                     {
@@ -117,8 +125,37 @@ namespace MSOE.MediaComplete.CustomWindow
                 }
                 else
                 {
-                    DragMove();
+                    // Begin drag, record our position
+                    _mousePosition = e.GetPosition(this);
+                    DragWithSnap();
                 }
+            }
+        }
+
+        /// <summary>
+        /// If the user drags on the title bar while maximized, it should restore down and drag.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TitleBar_MouseMove(object sender, MouseEventArgs e)
+        {
+            var newPosition = e.GetPosition(this);
+            if (IsDragging(newPosition) && WindowState == WindowState.Maximized)
+            {
+                // Multi-monitor way to grab the middle of the window.
+                double percentHorizontal = newPosition.X / ActualWidth;
+                double targetHorizontal = RestoreBounds.Width * percentHorizontal;
+
+                AdjustWindowSize();
+
+                Point lMousePosition;
+                GetCursorPos(out lMousePosition);
+
+                Left = lMousePosition.X - targetHorizontal;
+                Top = 0;
+
+                DragWithSnap();
+            }
         }
 
         /// <summary>
@@ -153,6 +190,64 @@ namespace MSOE.MediaComplete.CustomWindow
             WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
             if (_maxButton != null)
                 _maxButton.Style = (Style)TryFindResource(WindowState == WindowState.Maximized ? "RestoreDownButtonStyle" : "FullscreenButtonStyle");
+        }
+
+        #endregion
+
+        #region Helpers
+
+        /// <summary>
+        /// Helper method - returns true if a click-drag is occuring, based on the updated point
+        /// </summary>
+        /// <param name="newPosition">The location of the new event</param>
+        /// <returns>True if we are click-dragging</returns>
+        private bool IsDragging(System.Windows.Point newPosition)
+        {
+            return Mouse.LeftButton == MouseButtonState.Pressed &&  _mousePosition.HasValue &&
+                   (Math.Abs(newPosition.X - _mousePosition.Value.X) >= SystemParameters.MinimumHorizontalDragDistance ||
+                    Math.Abs(newPosition.Y - _mousePosition.Value.Y) >= SystemParameters.MinimumVerticalDragDistance);
+        }
+
+        /// <summary>
+        /// Dragmove and handle snapping logic. Currently only supports fullscreen snapping
+        /// </summary>
+        private void DragWithSnap()
+        {
+            DragMove();
+
+            if (AllowMaximize && WindowState == WindowState.Normal)
+            {
+                Point newPosition;
+                GetCursorPos(out newPosition);
+                var closeToTop = Math.Abs(SystemParameters.WorkArea.Top - newPosition.Y) < SystemParameters.MinimumVerticalDragDistance;
+
+                if (closeToTop)
+                    AdjustWindowSize();
+                // TODO MC-270 - support left/right screen snapping as well.
+
+                _mousePosition = null;
+            }
+        }
+
+        #endregion
+
+        #region Interop mouse position
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool GetCursorPos(out Point lpPoint);
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct Point
+        {
+            public readonly int X;
+            public readonly int Y;
+
+            public Point(int x, int y)
+            {
+                X = x;
+                Y = y;
+            }
         }
 
         #endregion

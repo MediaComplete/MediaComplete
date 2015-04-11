@@ -7,7 +7,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:customWindow="clr-namespace:MSOE.MediaComplete.CustomWindow"
         mc:Ignorable="d" x:Class="MSOE.MediaComplete.MainWindow"
-        Title="Media Complete" MinHeight="425" MinWidth="613"
+        Title="Media Complete" MinHeight="425" MinWidth="613" Icon="Resources/logo_small.ico"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
         <ResourceDictionary>

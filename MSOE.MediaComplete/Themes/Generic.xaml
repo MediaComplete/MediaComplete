@@ -2,7 +2,6 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:customWindow="clr-namespace:MSOE.MediaComplete.CustomWindow">
-
     <!-- Special Window template needs to be here, so the application can find it on startup. 
          Other resource files don't get pulled in until MainWindow.xaml is processed. -->
     
@@ -26,14 +25,14 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="4" />
                             </Grid.ColumnDefinitions>
-                            <DockPanel Grid.Row="1" Grid.Column="1">
+                            <DockPanel Grid.Row="0" Grid.RowSpan="2" Grid.Column="1">
                                 <DockPanel Name="PART_TitleBar" DockPanel.Dock="Top" Height="25" Background="Transparent">
                                     <Button Name="PART_ExitButton" DockPanel.Dock="Right" Style="{DynamicResource ExitButtonStyle}"/>
                                     <Button Name="PART_MaxButton" DockPanel.Dock="Right" Style="{DynamicResource FullscreenButtonStyle}"
                                             Visibility="{TemplateBinding AllowMaximize, Converter={StaticResource BoolToVisConverter}}"/>
                                     <Button Name="PART_MinButton" DockPanel.Dock="Right" Style="{DynamicResource MinButtonStyle}"
                                             Visibility="{TemplateBinding AllowMinimize, Converter={StaticResource BoolToVisConverter}}"/>
-                                    <Image DockPanel.Dock="Left" Source="../Resources/logo_small.ico" Height="20" Width="20"/>
+                                    <Image DockPanel.Dock="Left" Source="{TemplateBinding Property=Icon}" Height="20" Width="20"/>
                                     <TextBlock FontSize="14" Foreground="{DynamicResource PrimaryTextBrush}" HorizontalAlignment="Left" 
                                                VerticalAlignment="Center" Margin="5,0,0,0" Text="{TemplateBinding Title}"/>
                                 </DockPanel>

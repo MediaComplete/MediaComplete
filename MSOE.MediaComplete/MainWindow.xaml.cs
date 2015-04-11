@@ -26,7 +26,6 @@ namespace MSOE.MediaComplete
     public partial class MainWindow
     {
         private readonly List<TextBox>_changedBoxes;
-        private Settings _settings;
         private readonly Timer _refreshTimer;
         private readonly FileMover _fileMover;
 
@@ -40,7 +39,6 @@ namespace MSOE.MediaComplete
         {
             InitializeComponent();
 
-            _settings = new Settings();
             _changedBoxes = new List<TextBox>();
 
             var homeDir = SettingWrapper.MusicDir ??
@@ -122,9 +120,8 @@ namespace MSOE.MediaComplete
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (_settings.IsLoaded) return;
-            _settings = new Settings();
-            _settings.ShowDialog();
+            var settings = new Settings { Owner = this };
+            settings.ShowDialog();
             RefreshTreeView();
         }
 

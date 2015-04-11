@@ -4,14 +4,14 @@
         xmlns:customWindow="clr-namespace:MSOE.MediaComplete.CustomWindow"
         Title="Settings" Height="372" Width="482" Icon="Resources/logo_small.ico"
         AllowResize="False" AllowMaximize="False">
-    <Window.Resources>
+    <customWindow:BaseWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="MainWindowResources.xaml" />
                 <ResourceDictionary Source="layout/Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </Window.Resources>
+    </customWindow:BaseWindow.Resources>
     <DockPanel Background="{DynamicResource PanelBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <StackPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" Orientation="Horizontal"
                     VerticalAlignment="Bottom">
