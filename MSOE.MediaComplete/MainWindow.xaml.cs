@@ -357,27 +357,6 @@ namespace MSOE.MediaComplete
             ClearDetailPane();
         }
 
-        /// <summary>
-        /// Toggles the visibility of the metadata editor panel
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void HideMetaDataPanel(object sender, RoutedEventArgs e)
-        {
-            if (HideMetadata.IsChecked != null && HideMetadata.IsChecked.Value)
-            {
-                MetadataColumn.MinWidth = 0;
-                MetadataColumn.Width = new GridLength(0);
-                HideMetadata.ToolTip = TryFindResource("Toolbar-ShowDetails-Content");
-            }
-            else if (HideMetadata.IsChecked != null && !HideMetadata.IsChecked.Value)
-            {
-                MetadataColumn.Width = new GridLength(225, GridUnitType.Star);
-                MetadataColumn.MinWidth = 225;
-                HideMetadata.ToolTip = TryFindResource("Toolbar-HideDetails-Content");
-            }
-        }
-
         #endregion
 
         #region Internally triggered events

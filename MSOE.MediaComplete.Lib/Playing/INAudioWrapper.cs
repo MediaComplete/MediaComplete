@@ -10,7 +10,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         PlaybackState Play();
         PlaybackState Pause();
         PlaybackState Stop();
-        PlaybackState Seek(TimeSpan timeToSeekTo);
+        void Seek(TimeSpan timeToSeekTo);
         void ChangeVolume(double sliderVolume);
         TimeSpan TotalTime { get; }
         TimeSpan CurrentTime { get; }

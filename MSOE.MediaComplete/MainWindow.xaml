@@ -40,7 +40,7 @@
             </Menu>
         </Grid>
         <DockPanel Grid.Row="1" ZIndex="10" Style="{DynamicResource ToolBarPanelStyle}" >
-            <ToggleButton VerticalAlignment="Bottom" DockPanel.Dock="Right" x:Name="HideMetadata" Click="HideMetaDataPanel"
+            <ToggleButton VerticalAlignment="Bottom" DockPanel.Dock="Right" x:Name="HideMetadata"
                     ToolTip="{StaticResource Toolbar-HideDetails-Content}" Style="{StaticResource ShowHideDetailsButtonStyle}"/>
             <DockPanel HorizontalAlignment="Stretch" LastChildFill="False">
                 <Button ToolTip="{StaticResource Toolbar-AddFile-Tooltip}" DockPanel.Dock="Left"
@@ -115,13 +115,11 @@
                 </TabItem>
             </TabControl>
            
-            <GridSplitter Grid.Column="1" 
-              HorizontalAlignment="Center" 
-              VerticalAlignment="Stretch"
-              ShowsPreview="true"
-              Width="3"
-              Style="{DynamicResource SplitterStyle}"/>
-            <ListView Grid.Column="2" BorderThickness="1,0,1,0" SelectionMode="Extended"
+            <GridSplitter Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Stretch" ShowsPreview="true"
+              Width="3" Style="{DynamicResource SplitterStyle}"
+              Visibility="{Binding ElementName=HideMetadata, Path=IsChecked, Converter={StaticResource NotBoolToVis}}"/>
+            <ListView Grid.Column="2" BorderThickness="1,0,0,0" SelectionMode="Extended"  
+                      Grid.ColumnSpan="{Binding ElementName=HideMetadata, Path=IsChecked, Converter={StaticResource ExpandWhenChecked}}"
                       Visibility="{Binding ElementName=LibraryTab, Path=IsSelected, Converter={StaticResource BoolToVis}}"
                       ItemsSource="{Binding Songs.View}" MouseDoubleClick="SongList_OnMouseDoubleClick"
                       SelectionChanged="SongList_OnSelectionChanged" >
@@ -161,7 +159,8 @@
                     </ContextMenu>
                 </ListView.ContextMenu>
             </ListView>
-            <Grid Grid.Column="2" Visibility="{Binding ElementName=PlaylistTab, Path=IsSelected, Converter={StaticResource BoolToVis}}">
+            <Grid Grid.Column="2" Visibility="{Binding ElementName=PlaylistTab, Path=IsSelected, Converter={StaticResource BoolToVis}}"
+                  Grid.ColumnSpan="{Binding ElementName=HideMetadata, Path=IsChecked, Converter={StaticResource ExpandWhenChecked}}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="26" />
                     <RowDefinition Height="*" />
@@ -179,7 +178,7 @@
                              Text="{Binding ElementName=PlaylistTree, Path=SelectedItem.Title}" Style="{StaticResource PlaylistNameTextbox}"
                              Visibility="{Binding IsSelected, ElementName=NowPlayingItem, Converter={StaticResource NotBoolToVis}}"/>
                 </DockPanel>
-                <ListView Name="PlaylistSongList" Grid.Row="1" BorderThickness="1,0,1,0" ItemsSource="{Binding PlaylistSongs.View}"
+                <ListView Name="PlaylistSongList" Grid.Row="1" BorderThickness="1,0,0,0" ItemsSource="{Binding PlaylistSongs.View}"
                           SelectionChanged="SongList_OnSelectionChanged" MouseDoubleClick="PlaylistSongs_OnMouseDoubleClick" SelectionMode="Single" >
                     <ListView.ItemTemplate>
                         <HierarchicalDataTemplate ItemsSource="{Binding}" DataType="{x:Type customControls:SongListItem}" >
@@ -194,9 +193,9 @@
               ShowsPreview="true" Width="3" 
               Visibility="{Binding ElementName=HideMetadata, Path=IsChecked, Converter={StaticResource NotBoolToVis}}"
               Style="{DynamicResource SplitterStyle}"/>
-            <Border Grid.Column="4" BorderThickness="1,0,0,0" Height="Auto" Style="{DynamicResource BorderStyle}">
-                <DockPanel Height="Auto" x:Name="MetadataPanel" 
-                           Visibility="{Binding ElementName=HideMetadata, Path=IsChecked, Converter={StaticResource NotBoolToVis}}">
+            <Border Grid.Column="4" BorderThickness="1,0,0,0" Height="Auto" Style="{DynamicResource BorderStyle}"
+                    Visibility="{Binding ElementName=HideMetadata, Path=IsChecked, Converter={StaticResource NotBoolToVis}}">
+                <DockPanel Height="Auto" x:Name="MetadataPanel">
                     <Grid Height="Auto" Style="{DynamicResource GridStyle}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="100" />
@@ -257,109 +256,111 @@
             </Border>
         </Grid>
 
-        <StackPanel Grid.Row="3" Grid.Column="0" Style="{DynamicResource PanelStyle}">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="60"/>
-                    <ColumnDefinition Width="578*"/>
-                    <ColumnDefinition Width="60"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="23"/>
-                </Grid.RowDefinitions>
-                <Label Grid.Column="0" Name="CurrentTimeLabel" Content="00:00"/>
-                <Slider Name="TrackBar" Margin="0,3,0,0"  Cursor="Cross" Style ="{DynamicResource HorizontalSlider}" Grid.Column="1" Minimum="0" Maximum="100" IsMoveToPointEnabled="True" ValueChanged="TrackBar_OnValueChanged" PreviewMouseDown="Thumb_MouseDown" PreviewMouseUp="Thumb_MouseUp"/>
-                <Label Grid.Column="2" Name="RemainingTimeLabel" HorizontalContentAlignment="Right" Content="-00:00"/>
-            </Grid>
-            <Grid>
-                <StackPanel Height="75" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10,0,0,0" >
-                    <Grid VerticalAlignment="Center">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="30"/>
-                            <RowDefinition Height="30"/>
-                        </Grid.RowDefinitions>
-                        <Button x:Name="LoopButton" Height="30" Width="30" Style="{DynamicResource LoopButtonUnPressed}" Click="LoopButton_OnClick" Grid.Row="0"/>
-                        <Button x:Name="LoopButtonPressed" Height="30" Width="30" Style="{DynamicResource LoopButtonPressed}" Click="LoopButton_OnClick" Grid.Row="0" Visibility="Hidden"/>
-                        <Button x:Name="LoopButtonOne" Height="30" Width="30" Style="{DynamicResource LoopOneButton}" Click="LoopButton_OnClick" Grid.Row="0" Visibility="Hidden"/>
-                        <Button x:Name="ShuffleButton" Height="30" Width="30" Style="{DynamicResource ShuffleButton}" Grid.Row="1"/>
-                    </Grid>
-                    <Button x:Name="PreviousButton" Height="60" Width="60" Style="{DynamicResource PreviousButton}" Click="PreviousButton_OnClick"/>
-                    <Button x:Name="PlayPauseButton" Height="75" Width="75" Click="PlayPauseButton_OnClick"/>
-                    <Button x:Name="SkipButton" Height="60" Width="60" Style="{DynamicResource SkipButton}" Click="SkipButton_OnClick"/>
-                    <Button x:Name="StopButton" Height="40" Width="40" Style="{DynamicResource StopButton}" Click="StopButton_OnClick"/>
-                </StackPanel>
-                <Slider Name="VolumeSlider" IsMoveToPointEnabled="True" Width="134" Value="50" Maximum="200" Height="34" HorizontalAlignment="Right" ValueChanged="VolumeSlider_OnValueChanged" Margin="0,0,20,0">
-                    <Slider.Template>
-                        <ControlTemplate TargetType="{x:Type Slider}">
-                            <Grid>
-                                <Grid.Resources>
-                                    <Style x:Key="SeekValueFill" TargetType="{x:Type RepeatButton}">
-                                        <Setter Property="OverridesDefaultStyle" Value="true"/>
-                                        <Setter Property="IsTabStop" Value="false"/>
-                                        <Setter Property="Focusable" Value="false"/>
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="{x:Type RepeatButton}">
-                                                    <Rectangle Fill="Transparent"></Rectangle>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                    <Style x:Key="SeekRightFill" TargetType="{x:Type RepeatButton}">
-                                        <Setter Property="OverridesDefaultStyle" Value="true"/>
-                                        <Setter Property="IsTabStop" Value="false"/>
-                                        <Setter Property="Focusable" Value="false"/>
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="{x:Type RepeatButton}">
-                                                    <Rectangle Fill="Black" Opacity="0.5"/>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </Grid.Resources>
+        <Border Grid.Row="3" Grid.Column="0" BorderThickness="0,1,0,0" Height="Auto" Style="{DynamicResource BorderStyle}">
+            <StackPanel Style="{DynamicResource PanelStyle}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="578*"/>
+                        <ColumnDefinition Width="60"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="23"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Column="0" Name="CurrentTimeLabel" Content="00:00"/>
+                    <Slider Name="TrackBar" Margin="0,3,0,0"  Cursor="Cross" Style ="{DynamicResource HorizontalSlider}" Grid.Column="1" Minimum="0" Maximum="100" IsMoveToPointEnabled="True" ValueChanged="TrackBar_OnValueChanged" PreviewMouseDown="Thumb_MouseDown" PreviewMouseUp="Thumb_MouseUp"/>
+                    <Label Grid.Column="2" Name="RemainingTimeLabel" HorizontalContentAlignment="Right" Content="-00:00"/>
+                </Grid>
+                <Grid>
+                    <StackPanel Height="75" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10,0,0,0" >
+                        <Grid VerticalAlignment="Center">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                            </Grid.RowDefinitions>
+                            <Button x:Name="LoopButton" Height="30" Width="30" Style="{DynamicResource LoopButtonUnPressed}" Click="LoopButton_OnClick" Grid.Row="0"/>
+                            <Button x:Name="LoopButtonPressed" Height="30" Width="30" Style="{DynamicResource LoopButtonPressed}" Click="LoopButton_OnClick" Grid.Row="0" Visibility="Hidden"/>
+                            <Button x:Name="LoopButtonOne" Height="30" Width="30" Style="{DynamicResource LoopOneButton}" Click="LoopButton_OnClick" Grid.Row="0" Visibility="Hidden"/>
+                            <Button x:Name="ShuffleButton" Height="30" Width="30" Style="{DynamicResource ShuffleButton}" Grid.Row="1"/>
+                        </Grid>
+                        <Button x:Name="PreviousButton" Height="60" Width="60" Style="{DynamicResource PreviousButton}" Click="PreviousButton_OnClick"/>
+                        <Button x:Name="PlayPauseButton" Height="75" Width="75" Click="PlayPauseButton_OnClick"/>
+                        <Button x:Name="SkipButton" Height="60" Width="60" Style="{DynamicResource SkipButton}" Click="SkipButton_OnClick"/>
+                        <Button x:Name="StopButton" Height="40" Width="40" Style="{DynamicResource StopButton}" Click="StopButton_OnClick"/>
+                    </StackPanel>
+                    <Slider Name="VolumeSlider" IsMoveToPointEnabled="True" Width="134" Value="50" Maximum="200" Height="34" HorizontalAlignment="Right" ValueChanged="VolumeSlider_OnValueChanged" Margin="0,0,20,0">
+                        <Slider.Template>
+                            <ControlTemplate TargetType="{x:Type Slider}">
+                                <Grid>
+                                    <Grid.Resources>
+                                        <Style x:Key="SeekValueFill" TargetType="{x:Type RepeatButton}">
+                                            <Setter Property="OverridesDefaultStyle" Value="true"/>
+                                            <Setter Property="IsTabStop" Value="false"/>
+                                            <Setter Property="Focusable" Value="false"/>
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                                                        <Rectangle Fill="Transparent"></Rectangle>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                        <Style x:Key="SeekRightFill" TargetType="{x:Type RepeatButton}">
+                                            <Setter Property="OverridesDefaultStyle" Value="true"/>
+                                            <Setter Property="IsTabStop" Value="false"/>
+                                            <Setter Property="Focusable" Value="false"/>
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                                                        <Rectangle Fill="Black" Opacity="0.5"/>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Grid.Resources>
 
-                                <Grid.Clip>
-                                    <PathGeometry>
-                                        <PathFigure StartPoint="0 34" IsClosed="True">
-                                            <LineSegment Point="134 34" />
-                                            <LineSegment Point="134 0" />
-                                        </PathFigure>
-                                    </PathGeometry>
-                                </Grid.Clip>
+                                    <Grid.Clip>
+                                        <PathGeometry>
+                                            <PathFigure StartPoint="0 34" IsClosed="True">
+                                                <LineSegment Point="134 34" />
+                                                <LineSegment Point="134 0" />
+                                            </PathFigure>
+                                        </PathGeometry>
+                                    </Grid.Clip>
 
-                                <Rectangle Style="{DynamicResource VolumeFillColor}" />
+                                    <Rectangle Style="{DynamicResource VolumeFillColor}" />
 
-                                <Track x:Name="PART_Track">
-                                    <Track.DecreaseRepeatButton>
-                                        <RepeatButton Command="{x:Static Slider.DecreaseLarge}" Style="{StaticResource SeekValueFill}" />
-                                    </Track.DecreaseRepeatButton>
-                                    <Track.IncreaseRepeatButton>
-                                        <RepeatButton Command="{x:Static Slider.IncreaseLarge}" Style="{StaticResource SeekRightFill}"/>
-                                    </Track.IncreaseRepeatButton>
-                                    <Track.Thumb>
-                                        <Thumb x:Name="Thumb" Width="10" Foreground="Black" Background="Black" BorderThickness="0" Margin="0" Padding="0">
-                                            <Thumb.Style>
-                                                <Style TargetType="Thumb">
-                                                    <Setter Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate TargetType="Thumb">
-                                                                <Rectangle Cursor="Hand" Style="{DynamicResource VolumeBarColor}" />
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                </Style>
-                                            </Thumb.Style>
-                                        </Thumb>
-                                    </Track.Thumb>
-                                </Track>
-                            </Grid>
-                        </ControlTemplate>
-                    </Slider.Template>
-                </Slider>
-                <Label Name="VolumePercentLabel" Content="{Binding ElementName=VolumeSlider, Path=Value, Converter={StaticResource VolumeConverter}}" HorizontalAlignment="Right" Margin="0,22,101,10" VerticalAlignment="Top"/>
-            </Grid>
-        </StackPanel>
+                                    <Track x:Name="PART_Track">
+                                        <Track.DecreaseRepeatButton>
+                                            <RepeatButton Command="{x:Static Slider.DecreaseLarge}" Style="{StaticResource SeekValueFill}" />
+                                        </Track.DecreaseRepeatButton>
+                                        <Track.IncreaseRepeatButton>
+                                            <RepeatButton Command="{x:Static Slider.IncreaseLarge}" Style="{StaticResource SeekRightFill}"/>
+                                        </Track.IncreaseRepeatButton>
+                                        <Track.Thumb>
+                                            <Thumb x:Name="Thumb" Width="10" Foreground="Black" Background="Black" BorderThickness="0" Margin="0" Padding="0">
+                                                <Thumb.Style>
+                                                    <Style TargetType="Thumb">
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="Thumb">
+                                                                    <Rectangle Cursor="Hand" Style="{DynamicResource VolumeBarColor}" />
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </Thumb.Style>
+                                            </Thumb>
+                                        </Track.Thumb>
+                                    </Track>
+                                </Grid>
+                            </ControlTemplate>
+                        </Slider.Template>
+                    </Slider>
+                    <Label Name="VolumePercentLabel" Content="{Binding ElementName=VolumeSlider, Path=Value, Converter={StaticResource VolumeConverter}}" HorizontalAlignment="Right" Margin="0,22,101,10" VerticalAlignment="Top"/>
+                </Grid>
+            </StackPanel>
+        </Border>
         <StackPanel Grid.Row="4" Grid.Column="0" Height="22">
             <StatusBar Style="{DynamicResource StatusBarStyle}">
                 <StatusBar.ItemsPanel>

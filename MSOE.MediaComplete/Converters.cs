@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Globalization;
-using System.IO;
-using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
-using MSOE.MediaComplete.CustomControls;
-using MSOE.MediaComplete.Lib;
-using MSOE.MediaComplete.Lib.Metadata;
 
 namespace MSOE.MediaComplete
 {
@@ -56,6 +50,30 @@ namespace MSOE.MediaComplete
         {
             var boolVal = value as bool?;
             return boolVal != null && !boolVal.Value ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// When the HideDetails button is checked, the middle (song) pane should replace its space.
+    /// </summary>
+    public class ExpandWhenCheckedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var isChecked = value as bool?;
+            if (!isChecked.HasValue)
+            {
+                return 1;
+            }
+            else
+            {
+                return isChecked.Value ? 3 : 1;
+            }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

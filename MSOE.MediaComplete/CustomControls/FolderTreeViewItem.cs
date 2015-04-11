@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using MSOE.MediaComplete.Lib;
 using consts = MSOE.MediaComplete.Lib.Constants;
@@ -18,6 +19,7 @@ namespace MSOE.MediaComplete.CustomControls
         /// <summary>
         /// Contains all folders contained within this folder.
         /// </summary>
+        [SuppressMessage("ReSharper", "CollectionNeverQueried.Global")] // Gets manually bound
         public ObservableCollection<FolderTreeViewItem> Children { get; private set; }
 
         /// <summary>
@@ -56,7 +58,7 @@ namespace MSOE.MediaComplete.CustomControls
                 }
             }
         }
-        private bool _isSelected = false;
+        private bool _isSelected;
 
         #endregion
 
