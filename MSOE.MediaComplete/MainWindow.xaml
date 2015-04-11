@@ -61,7 +61,7 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition x:Name="MetadataColumn" Width="260*" MinWidth="225" />
             </Grid.ColumnDefinitions>
-            <TabControl Name="LeftFrameTabControl" DockPanel.Dock="Top" Grid.Column="0" BorderThickness="0" Margin="0,0,0,-4" 
+            <TabControl Name="LeftFrameTabControl" DockPanel.Dock="Top" Grid.Column="0" BorderThickness="0" Margin="0,0,0,-2"
                         SelectionChanged="LeftFrame_SelectionChanged">
                 <TabItem Header="Library" x:Name="LibraryTab">
                     <controls:TreeViewEx x:Name="FolderTree"
