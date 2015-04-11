@@ -21,7 +21,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
                 return false;
             }
 
-            return dir.EnumerateFiles().GetMusicFiles().Any(f => matchFile.MusicFileEquals(File.Create(f.FullName)));
+            return dir.EnumerateFiles().GetMusicFiles().Any(f => matchFile.MusicFileEquals(FileMover.Instance.CreateTaglibFile(f.FullName)));
         }
 
         /// <summary>

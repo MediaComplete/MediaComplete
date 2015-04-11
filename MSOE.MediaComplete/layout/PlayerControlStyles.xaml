@@ -1,0 +1,256 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+
+    <Style TargetType="{x:Type Rectangle}" x:Key="VolumeFillColor">
+        <Setter Property="Fill" Value="{DynamicResource VolumeFillBrush}" />
+    </Style>
+    <Style TargetType="{x:Type Rectangle}" x:Key="VolumeBarColor">
+        <Setter Property="Fill" Value="{DynamicResource VolumeBarBrush}"/>
+    </Style>
+
+
+    <Style x:Key="EllipseStyle" TargetType="{x:Type Ellipse}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid,AncestorLevel=1}, Path=IsMouseOver}" Value="True">
+                <Setter Property="Fill" Value="{DynamicResource ButtonDefaultHoverBrush}"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid,AncestorLevel=1}, Path=IsMouseOver}" Value="False">
+                <Setter Property="Fill" Value="{DynamicResource ButtonDefaultBrush}"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="{x:Type Button}" x:Key="PlayButton" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Ellipse Style="{StaticResource EllipseStyle}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                        <Polygon Points="27,15 27,60 60,37.5" Fill="{DynamicResource ButtonAccentBrush}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type Button}" x:Key="PauseButton" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Ellipse Style="{StaticResource EllipseStyle}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                        <Polygon Points="20,15 35,15 35,60 20,60 " Fill="{DynamicResource ButtonAccentBrush}" />
+                        <Polygon Points="40,15 55,15 55,60 40,60 " Fill="{DynamicResource ButtonAccentBrush}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type Button}" x:Key="StopButton" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Ellipse Style="{StaticResource EllipseStyle}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                        <Polygon Points="12,12 12,28 28,28 28,12" Fill="{DynamicResource ButtonAccentBrush}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type Button}" x:Key="SkipButton" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Ellipse Style="{StaticResource EllipseStyle}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                        <Polygon Points="18,20 18,40 33,30" Fill="{DynamicResource ButtonAccentBrush}" />
+                        <Polygon Points="33,20 33,40 48,30" Fill="{DynamicResource ButtonAccentBrush}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type Button}" x:Key="PreviousButton" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Ellipse Style="{StaticResource EllipseStyle}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                        <Polygon Points="27,20 27,40 12,30" Fill="{DynamicResource ButtonAccentBrush}" />
+                        <Polygon Points="42,20 42,40 27,30" Fill="{DynamicResource ButtonAccentBrush}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type Button}" x:Key="LoopButtonPressed" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Ellipse Style="{DynamicResource PressedEllipseStyle}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                        <Ellipse Height="17" Width="17" Fill="{DynamicResource ButtonAccentBrush}" />
+                        <Ellipse Style="{DynamicResource PressedEllipseStyle}" Height="13" Width="13" />
+                        <Polygon Style="{DynamicResource PressedPolygonStyle}" Points="13,3 19,3 19,10 13,10" />
+                        <Polygon Points="10.5,6 12,13.5 14.25,9" Fill="{DynamicResource ButtonAccentBrush}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type Button}" x:Key="LoopButtonUnPressed" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Ellipse Style="{StaticResource EllipseStyle}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                        <Ellipse Height="17" Width="17" Fill="{DynamicResource ButtonAccentBrush}" />
+                        <Ellipse Style="{StaticResource EllipseStyle}" Height="13" Width="13" />
+                        <Polygon Style="{DynamicResource PolygonStyle}" Points="13,3 19,3 19,10 13,10" />
+                        <Polygon Points="10.5,6 12,13.5 14.25,9" Fill="{DynamicResource ButtonAccentBrush}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type Button}" x:Key="LoopOneButton" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Ellipse Style="{DynamicResource PressedEllipseStyle}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                        <Ellipse Height="17" Width="17" Fill="{DynamicResource ButtonAccentBrush}" />
+                        <Ellipse Style="{DynamicResource PressedEllipseStyle}" Height="13" Width="13" />
+                        <Polygon Style="{DynamicResource PressedPolygonStyle}" Points="13,3 19,3 19,10 13,10" />
+                        <Polygon Points="10.5,6 12,13.5 14.25,9" Fill="{DynamicResource ButtonAccentBrush}" />
+                        <Polygon Points="17,4 13,6 15,6 15,11 17,11" Fill="{DynamicResource ButtonAccentBrush}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <Style x:Key="PolygonStyle" TargetType="{x:Type Polygon}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid,AncestorLevel=1}, Path=IsMouseOver}" Value="True">
+                <Setter Property="Fill" Value="{DynamicResource ButtonDefaultHoverBrush}"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid,AncestorLevel=1}, Path=IsMouseOver}" Value="False">
+                <Setter Property="Fill" Value="{DynamicResource ButtonDefaultBrush}"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="PressedEllipseStyle" TargetType="{x:Type Ellipse}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid,AncestorLevel=1}, Path=IsMouseOver}" Value="True">
+                <Setter Property="Fill" Value="{DynamicResource ButtonToggledHoverBrush}"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid,AncestorLevel=1}, Path=IsMouseOver}" Value="False">
+                <Setter Property="Fill" Value="{DynamicResource ButtonToggledBrush}"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="PressedPolygonStyle" TargetType="{x:Type Polygon}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid,AncestorLevel=1}, Path=IsMouseOver}" Value="True">
+                <Setter Property="Fill" Value="{DynamicResource ButtonToggledHoverBrush}"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid,AncestorLevel=1}, Path=IsMouseOver}" Value="False">
+                <Setter Property="Fill" Value="{DynamicResource ButtonToggledBrush}"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+
+
+    <Style TargetType="{x:Type Button}" x:Key="ShuffleButton" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Ellipse Style="{DynamicResource EllipseStyle}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                        <Polygon Points="10,4 7,8 9,8 9,13 19,18 19,24 21,24 21,18 11,13 11,8 13,8" Fill="#FFF0EFF1" />
+                        <Polygon Points="20,4 17,8 21,8 21,13 11,18 11,24 9,24 9,18 19,13 19,8 23,8" Fill="#FFF0EFF1" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--Everything related to this slider style is lifted straight from 
+            http://stackoverflow.com/questions/25136114/custom-wpf-slider-with-image-as-thumb
+            because it looks exactly how we need it to -->
+    <Style x:Key="SliderRepeatButton" TargetType="RepeatButton">
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="IsTabStop" Value="false" />
+        <Setter Property="Focusable" Value="false" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RepeatButton">
+                    <Border  BorderThickness="1" BorderBrush="{DynamicResource RepeatButtonBrush}" Background="{DynamicResource RepeatButtonBrush}" Height="5"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="SliderRepeatButton1" TargetType="RepeatButton">
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RepeatButton">
+                    <Border SnapsToDevicePixels="True" Background="{DynamicResource RepeatButton1BorderBrush}"  BorderThickness="1" BorderBrush="{DynamicResource RepeatButton1BackgroundBrush}" Height="5"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="SliderThumb" TargetType="Thumb">
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Thumb">
+                    <Ellipse Height="15" Width="15" Fill="{DynamicResource SliderThumbBrush}"></Ellipse>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <ControlTemplate x:Key="Slider"  TargetType="Slider">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Track Grid.Row="1" x:Name="PART_Track"   >
+                <Track.DecreaseRepeatButton>
+                    <RepeatButton Style="{StaticResource SliderRepeatButton1}"  Command="Slider.DecreaseLarge" />
+                </Track.DecreaseRepeatButton>
+                <Track.Thumb>
+                    <Thumb Style="{StaticResource SliderThumb}"  />
+                </Track.Thumb>
+                <Track.IncreaseRepeatButton>
+                    <RepeatButton Style="{StaticResource SliderRepeatButton}" Command="Slider.IncreaseLarge" />
+                </Track.IncreaseRepeatButton>
+            </Track>
+        </Grid>
+    </ControlTemplate>
+
+    <Style x:Key="HorizontalSlider" TargetType="{x:Type Slider}">
+        <Setter Property="Focusable" Value="False"/>
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Style.Triggers>
+            <Trigger Property="Orientation" Value="Horizontal">
+                <Setter Property="MinHeight" Value="21" />
+                <Setter Property="MinWidth" Value="104" />
+                <Setter Property="Template" Value="{StaticResource Slider}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+</ResourceDictionary>

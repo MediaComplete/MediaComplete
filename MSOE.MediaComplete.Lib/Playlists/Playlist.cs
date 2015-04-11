@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using M3U.NET;
 using MSOE.MediaComplete.Lib.Songs;
@@ -14,7 +15,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
 
         public List<AbstractSong> Songs { get; private set; }
         
-        public string Name
+        public string Title
         {
             get { return _file.Name; }
             set { _file.Name = value; }
@@ -35,8 +36,18 @@ namespace MSOE.MediaComplete.Lib.Playlists
         /// </summary>
         public void Save()
         {
-            _file.Files.Clear(); 
-            _file.Files.AddRange(Songs.Select(s => s.ToMediaItem()));
+            _file.Files.Clear();
+            foreach (var song in Songs)
+            {
+                try
+                {
+                    _file.Files.Add(song.ToMediaItem());
+                }
+                catch (FileNotFoundException)
+                {
+                    // TODO MC-125 log - 
+                }
+            }
             _file.Save();
         }
 
@@ -46,6 +57,15 @@ namespace MSOE.MediaComplete.Lib.Playlists
         public void Delete()
         {
             _file.Delete();
+        }
+
+        /// <summary>
+        /// Override of ToString, returns Title.
+        /// </summary>
+        /// <returns>The Title of this playlist.</returns>
+        public override string ToString()
+        {
+            return Title;
         }
     }
 }

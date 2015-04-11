@@ -1,6 +1,7 @@
 ﻿using System;
-using System.IO;
+using MSOE.MediaComplete.Lib.Songs;
 using NAudio.Wave;
+using TagLib;
 
 namespace MSOE.MediaComplete.Lib.Playing
 {
@@ -51,16 +52,18 @@ namespace MSOE.MediaComplete.Lib.Playing
 
         #region IPlayer methods
         /// <summary>
-        /// sets up the player and plays the file
+        /// sets up the player and plays the song
         /// </summary>
-        /// <param name="file">file to play</param>
-        public void Play(FileInfo file)
+        public void Play()
         {
-            if (file == null) throw new ArgumentNullException("file");
-
             Stop();
+            var song = NowPlaying.Inst.CurrentSong();
 
-            _nAudioWrapper.Setup(file, WaveOutOnPlaybackStopped, _currentVolume);
+            var localSong = song as LocalSong;
+            if (localSong != null)
+            {
+                _nAudioWrapper.Setup(localSong.File, WaveOutOnPlaybackStopped, _currentVolume);
+            }
             PlaybackState = _nAudioWrapper.Play();
         }
 
@@ -93,6 +96,25 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// </summary>
         public event EventHandler PlaybackEnded;
 
+        /// <summary>
+        /// calls the NAudioWrapper seek function
+        /// </summary>
+        /// <param name="timeToSeekTo"></param>
+        public void Seek(TimeSpan timeToSeekTo)
+        {
+            _nAudioWrapper.Seek(timeToSeekTo);
+        }
+
+        /// <summary>
+        /// gets the current time of the playing song
+        /// </summary>
+        public TimeSpan CurrentTime { get { return _nAudioWrapper.CurrentTime; } }
+
+        /// <summary>
+        /// gets the total time of the playing song
+        /// </summary>
+        public TimeSpan TotalTime { get { return _nAudioWrapper.TotalTime; } }
+        
         /// <summary> 
         /// changes the volume of a currently playing song
         /// </summary>
@@ -108,13 +130,6 @@ namespace MSOE.MediaComplete.Lib.Playing
                 _currentVolume = newValue;
         }
 
-        //public void Seek()
-        //{
-        //    //TODO: MC-41 - Seeking functionality
-        //    throw new NotImplementedException("Seek is not yet implemented.");
-        //    //_waveStream.Seek(10000000, SeekOrigin.Current);//seeks ahead 10000000 bytes in the file?
-        //}
-
         #endregion
 
         #region private methods
@@ -125,8 +140,41 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// <param name="stoppedEventArgs"></param>
         private void WaveOutOnPlaybackStopped(object sender, StoppedEventArgs stoppedEventArgs)
         {
-            if (PlaybackEnded != null) PlaybackEnded(sender, stoppedEventArgs);
+            var oldIndex = NowPlaying.Inst.Index;
+            if (NowPlaying.Inst.HasNextSong())
+            {
+                var canPlay = true;
+                while (canPlay) { 
+                    NowPlaying.Inst.NextSong();
+                    try
+                    {
+                        Play();
+                        canPlay = false;
+                    }
+                    catch (CorruptFileException)
+                    {
+                        if (!NowPlaying.Inst.HasNextSong())
+                            canPlay = false;
+                    }
+                }
+                var newIndex = NowPlaying.Inst.Index;
+                OnSongFinishedEvent(oldIndex, newIndex);
+            }
+            else
+            {
+                if (PlaybackEnded != null) PlaybackEnded(sender, stoppedEventArgs);
+                PlaybackState = PlaybackState.Stopped;
+                OnSongFinishedEvent(-1,-1);
+            }
         }
+        public delegate void SongFinished(int oldPath, int newPath);
+
+        public event  SongFinished SongFinishedEvent = delegate { };
         #endregion
+
+        protected void OnSongFinishedEvent(int oldIndex , int newIndex )
+        {
+            SongFinishedEvent(oldIndex, newIndex);
+        }
     }
 }

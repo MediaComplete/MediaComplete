@@ -13,9 +13,9 @@ namespace MSOE.MediaComplete.Lib.Playlists
     public static class PlaylistService
     {
         /// <summary>
-        /// The base name for new playlists created without a specified name.
+        /// The base title for new playlists created without a specified title.
         /// </summary>
-        public const string PlaylistDefaultName = "New playlist";
+        public const string PlaylistDefaultTitle = "New playlist";
 
         private static IPlaylistService _service = new PlaylistServiceImpl();
 
@@ -47,28 +47,28 @@ namespace MSOE.MediaComplete.Lib.Playlists
         }
 
         /// <summary>
-        /// Gets a particular playlist by name
+        /// Gets a particular playlist by title
         /// </summary>
-        /// <param name="name">The name of the playlist, which corresponds to the filename. It is case-sensitive.</param>
+        /// <param name="title">The title of the playlist, which corresponds to the filename. It is case-sensitive.</param>
         /// <returns>The playlist object, or null if it's not found</returns>
-        public static Playlist GetPlaylist(string name)
+        public static Playlist GetPlaylist(string title)
         {
-            return _service.GetPlaylist(name);
+            return _service.GetPlaylist(title);
         }
 
         /// <summary>
-        /// Creates new playlist with the given name.
+        /// Creates new playlist with the given title.
         /// </summary>
-        /// <param name="name">The name of the playlist; will also be the name of the file.</param>
+        /// <param name="title">The title of the playlist; will also be the name of the file.</param>
         /// <returns>The new Playlist object</returns>
-        /// <exception cref="IOException">If the supplied name is already taken by another playlist file.</exception>
-        public static Playlist CreatePlaylist(string name)
+        /// <exception cref="IOException">If the supplied title is already taken by another playlist file.</exception>
+        public static Playlist CreatePlaylist(string title)
         {
-            return _service.CreatePlaylist(name);
+            return _service.CreatePlaylist(title);
         }
 
         /// <summary>
-        /// Creates a new playlist with a default name.
+        /// Creates a new playlist with a default title.
         /// </summary>
         /// <returns>The new Playlist object</returns>
         public static Playlist CreatePlaylist()
@@ -94,22 +94,22 @@ namespace MSOE.MediaComplete.Lib.Playlists
         IEnumerable<Playlist> GetAllPlaylists();
 
         /// <summary>
-        /// Gets a particular playlist by name
+        /// Gets a particular playlist by title
         /// </summary>
-        /// <param name="name">The name of the playlist, which corresponds to the filename. It is case-sensitive.</param>
+        /// <param name="title">The title of the playlist, which corresponds to the filename. It is case-sensitive.</param>
         /// <returns>The playlist object, or null if it's not found</returns>
-        Playlist GetPlaylist(string name);
+        Playlist GetPlaylist(string title);
 
         /// <summary>
-        /// Creates new playlist with the given name.
+        /// Creates new playlist with the given title.
         /// </summary>
-        /// <param name="name">The name of the playlist; will also be the name of the file.</param>
+        /// <param name="title">The title of the playlist; will also be the name of the file.</param>
         /// <returns>The new Playlist object</returns>
-        /// <exception cref="IOException">If the supplied name is already taken by another playlist file.</exception>
-        Playlist CreatePlaylist(string name);
+        /// <exception cref="IOException">If the supplied title is already taken by another playlist file.</exception>
+        Playlist CreatePlaylist(string title);
 
         /// <summary>
-        /// Creates a new playlist with a default name.
+        /// Creates a new playlist with a default title.
         /// </summary>
         /// <returns>The new Playlist object</returns>
         Playlist CreatePlaylist();
@@ -155,58 +155,58 @@ namespace MSOE.MediaComplete.Lib.Playlists
         }
 
         /// <summary>
-        /// Gets a particular playlist by name
+        /// Gets a particular playlist by title
         /// </summary>
-        /// <param name="name">The name of the playlist, which corresponds to the filename. It is case-sensitive.</param>
+        /// <param name="title">The title of the playlist, which corresponds to the filename. It is case-sensitive.</param>
         /// <returns>The playlist object, or null if it's not found</returns>
-        public Playlist GetPlaylist(string name)
+        public Playlist GetPlaylist(string title)
         {
-            if (name == null)
+            if (title == null)
             {
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException("title");
             }
 
-            if (String.IsNullOrWhiteSpace(name))
+            if (String.IsNullOrWhiteSpace(title))
             {
-                throw new ArgumentException("Playlist name cannot be empty", "name");
+                throw new ArgumentException("Playlist title cannot be empty", "title");
             }
 
             var file = GetDirectoryInfo()
                 .EnumerateFiles(Constants.Wildcard, SearchOption.AllDirectories)
-                .FirstOrDefault(f => Path.GetFileNameWithoutExtension(f.Name).Equals(name) &&
+                .FirstOrDefault(f => Path.GetFileNameWithoutExtension(f.Name).Equals(title) &&
                                      Constants.PlaylistFileExtensions.Any(e => f.Extension.Equals(e)));
 
             return file == null ? null : new Playlist(new M3UFile(file));
         }
 
         /// <summary>
-        /// Creates new playlist with the given name.
+        /// Creates new playlist with the given title.
         /// </summary>
-        /// <param name="name">The name of the playlist; will also be the name of the file.</param>
+        /// <param name="title">The title of the playlist; will also be the name of the file.</param>
         /// <returns>The new Playlist object</returns>
-        /// <exception cref="IOException">If the supplied name is already taken by another playlist file.</exception>
-        public Playlist CreatePlaylist(string name)
+        /// <exception cref="IOException">If the supplied title is already taken by another playlist file.</exception>
+        public Playlist CreatePlaylist(string title)
         {
-            if (GetPlaylist(name) != null)
+            if (GetPlaylist(title) != null)
             {
-                throw new IOException("A playlist by that name already exists.");
+                throw new IOException("A playlist by that title already exists.");
             }
-            return new Playlist(new M3UFile(new FileInfo(GetDirectoryInfo().FullName + Path.DirectorySeparatorChar + name + DefaultExtension)));
+            return new Playlist(new M3UFile(new FileInfo(GetDirectoryInfo().FullName + Path.DirectorySeparatorChar + title + DefaultExtension)));
         }
 
         /// <summary>
-        /// Creates a new playlist with a default name.
+        /// Creates a new playlist with a default title.
         /// </summary>
         /// <returns>The new Playlist object</returns>
         public Playlist CreatePlaylist()
         {
-            var name = PlaylistService.PlaylistDefaultName;
+            var title = PlaylistService.PlaylistDefaultTitle;
             var i = 1;
-            while (GetPlaylist(name) != null)
+            while (GetPlaylist(title) != null)
             {
-                name = String.Format(PlaylistService.PlaylistDefaultName + " ({0})", i++);
+                title = String.Format(PlaylistService.PlaylistDefaultTitle + " ({0})", i++);
             }
-            return CreatePlaylist(name);
+            return CreatePlaylist(title);
         }
     }
     #endregion
