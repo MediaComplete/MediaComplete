@@ -164,4 +164,11 @@
 
     <Brush x:Key="VolumeFillBrush">#FFCD6AA5</Brush>
     <Brush x:Key="VolumeBarBrush">#FF2D2D30</Brush>
+
+
+    <Brush x:Key="RepeatButtonBrush">#FFFFD0EC</Brush>
+    <Brush x:Key="RepeatButton1BorderBrush">#FF8F1454</Brush>
+    <Brush x:Key="RepeatButton1BackgroundBrush">#FFCD6AA5</Brush>
+
+    <Brush x:Key="SliderThumbBrush">#FFEC48B9</Brush>
 </ResourceDictionary>
