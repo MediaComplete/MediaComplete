@@ -6,7 +6,6 @@ using System.Windows.Controls;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib.Playing;
 using MSOE.MediaComplete.Lib.Playlists;
-using MSOE.MediaComplete.Lib.Songs;
 
 namespace MSOE.MediaComplete
 {
@@ -53,7 +52,7 @@ namespace MSOE.MediaComplete
                 list = PlaylistService.CreatePlaylist();
             }
 
-            list.Songs.AddRange(from LibrarySongItem song in SongList.Items select song.Data);
+            list.Songs.AddRange(AllSongs().Select(s => s.Data));
             list.Save();
             _playlists.Add(list);
             // TODO MC-207 flow to rename
@@ -85,9 +84,9 @@ namespace MSOE.MediaComplete
                 list = PlaylistService.CreatePlaylist();
             }
 
-            var songs = SongList.SelectedItems.Count > 0 ? // No specific songs implies the whole thing
-                SongList.SelectedItems :
-                SongList.Items;
+            // No specific songs implies the whole thing
+            var selectedSongs = SelectedSongs();
+            var songs = selectedSongs.Any() ? selectedSongs : AllSongs();
 
             list.Songs.AddRange(from LibrarySongItem song in songs select song.Data);
             list.Save();
@@ -109,9 +108,9 @@ namespace MSOE.MediaComplete
                 return;
             }
 
-            var songs = SongList.SelectedItems.Count > 0 ? // No specific songs implies the whole thing
-                SongList.SelectedItems :
-                SongList.Items;
+            // No specific songs implies the whole thing
+            var selectedSongs = SelectedSongs();
+            var songs = selectedSongs.Any() ? selectedSongs : AllSongs();
 
             list.Songs.AddRange(from LibrarySongItem song in songs select song.Data);
             list.Save();
@@ -133,7 +132,7 @@ namespace MSOE.MediaComplete
                 return;
             }
 
-            list.Songs.AddRange(from LibrarySongItem song in SongList.Items select song.Data);
+            list.Songs.AddRange(AllSongs().Select(s => s.Data));
             list.Save();
         }
 

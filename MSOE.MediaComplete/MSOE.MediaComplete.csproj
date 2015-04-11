@@ -85,9 +85,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\M3U.NET.1.0.0.3\lib\net45\M3U.NET.dll</HintPath>
     </Reference>
-    <Reference Include="MultiSelectTreeView, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\MultiSelectTreeView\MultiSelectTreeView\bin\Debug\MultiSelectTreeView.dll</HintPath>
+    <Reference Include="MultiSelectTreeView">
+      <HintPath>..\packages\MultiSelectTreeView.1.0.6\lib\net40\MultiSelectTreeView.dll</HintPath>
     </Reference>
     <Reference Include="NAudio, Version=1.7.3.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -135,6 +134,9 @@
     </Compile>
     <Compile Include="CustomControls\ControlExtensions.cs" />
     <Compile Include="CustomControls\SongListItem.cs" />
+    <Compile Include="layout\Styles.xaml.cs">
+      <DependentUpon>Styles.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainWindowMetadata.cs" />
     <Compile Include="CustomControls\FolderTreeViewItem.cs" />
     <Compile Include="InboxImportDialog.xaml.cs">

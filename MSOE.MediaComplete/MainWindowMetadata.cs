@@ -13,7 +13,6 @@ namespace MSOE.MediaComplete
 {
     public partial class MainWindow
     {
-        private ListView _visibleList;
         private readonly List<TextBox> _changedBoxes = new List<TextBox>();
 
         private Dictionary<MetaAttribute, string> SetupForm()
@@ -58,7 +57,7 @@ namespace MSOE.MediaComplete
         {
             var initalAttributes = SetupForm();
             var finalAttributes = new Dictionary<MetaAttribute, string>();
-            foreach (SongListItem item in _visibleList.SelectedItems)
+            foreach (SongListItem item in SelectedSongs())
             {
                 try
                 {
@@ -121,7 +120,7 @@ namespace MSOE.MediaComplete
         private void Edit_OnClick(object sender, RoutedEventArgs e)
         {
 
-            if (EditCancelButton.Content.Equals(Resources["EditButton"].ToString()) && _visibleList.SelectedItems.Count > 0)
+            if (EditCancelButton.Content.Equals(Resources["EditButton"].ToString()) && SelectedSongs().Any())
             {
                 EditCancelButton.Content = Resources["CancelButton"].ToString();
                 ToggleReadOnlyFields(false);
@@ -169,7 +168,7 @@ namespace MSOE.MediaComplete
             if (SongTitle.IsReadOnly) return;
             EditCancelButton.Content = Resources["EditButton"].ToString();
             ToggleReadOnlyFields(true);
-            foreach (SongListItem item in _visibleList.SelectedItems)
+            foreach (SongListItem item in SelectedSongs())
             {
                 try
                 {

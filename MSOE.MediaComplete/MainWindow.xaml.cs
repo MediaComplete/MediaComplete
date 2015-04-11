@@ -8,12 +8,12 @@ using System.Windows.Media.Imaging;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Input;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Import;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Playing;
+using MSOE.MediaComplete.Lib.Playlists;
 using MSOE.MediaComplete.Lib.Songs;
 using MSOE.MediaComplete.Lib.Sorting;
 using NAudio.Wave;
@@ -41,6 +41,12 @@ namespace MSOE.MediaComplete
         /// </summary>
         public CollectionViewSource Songs { get { return _songs; } }
         private readonly CollectionViewSource _songs = new CollectionViewSource { Source = new ObservableCollection<SongListItem>() };
+
+        /// <summary>
+        /// Contains the songs in the middle view. Filtered based on what's happening in the left pane.
+        /// </summary>
+        public CollectionViewSource PlaylistSongs { get { return _playlistSongs; } }
+        private readonly CollectionViewSource _playlistSongs = new CollectionViewSource { Source = new ObservableCollection<SongListItem>() };
 
         private readonly Timer _refreshTimer = new Timer(TimerProc);
         private readonly FileMover _fileMover = FileMover.Instance;
@@ -102,12 +108,11 @@ namespace MSOE.MediaComplete
 
             watcher.EnableRaisingEvents = true;
 
-            _visibleList = SongList;
             Songs.Filter += LibrarySongFilter;
         }
         #endregion
 
-        #region
+        #region User triggered events
 
         /// <summary>
         /// Open the Settings window
@@ -211,7 +216,7 @@ namespace MSOE.MediaComplete
         private void SongList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             FormCheck();
-            if (SongList.SelectedItems.Count > 0)
+            if (AllSongs().Any())
                 PopulateMetadataForm();
             else
                 ClearDetailPane();
@@ -225,7 +230,8 @@ namespace MSOE.MediaComplete
         private async void Toolbar_AutoIDMusic_ClickAsync(object sender, RoutedEventArgs e)
         {
             // TODO (MC-45) mass ID of multi-selected songs and folders
-            foreach (var selection in from object item in _visibleList.SelectedItems select item as SongListItem)
+
+            foreach (var selection in SelectedSongs())
             {
                 try
                 {
@@ -257,11 +263,11 @@ namespace MSOE.MediaComplete
             var contextMenu = menuItem.Parent as ContextMenu;
             if (contextMenu == null)
                 return;
-            foreach (var item in SongList.SelectedItems)
+            foreach (var item in SelectedSongs())
             {
                 try
                 {
-                    await MusicIdentifier.IdentifySongAsync(_fileMover, ((SongListItem)item).Data.GetPath());
+                    await MusicIdentifier.IdentifySongAsync(_fileMover, item.Data.GetPath());
                 }
                 catch (Exception ex)
                 {
@@ -320,34 +326,11 @@ namespace MSOE.MediaComplete
         {
             if (PlaylistTab.IsSelected)
             {
-                _visibleList = PlaylistSongs;
                 NowPlayingItem.IsSelected = true;
-            } 
-            else if (LibraryTab.IsSelected)
-            {
-                _visibleList = SongList;
+                // Manually fire this, NowPlayingItem.IsSelected won't do the job if that's already selected
+                PlaylistTree_SelectionChanged(null, null); 
             }
             ClearDetailPane();
-        }
-
-        /// <summary>
-        /// Play songs on double click
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void PlaylistSongs_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            if (PlaylistSongs.SelectedItems.Count == 0) return;
-
-            if (NowPlayingItem.IsSelected)
-            {
-                ((SongListItem)PlaylistSongs.SelectedItem).IsPlaying = true;
-                ((SongListItem)PlaylistSongs.Items[NowPlaying.Inst.Index]).IsPlaying = false;
-                NowPlaying.Inst.JumpTo(PlaylistSongs.SelectedIndex);
-            }
-            // TODO MC-211 Play playlist
-            
-            Play();
         }
 
         /// <summary>
@@ -357,32 +340,21 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void PlaylistTree_SelectionChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (NowPlayingItem.IsSelected && !_player.PlaybackState.Equals(PlaybackState.Stopped))
+            var playlistSongs = (ObservableCollection<SongListItem>) PlaylistSongs.Source;
+            var list = NowPlayingItem.IsSelected ? NowPlaying.Inst.Playlist : (Playlist)PlaylistTree.SelectedItem;
+            
+            playlistSongs.Clear();
+            list.Songs.ForEach(s => playlistSongs.Add(new SongListItem { Content = s, Data = s }));
+
+            // If now-playing, highlight the current song
+            if (NowPlayingItem.IsSelected && NowPlaying.Inst.Index > -1 && !_player.PlaybackState.Equals(PlaybackState.Stopped))
             {
-                PlaylistSongs.Items.Clear();
-                NowPlaying.Inst.Playlist.Songs.ForEach(x => PlaylistSongs.Items.Add((new SongListItem { Content = x, Data = x })));
-                PlaylistSongs.SelectedIndex = NowPlaying.Inst.Index;
-                if (NowPlaying.Inst.Index > -1 && !_player.PlaybackState.Equals(PlaybackState.Stopped))
-                {
-                    ((SongListItem)PlaylistSongs.SelectedItem).IsPlaying = true;
-
-                }
+                var item = playlistSongs[NowPlaying.Inst.Index];
+                item.IsPlaying = true;
+                PlaylistSongList.ScrollIntoView(item);
             }
-        }
 
-        /// <summary>
-        /// Update the metadata pane based on the selected playlist songs
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void PlaylistSongs_OnMouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (PlaylistSongs.Items.Count == 0) return;
-            FormCheck();
-            if (PlaylistSongs.SelectedItems.Count > 0)
-                PopulateMetadataForm();
-            else
-                ClearDetailPane();
+            ClearDetailPane();
         }
 
         /// <summary>
@@ -520,6 +492,44 @@ namespace MSOE.MediaComplete
                 await new Importer(SettingWrapper.MusicDir).ImportFilesAsync(files, true);
             }
         }
+        #endregion
+
+        #region Private helpers
+
+        /// <summary>
+        /// Helper methods to return the selected song items from the currently visible list.
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerable<SongListItem> SelectedSongs()
+        {
+            var currentSongs = (ObservableCollection<SongListItem>)(PlaylistTab.IsSelected ? PlaylistSongs : Songs).Source;
+            return from object song in currentSongs 
+                   where ((SongListItem)song).IsSelected && ((SongListItem)song).IsVisible 
+                   select (song as SongListItem);
+        }
+
+        /// <summary>
+        /// Helper methods to return all song items from the currently visible list.
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerable<SongListItem> AllSongs()
+        {
+            var currentSongs = (ObservableCollection<SongListItem>)(PlaylistTab.IsSelected ? PlaylistSongs : Songs).Source;
+            return from object song in currentSongs 
+                   where ((SongListItem)song).IsVisible 
+                   select (song as SongListItem);
+        }
+
+        /// <summary>
+        /// Returns the first index of a selected song in the currently visible list.
+        /// </summary>
+        /// <returns></returns>
+        private int SelectedSongIndex()
+        {
+            var currentSongs = (ObservableCollection<SongListItem>)(PlaylistTab.IsSelected ? PlaylistSongs : Songs).Source;
+            return currentSongs.IndexOf(currentSongs.FirstOrDefault(s => s.IsSelected));
+        }
+
         #endregion
     }
 }

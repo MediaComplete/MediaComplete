@@ -121,9 +121,9 @@
               ShowsPreview="true"
               Width="3"
               Style="{DynamicResource SplitterStyle}"/>
-            <ListView x:Name="SongList" Grid.Column="2" BorderThickness="1,0,1,0" SelectionMode="Extended"
+            <ListView Grid.Column="2" BorderThickness="1,0,1,0" SelectionMode="Extended"
                       Visibility="{Binding ElementName=LibraryTab, Path=IsSelected, Converter={StaticResource BoolToVis}}"
-                      ItemsSource="{Binding Songs.View}" MouseDoubleClick="SongTree_OnMouseDoubleClick"
+                      ItemsSource="{Binding Songs.View}" MouseDoubleClick="SongList_OnMouseDoubleClick"
                       SelectionChanged="SongList_OnSelectionChanged" >
                 <ListView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding}"  DataType="{x:Type customControls:SongListItem}">
@@ -179,10 +179,10 @@
                              Text="{Binding ElementName=PlaylistTree, Path=SelectedItem.Title}" Style="{StaticResource PlaylistNameTextbox}"
                              Visibility="{Binding IsSelected, ElementName=NowPlayingItem, Converter={StaticResource NotBoolToVis}}"/>
                 </DockPanel>
-                <ListView x:Name="PlaylistSongs" Grid.Row="1" BorderThickness="1,0,1,0"
-                          MouseUp="PlaylistSongs_OnMouseUp" MouseDoubleClick="PlaylistSongs_OnMouseDoubleClick" SelectionMode="Single" >
+                <ListView Name="PlaylistSongList" Grid.Row="1" BorderThickness="1,0,1,0" ItemsSource="{Binding PlaylistSongs.View}"
+                          SelectionChanged="SongList_OnSelectionChanged" MouseDoubleClick="PlaylistSongs_OnMouseDoubleClick" SelectionMode="Single" >
                     <ListView.ItemTemplate>
-                        <HierarchicalDataTemplate ItemsSource="{Binding}"  DataType="{x:Type customControls:SongListItem}" >
+                        <HierarchicalDataTemplate ItemsSource="{Binding}" DataType="{x:Type customControls:SongListItem}" >
                             <TextBlock Text="{Binding}"/>
                         </HierarchicalDataTemplate>
                     </ListView.ItemTemplate>
