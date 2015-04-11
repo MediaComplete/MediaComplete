@@ -96,6 +96,25 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// </summary>
         public event EventHandler PlaybackEnded;
 
+        /// <summary>
+        /// calls the NAudioWrapper seek function
+        /// </summary>
+        /// <param name="timeToSeekTo"></param>
+        public void Seek(TimeSpan timeToSeekTo)
+        {
+            _nAudioWrapper.Seek(timeToSeekTo);
+        }
+
+        /// <summary>
+        /// gets the current time of the playing song
+        /// </summary>
+        public TimeSpan CurrentTime { get { return _nAudioWrapper.CurrentTime; } }
+
+        /// <summary>
+        /// gets the total time of the playing song
+        /// </summary>
+        public TimeSpan TotalTime { get { return _nAudioWrapper.TotalTime; } }
+        
         /// <summary> 
         /// changes the volume of a currently playing song
         /// </summary>
@@ -110,13 +129,6 @@ namespace MSOE.MediaComplete.Lib.Playing
             else
                 _currentVolume = newValue;
         }
-
-        //public void Seek()
-        //{
-        //    //TODO: MC-41 - Seeking functionality
-        //    throw new NotImplementedException("Seek is not yet implemented.");
-        //    //_waveStream.Seek(10000000, SeekOrigin.Current);//seeks ahead 10000000 bytes in the file?
-        //}
 
         #endregion
 

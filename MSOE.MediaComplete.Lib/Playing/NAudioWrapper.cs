@@ -36,6 +36,12 @@ namespace MSOE.MediaComplete.Lib.Playing
             }
         }
 
+        /// <summary>
+        /// sets up the wrapper to play the given file
+        /// required before each song to get it to begin playing
+        /// </summary>
+        /// <param name="fileInfo"></param>
+        /// <param name="handler"></param>
         public void Setup(FileInfo fileInfo, EventHandler<StoppedEventArgs> handler, double currentVolume)
         {
             _waveOut = new WaveOut();
@@ -45,6 +51,10 @@ namespace MSOE.MediaComplete.Lib.Playing
             _waveOut.PlaybackStopped += handler;
         }
 
+        /// <summary>
+        /// Plays the file
+        /// </summary>
+        /// <returns></returns>
         public PlaybackState Play()
         {
             if (_waveOut == null) return PlaybackState.Stopped;
@@ -52,6 +62,10 @@ namespace MSOE.MediaComplete.Lib.Playing
             return _waveOut.PlaybackState;
         }
 
+        /// <summary>
+        /// Pauses the file
+        /// </summary>
+        /// <returns></returns>
         public PlaybackState Pause()
         {
             if (_waveOut == null) return PlaybackState.Stopped;
@@ -59,6 +73,10 @@ namespace MSOE.MediaComplete.Lib.Playing
             return _waveOut.PlaybackState;
         }
 
+        /// <summary>
+        /// stops playback and requires the setup to be called on the next song
+        /// </summary>
+        /// <returns></returns>
         public PlaybackState Stop()
         {
             if (_waveOut != null)
@@ -75,6 +93,38 @@ namespace MSOE.MediaComplete.Lib.Playing
             return PlaybackState.Stopped;
         }
 
+        /// <summary>
+        /// seeks to the given time within the song (from the beginning)
+        /// </summary>
+        /// <param name="timeToSeekTo"></param>
+        /// <returns></returns>
+        public PlaybackState Seek(TimeSpan timeToSeekTo)
+        {
+            if (_waveOut == null || _waveStream == null) return PlaybackState.Stopped;
+            if (_waveStream.CanSeek)
+            {
+                _waveStream.CurrentTime = timeToSeekTo;
+            }
+
+            return _waveOut.PlaybackState;
+        }
+
+        /// <summary>
+        /// gets the total runtime of the current song or zero if one is not ready to be played
+        /// </summary>
+        public TimeSpan TotalTime
+        {
+            get { return _waveStream != null ? _waveStream.TotalTime : TimeSpan.FromMilliseconds(0); }
+        }
+
+        /// <summary>
+        /// gets the current time of the current song or zero if one is not ready to be played
+        /// </summary>
+        public TimeSpan CurrentTime
+        {
+            get { return _waveStream != null ? _waveStream.CurrentTime : TimeSpan.FromMilliseconds(0); }
+        }
+        
         public void ChangeVolume(double sliderVolume)
         {
             if (_waveOut != null)

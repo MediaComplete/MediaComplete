@@ -34,7 +34,12 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// <param name="newValue"></param>
         void ChangeVolume(double newValue);
 
-        //void Seek();
+        /// <summary>
+        /// seeks to the given time within a song
+        /// </summary>
+        /// <param name="timeToSeekTo"></param>
+        void Seek(TimeSpan timeToSeekTo);
+        
         /// <summary>
         /// fires when the playback has ended, ie. hitting the end of the file
         /// </summary>
@@ -44,5 +49,15 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// shows the state of the IPlayer
         /// </summary>
         PlaybackState PlaybackState { get; }
+
+        /// <summary>
+        /// gets the current time within the currently playing song
+        /// </summary>
+        TimeSpan CurrentTime { get; }
+
+        /// <summary>
+        /// gets the total runtime of the currently playing song
+        /// </summary>
+        TimeSpan TotalTime { get; }
     }
 }
