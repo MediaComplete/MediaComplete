@@ -21,7 +21,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
         private const string Path = "/api/v4/song/identify";
         private const string ApiKey = "MUIGA58IV1VQUOEJ5";
 
-        public static async Task<string> IdentifySongAsync(FileMover fileMover, string filename)
+        public static async Task<string> IdentifySongAsync(FileManager fileMover, string filename)
         {
             StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Started", StatusBarHandler.StatusIcon.Working);
 
@@ -80,11 +80,11 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /*
          * Parses an MP3 file and pulls the first 30 seconds into the format needed for the Echonest code generator
          */
-        private static float[] SampleAudio(IFileMover fileMover, string filename)
+        private static float[] SampleAudio(IFileManager fileManager, string filename)
         {
             var inFile = filename;
 
-            if (!fileMover.FileExists(inFile)) return null;
+            if (!fileManager.FileExists(inFile)) return null;
 
             var result = new List<float>();
 

@@ -48,7 +48,7 @@ namespace MSOE.MediaComplete.Test
                                  Path.DirectorySeparatorChar + "The Money Store";
             FileHelper.CreateFile(new DirectoryInfo(normalFilePath), Constants.FileTypes.ValidMp3);
 
-            var subject = new Sorter(FileMover.Instance, GetNormalSettings());
+            var subject = new Sorter(FileManager.Instance, GetNormalSettings());
             var task = subject.CalculateActionsAsync();
             SpinWait.SpinUntil(() => task.IsCompleted);
 
@@ -78,7 +78,7 @@ namespace MSOE.MediaComplete.Test
             var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
 
-            var subject = new Sorter(FileMover.Instance, GetNormalSettings());
+            var subject = new Sorter(FileManager.Instance, GetNormalSettings());
             var task = subject.CalculateActionsAsync();
             task.Wait();
 
@@ -104,7 +104,7 @@ namespace MSOE.MediaComplete.Test
             var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
 
-            var subject = new Sorter(FileMover.Instance, GetNormalSettings());
+            var subject = new Sorter(FileManager.Instance, GetNormalSettings());
             var task = subject.CalculateActionsAsync();
             SpinWait.SpinUntil(() => task.IsCompleted);
 
@@ -134,7 +134,7 @@ namespace MSOE.MediaComplete.Test
             var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
 
-            var subject = new Sorter(FileMover.Instance, GetNormalSettings());
+            var subject = new Sorter(FileManager.Instance, GetNormalSettings());
             var task = subject.CalculateActionsAsync();
             SpinWait.SpinUntil(() => task.IsCompleted);
 
@@ -159,7 +159,7 @@ namespace MSOE.MediaComplete.Test
             var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
 
-            var subject = new Sorter(FileMover.Instance, GetNormalSettings());
+            var subject = new Sorter(FileManager.Instance, GetNormalSettings());
             var task = subject.CalculateActionsAsync();
             SpinWait.SpinUntil(() => task.IsCompleted);
 
@@ -192,7 +192,7 @@ namespace MSOE.MediaComplete.Test
             var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + "Death Grips" +
                 Path.DirectorySeparatorChar + "The Money Store" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
 
-            var subject = new Sorter(FileMover.Instance, GetNormalSettings());
+            var subject = new Sorter(FileManager.Instance, GetNormalSettings());
             var task = subject.CalculateActionsAsync();
             SpinWait.SpinUntil(() => task.IsCompleted);
 
@@ -222,7 +222,7 @@ namespace MSOE.MediaComplete.Test
             SettingWrapper.IsSorting = true;
             SettingWrapper.SortOrder = SortHelper.GetDefault();
             // ReSharper disable once ObjectCreationAsStatement
-            new Sorter(FileMover.Instance, null);// Force the static initializer to fire.
+            new Sorter(FileManager.Instance, null);// Force the static initializer to fire.
             var decoyFile = FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidMp3); // Deliberately put an unsorted file in
 
             decoyFile.MoveTo(decoyFile.FullName + ".decoy.mp3");
@@ -254,7 +254,7 @@ namespace MSOE.MediaComplete.Test
             SettingWrapper.IsSorting = true;
             SettingWrapper.SortOrder = defaultSortOrder;
             // ReSharper disable once ObjectCreationAsStatement
-            new Sorter(FileMover.Instance, null); // Force the static initializer to fire.
+            new Sorter(FileManager.Instance, null); // Force the static initializer to fire.
             FileHelper.CreateFile(new DirectoryInfo(SettingWrapper.MusicDir), Constants.FileTypes.ValidMp3);
             var normalFileDest = SettingWrapper.MusicDir + "The Money Store" +
                 Path.DirectorySeparatorChar + "Death Grips" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
@@ -282,7 +282,7 @@ namespace MSOE.MediaComplete.Test
             SettingWrapper.IsSorting = false;
             SettingWrapper.SortOrder = defaultSortOrder;
             // ReSharper disable once ObjectCreationAsStatement
-            new Sorter(FileMover.Instance, null); // Force the static initializer to fire.
+            new Sorter(FileManager.Instance, null); // Force the static initializer to fire.
             FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidMp3);
             var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
 
@@ -305,7 +305,7 @@ namespace MSOE.MediaComplete.Test
             SettingWrapper.IsSorting = true;
             SettingWrapper.SortOrder = defaultSortOrder;
             // ReSharper disable once ObjectCreationAsStatement
-            new Sorter(FileMover.Instance, null); // Force the static initializer to fire.
+            new Sorter(FileManager.Instance, null); // Force the static initializer to fire.
             FileHelper.CreateFile(new DirectoryInfo(SettingWrapper.MusicDir), Constants.FileTypes.ValidMp3);
             var firstFileDestination = SettingWrapper.MusicDir + "The Money Store" +
                 Path.DirectorySeparatorChar + "Death Grips" + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
@@ -350,7 +350,7 @@ namespace MSOE.MediaComplete.Test
         {
             SettingWrapper.IsSorting = false;
             // ReSharper disable once ObjectCreationAsStatement
-            new Sorter(FileMover.Instance, null); // Force the static initializer to fire.
+            new Sorter(FileManager.Instance, null); // Force the static initializer to fire.
             FileHelper.CreateFile(_importDir, Constants.FileTypes.ValidMp3);
             var normalFileDest = _homeDir.FullName + Path.DirectorySeparatorChar + Constants.TestFiles[Constants.FileTypes.ValidMp3].Item1;
 

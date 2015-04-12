@@ -28,7 +28,7 @@ namespace MSOE.MediaComplete
         private readonly List<TextBox>_changedBoxes;
         private Settings _settings;
         private readonly Timer _refreshTimer;
-        private readonly FileMover _fileMover;
+        private readonly FileManager _fileMover;
 
         private readonly FolderTreeViewItem _rootLibItem = new FolderTreeViewItem { Header = SettingWrapper.MusicDir, ParentItem = null };
         public FolderTreeViewItem RootLibraryFolderItem
@@ -65,7 +65,7 @@ namespace MSOE.MediaComplete
 
                 Polling.Instance.Start();
             }
-            _fileMover = FileMover.Instance;
+            _fileMover = FileManager.Instance;
             _fileMover.CreateDirectory(homeDir);
             _refreshTimer = new Timer(TimerProc);
 
@@ -74,6 +74,7 @@ namespace MSOE.MediaComplete
             InitTreeView();
 
             InitPlayer();
+            FileManager.Instance.AddToCache(SettingWrapper.MusicDir);
         }
 
         private void ShowNowPlaying()

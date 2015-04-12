@@ -85,7 +85,7 @@
     <Compile Include="Background\TaskAdder.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Files\FileLocationComparator.cs" />
-    <Compile Include="FileMover.cs" />
+    <Compile Include="FileManager.cs" />
     <Compile Include="Import\ImportTask.cs" />
     <Compile Include="Metadata\IdentifierTask.cs" />
     <Compile Include="Metadata\MetadataExtensions.cs" />

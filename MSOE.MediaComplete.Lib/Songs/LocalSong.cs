@@ -1,9 +1,6 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using M3U.NET;
 using MSOE.MediaComplete.Lib.Files;
-using TagLib;
-using File = TagLib.File;
 
 namespace MSOE.MediaComplete.Lib.Songs
 {
@@ -32,37 +29,6 @@ namespace MSOE.MediaComplete.Lib.Songs
         }
         
         /// <summary>
-        /// Converts this LocalSong to a MediaItem so it can be serialized to a playlist.
-        /// </summary>
-        /// <returns>A new media item</returns>
-        public override MediaItem ToMediaItem()
-        {
-            File tagFile;
-            try
-            {
-                tagFile = TagLib.File.Create(File.FullName);
-            }
-            catch (Exception e)
-            {
-                if (e is UnsupportedFormatException || e is CorruptFileException)
-                {
-                    // TODO MC-125 log
-                    throw new FileNotFoundException(
-                        String.Format("File ({0}) was not found or is not a recognized music file.", File.FullName), e);
-                }
-
-                throw;
-            }
-
-            return new MediaItem
-            {
-                Location = File.FullName, 
-                Inf = tagFile.Tag.FirstAlbumArtist + " - " + tagFile.Tag.Title, 
-                Runtime = (int?)tagFile.Properties.Duration.TotalSeconds
-            };
-        }
-
-        /// <summary>
         /// Compares two local songs based on whether they refer to the same file.
         /// </summary>
         /// <param name="other">Another object to check</param>
@@ -75,7 +41,7 @@ namespace MSOE.MediaComplete.Lib.Songs
 
         public override int GetHashCode()
         {
-            return string.Format("{0}-{1}-{2}-{3}", File, File.FullName, File.DirectoryName, File.GetHashCode()).GetHashCode();
+            return string.Format("{0}-{1}-{2}-{3}", Path, Title, Artist, Album).GetHashCode();
         }
 
 

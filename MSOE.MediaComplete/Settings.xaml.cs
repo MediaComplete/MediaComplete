@@ -24,7 +24,7 @@ namespace MSOE.MediaComplete
         private LayoutType _changedType;
         private bool _layoutHasChanged;
         private readonly List<string> _allDirs;
-        private readonly IFileMover _fileMover;
+        private readonly IFileManager _fileManager;
         public Settings()
         {
 
@@ -37,7 +37,7 @@ namespace MSOE.MediaComplete
             CheckBoxSorting.IsChecked = SettingWrapper.IsSorting;
             MoveOrCopy.IsChecked = SettingWrapper.ShouldRemoveOnImport;
             _allDirs = SettingWrapper.AllDirectories;
-            _fileMover = FileMover.Instance;
+            _fileManager = FileManager.Instance;
             PollingCheckBoxChanged(CheckboxPolling, null);
             if (SettingWrapper.Layout.Equals(_layoutsDict[LayoutType.Pink]))
             {
@@ -92,8 +92,8 @@ namespace MSOE.MediaComplete
             if (!_allDirs.Contains(SettingWrapper.HomeDir))
             {
                 var tempPath = SettingWrapper.HomeDir + "temp"+new Random().Next();
-                _fileMover.MoveDirectory(SettingWrapper.HomeDir, tempPath);
-                _fileMover.MoveDirectory(tempPath, SettingWrapper.MusicDir);
+                _fileManager.MoveDirectory(SettingWrapper.HomeDir, tempPath);
+                _fileManager.MoveDirectory(tempPath, SettingWrapper.MusicDir);
                 _allDirs.Add(SettingWrapper.HomeDir);
             }
 
@@ -173,8 +173,8 @@ namespace MSOE.MediaComplete
 
             SettingWrapper.Save();
 
-            if (!_fileMover.DirectoryExists(SettingWrapper.MusicDir))
-                _fileMover.CreateDirectory(SettingWrapper.MusicDir);
+            if (!_fileManager.DirectoryExists(SettingWrapper.MusicDir))
+                _fileManager.CreateDirectory(SettingWrapper.MusicDir);
             
             Close();
         }

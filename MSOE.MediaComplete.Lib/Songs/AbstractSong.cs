@@ -44,12 +44,6 @@ namespace MSOE.MediaComplete.Lib.Songs
         }
 
         /// <summary>
-        /// Converts the song to a MediaItem for serialization to a playlist.
-        /// </summary>
-        /// <returns>A new media item</returns>
-        public abstract MediaItem ToMediaItem();
-
-        /// <summary>
         /// Enforces an equality check on all subsongs.
         /// </summary>
         /// <param name="other">Another object to compare to</param>
@@ -57,5 +51,13 @@ namespace MSOE.MediaComplete.Lib.Songs
         public new abstract bool Equals(object other);
 
         public abstract string GetPath();
+        public string Album { get; set; }
+        public string Artist { get; set; }
+        public string Genre { get; set; }
+        public string Title { get; set; }
+        public string SupportingArtists { get; set; }
+        public int TrackNumber { get; set; }
+        public int Year { get;set; }
+        public string Path { get; set; }
     }
 }
