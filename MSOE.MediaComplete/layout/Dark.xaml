@@ -149,7 +149,7 @@
         <GradientStop Color="#FF707070" Offset="1"/>
     </RadialGradientBrush>
 
-    <Brush x:Key="WindowBorderBrush">#FF2D2D30</Brush>
+    <Brush x:Key="WindowBorderBrush">#FF4B4B4B</Brush>
 
     <Brush x:Key="StatusBarBackgroundBrush">#FF686868</Brush>
 

@@ -118,12 +118,9 @@ namespace MSOE.MediaComplete.CustomWindow
         /// <param name="e"></param>
         private void Resize(object sender, MouseButtonEventArgs e)
         {
-            if (_window.WindowState == WindowState.Normal)
-            {
-                var border = _borders.Single(b => b.Element.Equals(sender));
-                _window.Cursor = _cursors[border.Position];
-                ResizeWindow(border.Position);
-            }
+            var border = _borders.Single(b => b.Element.Equals(sender));
+            _window.Cursor = _cursors[border.Position];
+            ResizeWindow(border.Position);
         }
 
         /// <summary>
@@ -133,11 +130,9 @@ namespace MSOE.MediaComplete.CustomWindow
         /// <param name="e"></param>
         private void DisplayResizeCursor(object sender, MouseEventArgs e)
         {
-            if (_window.WindowState == WindowState.Normal)
-            {
-                var border = _borders.Single(b => b.Element.Equals(sender));
-                _window.Cursor = _cursors[border.Position];
-            }
+            var border = _borders.Single(b => b.Element.Equals(sender));
+            _window.Cursor = _cursors[border.Position];
+            
         }
     }
 }

@@ -78,7 +78,7 @@ namespace MSOE.MediaComplete.CustomWindow
                 }
             }
 
-            var titleBarPanel = GetTemplateChild("PART_TitleBar") as DockPanel;
+            var titleBarPanel = GetTemplateChild("PART_TitleBar") as Border;
             if (titleBarPanel != null)
             {
                 titleBarPanel.MouseDown += TitleBar_MouseDown;
