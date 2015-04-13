@@ -560,7 +560,7 @@
                 <Track.Thumb>
                     <Thumb
                         Style="{StaticResource ScrollBarThumb}"
-                        Background="{DynamicResource DefaultBackgroundBrush}" />
+                        Background="{DynamicResource ScrollBarThumbBrush}" />
                 </Track.Thumb>
                 <Track.IncreaseRepeatButton>
                     <RepeatButton
@@ -587,7 +587,7 @@
                 <Track.Thumb>
                     <Thumb
                         Style="{StaticResource ScrollBarThumb}"
-                        Background="{DynamicResource DefaultBackgroundBrush}"/>
+                        Background="{DynamicResource ScrollBarThumbBrush}"/>
                 </Track.Thumb>
                 <Track.IncreaseRepeatButton>
                     <RepeatButton
@@ -605,11 +605,11 @@
         <Style.Triggers>
             <Trigger Property="Orientation" Value="Horizontal">
                 <Setter Property="Width" Value="Auto" />
-                <Setter Property="Height" Value="18" />
+                <Setter Property="Height" Value="14" />
                 <Setter Property="Template" Value="{StaticResource HorizontalScrollBar}" />
             </Trigger>
             <Trigger Property="Orientation" Value="Vertical">
-                <Setter Property="Width" Value="18" />
+                <Setter Property="Width" Value="14" />
                 <Setter Property="Height" Value="Auto" />
                 <Setter Property="Template" Value="{StaticResource VerticalScrollBar}" />
             </Trigger>

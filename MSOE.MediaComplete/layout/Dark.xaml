@@ -139,6 +139,7 @@
     <Brush x:Key="BackgroundBrush">#FF3E3E42</Brush>
     <Brush x:Key="MenuBackgroundBrush">#FF2D2D30</Brush>
     <Brush x:Key="ScrollBarBackgroundBrush">#FF707070</Brush>
+    <Brush x:Key="ScrollBarThumbBrush">#FFCCCCCC</Brush>
     <Brush x:Key="TextBoxBackgroundDisabledBrush">Transparent</Brush>
     <Brush x:Key="TextBoxForegroundDisabledBrush">#FFF0EFF1</Brush>
     <Brush x:Key="TextBoxBorderDisabledBrush">Transparent</Brush>
