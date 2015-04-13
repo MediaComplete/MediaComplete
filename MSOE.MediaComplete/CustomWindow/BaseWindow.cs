@@ -3,18 +3,14 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using SysInterop = System.Windows.Interop;
 using System.Windows.Shapes;
 
 namespace MSOE.MediaComplete.CustomWindow
 {
     public class BaseWindow : Window
     {
-        public BaseWindow()
-        {
-            Style = (Style)TryFindResource(typeof (BaseWindow));
-        }
-
-        #region Properties
+        #region Properties and Fields
 
         public static readonly DependencyProperty AllowResizeProperty =
             DependencyProperty.Register("AllowResize", typeof(bool), typeof(BaseWindow),
@@ -46,10 +42,18 @@ namespace MSOE.MediaComplete.CustomWindow
             set { SetValue(AllowMaximizeProperty, value); }
         }
 
+        private Button _maxButton;
+        private Point? _mousePosition; // Tracks starting mouse position in a drag
+
         #endregion
 
-        private Button _maxButton;
-        private System.Windows.Point? _mousePosition; // Tracks starting mouse position in a drag
+        #region Init
+
+        public BaseWindow()
+        {
+            Style = (Style)TryFindResource(typeof(BaseWindow));
+            SourceInitialized += SetupInteropHooks;
+        }
 
         public override void OnApplyTemplate()
         {
@@ -107,6 +111,15 @@ namespace MSOE.MediaComplete.CustomWindow
             base.OnApplyTemplate();
         }
 
+        private void SetupInteropHooks(object sender, EventArgs e)
+        {
+            IntPtr handle = (new SysInterop.WindowInteropHelper(this)).Handle;
+            var hwndSource = SysInterop.HwndSource.FromHwnd(handle);
+            if (hwndSource != null) hwndSource.AddHook(MaximizedSizeFixWindowProc);
+        }
+
+        #endregion
+
         #region Event Handlers
 
         /// <summary>
@@ -148,8 +161,8 @@ namespace MSOE.MediaComplete.CustomWindow
 
                 AdjustWindowSize();
 
-                Point lMousePosition;
-                GetCursorPos(out lMousePosition);
+                NativeMethods.POINT lMousePosition;
+                NativeMethods.GetCursorPos(out lMousePosition);
 
                 Left = lMousePosition.X - targetHorizontal;
                 Top = 0;
@@ -180,7 +193,13 @@ namespace MSOE.MediaComplete.CustomWindow
         private void MinimizeButton_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
+            if (Owner != null)
+                Owner.WindowState = WindowState.Minimized;
         }
+
+        #endregion
+
+        #region Helpers
 
         /// <summary>
         /// Adjusts the WindowSize to correct parameters when Maximize button is clicked
@@ -192,16 +211,12 @@ namespace MSOE.MediaComplete.CustomWindow
                 _maxButton.Style = (Style)TryFindResource(WindowState == WindowState.Maximized ? "RestoreDownButtonStyle" : "FullscreenButtonStyle");
         }
 
-        #endregion
-
-        #region Helpers
-
         /// <summary>
         /// Helper method - returns true if a click-drag is occuring, based on the updated point
         /// </summary>
         /// <param name="newPosition">The location of the new event</param>
         /// <returns>True if we are click-dragging</returns>
-        private bool IsDragging(System.Windows.Point newPosition)
+        private bool IsDragging(Point newPosition)
         {
             return Mouse.LeftButton == MouseButtonState.Pressed &&  _mousePosition.HasValue &&
                    (Math.Abs(newPosition.X - _mousePosition.Value.X) >= SystemParameters.MinimumHorizontalDragDistance ||
@@ -217,8 +232,8 @@ namespace MSOE.MediaComplete.CustomWindow
 
             if (AllowMaximize && WindowState == WindowState.Normal)
             {
-                Point newPosition;
-                GetCursorPos(out newPosition);
+                NativeMethods.POINT newPosition;
+                NativeMethods.GetCursorPos(out newPosition);
                 var closeToTop = Math.Abs(SystemParameters.WorkArea.Top - newPosition.Y) < SystemParameters.MinimumVerticalDragDistance;
 
                 if (closeToTop)
@@ -231,23 +246,91 @@ namespace MSOE.MediaComplete.CustomWindow
 
         #endregion
 
-        #region Interop mouse position
+        #region Interop maximize without covering the taskbar
 
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool GetCursorPos(out Point lpPoint);
+        // Following code is adapted from http://blog.onedevjob.com/2010/10/19/fixing-full-screen-wpf-windows/
 
-        [StructLayout(LayoutKind.Sequential)]
-        public struct Point
+        /// <summary>
+        /// Window procedure callback.
+        /// Hooked to a WPF maximized window works around a WPF bug:
+        /// https://connect.microsoft.com/VisualStudio/feedback/details/363288/maximised-wpf-window-not-covering-full-screen?wa=wsignin1.0#tabs
+        /// possibly also:
+        /// https://connect.microsoft.com/VisualStudio/feedback/details/540394/maximized-window-does-not-cover-working-area-after-screen-setup-change?wa=wsignin1.0
+        /// </summary>
+        /// <param name="hwnd">The window handle.</param>
+        /// <param name="msg">The window message.</param>
+        /// <param name="wParam">The wParam (word parameter).</param>
+        /// <param name="lParam">The lParam (long parameter).</param>
+        /// <param name="handled">
+        /// if set to <c>true</c> - the message is handled
+        /// and should not be processed by other callbacks.
+        /// </param>
+        /// <returns></returns>
+        internal IntPtr MaximizedSizeFixWindowProc(
+            IntPtr hwnd,
+            int msg,
+            IntPtr wParam,
+            IntPtr lParam,
+            ref bool handled)
         {
-            public readonly int X;
-            public readonly int Y;
-
-            public Point(int x, int y)
+            switch (msg)
             {
-                X = x;
-                Y = y;
+                case NativeMethods.WM_GETMINMAXINFO:
+                    // Handle the message and mark it as handled,
+                    // so other callbacks do not touch it
+                    WmGetMinMaxInfo(hwnd, lParam);
+                    handled = true;
+                    break;
             }
+            return (IntPtr)0;
+        }
+
+        /// <summary>
+        /// Creates and populates the MINMAXINFO structure for a maximized window.
+        /// Puts the structure into memory address given by lParam.
+        /// Only used to process a WM_GETMINMAXINFO message.
+        /// </summary>
+        /// <param name="hwnd">The window handle.</param>
+        /// <param name="lParam">The lParam.</param>
+        internal void WmGetMinMaxInfo(IntPtr hwnd, IntPtr lParam)
+        {
+            // Get the MINMAXINFO structure from memory location given by lParam
+            NativeMethods.MINMAXINFO mmi =
+                (NativeMethods.MINMAXINFO)Marshal.PtrToStructure(lParam, typeof(NativeMethods.MINMAXINFO));
+
+            // Get the monitor that overlaps the window or the nearest
+            IntPtr monitor = NativeMethods.MonitorFromWindow(hwnd, NativeMethods.MONITOR_DEFAULTTONEAREST);
+            if (monitor != IntPtr.Zero)
+            {
+                // Get monitor information
+                NativeMethods.MONITORINFO monitorInfo = new NativeMethods.MONITORINFO
+                {
+                    Size = Marshal.SizeOf(typeof(NativeMethods.MONITORINFO))
+                };
+                NativeMethods.GetMonitorInfo(monitor, ref monitorInfo);
+
+                // Get window information
+                NativeMethods.WINDOWINFO windowInfo = new NativeMethods.WINDOWINFO
+                {
+                    Size = (UInt32)(Marshal.SizeOf(typeof(NativeMethods.WINDOWINFO)))
+                };
+                NativeMethods.GetWindowInfo(hwnd, ref windowInfo);
+
+                // Set the dimensions of the window in maximized state
+                NativeMethods.RECT rcWorkArea = monitorInfo.WorkArea;
+                NativeMethods.RECT rcMonitorArea = monitorInfo.Monitor;
+                mmi.MaxPosition.X = Math.Abs(rcWorkArea.Left - rcMonitorArea.Left);
+                mmi.MaxPosition.Y = Math.Abs(rcWorkArea.Top - rcMonitorArea.Top);
+                mmi.MaxSize.X = Math.Abs(rcWorkArea.Right - rcWorkArea.Left);
+                mmi.MaxSize.Y = Math.Abs(rcWorkArea.Bottom - rcWorkArea.Top);
+
+                mmi.MinTrackSize.X = (int)MinWidth;
+                mmi.MinTrackSize.Y = (int)MinHeight;
+            }
+
+            // Copy the structure to memory location specified by lParam.
+            // This concludes processing of WM_GETMINMAXINFO.
+            Marshal.StructureToPtr(mmi, lParam, true);
         }
 
         #endregion

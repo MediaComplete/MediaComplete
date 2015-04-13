@@ -39,9 +39,11 @@
                                                    VerticalAlignment="Center" Margin="5,0,0,0" Text="{TemplateBinding Title}"/>
                                 </DockPanel>
                             </Border>
-                            <AdornerDecorator>
-                                <ContentPresenter/>
-                            </AdornerDecorator>
+                            <Border Background="Transparent" Padding="4,0,4,0">
+                                <AdornerDecorator>
+                                    <ContentPresenter/>
+                                </AdornerDecorator>
+                            </Border>
                         </DockPanel>
                         <Rectangle Name="PART_TopLeftBorderHandle" Grid.Row="0" Grid.Column="0" Fill="{DynamicResource WindowBorderBrush}" 
                                        Visibility="{TemplateBinding WindowState, Converter={StaticResource HideWhenMaximized}}"/>
