@@ -509,7 +509,7 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-
+    
     <!-- SCROLL BAR STYLING -->
     <!-- This guys fits between the thumb and the ends. It allows skipping up/down by clicking on the open space.-->
     <Style x:Key="ScrollBarPageButton" TargetType="{x:Type RepeatButton}">

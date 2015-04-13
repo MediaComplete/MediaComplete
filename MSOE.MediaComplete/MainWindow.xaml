@@ -123,7 +123,7 @@
               Style="{DynamicResource SplitterStyle}"/>
             <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Auto"
                           Visibility="{Binding IsSelected, ElementName=LibraryTab, Converter={StaticResource BoolToVis}}">
-                <ListView x:Name="SongList" BorderThickness="1,0,1,0" Background="Transparent"
+                <ListView x:Name="SongList" BorderThickness="1,0,1,0" Style="{StaticResource ExternalScrollView}"
                           MouseUp="SongList_OnMouseUp" MouseDoubleClick="SongTree_OnMouseDoubleClick" SelectionMode="Extended">
                     <ListView.ItemTemplate>
                         <HierarchicalDataTemplate ItemsSource="{Binding}"  DataType="{x:Type customControls:LibrarySongItem}">
@@ -181,7 +181,7 @@
                              Visibility="{Binding IsSelected, ElementName=NowPlayingItem, Converter={StaticResource NotBoolToVis}}"/>
                 </DockPanel>
                 <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
-                    <ListView x:Name="PlaylistSongs" BorderThickness="1,0,1,0"
+                    <ListView x:Name="PlaylistSongs" BorderThickness="1,0,1,0" Style="{StaticResource ExternalScrollView}"
                               MouseUp="PlaylistSongs_OnMouseUp" MouseDoubleClick="PlaylistSongs_OnMouseDoubleClick" SelectionMode="Single" >
                         <ListView.ItemTemplate>
                             <HierarchicalDataTemplate ItemsSource="{Binding}"  DataType="{x:Type customControls:PlaylistSongItem}" >
