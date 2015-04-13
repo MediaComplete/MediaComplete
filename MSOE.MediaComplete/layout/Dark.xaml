@@ -158,7 +158,6 @@
     
     <Brush x:Key="RepeatButtonBrush">Black</Brush>
     <Brush x:Key="RepeatButton1BorderBrush">Green</Brush>
-    <Brush x:Key="RepeatButton1BackgroundBrush">YellowGreen</Brush>
 
     <Brush x:Key="SliderThumbBrush">#FF686868</Brush>
 </ResourceDictionary>
