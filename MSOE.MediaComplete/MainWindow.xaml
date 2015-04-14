@@ -53,7 +53,7 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition x:Name="MetadataColumn" Width="260*" MinWidth="225" />
             </Grid.ColumnDefinitions>
-            <TabControl Name="LeftFrameTabControl" DockPanel.Dock="Top" Grid.Column="0" BorderThickness="0" Margin="0,0,0,-4" 
+            <TabControl Name="LeftFrameTabControl" DockPanel.Dock="Top" Grid.Column="0" BorderThickness="0" Margin="0,0,0,-2"
                         SelectionChanged="LeftFrame_SelectionChanged">
                 <TabItem Header="Library" x:Name="LibraryTab">
                     <controls:TreeViewEx x:Name="FolderTree"
@@ -113,50 +113,53 @@
               ShowsPreview="true"
               Width="3"
               Style="{DynamicResource SplitterStyle}"/>
-            <ListView x:Name="SongList" Grid.Column="2" BorderThickness="1,0,1,0"
-                      MouseUp="SongList_OnMouseUp" MouseDoubleClick="SongTree_OnMouseDoubleClick" SelectionMode="Extended">
-                <ListView.ItemTemplate>
-                    <HierarchicalDataTemplate ItemsSource="{Binding}"  DataType="{x:Type customControls:LibrarySongItem}">
-                        <TextBlock Text="{Binding}"/>
-                    </HierarchicalDataTemplate>
-                </ListView.ItemTemplate>
-                <ListView.ContextMenu>
-                    <ContextMenu StaysOpen="True">
-                        <MenuItem Header="{StaticResource ContextMenu-PlayMusic-Header}"
-							Click="ContextMenu_PlaySongMusic_Click" />
-                        <MenuItem Header="{StaticResource ContextMenu-PlaySingle-Header}"
-							Click="ContextMenu_PlaySelectedSongs_Click" />
-                        <MenuItem Header="{StaticResource ContextMenu-PlayNext-Header}"
-							Click="ContextMenu_PlaySongNext_Click" />
-                        <MenuItem Header="{StaticResource ContextMenu-AddTo-Header}">
-                            <MenuItem.ItemsSource>
-                                <CompositeCollection>
-                                    <MenuItem Header="{StaticResource ContextMenu-NowPlayingMusic-Header}"
-							            Click="ContextMenu_AddSongToNowPlaying_Click" />
-                                    <MenuItem Header="{StaticResource ContextMenu-NewPlaylist-Header}"
-                                        Click="ContextMenu_AddSongsToNewPlaylist_Click"/>
-                                    <Separator Visibility="{Binding Playlists.Count, Converter={StaticResource IfZeroCollapsed}}"/>
-                                    <CollectionContainer Collection="{Binding Source={StaticResource PlaylistsCollection}}"/>
-                                </CompositeCollection>
-                            </MenuItem.ItemsSource>
-                            <MenuItem.ItemContainerStyle>
-                                <Style TargetType="MenuItem">
-                                    <Setter Property="Header" Value="{Binding}"/>
-                                    <EventSetter Event="Click" Handler="ContextMenu_AddSongsToPlaylist_Click"/>
-                                </Style>
-                            </MenuItem.ItemContainerStyle>
-                        </MenuItem>
-                        <MenuItem Header="{StaticResource ContextMenu-AutoIdMusic-Header}"
-							Click="ContextMenu_AutoIDMusic_ClickAsync" />
-                    </ContextMenu>
-                </ListView.ContextMenu>
-            </ListView>
-            <Grid Grid.Column="2" >
+            <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Auto"
+                          Visibility="{Binding IsSelected, ElementName=LibraryTab, Converter={StaticResource BoolToVis}}">
+                <ListView x:Name="SongList" BorderThickness="1,0,1,0" Style="{StaticResource ExternalScrollView}"
+                          MouseUp="SongList_OnMouseUp" MouseDoubleClick="SongTree_OnMouseDoubleClick" SelectionMode="Extended">
+                    <ListView.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding}"  DataType="{x:Type customControls:LibrarySongItem}">
+                            <TextBlock Text="{Binding}"/>
+                        </HierarchicalDataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.ContextMenu>
+                        <ContextMenu StaysOpen="True">
+                            <MenuItem Header="{StaticResource ContextMenu-PlayMusic-Header}"
+							    Click="ContextMenu_PlaySongMusic_Click" />
+                            <MenuItem Header="{StaticResource ContextMenu-PlaySingle-Header}"
+							    Click="ContextMenu_PlaySelectedSongs_Click" />
+                            <MenuItem Header="{StaticResource ContextMenu-PlayNext-Header}"
+							    Click="ContextMenu_PlaySongNext_Click" />
+                            <MenuItem Header="{StaticResource ContextMenu-AddTo-Header}">
+                                <MenuItem.ItemsSource>
+                                    <CompositeCollection>
+                                        <MenuItem Header="{StaticResource ContextMenu-NowPlayingMusic-Header}"
+							                Click="ContextMenu_AddSongToNowPlaying_Click" />
+                                        <MenuItem Header="{StaticResource ContextMenu-NewPlaylist-Header}"
+                                            Click="ContextMenu_AddSongsToNewPlaylist_Click"/>
+                                        <Separator Visibility="{Binding Playlists.Count, Converter={StaticResource IfZeroCollapsed}}"/>
+                                        <CollectionContainer Collection="{Binding Source={StaticResource PlaylistsCollection}}"/>
+                                    </CompositeCollection>
+                                </MenuItem.ItemsSource>
+                                <MenuItem.ItemContainerStyle>
+                                    <Style TargetType="MenuItem">
+                                        <Setter Property="Header" Value="{Binding}"/>
+                                        <EventSetter Event="Click" Handler="ContextMenu_AddSongsToPlaylist_Click"/>
+                                    </Style>
+                                </MenuItem.ItemContainerStyle>
+                            </MenuItem>
+                            <MenuItem Header="{StaticResource ContextMenu-AutoIdMusic-Header}"
+							    Click="ContextMenu_AutoIDMusic_ClickAsync" />
+                        </ContextMenu>
+                    </ListView.ContextMenu>
+                </ListView>
+            </ScrollViewer>
+            <Grid Grid.Column="2" Visibility="{Binding IsSelected, ElementName=PlaylistTab, Converter={StaticResource BoolToVis}}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="26" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <DockPanel Grid.Row="0" LastChildFill="True" Visibility="{Binding IsSelected, ElementName=PlaylistTab, Converter={StaticResource BoolToVis}}">
+                <DockPanel Grid.Row="0" LastChildFill="True">
                     <Label Margin="-4" FontSize="15" FontWeight="ExtraBlack" Content="{Binding ElementName=PlaylistTree, Path=SelectedItem.Header}" 
                            Visibility="{Binding IsSelected, ElementName=NowPlayingItem, Converter={StaticResource BoolToVis}}"/>
                     <Button Click="SaveAsPlaylist_OnClick" ToolTip="{StaticResource SaveNowPlaying-Tooltip}"
@@ -169,14 +172,16 @@
                              Text="{Binding ElementName=PlaylistTree, Path=SelectedItem.Title}" Style="{StaticResource PlaylistNameTextbox}"
                              Visibility="{Binding IsSelected, ElementName=NowPlayingItem, Converter={StaticResource NotBoolToVis}}"/>
                 </DockPanel>
-                <ListView x:Name="PlaylistSongs" Grid.Row="1" BorderThickness="1,0,1,0"
-                          MouseUp="PlaylistSongs_OnMouseUp" MouseDoubleClick="PlaylistSongs_OnMouseDoubleClick" SelectionMode="Single" >
-                    <ListView.ItemTemplate>
-                        <HierarchicalDataTemplate ItemsSource="{Binding}"  DataType="{x:Type customControls:PlaylistSongItem}" >
-                            <TextBlock Text="{Binding}"/>
-                        </HierarchicalDataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
+                    <ListView x:Name="PlaylistSongs" BorderThickness="1,0,1,0" Style="{StaticResource ExternalScrollView}"
+                              MouseUp="PlaylistSongs_OnMouseUp" MouseDoubleClick="PlaylistSongs_OnMouseDoubleClick" SelectionMode="Single" >
+                        <ListView.ItemTemplate>
+                            <HierarchicalDataTemplate ItemsSource="{Binding}"  DataType="{x:Type customControls:PlaylistSongItem}" >
+                                <TextBlock Text="{Binding}"/>
+                            </HierarchicalDataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </ScrollViewer>
             </Grid>
             <GridSplitter Grid.Column="3" 
               HorizontalAlignment="Center" 

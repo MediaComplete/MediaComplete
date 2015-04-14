@@ -16,9 +16,19 @@
     </Style>
 
     <Style TargetType="{x:Type ListView}">
-        <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
+        <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+    </Style>
+    
+    <Style TargetType="{x:Type ListView}" x:Key="ExternalScrollView" BasedOn="{StaticResource {x:Type ListView}}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <ItemsPresenter></ItemsPresenter>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <Style TargetType="{x:Type customControls:PlaylistSongItem}">
