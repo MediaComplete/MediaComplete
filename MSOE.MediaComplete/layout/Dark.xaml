@@ -58,8 +58,6 @@
 
     <SolidColorBrush x:Key="DisabledBackgroundBrush" Color="#EEE" />
 
-    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#FFF" />
-
     <SolidColorBrush x:Key="SelectedBackgroundBrush" Color="#DDD" />
 
     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="LightGray"/>
@@ -153,6 +151,8 @@
         <GradientStop Color="#FF3E3E42" Offset="0"/>
         <GradientStop Color="#FF707070" Offset="1"/>
     </RadialGradientBrush>
+
+    <Brush x:Key="WindowBorderBrush">#FF4B4B4B</Brush>
 
     <Brush x:Key="StatusBarBackgroundBrush">#FF686868</Brush>
 

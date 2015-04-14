@@ -42,6 +42,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// </summary>
         /// <param name="fileInfo"></param>
         /// <param name="handler"></param>
+        /// <param name="currentVolume"></param>
         public void Setup(FileInfo fileInfo, EventHandler<StoppedEventArgs> handler, double currentVolume)
         {
             _waveOut = new WaveOut();
@@ -98,15 +99,13 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// </summary>
         /// <param name="timeToSeekTo"></param>
         /// <returns></returns>
-        public PlaybackState Seek(TimeSpan timeToSeekTo)
+        public void Seek(TimeSpan timeToSeekTo)
         {
-            if (_waveOut == null || _waveStream == null) return PlaybackState.Stopped;
+            if (_waveOut == null || _waveStream == null) return;
             if (_waveStream.CanSeek)
             {
                 _waveStream.CurrentTime = timeToSeekTo;
             }
-
-            return _waveOut.PlaybackState;
         }
 
         /// <summary>

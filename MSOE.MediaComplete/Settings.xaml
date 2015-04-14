@@ -1,16 +1,17 @@
-﻿<Window x:Class="MSOE.MediaComplete.Settings"
+﻿<customWindow:BaseWindow x:Class="MSOE.MediaComplete.Settings"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:customWindow="clr-namespace:MSOE.MediaComplete.CustomWindow"
         Title="Settings" Height="372" Width="482" Icon="Resources/logo_small.ico"
-        ResizeMode="NoResize">
-    <Window.Resources>
+        AllowResize="False" AllowMaximize="False">
+    <customWindow:BaseWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="MainWindowResources.xaml" />
                 <ResourceDictionary Source="layout/Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </Window.Resources>
+    </customWindow:BaseWindow.Resources>
     <DockPanel Background="{DynamicResource PanelBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <StackPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" Orientation="Horizontal"
                     VerticalAlignment="Bottom">
@@ -152,4 +153,4 @@
             </TabItem>
         </TabControl>
     </DockPanel>
-</Window>
+</customWindow:BaseWindow>
