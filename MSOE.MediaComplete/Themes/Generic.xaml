@@ -27,7 +27,7 @@
                             <ColumnDefinition Width="4" />
                         </Grid.ColumnDefinitions>
                         <DockPanel Grid.RowSpan="2" Grid.ColumnSpan="3">
-                            <Border Name="PART_TitleBar" Background="Transparent" Padding="4,4,4,0" DockPanel.Dock="Top">
+                            <Border Name="PART_TitleBar" Background="Transparent" Padding="4,4,4,0" DockPanel.Dock="Top" Height="30">
                                 <DockPanel Background="Transparent">
                                     <Button Name="PART_ExitButton" DockPanel.Dock="Right" Style="{DynamicResource ExitButtonStyle}"/>
                                     <Button Name="PART_MaxButton" DockPanel.Dock="Right" Style="{DynamicResource FullscreenButtonStyle}"
