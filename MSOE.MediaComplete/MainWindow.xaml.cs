@@ -118,7 +118,7 @@ namespace MSOE.MediaComplete
             }
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        private void ToolbarSettings_Click(object sender, RoutedEventArgs e)
         {
             var settings = new Settings { Owner = this };
             settings.ShowDialog();
