@@ -174,4 +174,6 @@
     <Brush x:Key="RepeatButton1BackgroundBrush">#FFCD6AA5</Brush>
 
     <Brush x:Key="SliderThumbBrush">#FFEC48B9</Brush>
+
+    <Brush x:Key="TransparentHighlightBrush">#558F1454</Brush>
 </ResourceDictionary>

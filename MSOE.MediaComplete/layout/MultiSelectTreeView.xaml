@@ -48,8 +48,8 @@
                                 <ItemsPresenter Name="content"/>
                                 <Canvas>
                                     <Border Name="selectionBorder"
-										BorderBrush="{Binding BorderBrushSelectionRectangle, RelativeSource={RelativeSource AncestorType=controls:MultiSelectTreeView}}"
-										Background="{Binding BackgroundSelectionRectangle, RelativeSource={RelativeSource AncestorType=controls:MultiSelectTreeView}}"
+										BorderBrush="{DynamicResource TransparentHighlightBrush}"
+										Background="{DynamicResource TransparentHighlightBrush}"
 										BorderThickness="1"
 										VerticalAlignment="Top" HorizontalAlignment="Left"
 										Visibility="Collapsed"/>

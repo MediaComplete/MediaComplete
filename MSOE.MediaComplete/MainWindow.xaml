@@ -115,7 +115,7 @@
             <GridSplitter Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Stretch" ShowsPreview="true"
                           Width="3" Style="{DynamicResource SplitterStyle}"
                           Visibility="{Binding ElementName=HideMetadata, Path=IsChecked, Converter={StaticResource NotBoolToVis}}" />
-            <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Auto"
+            <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
                           Grid.ColumnSpan="{Binding ElementName=HideMetadata, Path=IsChecked, Converter={StaticResource ExpandWhenChecked}}"
                           Visibility="{Binding IsSelected, ElementName=LibraryTab, Converter={StaticResource BoolToVis}}">
                 <ListView BorderThickness="1,0,0,0" SelectionMode="Extended" Style="{StaticResource ExternalScrollView}"
@@ -184,7 +184,7 @@
                              Style="{StaticResource PlaylistNameTextbox}"
                              Visibility="{Binding IsSelected, ElementName=NowPlayingItem, Converter={StaticResource NotBoolToVis}}" />
                 </DockPanel>
-                <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
+                <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <ListView Name="PlaylistSongList" BorderThickness="1,0,0,0" Style="{StaticResource ExternalScrollView}"
                               ItemsSource="{Binding PlaylistSongs.View}"
                               SelectionChanged="SongList_OnSelectionChanged"
