@@ -1,22 +1,36 @@
-﻿<Window x:Class="MSOE.MediaComplete.InboxImportDialog"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Inbox Import"
-        Height="150"
-        Width="300"
-        ResizeMode="NoResize"
-        ShowInTaskbar="False"
-        WindowStartupLocation="CenterOwner"
-        Icon="Resources/logo_small.ico">
+﻿<customWindow:BaseWindow x:Class="MSOE.MediaComplete.InboxImportDialog"
+                         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                         xmlns:customWindow="clr-namespace:MSOE.MediaComplete.CustomWindow"
+                         Title="Inbox Import" Height="150" Width="300"
+                         ShowInTaskbar="False" WindowStartupLocation="CenterOwner"
+                         AllowMaximize="False" AllowResize="False" AllowMinimize="False"
+                         Icon="Resources/logo_small.ico">
+    <customWindow:BaseWindow.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="MainWindowResources.xaml" />
+                <ResourceDictionary Source="layout/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </customWindow:BaseWindow.Resources>
     <Grid Style="{DynamicResource GridStyle}">
-        <TextBlock Margin="10"
-            Name="MessageTextBlock"
-            Text="This is the test text."
-            Style="{DynamicResource TextBlockStyle}"/>
-        <CheckBox Name="StopShowingCheckBox" Margin="10,50,0,0" Content="Don't show this message again." Style="{DynamicResource CheckBoxStyle}"/>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-            <Button Name="OkButton" Click="okButton_ClickAsync" IsDefault="True" MinWidth="65" Margin="0,0,0,10">Yes</Button>
-            <Button Name="CancelButton" Click="CancelButton_OnClick" IsCancel="True"  MinWidth="65" Margin="10,0,10,10">No</Button>
-        </StackPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
+        <TextBlock Margin="10,10,10,0"
+                   Name="MessageTextBlock"
+                   Text="An error occured while attempting to show a message.&#10;Please report this to the developers"
+                   Style="{DynamicResource TextBlockStyle}" Grid.Row="0" />
+        <CheckBox Name="StopShowingCheckBox" Style="{DynamicResource CheckBoxStyle}" Grid.Row="1" Margin="10,10,10,0"
+                      VerticalAlignment="Center" Content="{StaticResource Dialog-Polling-DoNotShowAgain}" />
+        <DockPanel Grid.Row="2" HorizontalAlignment="Right">
+            <Button Name="OkButton" Click="okButton_ClickAsync" IsDefault="True" Width="65" Margin="5,0,5,0"
+                    VerticalAlignment="Center" DockPanel.Dock="Right" Content="{StaticResource Dialog-Polling-Yes}" />
+            <Button Name="CancelButton" Click="CancelButton_OnClick" IsCancel="True" Width="65" Margin="5,0,0,0"
+                    VerticalAlignment="Center" DockPanel.Dock="Right" Content="{StaticResource Dialog-Polling-No}" />
+        </DockPanel>
     </Grid>
-</Window>
+</customWindow:BaseWindow>

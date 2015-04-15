@@ -143,6 +143,84 @@
         </Setter>
     </Style>
 
+    <!-- Exit button -->
+    <Style TargetType="Button" x:Key="ExitButtonStyle">
+        <Setter Property="Background" Value="{DynamicResource DefaultBackgroundBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid Background="{TemplateBinding Background}" Width="20" Height="20">
+                        <Polygon Points="6,6 9,10 6,14 8,14 10,11 12,14, 14,14 11,10 14,6 12,6 10,9 8,6" Fill="{DynamicResource PrimaryTextBrush}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource ButtonDefaultHoverBrush}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <!-- Minimize button -->
+    <Style TargetType="Button" x:Key="MinButtonStyle">
+        <Setter Property="Background" Value="{DynamicResource DefaultBackgroundBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid Background="{TemplateBinding Background}" Width="20" Height="20">
+                        <Polygon Points="6,13 14,13 14,15 6,15" Fill="{DynamicResource PrimaryTextBrush}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource ButtonDefaultHoverBrush}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <!-- Maximize (non-fullscreen state) button -->
+    <Style TargetType="Button" x:Key="FullscreenButtonStyle">
+        <Setter Property="Background" Value="{DynamicResource DefaultBackgroundBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid Background="{TemplateBinding Background}" Width="20" Height="20">
+                        <Polygon Points="6,9 14,9 14,6 6,6" Fill="{DynamicResource PrimaryTextBrush}" />
+                        <Polygon Points="6,9 6,15 14,15 14,7 13,7 13,14 7,14 7,7" Fill="{DynamicResource PrimaryTextBrush}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource ButtonDefaultHoverBrush}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <!-- Maximize (fullscreen state) button -->
+    <Style TargetType="Button" x:Key="RestoreDownButtonStyle">
+        <Setter Property="Background" Value="{DynamicResource DefaultBackgroundBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid Background="{TemplateBinding Background}" Width="20" Height="20">
+                        <Polygon Points="5,10 11,10 11,8 5,8" Fill="{DynamicResource PrimaryTextBrush}" />
+                        <Polygon Points="5,10 5,14 11,14 11,10 10,10 10,13 6,13 6,10" Fill="{DynamicResource PrimaryTextBrush}" />
+                        <Polygon Points="8,7 14,7 14,5 8,5" Fill="{DynamicResource PrimaryTextBrush}" />
+                        <Polygon Points="8,7 9,7 9,8 8,8" Fill="{DynamicResource PrimaryTextBrush}" />
+                        <Polygon Points="13,7 13,11 11,11 11,12 14,12 14,7" Fill="{DynamicResource PrimaryTextBrush}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource ButtonDefaultHoverBrush}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="ToggleButton">
         <Grid>
             <Grid.ColumnDefinitions>

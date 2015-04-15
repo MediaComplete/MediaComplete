@@ -27,6 +27,7 @@ namespace MSOE.MediaComplete
     public partial class MainWindow
     {
         #region Properties
+
         /// <summary>
         /// The root of the library TreeView strucutre.
         /// </summary>
@@ -119,7 +120,7 @@ namespace MSOE.MediaComplete
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void SettingsMenuItem_Click(object sender, RoutedEventArgs e)
+        private void ToolbarSettings_Click(object sender, RoutedEventArgs e)
         {
             new Settings().ShowDialog();
         }
@@ -151,7 +152,7 @@ namespace MSOE.MediaComplete
             }
             catch (InvalidImportException)
             {
-                MessageBox.Show(this,
+                MessageBox.Show(Application.Current.MainWindow,
                     String.Format(Resources["Dialog-Import-Invalid-Message"].ToString()),
                     Resources["Dialog-Common-Error-Title"].ToString(),
                     MessageBoxButton.OK, MessageBoxImage.Error);
@@ -160,7 +161,7 @@ namespace MSOE.MediaComplete
 
             if (results.FailCount > 0)
             {
-                MessageBox.Show(this, 
+                MessageBox.Show(Application.Current.MainWindow, 
                     String.Format(Resources["Dialog-Import-ItemsFailed-Message"].ToString(), results.FailCount), 
                     Resources["Dialog-Common-Warning-Title"].ToString(), 
                     MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -182,7 +183,7 @@ namespace MSOE.MediaComplete
             var results = await new Importer(SettingWrapper.MusicDir).ImportDirectoryAsync(selectedDir, SettingWrapper.ShouldRemoveOnImport);
             if (results.FailCount > 0)
             {
-                MessageBox.Show(this,
+                MessageBox.Show(Application.Current.MainWindow,
                     String.Format(Resources["Dialog-Import-ItemsFailed-Message"].ToString(), results.FailCount),
                     Resources["Dialog-Common-Warning-Title"].ToString(),
                     MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -299,14 +300,14 @@ namespace MSOE.MediaComplete
 
             if (sorter.Actions.Count == 0) // Nothing to do! Notify and return.
             {
-                MessageBox.Show(this,
+                MessageBox.Show(Application.Current.MainWindow,
                     String.Format(Resources["Dialog-SortLibrary-NoSort"].ToString(), sorter.UnsortableCount),
                     Resources["Dialog-SortLibrary-NoSortTitle"].ToString(), MessageBoxButton.OK,
                     MessageBoxImage.Information);
                 return;
             }
 
-            var result = MessageBox.Show(this,
+            var result = MessageBox.Show(Application.Current.MainWindow,
                 String.Format(Resources["Dialog-SortLibrary-Confirm"].ToString(), sorter.MoveCount, sorter.DupCount,
                     sorter.UnsortableCount),
                 Resources["Dialog-SortLibrary-Title"].ToString(), MessageBoxButton.YesNo, MessageBoxImage.Question);

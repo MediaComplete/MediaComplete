@@ -128,6 +128,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CustomWindow\BaseWindow.cs" />
+    <Compile Include="CustomWindow\BorderPosition.cs" />
+    <Compile Include="CustomWindow\NativeMethods.cs" />
+    <Compile Include="CustomWindow\WindowBorder.cs" />
+    <Compile Include="CustomWindow\WindowResizer.cs" />
     <Compile Include="Converters.cs" />
     <Compile Include="CustomControls\BackgroundYoutubePlayer.xaml.cs">
       <DependentUpon>BackgroundYoutubePlayer.xaml</DependentUpon>
@@ -200,6 +205,10 @@
     <Page Include="Settings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>

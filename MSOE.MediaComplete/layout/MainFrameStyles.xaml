@@ -238,8 +238,39 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style TargetType="{x:Type Button}" x:Key="ToolbarSettings" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Rectangle Height="22" Width="22" Style="{DynamicResource ToolbarRectangleStyle}"/>
+                        <Ellipse Width="14" Height="14" Fill="{DynamicResource ToolbarButtonPrimaryBrush}"/>
+                        <Polygon Points="12,4 12,8 13,8 16,5" Style="{DynamicResource HiddenToolbarPolygonStyle}"/>
+                        <Polygon Points="18,7 15,10 15,11 18,11" Style="{DynamicResource HiddenToolbarPolygonStyle}"/>
+                        <Polygon Points="15,13 15,14 18,17 18,13" Style="{DynamicResource HiddenToolbarPolygonStyle}"/>
+                        <Polygon Points="12,16 12,19 16,19 13,16" Style="{DynamicResource HiddenToolbarPolygonStyle}"/>
+                        <Polygon Points="10,16 9,16 6,19 10,19" Style="{DynamicResource HiddenToolbarPolygonStyle}"/>
+                        <Polygon Points="4,13 4,17 7,14 7,13" Style="{DynamicResource HiddenToolbarPolygonStyle}"/>
+                        <Polygon Points="4,6 4,11 7,11 7,10" Style="{DynamicResource HiddenToolbarPolygonStyle}"/>
+                        <Polygon Points="10,5 6,5 9,8 10,8" Style="{DynamicResource HiddenToolbarPolygonStyle}"/>
+                        <Ellipse Width="5.5" Height="5.5" Fill="{DynamicResource ToolbarButtonAccentBrush}"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
     <Style x:Key="ToolbarRectangleStyle" TargetType="{x:Type Rectangle}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid,AncestorLevel=1}, Path=IsMouseOver}" Value="True">
+                <Setter Property="Fill" Value="{DynamicResource ButtonDefaultBrush}"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid,AncestorLevel=1}, Path=IsMouseOver}" Value="False">
+                <Setter Property="Fill" Value="{DynamicResource ToolbarBackgroundBrush}"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="HiddenToolbarPolygonStyle" TargetType="{x:Type Polygon}">
         <Style.Triggers>
             <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid,AncestorLevel=1}, Path=IsMouseOver}" Value="True">
                 <Setter Property="Fill" Value="{DynamicResource ButtonDefaultBrush}"/>
