@@ -64,6 +64,7 @@
     <SolidColorBrush x:Key="SelectedBackgroundBrush" Color="#DDD" />
 
     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="LightPink"/>
+    <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#FFFFD6EE"/>
 
     <!-- Border Brushes -->
 
@@ -137,6 +138,8 @@
     <Brush x:Key="PanelBrush">#FFE3B3CF</Brush>
     <Brush x:Key="MenuBrush">#FFE3B3CF</Brush>
     <Brush x:Key="MenuBackgroundBrush">#FFDDEEFF</Brush>
+    <Brush x:Key="ScrollBarBackgroundBrush">White</Brush>
+    <Brush x:Key="ScrollBarThumbBrush">#FFEC48B9</Brush>
 
     <Brush x:Key="ToolbarButtonPrimaryBrush">#FFEC48B9</Brush>
     <Brush x:Key="ToolbarButtonAccentBrush">#FF8F1454</Brush>

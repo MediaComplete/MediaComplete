@@ -38,18 +38,23 @@
             </TabItem>
             <TabItem Header="Sorting Options" Padding="10,3,10,3">
                 <Border Padding="4">
-                    <StackPanel>
-                        <Label FontSize="16" Content="Control how your music is sorted."/>
-                        <Separator/>
-                        <StackPanel Orientation="Horizontal">
+                    <DockPanel>
+                        <Label FontSize="16" Content="Control how your music is sorted." DockPanel.Dock="Top"/>
+                        <Separator  DockPanel.Dock="Top"/>
+                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
                             <CheckBox x:Name="CheckBoxSorting" VerticalAlignment="Center" />
                             <Label Content="Sort Automatically?" FontWeight="SemiBold" />
                         </StackPanel>
-                        <StackPanel Orientation="Vertical" Margin="0,10,0,0">
-                            <StackPanel Orientation="Horizontal">
+                        <Grid Margin="0,10,0,0" DockPanel.Dock="Top">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Orientation="Horizontal" Grid.Row="0">
                                 <Label Content="Sort Order" VerticalAlignment="Center" FontWeight="ExtraBold"/>
                                 <Image Source="{StaticResource Settings-Info-Icon}" Width="16" Height="16">
-                                <Image.ToolTip>
+                                    <Image.ToolTip>
                                         <ToolTip>
                                             <StackPanel>
                                                 <TextBlock>The Sort Order defines the file structure that your library will be sorted into.</TextBlock>
@@ -58,17 +63,15 @@
                                     </Image.ToolTip>
                                 </Image>
                             </StackPanel>
-                            <ScrollViewer HorizontalScrollBarVisibility="auto" VerticalScrollBarVisibility="auto" Width="auto" Height="175">
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1" VerticalAlignment="Stretch">
                                 <StackPanel>
                                     <StackPanel  x:Name="SortConfig" Orientation="Vertical">
                                     </StackPanel>
                                 </StackPanel>
                             </ScrollViewer>
-                            <DockPanel Dock="Bottom">
-                                <Button Content="Restore Default Order" Width="150" Height="22" HorizontalAlignment="Right" Margin="8" Click="ResetDefault"></Button>
-                            </DockPanel>
-                        </StackPanel>
-                    </StackPanel>
+                            <Button Content="Restore Default Order" Width="150" Height="22" HorizontalAlignment="Right" Click="ResetDefault" Grid.Row="2"/>
+                        </Grid>
+                    </DockPanel>
                 </Border>
             </TabItem>
             <TabItem Header="Import" Padding="10,3,10,3">
