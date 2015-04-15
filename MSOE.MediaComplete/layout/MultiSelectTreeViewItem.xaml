@@ -3,7 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:System.Windows.Controls;assembly=MultiSelectTreeView">
 
-    <Style TargetType="{x:Type controls:MultiSelectTreeViewItem}">
+    <Style TargetType="{x:Type controls:MultiSelectTreeViewItem}" x:Key="MultiSelectTreeViewItemCustom">
         <Style.Triggers>
             <DataTrigger
 				Binding="{Binding (VirtualizingStackPanel.IsVirtualizing), RelativeSource={RelativeSource AncestorType={x:Type controls:MultiSelectTreeView}}, FallbackValue=True}"
@@ -74,6 +74,7 @@
             </Setter.Value>
         </Setter>
 
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
         <Setter Property="KeyboardNavigation.IsTabStop" Value="False"/>
         <Setter Property="VirtualizingStackPanel.VirtualizationMode"
 			Value="{Binding (VirtualizingStackPanel.VirtualizationMode), RelativeSource={RelativeSource AncestorType={x:Type controls:MultiSelectTreeView}}, FallbackValue=Standard}"/>
@@ -137,19 +138,6 @@
                                                         </Path>
                                                     </Border>
                                                     <ControlTemplate.Triggers>
-                                                        <!-- Make it blue when the mouse cursor is over it -->
-                                                        <Trigger Property="UIElement.IsMouseOver" Value="True">
-                                                            <Setter Property="Shape.Stroke" TargetName="ExpandPath">
-                                                                <Setter.Value>
-                                                                    <SolidColorBrush>#FF1BBBFA</SolidColorBrush>
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                            <Setter Property="Shape.Fill" TargetName="ExpandPath">
-                                                                <Setter.Value>
-                                                                    <SolidColorBrush>#00FFFFFF</SolidColorBrush>
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                        </Trigger>
                                                         <!-- Rotate and make it dark when the node is expanded -->
                                                         <Trigger Property="ToggleButton.IsChecked" Value="True">
                                                             <Setter Property="UIElement.RenderTransform" TargetName="ExpandPath">
@@ -168,25 +156,6 @@
                                                                 </Setter.Value>
                                                             </Setter>
                                                         </Trigger>
-                                                        <!-- Make it (darker) blue when expanded and the mouse cursor is over it -->
-                                                        <MultiTrigger>
-                                                            <MultiTrigger.Conditions>
-                                                                <Condition Property="UIElement.IsMouseOver" Value="True"/>
-                                                                <Condition Property="ToggleButton.IsChecked" Value="True"/>
-                                                            </MultiTrigger.Conditions>
-                                                            <MultiTrigger.Setters>
-                                                                <Setter Property="Shape.Stroke" TargetName="ExpandPath">
-                                                                    <Setter.Value>
-                                                                        <SolidColorBrush>#FF1BBBFA</SolidColorBrush>
-                                                                    </Setter.Value>
-                                                                </Setter>
-                                                                <Setter Property="Shape.Fill" TargetName="ExpandPath">
-                                                                    <Setter.Value>
-                                                                        <SolidColorBrush>#701BBBFA</SolidColorBrush>
-                                                                    </Setter.Value>
-                                                                </Setter>
-                                                            </MultiTrigger.Setters>
-                                                        </MultiTrigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
                                             </Setter.Value>
@@ -218,8 +187,6 @@
 											VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
 											SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}"/>
                                     </Border>
-                                    <!-- Additional border glare inside the item -->
-                                    <Border BorderThickness="1" BorderBrush="#80ffffff" Margin="1,1,1,0" SnapsToDevicePixels="True" CornerRadius="2" IsHitTestVisible="False"/>
                                 </Grid>
 
                                 <ContentPresenter
@@ -251,79 +218,6 @@
                         <Trigger Property="IsVisible" Value="False">
                             <Setter Property="FrameworkElement.Visibility" Value="Collapsed"/>
                         </Trigger>
-
-                        <!-- Set the border and background when the mouse is located over the item and HoverHighlighting is active -->
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="controls:MultiSelectTreeViewItem.HoverHighlighting" Value="True"/>
-                                <Condition Property="controls:MultiSelectTreeViewItem.IsMouseOver" Value="True" SourceName="ElementGrid"/>
-                            </MultiTrigger.Conditions>
-                            <Setter Property="Control.Background" Value="{StaticResource HoveredBackgroundBrush}"/>
-                            <Setter Property="Border.BorderBrush" Value="{StaticResource HoveredBorderBrush}"/>
-                        </MultiTrigger>
-
-                        <!-- Set the border and background when the item is selected -->
-                        <Trigger Property="controls:MultiSelectTreeViewItem.IsSelected" Value="True">
-                            <Setter Property="Control.Background" Value="{StaticResource SelectedBackgroundBrush}"/>
-                            <Setter Property="Border.BorderBrush" Value="{StaticResource SelectedBorderBrush}"/>
-                        </Trigger>
-
-                        <!-- Show the border when the item is focused -->
-                        <Trigger Property="controls:MultiSelectTreeViewItem.IsFocused" Value="True">
-                            <Setter Property="Border.BorderBrush" Value="{StaticResource FocusedBorderBrush}"/>
-                        </Trigger>
-
-                        <!-- Slightly darker background when the item is selected and focused -->
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="controls:MultiSelectTreeViewItem.IsFocused" Value="True"/>
-                                <Condition Property="controls:MultiSelectTreeViewItem.IsSelected" Value="True"/>
-                            </MultiTrigger.Conditions>
-                            <Setter Property="Control.Background" Value="{StaticResource SelectedHoveredBackgroundBrush}"/>
-                        </MultiTrigger>
-
-                        <!-- Make all selected items grey when the entire Window is inactive -->
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition
-									Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=IsActive, FallbackValue=False}"
-									Value="False"/>
-                                <Condition
-									Binding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsSelected}"
-									Value="True"/>
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Border.BorderBrush" Value="{StaticResource InactiveBorderBrush}"/>
-                            <Setter Property="Control.Background" Value="{StaticResource InactiveBackgroundBrush}"/>
-                        </MultiDataTrigger>
-
-                        <!-- Make all selected items grey when none of this TreeView's items is focused (i.e. the TreeView is not focused) -->
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition
-									Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type controls:MultiSelectTreeView}}, Path=IsKeyboardFocusWithin, FallbackValue=False}"
-									Value="False"/>
-                                <Condition
-									Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type controls:MultiSelectTreeView}}, Path=ContextMenu.IsOpen, FallbackValue=False}"
-									Value="False"/>
-                                <Condition
-									Binding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsSelected}"
-									Value="True"/>
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Border.BorderBrush" Value="{StaticResource InactiveBorderBrush}"/>
-                            <Setter Property="Control.Background" Value="{StaticResource InactiveBackgroundBrush}"/>
-                        </MultiDataTrigger>
-
-                        <!-- Set a slightly darker background when the mouse is located over a selected item and HoverHighlighting is active
-							(after inactive grey to override it) -->
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="controls:MultiSelectTreeViewItem.HoverHighlighting" Value="True"/>
-                                <Condition Property="controls:MultiSelectTreeViewItem.IsMouseOver" Value="True" SourceName="ElementGrid"/>
-                                <Condition Property="IsSelected" Value="True"/>
-                            </MultiTrigger.Conditions>
-                            <Setter Property="Control.Background" Value="{StaticResource SelectedHoveredBackgroundBrush}"/>
-                            <Setter Property="Border.BorderBrush" Value="{StaticResource SelectedBorderBrush}"/>
-                        </MultiTrigger>
 
                         <!-- Collapse the child items host if the node is not expanded -->
                         <Trigger Property="controls:MultiSelectTreeViewItem.IsExpanded" Value="False">
