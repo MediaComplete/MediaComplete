@@ -71,11 +71,29 @@ namespace MSOE.MediaComplete.CustomWindow
             foreach (var border in borders)
             {
                 border.Element.PreviewMouseLeftButtonDown += Resize;
-                border.Element.MouseMove += DisplayResizeCursor;
-                border.Element.MouseLeave += ResetCursor;
             }
 
+            window.MouseMove += CheckCursor;
             window.SourceInitialized += (o, e) => _hwndSource = (HwndSource)PresentationSource.FromVisual((Visual)o);
+        }
+
+        /// <summary>
+        /// If moving on the window, check to see if we should apply an arrow cursor.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CheckCursor(object sender, MouseEventArgs e)
+        {
+            if (Mouse.LeftButton == MouseButtonState.Pressed)
+            {
+                return;
+            }
+            foreach (var border in _borders.Where(border => border.Element.IsMouseOver))
+            {
+                Mouse.OverrideCursor = _cursors[border.Position];
+                return;
+            }
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -99,19 +117,6 @@ namespace MSOE.MediaComplete.CustomWindow
         }
 
         /// <summary>
-        /// Resets the cursor when the left mouse button is not pressed.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ResetCursor(object sender, MouseEventArgs e)
-        {
-            if (Mouse.LeftButton != MouseButtonState.Pressed)
-            {
-                _window.Cursor = Cursors.Arrow;
-            }
-        }
-
-        /// <summary>
         /// Resizes the window.
         /// </summary>
         /// <param name="sender"></param>
@@ -119,20 +124,8 @@ namespace MSOE.MediaComplete.CustomWindow
         private void Resize(object sender, MouseButtonEventArgs e)
         {
             var border = _borders.Single(b => b.Element.Equals(sender));
-            _window.Cursor = _cursors[border.Position];
+            Mouse.OverrideCursor = _cursors[border.Position];
             ResizeWindow(border.Position);
-        }
-
-        /// <summary>
-        /// Ensures that the correct cursor is displayed.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void DisplayResizeCursor(object sender, MouseEventArgs e)
-        {
-            var border = _borders.Single(b => b.Element.Equals(sender));
-            _window.Cursor = _cursors[border.Position];
-            
         }
     }
 }
