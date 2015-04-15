@@ -121,6 +121,9 @@
     
     <Style TargetType="{x:Type GridSplitter}" x:Key="SplitterStyle">
         <Setter Property="Background" Value="{DynamicResource BorderBrush}"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="ShowsPreview" Value="True"/>
     </Style>
     <Style TargetType="{x:Type Panel}" x:Key="PanelStyle">
         <Setter Property="Background" Value="{DynamicResource PanelBrush}"/>

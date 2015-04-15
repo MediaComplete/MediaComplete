@@ -49,9 +49,9 @@
         <Grid Grid.Row="1" Style="{DynamicResource GridStyle}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="260*" MinWidth="100" />
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="3" />
                 <ColumnDefinition Width="260*" MinWidth="200" />
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="3" />
                 <ColumnDefinition x:Name="MetadataColumn" Width="260*" MinWidth="225" />
             </Grid.ColumnDefinitions>
             <TabControl Name="LeftFrameTabControl" DockPanel.Dock="Top" Grid.Column="0"
@@ -112,8 +112,7 @@
                 </TabItem>
             </TabControl>
 
-            <GridSplitter Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Stretch" ShowsPreview="true"
-                          Width="3" Style="{DynamicResource SplitterStyle}" />
+            <GridSplitter Grid.Column="1" Style="{DynamicResource SplitterStyle}" />
             <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
                             Grid.ColumnSpan="{Binding ElementName=HideMetadata, Path=IsChecked, Converter={StaticResource ExpandWhenChecked}}"
                             Visibility="{Binding IsSelected, ElementName=LibraryTab, Converter={StaticResource BoolToVis}}">
@@ -197,12 +196,8 @@
                     </ListView>
                 </ScrollViewer>
             </Grid>
-            <GridSplitter Grid.Column="3"
-                          HorizontalAlignment="Center"
-                          VerticalAlignment="Stretch"
-                          ShowsPreview="true" Width="3"
-                          Visibility="{Binding ElementName=HideMetadata, Path=IsChecked, Converter={StaticResource NotBoolToVis}}"
-                          Style="{DynamicResource SplitterStyle}" />
+            <GridSplitter Style="{DynamicResource SplitterStyle}" Grid.Column="3"
+                          Visibility="{Binding ElementName=HideMetadata, Path=IsChecked, Converter={StaticResource NotBoolToVis}}"/>
             <DockPanel Height="Auto" x:Name="MetadataPanel" Grid.Column="4"
                            Visibility="{Binding ElementName=HideMetadata, Path=IsChecked, Converter={StaticResource NotBoolToVis}}">
                 <Grid Height="Auto" Style="{DynamicResource GridStyle}">
