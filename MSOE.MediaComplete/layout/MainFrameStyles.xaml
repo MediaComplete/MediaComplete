@@ -7,7 +7,7 @@
 
     <Style TargetType="TreeView">
         <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="0"/>
     </Style>
 
     <Style TargetType="{x:Type ListView}">
@@ -120,7 +120,7 @@
     </Style>
     
     <Style TargetType="{x:Type GridSplitter}" x:Key="SplitterStyle">
-        <Setter Property="Background" Value="Transparent"></Setter>
+        <Setter Property="Background" Value="{DynamicResource BorderBrush}"/>
     </Style>
     <Style TargetType="{x:Type Panel}" x:Key="PanelStyle">
         <Setter Property="Background" Value="{DynamicResource PanelBrush}"/>

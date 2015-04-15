@@ -15,14 +15,11 @@
                 </Setter>
             </Trigger>
         </Style.Triggers>
-        <Style.Resources>
-            <ResourceDictionary />
-        </Style.Resources>
 
         <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="False" />
         <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
-        <Setter Property="Border.BorderThickness" Value="1" />
+        <Setter Property="Border.BorderThickness" Value="0" />
         <Setter Property="Padding" Value="1" />
         <Setter Property="TextElement.Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
