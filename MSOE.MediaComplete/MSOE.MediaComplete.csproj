@@ -139,6 +139,9 @@
     </Compile>
     <Compile Include="CustomControls\ControlExtensions.cs" />
     <Compile Include="CustomControls\SongListItem.cs" />
+    <Compile Include="layout\MultiSelectTreeViewItem.xaml.cs">
+      <DependentUpon>MultiSelectTreeViewItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="layout\Styles.xaml.cs">
       <DependentUpon>Styles.xaml</DependentUpon>
     </Compile>
