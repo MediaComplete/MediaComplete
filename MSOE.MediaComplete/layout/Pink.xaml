@@ -1,6 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    
     <LinearGradientBrush x:Key="NormalBrush" StartPoint="0,0" EndPoint="0,1">
         <GradientBrush.GradientStops>
             <GradientStopCollection>
@@ -58,8 +57,6 @@
     <SolidColorBrush x:Key="DisabledForegroundBrush" Color="white" />
 
     <SolidColorBrush x:Key="DisabledBackgroundBrush" Color="#FFFFD0EC" />
-
-    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#FFF" />
 
     <SolidColorBrush x:Key="SelectedBackgroundBrush" Color="#DDD" />
 
@@ -139,6 +136,7 @@
     <Brush x:Key="MenuBrush">#FFE3B3CF</Brush>
     <Brush x:Key="MenuBackgroundBrush">#FFDDEEFF</Brush>
     <Brush x:Key="ScrollBarBackgroundBrush">White</Brush>
+    <Brush x:Key="ScrollBarThumbBrush">#FFEC48B9</Brush>
 
     <Brush x:Key="ToolbarButtonPrimaryBrush">#FFEC48B9</Brush>
     <Brush x:Key="ToolbarButtonAccentBrush">#FF8F1454</Brush>
@@ -158,10 +156,9 @@
         <GradientStop Color="#FFFFD6EE" Offset="1"/>
     </LinearGradientBrush>
 
-    <RadialGradientBrush x:Key="BorderBrush">
-        <GradientStop Color="#FF8F1454" Offset="0"/>
-        <GradientStop Color="#FFFFD0EC" Offset="1"/>
-    </RadialGradientBrush>
+    <Brush x:Key="BorderBrush">#FFE3B3CF</Brush>
+
+    <Brush x:Key="WindowBorderBrush">#FFFFEBF7</Brush>
 
     <Brush x:Key="StatusBarBackgroundBrush">#FFFFEBF7</Brush>
 
@@ -174,4 +171,6 @@
     <Brush x:Key="RepeatButton1BackgroundBrush">#FFCD6AA5</Brush>
 
     <Brush x:Key="SliderThumbBrush">#FFEC48B9</Brush>
+
+    <Brush x:Key="TransparentHighlightBrush">#558F1454</Brush>
 </ResourceDictionary>

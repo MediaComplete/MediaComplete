@@ -57,4 +57,45 @@ namespace MSOE.MediaComplete
             throw new NotImplementedException();
         }
     }
+
+    /// <summary>
+    /// When the HideDetails button is checked, the middle (song) pane should replace its space.
+    /// </summary>
+    public class ExpandWhenCheckedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var isChecked = value as bool?;
+            if (!isChecked.HasValue)
+            {
+                return 1;
+            }
+            else
+            {
+                return isChecked.Value ? 3 : 1;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Returns Visibility.Collapsed when given WindowState.Maximized. Used to hide the resizeable borders of all windows.
+    /// </summary>
+    public class HideWhenMaximizedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var state = value as WindowState?;
+            return (state.HasValue && state.Value == WindowState.Maximized) ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

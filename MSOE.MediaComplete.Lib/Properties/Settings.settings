@@ -21,7 +21,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="Layout" Type="System.String" Scope="User">
-      <Value Profile="(Default)">layout\Dark.xaml</Value>
+      <Value Profile="(Default)">..\layout\Dark.xaml</Value>
     </Setting>
     <Setting Name="ShouldRemoveOnImport" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>

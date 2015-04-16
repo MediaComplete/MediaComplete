@@ -1,5 +1,18 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    x:Class="MSOE.MediaComplete.layout.Styles">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="MultiSelectTreeView.xaml"/>
+        <ResourceDictionary Source="MultiSelectTreeViewItem.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+    
+    <Style TargetType="{x:Type ListView}">
+        <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+        <EventSetter Event="MouseUp" Handler="ListView_OnMouseUp"/>
+    </Style>
+    
     <Style TargetType="{x:Type TabItem}">
         <Setter Property="Foreground" Value="{DynamicResource TabTextBrush}" />
         <Setter Property="Template">
@@ -63,20 +76,40 @@
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
-    <Style TargetType="Button" x:Key="ShowHideDetailsButtonStyle">
-        <Setter Property="Background" Value="{DynamicResource FlatBackgroundBrush}" />
+    <Style TargetType="ToggleButton" x:Key="ShowHideDetailsButtonStyle">
+        <Setter Property="Background" Value="{DynamicResource FlatBackgroundBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type Button}">
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
                     <Border x:Name="bg" Background="{TemplateBinding Background}"
                             Padding="{TemplateBinding Padding}"
                             Margin="{TemplateBinding Margin}">
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        <Grid Width="28" Height="16">
+                            <Polygon Name="show1" Points="8,9 14,13 14,5" Fill="{DynamicResource PrimaryTextBrush}" Visibility="Collapsed"/>
+                            <Polygon Name="show2" Points="14,9 20,13 20,5" Fill="{DynamicResource PrimaryTextBrush}" Visibility="Collapsed"/>
+                            <Polygon Name="hide1" Points="14,9 8,13 8,5" Fill="{DynamicResource PrimaryTextBrush}" Visibility="Collapsed"/>
+                            <Polygon Name="hide2" Points="20,9 14,13 14,5" Fill="{DynamicResource PrimaryTextBrush}" Visibility="Collapsed"/>
+                        </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Background" Value="{DynamicResource ButtonDefaultBrush}" TargetName="bg" />
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="False"/>
+                                <Condition Property="IsChecked" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" Value="{DynamicResource ToolbarBackgroundBrush}" TargetName="bg" />
+                        </MultiTrigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="show1" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="show2" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter TargetName="hide1" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="hide2" Property="Visibility" Value="Visible"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -109,6 +142,84 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <!-- Exit button -->
+    <Style TargetType="Button" x:Key="ExitButtonStyle">
+        <Setter Property="Background" Value="{DynamicResource DefaultBackgroundBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid Background="{TemplateBinding Background}" Width="20" Height="20">
+                        <Polygon Points="6,6 9,10 6,14 8,14 10,11 12,14, 14,14 11,10 14,6 12,6 10,9 8,6" Fill="{DynamicResource PrimaryTextBrush}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource ButtonDefaultHoverBrush}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <!-- Minimize button -->
+    <Style TargetType="Button" x:Key="MinButtonStyle">
+        <Setter Property="Background" Value="{DynamicResource DefaultBackgroundBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid Background="{TemplateBinding Background}" Width="20" Height="20">
+                        <Polygon Points="6,13 14,13 14,15 6,15" Fill="{DynamicResource PrimaryTextBrush}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource ButtonDefaultHoverBrush}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <!-- Maximize (non-fullscreen state) button -->
+    <Style TargetType="Button" x:Key="FullscreenButtonStyle">
+        <Setter Property="Background" Value="{DynamicResource DefaultBackgroundBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid Background="{TemplateBinding Background}" Width="20" Height="20">
+                        <Polygon Points="6,9 14,9 14,6 6,6" Fill="{DynamicResource PrimaryTextBrush}" />
+                        <Polygon Points="6,9 6,15 14,15 14,7 13,7 13,14 7,14 7,7" Fill="{DynamicResource PrimaryTextBrush}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource ButtonDefaultHoverBrush}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <!-- Maximize (fullscreen state) button -->
+    <Style TargetType="Button" x:Key="RestoreDownButtonStyle">
+        <Setter Property="Background" Value="{DynamicResource DefaultBackgroundBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid Background="{TemplateBinding Background}" Width="20" Height="20">
+                        <Polygon Points="5,10 11,10 11,8 5,8" Fill="{DynamicResource PrimaryTextBrush}" />
+                        <Polygon Points="5,10 5,14 11,14 11,10 10,10 10,13 6,13 6,10" Fill="{DynamicResource PrimaryTextBrush}" />
+                        <Polygon Points="8,7 14,7 14,5 8,5" Fill="{DynamicResource PrimaryTextBrush}" />
+                        <Polygon Points="8,7 9,7 9,8 8,8" Fill="{DynamicResource PrimaryTextBrush}" />
+                        <Polygon Points="13,7 13,11 11,11 11,12 14,12 14,7" Fill="{DynamicResource PrimaryTextBrush}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource ButtonDefaultHoverBrush}"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="ToggleButton">
@@ -509,7 +620,7 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-
+    
     <!-- SCROLL BAR STYLING -->
     <!-- This guys fits between the thumb and the ends. It allows skipping up/down by clicking on the open space.-->
     <Style x:Key="ScrollBarPageButton" TargetType="{x:Type RepeatButton}">
@@ -560,7 +671,7 @@
                 <Track.Thumb>
                     <Thumb
                         Style="{StaticResource ScrollBarThumb}"
-                        Background="{DynamicResource DefaultBackgroundBrush}" />
+                        Background="{DynamicResource ScrollBarThumbBrush}" />
                 </Track.Thumb>
                 <Track.IncreaseRepeatButton>
                     <RepeatButton
@@ -587,7 +698,7 @@
                 <Track.Thumb>
                     <Thumb
                         Style="{StaticResource ScrollBarThumb}"
-                        Background="{DynamicResource DefaultBackgroundBrush}"/>
+                        Background="{DynamicResource ScrollBarThumbBrush}"/>
                 </Track.Thumb>
                 <Track.IncreaseRepeatButton>
                     <RepeatButton
@@ -599,17 +710,17 @@
     </ControlTemplate>
 
     <!-- Master scroll bar style -->
-    <Style x:Key="{x:Type ScrollBar}" TargetType="{x:Type ScrollBar}">
+    <Style TargetType="{x:Type ScrollBar}">
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="OverridesDefaultStyle" Value="true" />
         <Style.Triggers>
             <Trigger Property="Orientation" Value="Horizontal">
                 <Setter Property="Width" Value="Auto" />
-                <Setter Property="Height" Value="18" />
+                <Setter Property="Height" Value="14" />
                 <Setter Property="Template" Value="{StaticResource HorizontalScrollBar}" />
             </Trigger>
             <Trigger Property="Orientation" Value="Vertical">
-                <Setter Property="Width" Value="18" />
+                <Setter Property="Width" Value="14" />
                 <Setter Property="Height" Value="Auto" />
                 <Setter Property="Template" Value="{StaticResource VerticalScrollBar}" />
             </Trigger>

@@ -13,7 +13,8 @@ namespace MSOE.MediaComplete
 {
     public partial class MainWindow
     {
-        private ListView _visibleList;
+        private readonly List<TextBox> _changedBoxes = new List<TextBox>();
+
         private Dictionary<MetaAttribute, string> SetupForm()
         {
             var boxes = new TextBox[8];
@@ -46,16 +47,22 @@ namespace MSOE.MediaComplete
             };
         }
 
+        private void TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (_changedBoxes.Contains((TextBox)sender) || SongTitle.IsReadOnly) return;
+            _changedBoxes.Add((TextBox)sender);
+        }
+
         private void PopulateMetadataForm()
         {
             var initalAttributes = SetupForm();
             var finalAttributes = new Dictionary<MetaAttribute, string>();
-            foreach (AbstractSongItem item in _visibleList.SelectedItems)
+            foreach (SongListItem item in SelectedSongs())
             {
                 try
                 {
                     if (initalAttributes.Count <= 1) break;
-                    var song = File.Create(item.GetPath());
+                    var song = File.Create(item.Data.GetPath());
                     foreach (var metaAttribute in Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>()
                                                                 .Where(metaAttribute => !finalAttributes.ContainsKey(metaAttribute)))
                     {
@@ -113,7 +120,7 @@ namespace MSOE.MediaComplete
         private void Edit_OnClick(object sender, RoutedEventArgs e)
         {
 
-            if (EditCancelButton.Content.Equals(Resources["EditButton"].ToString()) && _visibleList.SelectedItems.Count > 0)
+            if (EditCancelButton.Content.Equals(Resources["EditButton"].ToString()) && SelectedSongs().Any())
             {
                 EditCancelButton.Content = Resources["CancelButton"].ToString();
                 ToggleReadOnlyFields(false);
@@ -161,11 +168,11 @@ namespace MSOE.MediaComplete
             if (SongTitle.IsReadOnly) return;
             EditCancelButton.Content = Resources["EditButton"].ToString();
             ToggleReadOnlyFields(true);
-            foreach (AbstractSongItem item in _visibleList.SelectedItems)
+            foreach (SongListItem item in SelectedSongs())
             {
                 try
                 {
-                    var song = _fileMover.CreateTaglibFile((item.GetPath()));
+                    var song = _fileMover.CreateTaglibFile((item.Data.GetPath()));
                     foreach (var changedBox in _changedBoxes)
                     {
                         if (changedBox.Equals(SongTitle))
