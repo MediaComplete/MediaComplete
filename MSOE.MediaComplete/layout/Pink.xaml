@@ -156,10 +156,7 @@
         <GradientStop Color="#FFFFD6EE" Offset="1"/>
     </LinearGradientBrush>
 
-    <RadialGradientBrush x:Key="BorderBrush">
-        <GradientStop Color="#FF8F1454" Offset="0"/>
-        <GradientStop Color="#FFFFD0EC" Offset="1"/>
-    </RadialGradientBrush>
+    <Brush x:Key="BorderBrush">#FFE3B3CF</Brush>
 
     <Brush x:Key="WindowBorderBrush">#FFFFEBF7</Brush>
 
@@ -174,4 +171,6 @@
     <Brush x:Key="RepeatButton1BackgroundBrush">#FFCD6AA5</Brush>
 
     <Brush x:Key="SliderThumbBrush">#FFEC48B9</Brush>
+
+    <Brush x:Key="TransparentHighlightBrush">#558F1454</Brush>
 </ResourceDictionary>

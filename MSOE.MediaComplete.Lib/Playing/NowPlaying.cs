@@ -123,7 +123,7 @@ namespace MSOE.MediaComplete.Lib.Playing
             return Index <= 0 ? null : _songs[--Index];
         }
 
-        public void InsertRange(int insertIndex, List<AbstractSong> songs)
+        public void InsertRange(int insertIndex, IEnumerable<AbstractSong> songs)
         {
             if(songs==null) throw new ArgumentNullException();
             if (insertIndex > _songs.Count || insertIndex < 0) throw new IndexOutOfRangeException();

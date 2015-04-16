@@ -1,0 +1,220 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:System.Windows.Controls;assembly=MultiSelectTreeView"
+	xmlns:layout="clr-namespace:MSOE.MediaComplete.layout">
+
+    <layout:ThicknessLeftConverter x:Key="ThicknessLeftConverter"/>
+
+    <Style TargetType="{x:Type controls:MultiSelectTreeViewItem}" x:Key="MultiSelectTreeViewItemCustom">
+        <Style.Triggers>
+            <DataTrigger
+				Binding="{Binding (VirtualizingStackPanel.IsVirtualizing), RelativeSource={RelativeSource AncestorType={x:Type controls:MultiSelectTreeView}}, FallbackValue=True}"
+				Value="True">
+                <Setter Property="ItemsControl.ItemsPanel">
+                    <Setter.Value>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel IsItemsHost="True"/>
+                        </ItemsPanelTemplate>
+                    </Setter.Value>
+                </Setter>
+            </DataTrigger>
+        </Style.Triggers>
+
+        <Setter Property="RemarksTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <TextBlock VerticalAlignment="Center" Margin="3,0,0,0" Text="{Binding}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding}" Value="">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ContentTemplateEdit">
+            <Setter.Value>
+                <DataTemplate>
+                    <controls:EditTextBox Text="{Binding DisplayName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0" Padding="1"/>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="KeyboardNavigation.IsTabStop" Value="False"/>
+        <Setter Property="VirtualizingStackPanel.VirtualizationMode"
+			Value="{Binding (VirtualizingStackPanel.VirtualizationMode), RelativeSource={RelativeSource AncestorType={x:Type controls:MultiSelectTreeView}}, FallbackValue=Standard}"/>
+        <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="False"/>
+        <Setter Property="Panel.Background" Value="#00FFFFFF"/>
+        <Setter Property="HorizontalContentAlignment"
+			Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl, AncestorLevel=1}, FallbackValue=Left}"/>
+        <Setter Property="VerticalContentAlignment"
+			Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl, AncestorLevel=1}, FallbackValue=Center}"/>
+        <Setter Property="Padding" Value="1"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Margin" Value="0"/>
+        <!-- Clear the default focus rectangle which would span the entire item in full width and with all visible children -->
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+
+        <!-- Pass on the MultiSelectTreeView' HoverHighlighting value to each item because we couldn't access it otherwise in the triggers -->
+        <Setter Property="HoverHighlighting"
+			Value="{Binding (controls:MultiSelectTreeView.HoverHighlighting), RelativeSource={RelativeSource AncestorType={x:Type controls:MultiSelectTreeView}}, Mode=OneWay, FallbackValue=False}"/>
+        <Setter Property="ItemIndent"
+			Value="{Binding (controls:MultiSelectTreeView.ItemIndent), RelativeSource={RelativeSource AncestorType={x:Type controls:MultiSelectTreeView}}, Mode=OneWay, FallbackValue=13}"/>
+        <Setter Property="IsKeyboardMode"
+			Value="{Binding (controls:MultiSelectTreeView.IsKeyboardMode), RelativeSource={RelativeSource AncestorType={x:Type controls:MultiSelectTreeView}}, Mode=OneWay, FallbackValue=False}"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:MultiSelectTreeViewItem}">
+                    <!-- region ControlTemplate content -->
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <!-- Set the second column width to * to have the items border expand to the right edge -->
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- region Expander button -->
+                            <ToggleButton
+								IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type controls:MultiSelectTreeViewItem}}, Path=IsExpanded, FallbackValue=False}"
+								ClickMode="Press" Name="Expander">
+                                <ToggleButton.Style>
+                                    <Style TargetType="{x:Type ToggleButton}">
+                                        <Style.Resources>
+                                            <ResourceDictionary/>
+                                        </Style.Resources>
+                                        <Setter Property="Focusable" Value="False"/>
+                                        <Setter Property="Width" Value="12"/>
+                                        <Setter Property="Height" Value="16"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                                    <!-- Default expander arrow graphic -->
+                                                    <Border Padding="3,5" Background="#00FFFFFF" Width="12" Height="16">
+                                                        <Path Fill="#00FFFFFF" Stroke="{DynamicResource PrimaryTextBrush}" Name="ExpandPath">
+                                                            <Path.Data>
+                                                                <PathGeometry Figures="M0,0 L0,6 L6,0 z"/>
+                                                            </Path.Data>
+                                                            <Path.RenderTransform>
+                                                                <RotateTransform Angle="135" CenterX="3" CenterY="3"/>
+                                                            </Path.RenderTransform>
+                                                        </Path>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <!-- Rotate and make it dark when the node is expanded -->
+                                                        <Trigger Property="ToggleButton.IsChecked" Value="True">
+                                                            <Setter Property="UIElement.RenderTransform" TargetName="ExpandPath">
+                                                                <Setter.Value>
+                                                                    <RotateTransform Angle="180" CenterX="3" CenterY="3"/>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                            <Setter Property="Shape.Fill" TargetName="ExpandPath" Value="{DynamicResource TextSelectedForegroundBrush}"/>
+                                                            <Setter Property="Shape.Stroke" TargetName="ExpandPath" Value="{DynamicResource TextSelectedForegroundBrush}"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ToggleButton.Style>
+                            </ToggleButton>
+                            <!-- endregion Expander button -->
+
+                            <!-- region Element grid -->
+                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                <Grid Name="ElementGrid">
+                                    <Border Name="headerBorder"
+										BorderThickness="{TemplateBinding Border.BorderThickness}"
+										Padding="{TemplateBinding Control.Padding}"
+										Margin="0,0,0,-1"
+										BorderBrush="{TemplateBinding Border.BorderBrush}"
+										Background="{TemplateBinding Panel.Background}"
+										SnapsToDevicePixels="True" CornerRadius="2"
+										VerticalAlignment="Center">
+                                        <ContentPresenter Name="PART_Header"
+											FocusManager.IsFocusScope="True"
+											Content="{TemplateBinding HeaderedContentControl.Header}"
+											ContentTemplate="{TemplateBinding HeaderedContentControl.HeaderTemplate}"
+											ContentStringFormat="{TemplateBinding HeaderedItemsControl.HeaderStringFormat}"
+											ContentTemplateSelector="{TemplateBinding HeaderedItemsControl.HeaderTemplateSelector}"
+											ContentSource="Header"
+											HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+											VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
+											SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}"/>
+                                    </Border>
+                                </Grid>
+
+                                <ContentPresenter
+									Content="{TemplateBinding Remarks}"
+									ContentTemplate="{TemplateBinding RemarksTemplate}"
+									SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}"/>
+                            </StackPanel>
+                            <!-- endregion Element grid -->
+                        </Grid>
+                        <Grid Name="ItemsHostGrid" Margin="{TemplateBinding ItemIndent, Converter={StaticResource ThicknessLeftConverter}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Path Data="M0,0 L0,1" Stretch="Uniform" Name="RulerPath"
+								Stroke="#60000000" StrokeDashArray="0.5 2.5"
+								SnapsToDevicePixels="True" Margin="0,0,1,0"/>
+
+                            <ItemsPresenter Grid.Column="1" Name="ItemsHost"/>
+                        </Grid>
+                    </StackPanel>
+                    <!-- endregion ControlTemplate content -->
+
+                    <ControlTemplate.Triggers>
+
+                        <!-- Set the visibility of the item -->
+                        <Trigger Property="IsVisible" Value="False">
+                            <Setter Property="FrameworkElement.Visibility" Value="Collapsed"/>
+                        </Trigger>
+
+                        <!-- Collapse the child items host if the node is not expanded -->
+                        <Trigger Property="controls:MultiSelectTreeViewItem.IsExpanded" Value="False">
+                            <Setter Property="UIElement.Visibility" TargetName="ItemsHostGrid" Value="Collapsed"/>
+                        </Trigger>
+
+                        <!-- Hide the expander button if there are no child nodes -->
+                        <Trigger Property="ItemsControl.HasItems" Value="False">
+                            <Setter Property="UIElement.Visibility" TargetName="Expander" Value="Hidden"/>
+                        </Trigger>
+
+                        <!-- Use grey text colour when the item is not enabled -->
+                        <Trigger Property="UIElement.IsEnabled" Value="False">
+                            <Setter Property="TextElement.Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                        </Trigger>
+
+                        <!-- Hide vertical rulers if disabled -->
+                        <DataTrigger
+							Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type controls:MultiSelectTreeView}}, Path=VerticalRulers, FallbackValue=False}"
+							Value="False">
+                            <Setter TargetName="RulerPath" Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+
+                        <!-- Use a different template and colours in edit mode -->
+                        <Trigger Property="controls:MultiSelectTreeViewItem.IsEditing" Value="True">
+                            <Setter Property="HeaderTemplate"
+								Value="{Binding ContentTemplateEdit, RelativeSource={RelativeSource Self}}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
