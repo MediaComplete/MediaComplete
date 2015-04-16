@@ -23,6 +23,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="24" />
             <RowDefinition Height="1*"/>
+            <RowDefinition Height="3" />
             <RowDefinition Height="105" />
             <RowDefinition Height="24" />
         </Grid.RowDefinitions>
@@ -266,8 +267,8 @@
                 </Grid>
             </DockPanel>
         </Grid>
-
-        <StackPanel Grid.Row="2" Grid.Column="0" Style="{DynamicResource PanelStyle}">
+        <GridSplitter Grid.Row="2" Style="{DynamicResource SplitterStyle}" IsEnabled="False"/>
+        <StackPanel Grid.Row="3" Grid.Column="0" Style="{DynamicResource PanelStyle}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="60"/>
@@ -369,7 +370,7 @@
                 <Label Name="VolumePercentLabel" Content="{Binding ElementName=VolumeSlider, Path=Value, Converter={StaticResource VolumeConverter}}" HorizontalAlignment="Right" Margin="0,22,101,10" VerticalAlignment="Top"/>
             </Grid>
         </StackPanel>
-        <StackPanel Grid.Row="3" Grid.Column="0" Height="22">
+        <StackPanel Grid.Row="4" Grid.Column="0" Height="22">
             <StatusBar Style="{DynamicResource StatusBarStyle}">
                 <StatusBar.ItemsPanel>
                     <ItemsPanelTemplate>
