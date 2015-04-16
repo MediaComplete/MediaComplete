@@ -122,7 +122,7 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void ToolbarSettings_Click(object sender, RoutedEventArgs e)
         {
-            new Settings().ShowDialog();
+            new Settings { Owner = this }.ShowDialog();
         }
 
         /// <summary>
