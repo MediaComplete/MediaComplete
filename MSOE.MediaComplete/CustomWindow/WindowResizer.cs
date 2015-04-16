@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -86,14 +87,22 @@ namespace MSOE.MediaComplete.CustomWindow
         {
             if (Mouse.LeftButton == MouseButtonState.Pressed)
             {
+                // We're dragging; just ignore.
                 return;
             }
+
+            // Set the override cursor to null so normal cursor rules apply.
+            Mouse.OverrideCursor = null; 
+
+            // If over a border, apply the right drag cursor
             foreach (var border in _borders.Where(border => border.Element.IsMouseOver))
             {
-                Mouse.OverrideCursor = _cursors[border.Position];
+                _window.Cursor = _cursors[border.Position];
                 return;
             }
-            Mouse.OverrideCursor = Cursors.Arrow;
+
+            // Otherwise go standard.
+            _window.Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -124,6 +133,7 @@ namespace MSOE.MediaComplete.CustomWindow
         private void Resize(object sender, MouseButtonEventArgs e)
         {
             var border = _borders.Single(b => b.Element.Equals(sender));
+            // Set the override mouse so it'll stick even if we drag off the border.
             Mouse.OverrideCursor = _cursors[border.Position];
             ResizeWindow(border.Position);
         }
