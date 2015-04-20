@@ -591,13 +591,15 @@ namespace MSOE.MediaComplete
         /// </summary>
         private void ResetTrackBar()
         {
+            StopListeningToUpdateTrackbar();
+            TrackBar.ValueChanged -= TrackBar_OnValueChanged;
             TrackBar.IsEnabled = true;
             TrackBar.Value = 0;
             TrackBar.Minimum = 0;
             TrackBar.Maximum = _player.TotalTime.TotalMilliseconds;
             TrackBar.DataContext = this;
-            _trackBarUpdateTimer.Start();
-            _trackBarUpdateTimer.Elapsed += CheckTrackBarUpdateTimer;
+            TrackBar.ValueChanged += TrackBar_OnValueChanged;
+            StartListeningToUpdateTrackbar();
         }
         #endregion
     }
