@@ -335,12 +335,19 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void PreviousButton_OnClick(object sender, RoutedEventArgs e)
         {
-            var queue = NowPlaying.Inst;
-            var old = queue.Index;
-            queue.PreviousSong();
-            var current = queue.Index;
-            UpdateColorEvent(old, current);
-            Play();
+            if (_player.CurrentTime > TimeSpan.FromSeconds(2))
+            {
+                _player.Seek(TimeSpan.FromSeconds(0));//better way to do this
+            }
+            else
+            {
+                var queue = NowPlaying.Inst;
+                var old = queue.Index;
+                queue.PreviousSong();
+                var current = queue.Index;
+                UpdateColorEvent(old, current);
+                Play();
+            }
         }
 
         /// <summary>
@@ -350,9 +357,10 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void SkipButton_OnClick(object sender, RoutedEventArgs e)
         {
-            var old = NowPlaying.Inst.Index;
-            NowPlaying.Inst.NextSong();
-            var current = NowPlaying.Inst.Index;
+            var queue = NowPlaying.Inst;
+            var old = queue.Index;
+            queue.NextSong();
+            var current = queue.Index;
             UpdateColorEvent(old, current);
             Play();
         }

@@ -110,7 +110,8 @@ namespace MSOE.MediaComplete.Lib.Playing
         public AbstractSong NextSong()
         {
             // TODO MC-38 MC-39 Looping and shuffling logic go here.
-            return Index >= _songs.Count - 1 ? null : _songs[++Index];
+            Index = ++Index % _songs.Count;
+            return _songs[Index];
         }
 
         /// <summary>
@@ -120,7 +121,9 @@ namespace MSOE.MediaComplete.Lib.Playing
         public AbstractSong PreviousSong()
         {
             // TODO MC-38 MC-39 Looping and shuffling logic go here.
-            return Index <= 0 ? null : _songs[--Index];
+            var count = _songs.Count;
+            Index = ((--Index % count) + count) % count;
+            return _songs[Index];
         }
 
         public void InsertRange(int insertIndex, IEnumerable<AbstractSong> songs)
