@@ -27,6 +27,11 @@ namespace MSOE.MediaComplete.Lib
             _timer = new Timer();
             _timer.Elapsed += OnTimerFinished;
             SettingWrapper.RaiseSettingEvent += OnSettingChanged;
+            TimeInMinutes = SettingWrapper.PollingTime;
+            if (SettingWrapper.IsPolling)
+            {
+                Start();
+            }
         }
 
         /// <summary>

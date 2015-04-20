@@ -58,11 +58,10 @@
 
     <SolidColorBrush x:Key="DisabledBackgroundBrush" Color="#EEE" />
 
-    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#FFF" />
-
     <SolidColorBrush x:Key="SelectedBackgroundBrush" Color="#DDD" />
 
     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="LightGray"/>
+    <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#FF3E3E42"/>
 
     <!-- Border Brushes -->
 
@@ -137,6 +136,8 @@
     <Brush x:Key="FlatBackgroundBrush">#FF3E3E42</Brush>
     <Brush x:Key="BackgroundBrush">#FF3E3E42</Brush>
     <Brush x:Key="MenuBackgroundBrush">#FF2D2D30</Brush>
+    <Brush x:Key="ScrollBarBackgroundBrush">#FF707070</Brush>
+    <Brush x:Key="ScrollBarThumbBrush">#FFCCCCCC</Brush>
     <Brush x:Key="TextBoxBackgroundDisabledBrush">Transparent</Brush>
     <Brush x:Key="TextBoxForegroundDisabledBrush">#FFF0EFF1</Brush>
     <Brush x:Key="TextBoxBorderDisabledBrush">Transparent</Brush>
@@ -146,10 +147,10 @@
     <Brush x:Key="CurrentSong">LightSeaGreen</Brush>
     <Brush x:Key="ToolbarButtonPrimaryBrush">#FFCCCCCC</Brush>
     <Brush x:Key="ToolbarButtonAccentBrush">#FF3E3E42</Brush>
-    <RadialGradientBrush x:Key="BorderBrush">
-        <GradientStop Color="#FF3E3E42" Offset="0"/>
-        <GradientStop Color="#FF707070" Offset="1"/>
-    </RadialGradientBrush>
+
+    <Brush x:Key="BorderBrush">#FF2D2D30</Brush>
+
+    <Brush x:Key="WindowBorderBrush">#FF4B4B4B</Brush>
 
     <Brush x:Key="StatusBarBackgroundBrush">#FF686868</Brush>
 
@@ -160,4 +161,6 @@
     <Brush x:Key="RepeatButton1BorderBrush">Green</Brush>
 
     <Brush x:Key="SliderThumbBrush">#FF686868</Brush>
+
+    <Brush x:Key="TransparentHighlightBrush">#55CCCCCC</Brush>
 </ResourceDictionary>

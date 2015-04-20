@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -11,7 +12,6 @@ using System.Windows.Threading;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Playing;
-using MSOE.MediaComplete.Lib.Songs;
 using NAudio.Wave;
 using TagLib;
 using Timer = System.Timers.Timer;
@@ -165,13 +165,12 @@ namespace MSOE.MediaComplete
                     Pause();
                     break;
                 default:
-                    var newSongs = (from LibrarySongItem song in SongList.Items
-                                    select new LocalSong(new FileInfo(song.GetPath())));
+                    var newSongs = AllSongs();
                     if (newSongs.Any())
                     {
                         NowPlaying.Inst.Clear();
-                        NowPlaying.Inst.Add(newSongs);
-                        NowPlaying.Inst.JumpTo(SongList.SelectedIndex);
+                        NowPlaying.Inst.Add(newSongs.Select(s => s.Data));
+                        NowPlaying.Inst.JumpTo(SelectedSongIndex());
                     }
                     Play();
                     break;
@@ -185,16 +184,17 @@ namespace MSOE.MediaComplete
         /// <param name="newIndex"></param>
         private void UpdateColorEvent(int oldIndex, int newIndex)
         {
-            if (SongList.Visibility.Equals(Visibility.Visible)) return;
+            var nowPlayingSongs = (ObservableCollection<SongListItem>) PlaylistSongs.Source;
+
             if (oldIndex == -1 && newIndex == -1)
             {
-                var song = (PlaylistSongItem)PlaylistSongs.Items[NowPlaying.Inst.Index];
+                var song = nowPlayingSongs[NowPlaying.Inst.Index];
                 song.IsPlaying = false;
             }
             else if (NowPlayingItem.IsSelected)
             {
-                var oldSong = ((PlaylistSongItem)PlaylistSongs.Items[oldIndex]);
-                var newSong = ((PlaylistSongItem)PlaylistSongs.Items[newIndex]);
+                var oldSong = nowPlayingSongs[oldIndex];
+                var newSong = nowPlayingSongs[newIndex];
                 oldSong.IsPlaying = false;
                 newSong.IsPlaying = true;
             }
@@ -240,7 +240,7 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void ContextMenu_PlaySelectedSongs_Click(object sender, RoutedEventArgs e)
         {
-            if (SongList.SelectedItems.Count == 0) return;
+            if (!SelectedSongs().Any()) return;
             NowPlaying.Inst.Clear();
             AddSelectedSongsToNowPlaying();
             Play();
@@ -255,8 +255,7 @@ namespace MSOE.MediaComplete
         private void ContextMenu_PlaySongNext_Click(object sender, RoutedEventArgs e)
         {
             var count = NowPlaying.Inst.SongCount();
-            var list = (from LibrarySongItem song in SongList.SelectedItems select 
-                            new LocalSong(new FileInfo(song.GetPath()))).Cast<AbstractSong>().ToList();
+            var list = SelectedSongs().Select(s => s.Data);
             NowPlaying.Inst.InsertRange(NowPlaying.Inst.Index + 1, list);
             _nowPlayingDirty.Value = true;
             if (_player.PlaybackState == PlaybackState.Stopped)
@@ -356,17 +355,55 @@ namespace MSOE.MediaComplete
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void SongTree_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void SongList_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             NowPlaying.Inst.Clear();
             AddAllSongsToNowPlaying();
-            if (SongList.SelectedItems.Count > 0)
+            var selectedItems = SelectedSongs();
+            if (selectedItems.Any())
             {
-                var songTreeViewItem = SongList.SelectedItems[0] as LibrarySongItem;
+                var songTreeViewItem = selectedItems.FirstOrDefault();
                 if (songTreeViewItem != null)
-                    NowPlaying.Inst.JumpTo(new LocalSong(new FileInfo(songTreeViewItem.GetPath())));
+                    NowPlaying.Inst.JumpTo(songTreeViewItem.Data);
                 Play();
+            }
+        }
 
+        /// <summary>
+        /// Play songs on double click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PlaylistSongs_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var playlistSongs = (ObservableCollection<SongListItem>)PlaylistSongs.Source;
+            if (playlistSongs.Count == 0) return;
+
+            var targetSong = SelectedSongs().FirstOrDefault();
+
+            if (targetSong != null)
+            {
+                if (NowPlayingItem.IsSelected) // Jump in current now playing
+                {
+                    targetSong.IsPlaying = true;
+                    playlistSongs[NowPlaying.Inst.Index].IsPlaying = false;
+                    NowPlaying.Inst.JumpTo(SelectedSongIndex());
+                }
+                else
+                {
+                    NowPlaying.Inst.Clear();
+                    AddAllSongsToNowPlaying();
+                    var selectedItems = SelectedSongs();
+                    if (selectedItems.Any())
+                    {
+                        var songTreeViewItem = selectedItems.FirstOrDefault();
+                        if (songTreeViewItem != null)
+                            NowPlaying.Inst.JumpTo(songTreeViewItem.Data);
+                        Play();
+                    }
+                }
+
+                Play();
             }
         }
 
@@ -470,8 +507,7 @@ namespace MSOE.MediaComplete
             TrackBar.IsEnabled = false;
             NowPlaying.Inst.Clear();
             PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
-            if (_visibleList.Equals(PlaylistSongs) && NowPlayingItem.IsSelected) 
-                PlaylistSongs.Items.Clear();
+            ((ObservableCollection<SongListItem>)PlaylistSongs.Source).Clear();
         }
 
         /// <summary>
@@ -500,8 +536,7 @@ namespace MSOE.MediaComplete
         /// </summary>
         private void AddAllSongsToNowPlaying()
         {
-            NowPlaying.Inst.Add((from LibrarySongItem song in SongList.Items
-                                 select new LocalSong(new FileInfo(song.GetPath()))));
+            NowPlaying.Inst.Add(AllSongs().Select(s => s.Data));
             _nowPlayingDirty.Value = true;
         }
 
@@ -510,8 +545,7 @@ namespace MSOE.MediaComplete
         /// </summary>
         private void AddSelectedSongsToNowPlaying()
         {
-            NowPlaying.Inst.Add((from LibrarySongItem song in SongList.SelectedItems
-                                 select new LocalSong(new FileInfo(song.GetPath()))));
+            NowPlaying.Inst.Add(SelectedSongs().Select(s => s.Data));
             _nowPlayingDirty.Value = true;
         }
 
@@ -550,13 +584,15 @@ namespace MSOE.MediaComplete
         /// </summary>
         private void ResetTrackBar()
         {
+            StopListeningToUpdateTrackbar();
+            TrackBar.ValueChanged -= TrackBar_OnValueChanged;
             TrackBar.IsEnabled = true;
             TrackBar.Value = 0;
             TrackBar.Minimum = 0;
             TrackBar.Maximum = _player.TotalTime.TotalMilliseconds;
             TrackBar.DataContext = this;
-            _trackBarUpdateTimer.Start();
-            _trackBarUpdateTimer.Elapsed += CheckTrackBarUpdateTimer;
+            TrackBar.ValueChanged += TrackBar_OnValueChanged;
+            StartListeningToUpdateTrackbar();
         }
         #endregion
     }

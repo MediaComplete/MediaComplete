@@ -28,6 +28,10 @@
     <system:String x:Key="Dialog-SortLibrary-Title">Confirm</system:String>
     <system:String x:Key="Dialog-SortLibrary-NoSort">No files require sorting. There were {0} file(s) missing metadata that make them impossible to sort.</system:String>
     <system:String x:Key="Dialog-SortLibrary-NoSortTitle">Nothing to Sort</system:String>
+    <system:String x:Key="Dialog-Polling-Prompt" xml:space="preserve">Found {0} file(s).&#10;Would you like to import them now?</system:String>
+    <system:String x:Key="Dialog-Polling-DoNotShowAgain">Don't show this message again.</system:String>
+    <system:String x:Key="Dialog-Polling-Yes">Yes</system:String>
+    <system:String x:Key="Dialog-Polling-No">No</system:String>
     <system:String x:Key="Dialog-Import-ItemsFailed-Message">{0} files could not be imported - they may be in use by another process, or we might not have permission. See the log for more details.</system:String>
     <system:String x:Key="Dialog-Import-Invalid-Message">Error importing: cannot import files that are already located in the library.</system:String>
     <system:String x:Key="Dialog-Common-Warning-Title">Warning</system:String>
@@ -73,6 +77,7 @@
     <mediaComplete:IfZeroCollapsedConverter x:Key="IfZeroCollapsed"/>
     <BooleanToVisibilityConverter x:Key="BoolToVis"/>
     <mediaComplete:NotBooleanToVisibilityConverter x:Key="NotBoolToVis"/>
+    <mediaComplete:ExpandWhenCheckedConverter x:Key="ExpandWhenChecked"/>
 
     <!-- Images -->
     <BitmapImage x:Key="Toolbar-AddMusicFile-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
