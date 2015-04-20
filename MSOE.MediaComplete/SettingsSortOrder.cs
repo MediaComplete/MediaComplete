@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
+using System.Windows.Shapes;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Sorting;
 using Button = System.Windows.Controls.Button;
@@ -55,13 +55,13 @@ namespace MSOE.MediaComplete
                     attributeIndex++;
                 }
                 var stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
-                var folder = new Image
+                var folder = new Polygon
                 {
-                    Source = (ImageSource)Resources["Settings-Folder-Icon"],
                     Width = 20,
                     Height = 20,
                     Margin = new Thickness(16 * (i + 1), 8, 0, 8)
                 };
+                folder.SetResourceReference(StyleProperty, "FolderIconStyle");
                 var comboBox = new ComboBox
                 {
                     Width = 100,
@@ -75,25 +75,21 @@ namespace MSOE.MediaComplete
                     SelectedValue = showValue ? (object)_sortOrderList[attributeIndex] : -1,
                     Tag = i
                 };
+                comboBox.SetResourceReference(StyleProperty, "ComboBox");
                 var minus = new Button
                 {
-                    Content = new Image
-                    {
-                        Source = (ImageSource)Resources["Settings-MinusConfig-Icon"]
-                    },
-                    Tag = i,
-                    Margin = new Thickness(0, 0, 2, 0)
-                };
-                minus.SetResourceReference(StyleProperty, "Plus/Minus");
-                var plus = new Button
-                {
-                    Content = new Image
-                    {
-                        Source = (ImageSource)Resources["Settings-AddConfig-Icon"]
-                    },
+                    Width = 20,
+                    Height = 20,
                     Tag = i
                 };
-                plus.SetResourceReference(StyleProperty, "Plus/Minus");
+                minus.SetResourceReference(StyleProperty, "Minus");
+                var plus = new Button
+                {
+                    Width = 20,
+                    Height = 20,
+                    Tag = i
+                };
+                plus.SetResourceReference(StyleProperty, "Plus");
 
                 minus.Click += MinusClicked;
                 plus.Click += PlusClicked;
@@ -120,14 +116,12 @@ namespace MSOE.MediaComplete
             var label = new Label { Content = "No Sort" };
             var plusForNoSort = new Button
             {
-                Content = new Image
-                {
-                    Source = (ImageSource)Resources["Settings-AddConfig-Icon"]
-                },
+                Width = 20,
+                Height = 20,
                 Tag = -1
             };
             plusForNoSort.Click += PlusClicked;
-            plusForNoSort.SetResourceReference(StyleProperty, "Plus/Minus");
+            plusForNoSort.SetResourceReference(StyleProperty, "Plus");
 
             stackPanelForNoSort.Children.Add(label);
             stackPanelForNoSort.Children.Add(plusForNoSort);
