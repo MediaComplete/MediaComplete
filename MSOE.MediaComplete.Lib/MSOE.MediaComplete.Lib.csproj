@@ -84,6 +84,7 @@
     <Compile Include="Background\Queue.cs" />
     <Compile Include="Background\TaskAdder.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="FilePaths.cs" />
     <Compile Include="Files\FileLocationComparator.cs" />
     <Compile Include="FileManager.cs" />
     <Compile Include="Import\ImportTask.cs" />

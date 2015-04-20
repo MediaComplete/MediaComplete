@@ -14,8 +14,8 @@ namespace MSOE.MediaComplete.Lib.Import
     /// </summary>
     public class ImportTask : Task
     {
-        private readonly DirectoryInfo _homeDir;
-        private readonly IEnumerable<FileInfo> _files;
+        private readonly DirectoryPath _homeDir;
+        private readonly IEnumerable<SongPath> _files;
         private readonly bool _isMove;
         private readonly IFileManager _fileManager;
 
@@ -28,7 +28,7 @@ namespace MSOE.MediaComplete.Lib.Import
         /// <param name="homeDir">The target library directory</param>
         /// <param name="files">An array of absolute filepaths to bring in.</param>
         /// <param name="isMove">If true, files will be cut, else files will be copied</param>
-        public ImportTask(IFileManager fileManager, DirectoryInfo homeDir, IEnumerable<FileInfo> files, bool isMove)
+        public ImportTask(IFileManager fileManager, DirectoryPath homeDir, IEnumerable<SongPath> files, bool isMove)
         {
             _fileManager = fileManager;
             Results = null;
@@ -51,7 +51,7 @@ namespace MSOE.MediaComplete.Lib.Import
             var results = new ImportResults
             {
                 FailCount = 0,
-                NewFiles = new List<FileInfo>(count),
+                NewFiles = new List<SongPath>(count),
                 HomeDir = _homeDir
             };
 
@@ -62,7 +62,7 @@ namespace MSOE.MediaComplete.Lib.Import
                 var total = 0;
                 foreach (var file in _files)
                 {
-                    var newFile = _homeDir.FullName + Path.DirectorySeparatorChar + file.Name;
+                    var newFile = new SongPath(_homeDir.FullPath + Path.DirectorySeparatorChar + file.Name);
                     if (_fileManager.FileExists(newFile)) continue;
                     try
                     {
@@ -74,7 +74,7 @@ namespace MSOE.MediaComplete.Lib.Import
                         {
                             _fileManager.CopyFile(file, newFile);
                         }
-                        results.NewFiles.Add(new FileInfo(newFile));
+                        results.NewFiles.Add(newFile);
                     }
                     catch (IOException exception)
                     {

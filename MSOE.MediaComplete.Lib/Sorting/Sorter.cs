@@ -163,8 +163,8 @@ namespace MSOE.MediaComplete.Lib.Sorting
             {
                 SortOrder = SettingWrapper.SortOrder,
 
-                Root = results.HomeDir,
-                Files = results.NewFiles
+                Root = new DirectoryInfo(results.HomeDir.FullPath),
+                Files = results.NewFiles.Select(x => new FileInfo(x.FullPath))
             };
             var sorter = new Sorter(FileManager.Instance, settings);
             sorter.PerformSort();

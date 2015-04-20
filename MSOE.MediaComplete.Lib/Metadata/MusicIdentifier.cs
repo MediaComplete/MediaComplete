@@ -25,7 +25,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
         {
             StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Started", StatusBarHandler.StatusIcon.Working);
 
-            if (!fileMover.FileExists(filename))
+            if (!fileMover.FileExists(new SongPath(filename)))
             {
                 StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error-NoException", StatusBarHandler.StatusIcon.Error);
                 return null;
@@ -84,7 +84,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
         {
             var inFile = filename;
 
-            if (!fileManager.FileExists(inFile)) return null;
+            if (!fileManager.FileExists(new SongPath(inFile))) return null;
 
             var result = new List<float>();
 

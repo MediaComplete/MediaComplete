@@ -115,7 +115,7 @@ namespace MSOE.MediaComplete
             Application.Current.Shutdown();
         }
 
-        private async void ImportFromInboxAsync(IEnumerable<FileInfo> files)
+        private async void ImportFromInboxAsync(IEnumerable<SongPath> files)
         {
             if (SettingWrapper.ShowInputDialog)
             {
@@ -154,7 +154,7 @@ namespace MSOE.MediaComplete
             ImportResults results;
             try
             {
-                results = await new Importer(SettingWrapper.MusicDir).ImportFilesAsync(fileDialog.FileNames.Select(p => new FileInfo(p)).ToList(), SettingWrapper.ShouldRemoveOnImport);
+                results = await new Importer(SettingWrapper.MusicDir).ImportFilesAsync(fileDialog.FileNames.Select(p => new SongPath(p)).ToList(), SettingWrapper.ShouldRemoveOnImport);
             }
             catch (InvalidImportException)
             {
@@ -180,8 +180,8 @@ namespace MSOE.MediaComplete
 
             if (folderDialog.ShowDialog() != WinForms.DialogResult.OK) return;
             var selectedDir = folderDialog.SelectedPath;
-
-            var results = await new Importer(SettingWrapper.MusicDir).ImportDirectoryAsync(selectedDir, SettingWrapper.ShouldRemoveOnImport);
+            var files = FileManager.GetSongPaths(selectedDir);
+            var results = await new Importer(SettingWrapper.MusicDir).ImportDirectoryAsync(new DirectoryPath(selectedDir, files), SettingWrapper.ShouldRemoveOnImport);
             if (results.FailCount > 0)
             {
                 MessageBox.Show(this,
@@ -224,9 +224,13 @@ namespace MSOE.MediaComplete
                 NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName
             };
             watcher.Changed += OnChanged;
+            watcher.Changed += FileManager.Instance.ChangedFile;
             watcher.Created += OnChanged;
+            watcher.Created += FileManager.Instance.CreatedFile;
             watcher.Deleted += OnChanged;
+            watcher.Deleted += FileManager.Instance.DeletedFile;
             watcher.Renamed += OnChanged;
+            watcher.Renamed += FileManager.Instance.UpdateFile;
 
             watcher.EnableRaisingEvents = true;
 

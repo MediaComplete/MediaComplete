@@ -44,7 +44,6 @@ namespace MSOE.MediaComplete.Lib.Songs
             return string.Format("{0}-{1}-{2}-{3}", Path, Title, Artist, Album).GetHashCode();
         }
 
-
         public override string ToString()
         {
             return File.Name;
