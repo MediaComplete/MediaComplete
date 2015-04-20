@@ -271,6 +271,7 @@
     <Style TargetType="{x:Type ComboBox}" x:Key="ComboBox">
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
         <Setter Property="Margin" Value="4, 0, 8, 0" />
         <Setter Property="Template">
