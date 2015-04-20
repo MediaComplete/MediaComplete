@@ -335,8 +335,12 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void PreviousButton_OnClick(object sender, RoutedEventArgs e)
         {
-            //TODO: MC-34 or MC-35
-            //throw new System.NotImplementedException();
+            var queue = NowPlaying.Inst;
+            var old = queue.Index;
+            queue.PreviousSong();
+            var current = queue.Index;
+            UpdateColorEvent(old, current);
+            Play();
         }
 
         /// <summary>
@@ -346,8 +350,11 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void SkipButton_OnClick(object sender, RoutedEventArgs e)
         {
-            //TODO: MC-34 or MC-35
-            //throw new System.NotImplementedException();
+            var old = NowPlaying.Inst.Index;
+            NowPlaying.Inst.NextSong();
+            var current = NowPlaying.Inst.Index;
+            UpdateColorEvent(old, current);
+            Play();
         }
 
         /// <summary>
