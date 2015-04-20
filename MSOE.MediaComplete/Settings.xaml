@@ -52,20 +52,7 @@
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-                            <StackPanel Orientation="Horizontal" Grid.Row="0">
-                                <Label Content="Sort Order" VerticalAlignment="Center" FontWeight="ExtraBold"/>
-                                <Canvas Width="16" Height="16">
-                                    <Polygon Points="7,2 9,2 9,4 7,4" Style="{DynamicResource IconStyle}"/>
-                                    <Polygon Points="6,6 9,6 9,12 11,12 11,14 5,14 6,12 7,12 7,8 6,8 " Style="{DynamicResource IconStyle}"/>
-                                    <Canvas.ToolTip>
-                                        <ToolTip>
-                                            <StackPanel>
-                                                <TextBlock>The Sort Order defines the file structure that your library will be sorted into.</TextBlock>
-                                            </StackPanel>
-                                        </ToolTip>
-                                    </Canvas.ToolTip>
-                                </Canvas>
-                            </StackPanel>
+                            <Label Content="Sort Order" VerticalAlignment="Center"  Grid.Row="0" FontWeight="ExtraBold"/>
                             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1" VerticalAlignment="Stretch">
                                 <StackPanel>
                                     <StackPanel  x:Name="SortConfig" Orientation="Vertical">
