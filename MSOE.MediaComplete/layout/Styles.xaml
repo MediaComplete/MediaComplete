@@ -235,13 +235,6 @@
                 Background="{DynamicResource MenuBackgroundBrush}"
                 BorderBrush="{DynamicResource MenuBackgroundBrush}"
                 BorderThickness="1" />
-            <Border
-                Grid.Column="0"
-                CornerRadius="0,0,0,0"
-                Margin="1"
-                Background="{DynamicResource WindowBackgroundBrush}"
-                BorderBrush="{DynamicResource NormalBorderBrush}"
-                BorderThickness="0,0,0,0" />
             <Path
                 x:Name="Arrow"
                 Grid.Column="1"
@@ -274,15 +267,11 @@
     <ControlTemplate x:Key="ComboBoxTextBox" TargetType="TextBox">
         <Border x:Name="PART_ContentHost" Focusable="False" Background="{DynamicResource MenuBackgroundBrush}" />
     </ControlTemplate>
-
+    
     <Style TargetType="{x:Type ComboBox}" x:Key="ComboBox">
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="OverridesDefaultStyle" Value="true" />
-        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
-        <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
-        <Setter Property="MinWidth" Value="120" />
-        <Setter Property="MinHeight" Value="20" />
         <Setter Property="Margin" Value="4, 0, 8, 0" />
         <Setter Property="Template">
             <Setter.Value>
@@ -363,6 +352,9 @@
                 <Setter Property="Fill" Value="Transparent"/>
             </DataTrigger>
         </Style.Triggers>
+    </Style>
+    <Style TargetType="{x:Type Polygon}" x:Key="IconStyle" >
+        <Setter Property="Fill" Value="{DynamicResource ToolbarButtonPrimaryBrush}"/>
     </Style>
     <Style TargetType="{x:Type Polygon}" x:Key="FolderIconStyle" >
         <Setter Property="Fill" Value="{DynamicResource ToolbarButtonPrimaryBrush}"/>

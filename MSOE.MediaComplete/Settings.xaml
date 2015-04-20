@@ -54,15 +54,17 @@
                             </Grid.RowDefinitions>
                             <StackPanel Orientation="Horizontal" Grid.Row="0">
                                 <Label Content="Sort Order" VerticalAlignment="Center" FontWeight="ExtraBold"/>
-                                <Image Source="{StaticResource Settings-Info-Icon}" Width="16" Height="16">
-                                    <Image.ToolTip>
+                                <Canvas Width="16" Height="16">
+                                    <Polygon Points="6,2 10,2 9,10 7,10" Style="{DynamicResource IconStyle}"/>
+                                    <Polygon Points="7,12 9,12 9,14 7,14" Style="{DynamicResource IconStyle}"/>
+                                    <Canvas.ToolTip>
                                         <ToolTip>
                                             <StackPanel>
                                                 <TextBlock>The Sort Order defines the file structure that your library will be sorted into.</TextBlock>
                                             </StackPanel>
                                         </ToolTip>
-                                    </Image.ToolTip>
-                                </Image>
+                                    </Canvas.ToolTip>
+                                </Canvas>
                             </StackPanel>
                             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1" VerticalAlignment="Stretch">
                                 <StackPanel>
@@ -115,6 +117,7 @@
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Bottom"
                                         Width="100"
+                                        Style="{DynamicResource ComboBox}"
                                         Loaded="ComboBox_Loaded" />
                                     <Label x:Name="LblMin" Content="(min)" VerticalAlignment="Center"
                                            HorizontalAlignment="Left"
