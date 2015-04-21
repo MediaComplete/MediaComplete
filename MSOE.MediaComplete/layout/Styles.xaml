@@ -355,7 +355,7 @@
         </Style.Triggers>
     </Style>
     <Style TargetType="{x:Type Polygon}" x:Key="IconStyle" >
-        <Setter Property="Fill" Value="{DynamicResource ToolbarButtonPrimaryBrush}"/>
+        <Setter Property="Fill" Value="{DynamicResource ButtonAccentBrush}"/>
     </Style>
     <Style TargetType="{x:Type Polygon}" x:Key="FolderIconStyle" >
         <Setter Property="Fill" Value="{DynamicResource ToolbarButtonPrimaryBrush}"/>
