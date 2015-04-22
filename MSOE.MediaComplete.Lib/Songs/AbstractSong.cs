@@ -59,7 +59,8 @@ namespace MSOE.MediaComplete.Lib.Songs
         public string Title { get; set; }
         public string SupportingArtists { get; set; }
         public string TrackNumber { get; set; }
-        public string Year { get;set; }
+        public string Year { get; set; }
+        public int? Duration { get; set; }
 
         public string GetAttribute(MetaAttribute attribute)
         {

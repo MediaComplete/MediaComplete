@@ -54,6 +54,7 @@ namespace MSOE.MediaComplete.Lib
                 Year = tagFile.GetAttribute(MetaAttribute.Year),
                 TrackNumber = tagFile.GetAttribute(MetaAttribute.TrackNumber),
                 SupportingArtists = tagFile.GetAttribute(MetaAttribute.SupportingArtist),
+                Duration = (int?)tagFile.Properties.Duration.TotalSeconds,
                 Path = path
             };
         }
@@ -69,6 +70,7 @@ namespace MSOE.MediaComplete.Lib
                 Year = tagFile.GetAttribute(MetaAttribute.Year),
                 TrackNumber = tagFile.GetAttribute(MetaAttribute.TrackNumber),
                 SupportingArtists = tagFile.GetAttribute(MetaAttribute.SupportingArtist),
+                Duration = (int?)tagFile.Properties.Duration.TotalSeconds,
                 Path = file.FullName
             };
         }
@@ -218,8 +220,7 @@ namespace MSOE.MediaComplete.Lib
                 // ignored
             }
         }
-
-
+        
         public LocalSong GetSong(SongPath s)
         {
             //TODO TODO 

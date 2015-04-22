@@ -25,6 +25,7 @@ namespace MSOE.MediaComplete.Lib.Import
         /// Constructs an Importer with the given library home directory.
         /// </summary>
         /// <param name="dir">The full path to the library home directory.</param>
+        /// <param name="fms">FileManager used for dependency injection</param>
         public Importer(string dir, IFileManager fms)
         {
             fm = fms;

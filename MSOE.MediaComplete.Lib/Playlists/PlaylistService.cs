@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using M3U.NET;
+using MSOE.MediaComplete.Lib.Songs;
 using TagLib;
 
 namespace MSOE.MediaComplete.Lib.Playlists
@@ -77,9 +78,9 @@ namespace MSOE.MediaComplete.Lib.Playlists
             return _service.CreatePlaylist();
         }
 
-        public static MediaItem ToMediaItem(FileInfo file)
+        public static MediaItem ToMediaItem(AbstractSong song)
         {
-            return _service.ToMediaItem(file);
+            return _service.ToMediaItem(song);
         }
     }
     #endregion
@@ -120,7 +121,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
         /// <returns>The new Playlist object</returns>
         Playlist CreatePlaylist();
 
-        MediaItem ToMediaItem(FileInfo file);
+        MediaItem ToMediaItem(AbstractSong song);
     }
     #endregion
 
@@ -220,30 +221,13 @@ namespace MSOE.MediaComplete.Lib.Playlists
         /// Converts this LocalSong to a MediaItem so it can be serialized to a playlist.
         /// </summary>
         /// <returns>A new media item</returns>
-        public  MediaItem ToMediaItem(FileInfo file)
+        public  MediaItem ToMediaItem(AbstractSong song)
         {
-            TagLib.File tagFile;
-            try
-            {
-                tagFile = TagLib.File.Create(file.FullName);
-            }
-            catch (Exception e)
-            {
-                if (e is UnsupportedFormatException || e is CorruptFileException)
-                {
-                    // TODO MC-125 log
-                    throw new FileNotFoundException(
-                        String.Format("File ({0}) was not found or is not a recognized music file.", file.FullName), e);
-                }
-
-                throw;
-            }
-
             return new MediaItem
             {
-                Location = file.FullName,
-                Inf = tagFile.Tag.FirstAlbumArtist + " - " + tagFile.Tag.Title,
-                Runtime = (int?)tagFile.Properties.Duration.TotalSeconds
+                Location = song.Path,
+                Inf = song.Artist + " - " + song.Title,
+                Runtime = song.Duration
             };
         }
 
