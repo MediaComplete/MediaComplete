@@ -81,6 +81,9 @@
     <ApplicationIcon>Resources\logo_small.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="M3U.NET, Version=1.0.0.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\M3U.NET.1.0.0.3\lib\net45\M3U.NET.dll</HintPath>
