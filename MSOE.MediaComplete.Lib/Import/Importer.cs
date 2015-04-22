@@ -18,14 +18,16 @@ namespace MSOE.MediaComplete.Lib.Import
         public static event ImportHandler ImportFinished = delegate {};
         public delegate void ImportHandler(ImportResults results);
 
+        private IFileManager fm;
         private readonly DirectoryPath _homeDir;
 
         /// <summary>
         /// Constructs an Importer with the given library home directory.
         /// </summary>
         /// <param name="dir">The full path to the library home directory.</param>
-        public Importer(string dir)
+        public Importer(string dir, IFileManager fms)
         {
+            fm = fms;
             _homeDir = new DirectoryPath(dir, null);
         }
 
@@ -39,7 +41,7 @@ namespace MSOE.MediaComplete.Lib.Import
         /// <returns>An awaitable task of ImportResults</returns>
         public async Task<ImportResults> ImportDirectoryAsync(DirectoryPath directory, bool isCopy)
         {
-            var files = directory.Songs;
+            var files = fm.GetAllSongs().Select(x => x.SongPath).Where(x => x.HasParent(directory));
             var results = await ImportFilesAsync(files, isCopy);
             return results;
         }
@@ -59,7 +61,7 @@ namespace MSOE.MediaComplete.Lib.Import
                 throw new InvalidImportException();
             }
 
-            var task = new ImportTask(FileManager.Instance, _homeDir, files, isMove);
+            var task = new ImportTask(FileManager.Instance, files, isMove);
 
             Queue.Inst.Add(task);
 

@@ -32,7 +32,15 @@ namespace MSOE.MediaComplete.Lib
         {
             return FullPath.StartsWith(parent.FullPath, StringComparison.Ordinal);
         }
-        
+        public override bool Equals(Object obj)
+        {
+            var otherSong = obj as SongPath;
+            return otherSong != null && otherSong.FullPath.Equals(FullPath);
+        }
+        public override int GetHashCode()
+        {
+            return string.Format("{0}-{1}", FullPath, Name).GetHashCode();
+        }
     }
     public class DirectoryPath : IPath
     {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using M3U.NET;
+using MSOE.MediaComplete.Lib.Metadata;
 
 namespace MSOE.MediaComplete.Lib.Songs
 {
@@ -52,12 +53,36 @@ namespace MSOE.MediaComplete.Lib.Songs
 
         public abstract string GetPath();
         public string Album { get; set; }
+
         public string Artist { get; set; }
         public string Genre { get; set; }
         public string Title { get; set; }
         public string SupportingArtists { get; set; }
-        public int TrackNumber { get; set; }
-        public int Year { get;set; }
+        public string TrackNumber { get; set; }
+        public string Year { get;set; }
+
+        public string GetAttribute(MetaAttribute attribute)
+        {
+            switch (attribute)
+            {
+                case MetaAttribute.Album:
+                    return Album;
+                case MetaAttribute.Artist:
+                    return Artist;
+                case MetaAttribute.Genre:
+                    return Genre;
+                case MetaAttribute.TrackNumber:
+                    return TrackNumber;
+                case MetaAttribute.SongTitle:
+                    return Title;
+                case MetaAttribute.SupportingArtist:
+                    return SupportingArtists;
+                case MetaAttribute.Year:
+                    return Year;
+                default:
+                    return null;
+            }
+        }
         public string Path { get; set; }
     }
 }

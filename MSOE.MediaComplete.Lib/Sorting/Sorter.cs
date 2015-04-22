@@ -6,6 +6,7 @@ using System.Text;
 using MSOE.MediaComplete.Lib.Background;
 using MSOE.MediaComplete.Lib.Import;
 using MSOE.MediaComplete.Lib.Metadata;
+using MSOE.MediaComplete.Lib.Songs;
 using Sys = System.Threading.Tasks;
 
 namespace MSOE.MediaComplete.Lib.Sorting
@@ -57,12 +58,25 @@ namespace MSOE.MediaComplete.Lib.Sorting
         {
             await Sys.Task.Run(() =>
             {
-                var fileInfos = Settings.Files ??
-                                Settings.Root.EnumerateFiles("*", SearchOption.AllDirectories).GetMusicFiles();
+                var fileInfos = _fileManager.GetAllSongs();
 
                 foreach (var file in fileInfos)
                 {
-                    var path = Settings.Root.PathSegment(file.Directory);
+                    //TODO TODO
+                    //TODO TODO
+                    //TODO TODO
+                    //TODO TODO
+                    //TODO TODO
+                    //TODO TODO
+                    //TODO TODO
+                    //TODO TODO
+                    //TODO TODO
+                    //TODO TODO
+                    //TODO TODO
+                    //TODO TODO
+                    //TODO TODO
+                    //TODO TODO FIX THIS FUCKING SHIT
+                    var path = Settings.Root.PathSegment(file.Path);
                     var targetFile = GetNewLocation(file, Settings.SortOrder);
                     var targetPath = Settings.Root.PathSegment(targetFile.Directory);
 
@@ -106,26 +120,27 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <param name="file">The source file to analyze</param>
         /// <param name="list">The sort-order of meta attributes</param>
         /// <returns>A new FileInfo describing where the source file should be moved to</returns>
-        private FileInfo GetNewLocation(FileInfo file, IEnumerable<MetaAttribute> list)
+        private FileInfo GetNewLocation(LocalSong song, IEnumerable<MetaAttribute> list)
         {
-            TagLib.File metadata;
-            try
-            {
-                metadata = _fileManager.CreateTaglibFile(file.FullName);
-            }
-            catch (TagLib.CorruptFileException)
-            {
-                // TODO (MC-125) log
-                return file; // Bad MP3 - just have it stay in the same place
-            }
-
             var metadataPath = new StringBuilder();
-            foreach (var metaValue in list.Select(metadata.GetAttribute).TakeWhile(metaValue => !String.IsNullOrWhiteSpace((metaValue))))
+            foreach (var metaValue in list.Select(song.GetAttribute))
             {
                 metadataPath.Append(metaValue);
                 metadataPath.Append(Path.DirectorySeparatorChar);
             }
-            return new FileInfo(Settings.Root.FullName + Path.DirectorySeparatorChar + metadataPath.ToString().GetValidFileName() + file.Name);
+            //TODO TODO
+            //TODO TODO
+            //TODO TODO
+            //TODO TODO
+            //TODO TODO
+            //TODO TODO
+            //TODO TODO
+            //TODO TODO
+            //TODO TODO
+            //TODO TODO
+            //TODO TODO RENAMING FILES MOTHERFUCKER
+            return
+                new FileInfo(SettingWrapper.MusicDir + metadataPath.ToString().GetValidFileName()); // + file);
         }
 
         #region Import Event Handling
@@ -143,9 +158,8 @@ namespace MSOE.MediaComplete.Lib.Sorting
             var settings = new SortSettings
             {
                 SortOrder = SettingWrapper.SortOrder,
-                Root = new DirectoryInfo(SettingWrapper.MusicDir),
-                Files = new DirectoryInfo(SettingWrapper.MusicDir).EnumerateFiles("*", SearchOption.AllDirectories)
-                    .GetMusicFiles()
+                
+                Files = _fileManager.GetAllSongs().Select(x => x.SongPath)
             };
             var sorter = new Sorter(FileManager.Instance, settings);
             sorter.PerformSort();
@@ -158,13 +172,12 @@ namespace MSOE.MediaComplete.Lib.Sorting
         public static void SortNewImports(ImportResults results)
         {
             if (!SettingWrapper.IsSorting) return;
-            // TODO (MC-43) get settings from configuration
+
+            //TODO THIS IS ALSO PRETTY TOTALLY FUCKED
             var settings = new SortSettings
             {
                 SortOrder = SettingWrapper.SortOrder,
-
-                Root = new DirectoryInfo(results.HomeDir.FullPath),
-                Files = results.NewFiles.Select(x => new FileInfo(x.FullPath))
+                Files = results.NewFiles
             };
             var sorter = new Sorter(FileManager.Instance, settings);
             sorter.PerformSort();
@@ -181,7 +194,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
 
         public class MoveAction : IAction
         {
-            public FileInfo Source { get; set; }
+            public LocalSong Source { get; set; }
             public FileInfo Dest { get; set; }
 
             public void Do()
@@ -190,15 +203,15 @@ namespace MSOE.MediaComplete.Lib.Sorting
                 {
                     return;
                 }
-
+                //TODO TODO FIX THIS SHIT
                 _fileManager.CreateDirectory(Dest.Directory.FullName);
-                _fileManager.MoveFile(Source.FullName, Dest.FullName);
+                _fileManager.MoveFile(Source.SongPath, Dest.FullName);
             }
         }
 
         public class DeleteAction : IAction
         {
-            public FileInfo Target { get; set; }
+            public LocalSong Target { get; set; }
 
             public void Do()
             {

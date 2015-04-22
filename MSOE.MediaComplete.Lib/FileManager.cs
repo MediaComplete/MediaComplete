@@ -20,6 +20,10 @@ namespace MSOE.MediaComplete.Lib
             _cachedLocalSongs = new Dictionary<string, LocalSong>();
         }
 
+        public IEnumerable<LocalSong> GetAllSongs()
+        {
+            return _cachedFileInfos.Keys;
+        } 
         public void AddToCache(string directory)
         {
             var files = new DirectoryInfo(directory).GetFiles("*", SearchOption.AllDirectories);
@@ -31,35 +35,57 @@ namespace MSOE.MediaComplete.Lib
                 }
                 catch (Exception)
                 {
-                    var song = new LocalSong(fileInfo);
+                    var song = new LocalSong(new SongPath(fileInfo.FullName));
                     _cachedLocalSongs.Add(fileInfo.FullName, song);
                     _cachedFileInfos.Add(song, fileInfo);   
                 }
             }
         }
 
-        private void AddFileToCache(FileInfo fileInfo)
+        private LocalSong GetNewLocalSong(string path)
         {
-            var newFile = GetNewLocalSong(fileInfo);
-            _cachedLocalSongs.Add(fileInfo.FullName, newFile);
-            _cachedFileInfos.Add(newFile, fileInfo);   
-        }
-
-        private LocalSong GetNewLocalSong(FileInfo fileInfo)
-        {
-            var tagFile = CreateTaglibFile(fileInfo.FullName);
-            return new LocalSong(fileInfo)
+            var tagFile = CreateTaglibFile(path);
+            return new LocalSong(new SongPath(path))
             {
                 Title = tagFile.GetAttribute(MetaAttribute.SongTitle),
                 Artist = tagFile.GetAttribute(MetaAttribute.Artist),
                 Album = tagFile.GetAttribute(MetaAttribute.Album),
                 Genre = tagFile.GetAttribute(MetaAttribute.Genre),
-                Year = Convert.ToInt32(tagFile.GetAttribute(MetaAttribute.Year)),
-                TrackNumber = Convert.ToInt32(tagFile.GetAttribute(MetaAttribute.TrackNumber)),
+                Year = tagFile.GetAttribute(MetaAttribute.Year),
+                TrackNumber = tagFile.GetAttribute(MetaAttribute.TrackNumber),
                 SupportingArtists = tagFile.GetAttribute(MetaAttribute.SupportingArtist),
-                Path = fileInfo.FullName
+                Path = path
             };
         }
+        private LocalSong GetNewLocalSong(FileSystemInfo file)
+        {
+            var tagFile = CreateTaglibFile(file.FullName);
+            return new LocalSong(new SongPath(file.FullName))
+            {
+                Title = tagFile.GetAttribute(MetaAttribute.SongTitle),
+                Artist = tagFile.GetAttribute(MetaAttribute.Artist),
+                Album = tagFile.GetAttribute(MetaAttribute.Album),
+                Genre = tagFile.GetAttribute(MetaAttribute.Genre),
+                Year = tagFile.GetAttribute(MetaAttribute.Year),
+                TrackNumber = tagFile.GetAttribute(MetaAttribute.TrackNumber),
+                SupportingArtists = tagFile.GetAttribute(MetaAttribute.SupportingArtist),
+                Path = file.FullName
+            };
+        }
+        private void AddFileToCache(string path)
+        {
+            var newFile = GetNewLocalSong(path);
+            _cachedLocalSongs.Add(path, newFile);
+            _cachedFileInfos.Add(newFile, new FileInfo(path));
+        }
+        private void AddFileToCache(FileInfo file)
+        {
+            var newFile = GetNewLocalSong(file);
+            _cachedLocalSongs.Add(file.FullName, newFile);
+            _cachedFileInfos.Add(newFile, file);
+        }
+        
+        
         public FileInfo GetFileInfo(string path)
         {
             return GetFileInfo(_cachedLocalSongs[path]);
@@ -162,15 +188,14 @@ namespace MSOE.MediaComplete.Lib
                 _cachedLocalSongs[e.FullPath].Artist = tagFile.GetAttribute(MetaAttribute.Artist);
                 _cachedLocalSongs[e.FullPath].Album = tagFile.GetAttribute(MetaAttribute.Album);
                 _cachedLocalSongs[e.FullPath].Genre = tagFile.GetAttribute(MetaAttribute.Genre);
-                _cachedLocalSongs[e.FullPath].Year = Convert.ToInt32(tagFile.GetAttribute(MetaAttribute.Year));
-                _cachedLocalSongs[e.FullPath].TrackNumber =
-                    Convert.ToInt32(tagFile.GetAttribute(MetaAttribute.TrackNumber));
+                _cachedLocalSongs[e.FullPath].Year = tagFile.GetAttribute(MetaAttribute.Year);
+                _cachedLocalSongs[e.FullPath].TrackNumber = tagFile.GetAttribute(MetaAttribute.TrackNumber);
                 _cachedLocalSongs[e.FullPath].SupportingArtists = tagFile.GetAttribute(MetaAttribute.SupportingArtist);
                 SongChanged(_cachedLocalSongs[e.FullPath]);
             }
             else
             {
-                AddFileToCache(new FileInfo(e.FullPath));
+                AddFileToCache(e.FullPath);
                 SongCreated(_cachedLocalSongs[e.FullPath]);
             }
         }
@@ -185,7 +210,7 @@ namespace MSOE.MediaComplete.Lib
         {
             try
             {
-                AddFileToCache(new FileInfo(e.FullPath));
+                AddFileToCache(e.FullPath);
                 SongCreated(_cachedLocalSongs[e.FullPath]);
             }
             catch (Exception)
@@ -194,6 +219,24 @@ namespace MSOE.MediaComplete.Lib
             }
         }
 
+
+        public LocalSong GetSong(SongPath s)
+        {
+            //TODO TODO 
+            //TODO TODO 
+            //TODO TODO 
+            //TODO TODO 
+            //TODO TODO 
+            //TODO TODO 
+            //TODO TODO 
+            //TODO TODO 
+            //TODO TODO 
+            //TODO TODO 
+            //TODO TODO 
+            //TODO TODO 
+            //TODO TODO 
+            return _cachedFileInfos.Keys.FirstOrDefault(x => x.SongPath.Equals(s));
+        }
         public event SongRenamedHandler SongRenamed = delegate { };
         public event SongUpdatedHandler SongChanged = delegate { };
         public event SongUpdatedHandler SongCreated = delegate { };
@@ -222,5 +265,7 @@ namespace MSOE.MediaComplete.Lib
         bool DirectoryExists(string directory);
         TaglibFile CreateTaglibFile(string fileName);
         void MoveFile(SongPath oldFile, SongPath newFile);
+
+        IEnumerable<LocalSong> GetAllSongs();
     }
 }

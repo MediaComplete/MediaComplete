@@ -14,7 +14,6 @@ namespace MSOE.MediaComplete.Lib.Import
     /// </summary>
     public class ImportTask : Task
     {
-        private readonly DirectoryPath _homeDir;
         private readonly IEnumerable<SongPath> _files;
         private readonly bool _isMove;
         private readonly IFileManager _fileManager;
@@ -25,14 +24,12 @@ namespace MSOE.MediaComplete.Lib.Import
         /// Constructs an Import background task with the given parameters
         /// </summary>
         /// <param name="fileManager"></param>
-        /// <param name="homeDir">The target library directory</param>
         /// <param name="files">An array of absolute filepaths to bring in.</param>
         /// <param name="isMove">If true, files will be cut, else files will be copied</param>
-        public ImportTask(IFileManager fileManager, DirectoryPath homeDir, IEnumerable<SongPath> files, bool isMove)
+        public ImportTask(IFileManager fileManager, IEnumerable<SongPath> files, bool isMove)
         {
             _fileManager = fileManager;
             Results = null;
-            _homeDir = homeDir;
             _files = files;
             _isMove = isMove;
         }
@@ -52,7 +49,6 @@ namespace MSOE.MediaComplete.Lib.Import
             {
                 FailCount = 0,
                 NewFiles = new List<SongPath>(count),
-                HomeDir = _homeDir
             };
 
             try
@@ -62,7 +58,7 @@ namespace MSOE.MediaComplete.Lib.Import
                 var total = 0;
                 foreach (var file in _files)
                 {
-                    var newFile = new SongPath(_homeDir.FullPath + Path.DirectorySeparatorChar + file.Name);
+                    var newFile = new SongPath(SettingWrapper.MusicDir + file.Name);
                     if (_fileManager.FileExists(newFile)) continue;
                     try
                     {

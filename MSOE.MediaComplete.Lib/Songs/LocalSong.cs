@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Runtime;
 using M3U.NET;
 using MSOE.MediaComplete.Lib.Files;
 
@@ -15,17 +16,35 @@ namespace MSOE.MediaComplete.Lib.Songs
         /// Constructs a LocalSong from a MediaItem
         /// </summary>
         /// <param name="m">The media item</param>
-        public LocalSong (MediaItem m) : this(new FileInfo(m.Location))
+        public LocalSong (MediaItem m) : this(new SongPath(m.Location))
         {
         }
-
+        //TODO TODO 
+        //TODO TODO 
+        //TODO TODO 
+        //TODO TODO 
+        //TODO TODO 
+        //TODO TODO 
+        //TODO TODO 
+        //TODO TODO 
+        //TODO TODO 
+        //TODO TODO 
+        //TODO TODO 
+        //TODO TODO 
+        //TODO TODO 
+        public SongPath SongPath { get; set; }
         /// <summary>
         /// Constructs a LocalSong from a file
         /// </summary>
-        /// <param name="file">The file</param>
-        public LocalSong(FileInfo file)
+        /// <param name="songPath">The file</param>
+        public LocalSong(SongPath songPath)
         {
-            File = file;
+            SongPath = songPath;
+        }
+
+        public bool HasParent(DirectoryPath dir)
+        {
+            return SongPath.HasParent(dir);
         }
         
         /// <summary>
@@ -46,12 +65,12 @@ namespace MSOE.MediaComplete.Lib.Songs
 
         public override string ToString()
         {
-            return File.Name;
+            return SongPath.Name;
         }
 
         public override string GetPath()
         {
-            return File.FullName; 
+            return Path; 
         }
     }
 }

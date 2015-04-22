@@ -50,7 +50,7 @@ namespace MSOE.MediaComplete
         private readonly CollectionViewSource _playlistSongs = new CollectionViewSource { Source = new ObservableCollection<SongListItem>() };
 
         private readonly Timer _refreshTimer = new Timer(TimerProc);
-        private readonly FileManager _fileMover = FileManager.Instance;
+        private readonly FileManager _fileManager = FileManager.Instance;
         #endregion
 
         #region Construction
@@ -85,7 +85,7 @@ namespace MSOE.MediaComplete
             StatusBarHandler.Instance.RaiseStatusBarEvent += HandleStatusBarChangeEvent;
             Polling.InboxFilesDetected += ImportFromInboxAsync;
             // ReSharper disable once ObjectCreationAsStatement
-            new Sorter(_fileMover, null); // Run static constructor
+            new Sorter(_fileManager, null); // Run static constructor
             // ReSharper disable once UnusedVariable
             var tmp = Polling.Instance;  // Run singleton constructor
         }
@@ -95,7 +95,7 @@ namespace MSOE.MediaComplete
         /// </summary>
         private void InitTreeView()
         {
-            _fileMover.CreateDirectory(SettingWrapper.MusicDir);
+            _fileManager.CreateDirectory(SettingWrapper.MusicDir);
             RefreshTreeView();
 
             var watcher = new FileSystemWatcher(SettingWrapper.MusicDir)
@@ -103,13 +103,13 @@ namespace MSOE.MediaComplete
                 NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName
             };
             watcher.Changed += OnChanged;
-            watcher.Changed += _fileMover.ChangedFile;
+            watcher.Changed += _fileManager.ChangedFile;
             watcher.Created += OnChanged;
-            watcher.Created += _fileMover.CreatedFile;
+            watcher.Created += _fileManager.CreatedFile;
             watcher.Deleted += OnChanged;
-            watcher.Deleted += _fileMover.DeletedFile;
+            watcher.Deleted += _fileManager.DeletedFile;
             watcher.Renamed += OnChanged;
-            watcher.Renamed += _fileMover.UpdateFile;
+            watcher.Renamed += _fileManager.UpdateFile;
 
             watcher.EnableRaisingEvents = true;
 
@@ -152,7 +152,7 @@ namespace MSOE.MediaComplete
             ImportResults results;
             try
             {
-                results = await new Importer(SettingWrapper.MusicDir).ImportFilesAsync(fileDialog.FileNames.Select(p => new SongPath(p)).ToList(), SettingWrapper.ShouldRemoveOnImport);
+                results = await new Importer(SettingWrapper.MusicDir, _fileManager).ImportFilesAsync(fileDialog.FileNames.Select(p => new SongPath(p)).ToList(), SettingWrapper.ShouldRemoveOnImport);
             }
             catch (InvalidImportException)
             {
@@ -184,7 +184,7 @@ namespace MSOE.MediaComplete
             if (folderDialog.ShowDialog() != WinForms.DialogResult.OK) return;
             var selectedDir = folderDialog.SelectedPath;
             var files = FileManager.GetSongPaths(selectedDir);
-            var results = await new Importer(SettingWrapper.MusicDir).ImportDirectoryAsync(new DirectoryPath(selectedDir, files), SettingWrapper.ShouldRemoveOnImport);
+            var results = await new Importer(SettingWrapper.MusicDir, _fileManager).ImportDirectoryAsync(new DirectoryPath(selectedDir, files), SettingWrapper.ShouldRemoveOnImport);
             if (results.FailCount > 0)
             {
                 MessageBox.Show(Application.Current.MainWindow,
@@ -241,7 +241,7 @@ namespace MSOE.MediaComplete
                 try
                 {
                     if (selection == null) continue;
-                    await MusicIdentifier.IdentifySongAsync(_fileMover, selection.Data.GetPath());
+                    await MusicIdentifier.IdentifySongAsync(_fileManager, selection.Data.GetPath());
                 }
                 catch (Exception ex)
                 {
@@ -272,7 +272,7 @@ namespace MSOE.MediaComplete
             {
                 try
                 {
-                    await MusicIdentifier.IdentifySongAsync(_fileMover, item.Data.GetPath());
+                    await MusicIdentifier.IdentifySongAsync(_fileManager, item.Data.GetPath());
                 }
                 catch (Exception ex)
                 {
@@ -291,15 +291,15 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private async void Toolbar_SortMusic_ClickAsync(object sender, RoutedEventArgs e)
         {
+            //TODO FIX THIS SO IT ISNT FUCKED TO SHIT
             var settings = new SortSettings
             {
                 SortOrder = SettingWrapper.SortOrder,
-                Files = new DirectoryInfo(SettingWrapper.MusicDir).EnumerateFiles("*", SearchOption.AllDirectories)
-                    .GetMusicFiles(),
-                Root = new DirectoryInfo(SettingWrapper.MusicDir)
+                Files = _fileManager.GetAllSongs().Select(x => x.SongPath),
+                Root = new DirectoryPath(SettingWrapper.MusicDir, _fileManager.GetAllSongs().Select(x => x.SongPath))
             };
 
-            var sorter = new Sorter(_fileMover, settings);
+            var sorter = new Sorter(_fileManager, settings);
             await sorter.CalculateActionsAsync();
 
             if (sorter.Actions.Count == 0) // Nothing to do! Notify and return.
@@ -439,7 +439,8 @@ namespace MSOE.MediaComplete
 
             foreach (var file in dir.GetFilesOrCreateDir().GetMusicFiles())
             {
-                songList.Add(new LibrarySongItem { Content = file.Name, ParentItem = parent, Data = new LocalSong(file) });
+                //TODO TODO Refactor this to use the FileManager data
+                songList.Add(new LibrarySongItem { Content = file.Name, ParentItem = parent, Data = new LocalSong(new SongPath(file.FullName)) });
             }
         }
 
@@ -473,7 +474,7 @@ namespace MSOE.MediaComplete
             }
             else
             {
-                await new Importer(SettingWrapper.MusicDir).ImportFilesAsync(files, true);
+                await new Importer(SettingWrapper.MusicDir, _fileManager).ImportFilesAsync(files, true);
             }
         }
         #endregion

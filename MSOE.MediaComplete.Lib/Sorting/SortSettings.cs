@@ -16,13 +16,8 @@ namespace MSOE.MediaComplete.Lib.Sorting
         public List<MetaAttribute> SortOrder { get; set; }
 
         /// <summary>
-        /// The root directory of the library.
-        /// </summary>
-        public DirectoryInfo Root { get; set; }
-
-        /// <summary>
         /// The specific files to sort within Root
         /// </summary>
-        public IEnumerable<FileInfo> Files { get; set; }
+        public IEnumerable<SongPath> Files { get; set; }
     }
 }
