@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using log4net;
+using log4net.Core;
 
 namespace MSOE.MediaComplete.Lib.Logging
 {
@@ -54,7 +51,7 @@ namespace MSOE.MediaComplete.Lib.Logging
         /// This logs exceptions that occurr in the application.  These exceptions include caught exceptions.
         /// These messages need to be acceptable for the user to see if researched, they can take reasonable amounts of space
         /// but should be available to always be logged if the user desires without significant performance hits
-        /// e.g. "Exception with null music file", NullPointException
+        /// e.g. "Exception with null music file", NullPointerException
         /// </summary>
         /// <param name="message">the message to output to the log</param>
         /// <param name="exception">the exception to be output to the log</param>
@@ -75,6 +72,22 @@ namespace MSOE.MediaComplete.Lib.Logging
         {
             if (Log.IsFatalEnabled)
                 Log.Fatal(message);
+        }
+
+        public static void SetLogLevel(int logLevel)
+        {
+            var level = Level.Error;
+            switch (logLevel)
+            {
+                case 1:
+                    level = Level.Info;
+                    break;
+                case 314:
+                    level = Level.Debug;
+                    break;
+            }
+            ((log4net.Repository.Hierarchy.Hierarchy)LogManager.GetRepository()).Root.Level = level;
+            ((log4net.Repository.Hierarchy.Hierarchy)LogManager.GetRepository()).RaiseConfigurationChanged(EventArgs.Empty);
         }
     }
 }

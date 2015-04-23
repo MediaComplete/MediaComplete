@@ -11,6 +11,7 @@ using System.Windows.Data;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Import;
+using MSOE.MediaComplete.Lib.Logging;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Playing;
 using MSOE.MediaComplete.Lib.Playlists;
@@ -83,6 +84,7 @@ namespace MSOE.MediaComplete
         private void InitEvents()
         {
             StatusBarHandler.Instance.RaiseStatusBarEvent += HandleStatusBarChangeEvent;
+            Logger.SetLogLevel(SettingWrapper.LogLevel);
             Polling.InboxFilesDetected += ImportFromInboxAsync;
             // ReSharper disable once ObjectCreationAsStatement
             new Sorter(_fileMover, null); // Run static constructor
