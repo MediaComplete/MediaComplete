@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using MSOE.MediaComplete.Lib.Background;
 using MSOE.MediaComplete.Lib.Import;
 using MSOE.MediaComplete.Lib.Metadata;
@@ -67,7 +68,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                         TriggerUpdate(this);
                     }
                 }
-                new DirectoryInfo(SettingWrapper.MusicDir).ScrubEmptyDirectories();
+                new DirectoryInfo(SettingWrapper.MusicDir.FullPath).ScrubEmptyDirectories();
 
                 if (Error == null)
                 {

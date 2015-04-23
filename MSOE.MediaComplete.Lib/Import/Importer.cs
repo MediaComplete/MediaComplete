@@ -18,7 +18,7 @@ namespace MSOE.MediaComplete.Lib.Import
         public static event ImportHandler ImportFinished = delegate {};
         public delegate void ImportHandler(ImportResults results);
 
-        private IFileManager fm;
+        private readonly IFileManager _fm;
         private readonly DirectoryPath _homeDir;
 
         /// <summary>
@@ -26,24 +26,24 @@ namespace MSOE.MediaComplete.Lib.Import
         /// </summary>
         /// <param name="dir">The full path to the library home directory.</param>
         /// <param name="fms">FileManager used for dependency injection</param>
-        public Importer(string dir, IFileManager fms)
+        public Importer(DirectoryPath dir, IFileManager fms)
         {
-            fm = fms;
-            _homeDir = new DirectoryPath(dir, null);
+            _fm = fms;
+            _homeDir = dir;
         }
 
         /// <summary>
         /// Helper method to import all the files in a given directory, recursively. If the recursion 
         /// would delve into this Importer's homedir, those files are ignored.
         /// </summary>
-        /// <param name="directory">The full path to the target directory</param>
+        /// <param name="files"></param>
         /// <param name="isCopy">If true, files are copies and the original files remain in the source location. 
-        /// Otherwise, files are "cut" and removed from the source directory.</param>
+        ///     Otherwise, files are "cut" and removed from the source directory.</param>
         /// <returns>An awaitable task of ImportResults</returns>
-        public async Task<ImportResults> ImportDirectoryAsync(DirectoryPath directory, bool isCopy)
+        public async Task<ImportResults> ImportDirectoryAsync(IEnumerable<SongPath> files, bool isCopy)
         {
-            var files = fm.GetAllSongs().Select(x => x.SongPath).Where(x => x.HasParent(directory));
-            var results = await ImportFilesAsync(files, isCopy);
+            var copyFiles = files.Where(x => !_fm.GetAllSongs().Select(y => y.SongPath).Contains(x));
+            var results = await ImportFilesAsync(copyFiles, isCopy);
             return results;
         }
 

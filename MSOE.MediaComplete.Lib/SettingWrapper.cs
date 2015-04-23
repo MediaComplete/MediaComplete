@@ -20,27 +20,27 @@ namespace MSOE.MediaComplete.Lib
         /// Gets the home directory from the settings
         /// </summary>
         /// <returns>home directory path</returns>
-        public static string HomeDir
+        public static DirectoryPath HomeDir
         {
-            get { return Settings.Default.HomeDir; }
-            set { Settings.Default.HomeDir = value; }
+            get { return new DirectoryPath(Settings.Default.HomeDir); }
+            set { Settings.Default.HomeDir = value.FullPath; }
         }
 
         /// <summary>
         /// Gets the music directory from the settings
         /// </summary>
         /// <returns>music directory path</returns>
-        public static string MusicDir
+        public static DirectoryPath MusicDir
         {
-            get { return HomeDir + Settings.Default.MusicDir+Path.DirectorySeparatorChar; }
+            get { return new DirectoryPath(HomeDir + Settings.Default.MusicDir + Path.DirectorySeparatorChar); }
         }
         /// <summary>
         /// Gets the playlist directory from the settings
         /// </summary>
         /// <returns>playlist directory path</returns>
-        public static string PlaylistDir
+        public static DirectoryPath PlaylistDir
         {
-            get { return HomeDir + Settings.Default.PlaylistDir + Path.DirectorySeparatorChar; }
+            get { return new DirectoryPath(HomeDir + Settings.Default.PlaylistDir + Path.DirectorySeparatorChar); }
         }
         /// <summary>
         /// gets the inbox directory path

@@ -98,7 +98,7 @@ namespace MSOE.MediaComplete
             _fileManager.CreateDirectory(SettingWrapper.MusicDir);
             RefreshTreeView();
 
-            var watcher = new FileSystemWatcher(SettingWrapper.MusicDir)
+            var watcher = new FileSystemWatcher(SettingWrapper.MusicDir.FullPath)
             {
                 NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName
             };
@@ -183,8 +183,8 @@ namespace MSOE.MediaComplete
 
             if (folderDialog.ShowDialog() != WinForms.DialogResult.OK) return;
             var selectedDir = folderDialog.SelectedPath;
-            var files = FileManager.GetSongPaths(selectedDir);
-            var results = await new Importer(SettingWrapper.MusicDir, _fileManager).ImportDirectoryAsync(new DirectoryPath(selectedDir, files), SettingWrapper.ShouldRemoveOnImport);
+            var files = new DirectoryInfo(selectedDir).EnumerateFiles("*", SearchOption.AllDirectories).GetMusicFiles().Select(x => new SongPath(x.FullName));
+            var results = await new Importer(SettingWrapper.MusicDir, _fileManager).ImportDirectoryAsync(files, SettingWrapper.ShouldRemoveOnImport);
             if (results.FailCount > 0)
             {
                 MessageBox.Show(Application.Current.MainWindow,
@@ -296,7 +296,6 @@ namespace MSOE.MediaComplete
             {
                 SortOrder = SettingWrapper.SortOrder,
                 Files = _fileManager.GetAllSongs().Select(x => x.SongPath),
-                Root = new DirectoryPath(SettingWrapper.MusicDir, _fileManager.GetAllSongs().Select(x => x.SongPath))
             };
 
             var sorter = new Sorter(_fileManager, settings);

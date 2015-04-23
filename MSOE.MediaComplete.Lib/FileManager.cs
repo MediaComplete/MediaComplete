@@ -23,7 +23,13 @@ namespace MSOE.MediaComplete.Lib
         public IEnumerable<LocalSong> GetAllSongs()
         {
             return _cachedFileInfos.Keys;
-        } 
+        }
+
+        public void DeleteFile(SongPath target)
+        {
+            throw new NotImplementedException();
+        }
+
         public void AddToCache(string directory)
         {
             var files = new DirectoryInfo(directory).GetFiles("*", SearchOption.AllDirectories);
@@ -88,16 +94,6 @@ namespace MSOE.MediaComplete.Lib
         }
         
         
-        public FileInfo GetFileInfo(string path)
-        {
-            return GetFileInfo(_cachedLocalSongs[path]);
-        }
-
-        public FileInfo GetFileInfo(LocalSong song)
-        {
-            return song == null ? null : _cachedFileInfos[song];
-        }
-
         public LocalSong GetSong(string path)
         {
             return _cachedLocalSongs[path];
@@ -125,42 +121,31 @@ namespace MSOE.MediaComplete.Lib
         {
             File.Copy(file.FullPath, newFile.FullPath);
         }
-
-        public void MoveFile(FileInfo file, string newFile)
-        {
-            MoveFile(file.FullName, newFile);
-        }
-
-        public void CreateDirectory(string directory)
-        {
-            Directory.CreateDirectory(directory);
-        }
         
-        public bool DirectoryExists(string directory)
+        public void CreateDirectory(DirectoryPath directory)
         {
-            return Directory.Exists(directory);
+            Directory.CreateDirectory(directory.FullPath);
         }
 
-        public void MoveFile(string oldFile, string newFile)
+        public bool DirectoryExists(DirectoryPath directory)
         {
-            if (!_cachedLocalSongs.ContainsKey(oldFile)) throw new ArgumentException();
-            File.Move(oldFile, newFile);
+            return Directory.Exists(directory.FullPath);
         }
-
         /// <summary>
         /// 
         /// </summary>
         /// <param name="fileName"></param>
         /// <exception cref="Exception"></exception>
         /// <returns></returns>
-        public TaglibFile CreateTaglibFile(string fileName) 
+        private TaglibFile CreateTaglibFile(string fileName) 
         {
              return TagLib.File.Create(fileName);
         }
 
         public void MoveFile(SongPath oldFile, SongPath newFile)
         {
-            MoveFile(oldFile.FullPath, newFile.FullPath);
+            if (!_cachedLocalSongs.ContainsKey(oldFile.FullPath)) throw new ArgumentException();
+            File.Move(oldFile.FullPath, newFile.FullPath);
         }
 
         public bool FileExists(SongPath fileName)
@@ -258,15 +243,13 @@ namespace MSOE.MediaComplete.Lib
     public interface IFileManager
     {
         void CopyFile(SongPath file, SongPath newFile);
-        void MoveFile(FileInfo file, string newFile);
-        void MoveFile(string oldFile, string newFile);
         void MoveDirectory(string source, string dest);
-        void CreateDirectory(string directory);
+        void CreateDirectory(DirectoryPath directory);
         bool FileExists(SongPath fileName);
-        bool DirectoryExists(string directory);
-        TaglibFile CreateTaglibFile(string fileName);
+        bool DirectoryExists(DirectoryPath directory);
         void MoveFile(SongPath oldFile, SongPath newFile);
 
         IEnumerable<LocalSong> GetAllSongs();
+        void DeleteFile(SongPath target);
     }
 }

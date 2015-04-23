@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using MSOE.MediaComplete.Lib.Metadata;
 
 namespace MSOE.MediaComplete.Lib.Sorting
@@ -16,7 +15,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         public List<MetaAttribute> SortOrder { get; set; }
 
         /// <summary>
-        /// The specific files to sort within Root
+        /// The specific files to sort
         /// </summary>
         public IEnumerable<SongPath> Files { get; set; }
     }

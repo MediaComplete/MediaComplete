@@ -1,6 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
 
 namespace MSOE.MediaComplete.Lib
@@ -14,6 +12,11 @@ namespace MSOE.MediaComplete.Lib
     public class SongPath : IPath
     {
         public string FullPath { get; private set; }
+
+        public DirectoryPath Directory
+        {
+            get { return new DirectoryPath(FullPath.Substring(0, FullPath.LastIndexOf(Path.DirectorySeparatorChar))); }
+        }
 
         public string Name
         {
@@ -45,11 +48,9 @@ namespace MSOE.MediaComplete.Lib
     public class DirectoryPath : IPath
     {
         public string FullPath { get; private set; }
-        public IEnumerable<SongPath> Songs { get; private set; }
-        public DirectoryPath(string path, IEnumerable<SongPath> songs)
+        public DirectoryPath(string path)
         {
             FullPath = path;
-            Songs = songs;
         }
 
         public bool HasParent(DirectoryPath parent)

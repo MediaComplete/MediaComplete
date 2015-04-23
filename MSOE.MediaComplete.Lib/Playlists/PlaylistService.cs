@@ -142,7 +142,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
         /// <returns>A DirectoryInfo for the playlist storage directory</returns>
         public DirectoryInfo GetDirectoryInfo()
         {
-            var dir = new DirectoryInfo(SettingWrapper.PlaylistDir);
+            var dir = new DirectoryInfo(SettingWrapper.PlaylistDir.FullPath);
             if (!dir.Exists)
             {
                 Directory.CreateDirectory(dir.FullName);

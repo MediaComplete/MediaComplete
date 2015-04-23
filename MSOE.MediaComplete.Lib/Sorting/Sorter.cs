@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -58,9 +57,9 @@ namespace MSOE.MediaComplete.Lib.Sorting
         {
             await Sys.Task.Run(() =>
             {
-                var fileInfos = _fileManager.GetAllSongs();
+                var songs = _fileManager.GetAllSongs();
 
-                foreach (var file in fileInfos)
+                foreach (var song in songs)
                 {
                     //TODO TODO
                     //TODO TODO
@@ -76,37 +75,33 @@ namespace MSOE.MediaComplete.Lib.Sorting
                     //TODO TODO
                     //TODO TODO
                     //TODO TODO FIX THIS FUCKING SHIT
-                    var path = Settings.Root.PathSegment(file.Path);
-                    var targetFile = GetNewLocation(file, Settings.SortOrder);
-                    var targetPath = Settings.Root.PathSegment(targetFile.Directory);
+                    var sourcePath = song.SongPath;
+                    var targetPath = GetNewLocation(song, Settings.SortOrder);
 
                     // If the current and target paths are different, we know we need to move.
-                    if (!path.SequenceEqual(targetPath, new DirectoryEqualityComparer()))
+                    if (!sourcePath.Equals(targetPath))
                     {
-                        // Check to see if the file already exists
-                        var srcMp3File = _fileManager.CreateTaglibFile(file.FullName);
-                        var destDir = targetFile.Directory;
-                        if (destDir.ContainsMusicFile(srcMp3File)) // If the file is already there
+                        if (_fileManager.FileExists(sourcePath)) // If the file is already there
                         {
                             // Delete source, let the older file take precedence.
                             // TODO (MC-124) perhaps we should try comparing audio quality and pick the better one?
                             Actions.Add(new DeleteAction
                             {
-                                Target = file
+                                Target = song.SongPath
                             });
                         }
                         else
                         {
                             Actions.Add(new MoveAction
                             {
-                                Source = file,
-                                Dest = targetFile
+                                Source = song,
+                                Dest = targetPath
                             });
                         }
                     }
 
                     // If the target path doesn't fulfill the sort settings, bump the counter.
-                    if (targetPath.Count != Settings.SortOrder.Count + 1)
+                    if (targetPath.FullPath.Remove(0, SettingWrapper.MusicDir.FullPath.Length).Split(Path.DirectorySeparatorChar).Count() != Settings.SortOrder.Count + 1)
                     {
                         UnsortableCount++;
                     }
@@ -117,10 +112,10 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <summary>
         /// Calculate the correct location for a file given an ordering of MetaAttributes to sort by.
         /// </summary>
-        /// <param name="file">The source file to analyze</param>
+        /// <param name="song">The source file to analyze</param>
         /// <param name="list">The sort-order of meta attributes</param>
         /// <returns>A new FileInfo describing where the source file should be moved to</returns>
-        private FileInfo GetNewLocation(LocalSong song, IEnumerable<MetaAttribute> list)
+        private SongPath GetNewLocation(LocalSong song, IEnumerable<MetaAttribute> list)
         {
             var metadataPath = new StringBuilder();
             foreach (var metaValue in list.Select(song.GetAttribute))
@@ -128,19 +123,9 @@ namespace MSOE.MediaComplete.Lib.Sorting
                 metadataPath.Append(metaValue);
                 metadataPath.Append(Path.DirectorySeparatorChar);
             }
-            //TODO TODO
-            //TODO TODO
-            //TODO TODO
-            //TODO TODO
-            //TODO TODO
-            //TODO TODO
-            //TODO TODO
-            //TODO TODO
-            //TODO TODO
-            //TODO TODO
-            //TODO TODO RENAMING FILES MOTHERFUCKER
-            return
-                new FileInfo(SettingWrapper.MusicDir + metadataPath.ToString().GetValidFileName()); // + file);
+            var track = song.TrackNumber.Length == 1 ? "0" + song.TrackNumber : song.TrackNumber;
+            //TODO MC-260 Rename songs/configure song naming
+            return new SongPath(SettingWrapper.MusicDir + metadataPath.ToString().GetValidFileName() + track + " " + song.Title + " - " + song.Artist); 
         }
 
         #region Import Event Handling
@@ -195,32 +180,34 @@ namespace MSOE.MediaComplete.Lib.Sorting
         public class MoveAction : IAction
         {
             public LocalSong Source { get; set; }
-            public FileInfo Dest { get; set; }
+            public SongPath Dest { get; set; }
 
             public void Do()
             {
-                if (Dest.Directory == null) // Will happen if something goes wrong in the calculation
+                if (Dest== null) // Will happen if something goes wrong in the calculation
                 {
                     return;
                 }
                 //TODO TODO FIX THIS SHIT
-                _fileManager.CreateDirectory(Dest.Directory.FullName);
-                _fileManager.MoveFile(Source.SongPath, Dest.FullName);
+                if (!_fileManager.DirectoryExists(Dest.Directory)) {
+                    _fileManager.CreateDirectory(Dest.Directory);
+                }
+                _fileManager.MoveFile(Source.SongPath, Dest);
             }
         }
 
         public class DeleteAction : IAction
         {
-            public LocalSong Target { get; set; }
+            public SongPath Target { get; set; }
 
             public void Do()
             {
-                if (Target == null || !Target.Exists) // Will happen if something goes wrong in the calculation
+                if (Target == null || !_fileManager.FileExists(Target)) // Will happen if something goes wrong in the calculation
                 {
                     return;
                 }
 
-                Target.Delete(); // TODO (MC-127) This should be a "recycle" delete. Not implemented yet.
+                _fileManager.DeleteFile(Target); // TODO (MC-127) This should be a "recycle" delete. Not implemented yet.
             }
         }
 

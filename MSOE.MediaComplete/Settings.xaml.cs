@@ -29,7 +29,7 @@ namespace MSOE.MediaComplete
         {
 
             InitializeComponent();
-            TxtboxSelectedFolder.Text = SettingWrapper.HomeDir;
+            TxtboxSelectedFolder.Text = SettingWrapper.HomeDir.FullPath;
             TxtInboxFolder.Text = SettingWrapper.InboxDir;
             ComboBoxPollingTime.SelectedValue = SettingWrapper.PollingTime.ToString(CultureInfo.InvariantCulture);
             CheckboxPolling.IsChecked = SettingWrapper.IsPolling;
@@ -77,7 +77,7 @@ namespace MSOE.MediaComplete
             var homeDirChooser = new FolderBrowserDialog
             {
                 Description = Properties.Resources.Description,
-                SelectedPath = SettingWrapper.HomeDir
+                SelectedPath = SettingWrapper.HomeDir.FullPath
             };
 
             if (homeDirChooser.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
@@ -87,17 +87,17 @@ namespace MSOE.MediaComplete
             {
                 homeDir += Path.DirectorySeparatorChar;
             }
-            SettingWrapper.HomeDir = homeDir;
+            SettingWrapper.HomeDir = new DirectoryPath(homeDir);
 
-            if (!_allDirs.Contains(SettingWrapper.HomeDir))
+            if (!_allDirs.Contains(SettingWrapper.HomeDir.FullPath))
             {
                 var tempPath = SettingWrapper.HomeDir + "temp"+new Random().Next();
-                _fileManager.MoveDirectory(SettingWrapper.HomeDir, tempPath);
-                _fileManager.MoveDirectory(tempPath, SettingWrapper.MusicDir);
-                _allDirs.Add(SettingWrapper.HomeDir);
+                _fileManager.MoveDirectory(SettingWrapper.HomeDir.FullPath, tempPath);
+                _fileManager.MoveDirectory(tempPath, SettingWrapper.MusicDir.FullPath);
+                _allDirs.Add(SettingWrapper.HomeDir.FullPath);
             }
 
-            TxtboxSelectedFolder.Text = SettingWrapper.HomeDir;
+            TxtboxSelectedFolder.Text = SettingWrapper.HomeDir.FullPath;
         }
 
         /// <summary>
