@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using MSOE.MediaComplete.Lib.Background;
 using MSOE.MediaComplete.Lib.Import;
 using MSOE.MediaComplete.Lib.Metadata;

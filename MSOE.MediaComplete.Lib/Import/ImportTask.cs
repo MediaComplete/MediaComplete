@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using MSOE.MediaComplete.Lib.Background;
+using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Sorting;
 using Sys = System.Threading.Tasks;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MSOE.MediaComplete.Lib.Background;
+using MSOE.MediaComplete.Lib.Files;
 
 namespace MSOE.MediaComplete.Lib.Import
 {
@@ -19,7 +20,6 @@ namespace MSOE.MediaComplete.Lib.Import
         public delegate void ImportHandler(ImportResults results);
 
         private readonly IFileManager _fm;
-        private readonly DirectoryPath _homeDir;
 
         /// <summary>
         /// Constructs an Importer with the given library home directory.
@@ -29,7 +29,6 @@ namespace MSOE.MediaComplete.Lib.Import
         public Importer(DirectoryPath dir, IFileManager fms)
         {
             _fm = fms;
-            _homeDir = dir;
         }
 
         /// <summary>
@@ -57,7 +56,7 @@ namespace MSOE.MediaComplete.Lib.Import
         /// <exception cref="InvalidImportException">Thrown when files includes a file in the current home directory</exception>
         public async Task<ImportResults> ImportFilesAsync(IEnumerable<SongPath> files, bool isMove)
         {
-            if (files.Any(f => f.HasParent(_homeDir)))
+            if (files.Any(f => f.HasParent(SettingWrapper.MusicDir)))
             {
                 throw new InvalidImportException();
             }

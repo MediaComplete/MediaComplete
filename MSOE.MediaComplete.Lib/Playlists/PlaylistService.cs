@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using M3U.NET;
-using MSOE.MediaComplete.Lib.Songs;
+using MSOE.MediaComplete.Lib.Files;
 using TagLib;
 
 namespace MSOE.MediaComplete.Lib.Playlists
@@ -82,6 +83,11 @@ namespace MSOE.MediaComplete.Lib.Playlists
         {
             return _service.ToMediaItem(song);
         }
+
+        public static AbstractSong Create(MediaItem mediaItem)
+        {
+            return _service.Create(mediaItem);
+        }
     }
     #endregion
 
@@ -121,6 +127,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
         /// <returns>The new Playlist object</returns>
         Playlist CreatePlaylist();
 
+        AbstractSong Create(MediaItem mediaItem);
         MediaItem ToMediaItem(AbstractSong song);
     }
     #endregion
@@ -227,10 +234,29 @@ namespace MSOE.MediaComplete.Lib.Playlists
             {
                 Location = song.Path,
                 Inf = song.Artist + " - " + song.Title,
-                Runtime = song.Duration
+                Runtime = song.Duration ?? 0
             };
         }
 
+        private static readonly IReadOnlyDictionary<string, Type> TypeDictionary = new Dictionary<string, Type>
+        {
+            // MP3/WMA file regex
+            {@".*\.[" + Constants.MusicFileExtensions.Aggregate((x, y) => x + "|" + y) + "]", typeof (LocalSong)}
+            // Future - youtube URLs regex
+        };
+        public AbstractSong Create(MediaItem mediaItem)
+        {
+            foreach (var regex in TypeDictionary)
+            {
+                var hits = new Regex(regex.Key).Matches(mediaItem.Location).Count;
+                if (hits > 0)
+                {
+                        return FileManager.Instance.GetSong(mediaItem);
+                }
+            }
+
+            throw new FormatException(String.Format("{0} does not match any known song types", mediaItem.Location));
+        }
     }
     #endregion
 }

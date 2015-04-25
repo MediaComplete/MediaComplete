@@ -2,11 +2,12 @@
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Playing;
 using NAudio.Wave;
 using Ploeh.AutoFixture;
 using TagLib;
-using MSOE.MediaComplete.Lib.Songs;
+using MSOE.MediaComplete.Lib.Files;
 
 namespace MSOE.MediaComplete.Test.Playing
 {
@@ -24,7 +25,7 @@ namespace MSOE.MediaComplete.Test.Playing
         {
             var mockNAudioWrapper = new Mock<INAudioWrapper>();
             var stuff = new Fixture().Create<string>();
-            var mockFile = new LocalSong(new FileInfo(stuff));
+            var mockFile = new LocalSong("id", new SongPath(stuff));
 
             mockNAudioWrapper.Setup(m => m.Setup(mockFile.File, It.IsAny<EventHandler<StoppedEventArgs>>(),1.0));
 

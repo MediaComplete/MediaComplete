@@ -10,11 +10,12 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
+using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Playing;
 using MSOE.MediaComplete.Lib.Playlists;
-using MSOE.MediaComplete.Lib.Songs;
+using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Sorting;
 using NAudio.Wave;
 using WinForms = System.Windows.Forms;
@@ -50,7 +51,7 @@ namespace MSOE.MediaComplete
         private readonly CollectionViewSource _playlistSongs = new CollectionViewSource { Source = new ObservableCollection<SongListItem>() };
 
         private readonly Timer _refreshTimer = new Timer(TimerProc);
-        private readonly FileManager _fileManager = FileManager.Instance;
+        private readonly IFileManager _fileManager = FileManager.Instance;
         #endregion
 
         #region Construction
@@ -95,7 +96,7 @@ namespace MSOE.MediaComplete
         /// </summary>
         private void InitTreeView()
         {
-            _fileManager.CreateDirectory(SettingWrapper.MusicDir);
+            _fileManager.Initialize(SettingWrapper.MusicDir);
             RefreshTreeView();
 
             var watcher = new FileSystemWatcher(SettingWrapper.MusicDir.FullPath)
@@ -435,12 +436,12 @@ namespace MSOE.MediaComplete
                 parent.Children.Add(child);
                 PopulateFromFolder(child);
             }
-
             foreach (var file in dir.GetFilesOrCreateDir().GetMusicFiles())
             {
-                //TODO TODO Refactor this to use the FileManager data
-                songList.Add(new LibrarySongItem { Content = file.Name, ParentItem = parent, Data = new LocalSong(new SongPath(file.FullName)) });
+                var thing = _fileManager.GetSong(new SongPath(file.FullName));
+                songList.Add(new LibrarySongItem { Content = file.Name, ParentItem = parent, Data =  thing});
             }
+
         }
 
         /// <summary>
@@ -499,9 +500,7 @@ namespace MSOE.MediaComplete
         private IEnumerable<SongListItem> AllSongs()
         {
             var currentSongs = (ObservableCollection<SongListItem>)(PlaylistTab.IsSelected ? PlaylistSongs : Songs).Source;
-            return from object song in currentSongs
-                   where ((SongListItem)song).IsVisible
-                   select (song as SongListItem);
+            return currentSongs.Where(s => s.IsVisible);
         }
 
         /// <summary>

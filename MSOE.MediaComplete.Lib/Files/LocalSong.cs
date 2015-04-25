@@ -1,45 +1,25 @@
-﻿using System.IO;
-using System.Runtime;
-using M3U.NET;
-using MSOE.MediaComplete.Lib.Files;
-
-namespace MSOE.MediaComplete.Lib.Songs
+﻿
+namespace MSOE.MediaComplete.Lib.Files
 {
     /// <summary>
     /// Implementation of AbstractSong for local files. This is used for MP3 and WMA files.
     /// </summary>
     public class LocalSong : AbstractSong
     {
-        public FileInfo File { get; private set; }
-
-        /// <summary>
-        /// Constructs a LocalSong from a MediaItem
-        /// </summary>
-        /// <param name="m">The media item</param>
-        public LocalSong (MediaItem m) : this(new SongPath(m.Location))
-        {
-        }
-        //TODO TODO 
-        //TODO TODO 
-        //TODO TODO 
-        //TODO TODO 
-        //TODO TODO 
-        //TODO TODO 
-        //TODO TODO 
-        //TODO TODO 
-        //TODO TODO 
-        //TODO TODO 
-        //TODO TODO 
-        //TODO TODO 
-        //TODO TODO 
-        public SongPath SongPath { get; set; }
         /// <summary>
         /// Constructs a LocalSong from a file
         /// </summary>
-        /// <param name="songPath">The file</param>
-        public LocalSong(SongPath songPath)
+        /// <param name="id">The media item</param>
+        /// <param name="songPath">The file</param>id
+        public LocalSong(string id, SongPath songPath)
         {
+            _id = id;
             SongPath = songPath;
+        }
+        private readonly string _id;
+        public override string Id
+        {
+            get { return _id; }
         }
 
         public bool HasParent(DirectoryPath dir)
@@ -54,8 +34,8 @@ namespace MSOE.MediaComplete.Lib.Songs
         /// <returns>True if other is a local song referring to the same file, false otherwise.</returns>
         public override bool Equals(object other)
         {
-            var otherSong = other as LocalSong;
-            return otherSong != null && new FileLocationComparator().Equals(File, otherSong.File);
+            var o = other as LocalSong;
+            return o != null && Path.Equals(o.Path) && Id.Equals(o.Id);
         }
 
         public override int GetHashCode()
@@ -72,5 +52,6 @@ namespace MSOE.MediaComplete.Lib.Songs
         {
             return Path; 
         }
+
     }
 }

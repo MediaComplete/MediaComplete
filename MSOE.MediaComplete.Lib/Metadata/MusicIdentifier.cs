@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using ENMFPdotNet;
+using MSOE.MediaComplete.Lib.Files;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using Newtonsoft.Json.Linq;
@@ -21,7 +22,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
         private const string Path = "/api/v4/song/identify";
         private const string ApiKey = "MUIGA58IV1VQUOEJ5";
 
-        public static async Task<string> IdentifySongAsync(FileManager fileMover, string filename)
+        public static async Task<string> IdentifySongAsync(IFileManager fileMover, string filename)
         {
             StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Started", StatusBarHandler.StatusIcon.Working);
 
@@ -53,7 +54,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
             var strResponse = await response.Content.ReadAsStringAsync();
             var json = JObject.Parse(strResponse);
 
-            UpdateFileWithJson(json, fileMover.CreateTaglibFile(filename));
+            UpdateFileWithJson(json, File.Create(filename));
 
             var resp = json.SelectToken("response").ToString();
             StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Success", StatusBarHandler.StatusIcon.Success);

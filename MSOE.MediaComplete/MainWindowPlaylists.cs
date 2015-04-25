@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using MSOE.MediaComplete.CustomControls;
+using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Playing;
 using MSOE.MediaComplete.Lib.Playlists;
 
@@ -52,7 +53,7 @@ namespace MSOE.MediaComplete
                 list = PlaylistService.CreatePlaylist();
             }
 
-            list.Songs.AddRange(AllSongs().Select(s => s.Data));
+            list.Songs.AddRange(AllSongs().Select(s => FileManager.Instance.GetSong(s.Data.SongPath)));
             list.Save();
             _playlists.Add(list);
             // TODO MC-207 flow to rename

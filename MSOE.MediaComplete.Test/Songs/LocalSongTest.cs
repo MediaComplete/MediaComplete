@@ -1,8 +1,9 @@
 ﻿
 using System.IO;
-using MSOE.MediaComplete.Lib.Songs;
-using MSOE.MediaComplete.Test.Util;
+using MSOE.MediaComplete.Lib;
+using MSOE.MediaComplete.Lib.Files;
 using NUnit.Framework;
+using Constants = MSOE.MediaComplete.Test.Util.Constants;
 
 namespace MSOE.MediaComplete.Test.Songs
 {
@@ -18,7 +19,7 @@ namespace MSOE.MediaComplete.Test.Songs
         [TestCaseSource("BadFiles")]
         public void ToMediaItem_BadFile_Exception(string filename)
         {
-            var subject = new LocalSong(new FileInfo(filename));
+            var subject = new LocalSong("id",new SongPath(filename));
 
             //Assert.Throws<FileNotFoundException>(() => subject.ToMediaItem());
         }
@@ -34,7 +35,7 @@ namespace MSOE.MediaComplete.Test.Songs
         {
             var tagFile = TagLib.File.Create(filename);
 
-            var subject = new LocalSong(new FileInfo(filename));
+            var subject = new LocalSong("id", new SongPath(filename));
 
            // var results = subject.ToMediaItem();
 

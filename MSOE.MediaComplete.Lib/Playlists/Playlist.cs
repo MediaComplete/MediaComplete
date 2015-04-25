@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 using M3U.NET;
-using MSOE.MediaComplete.Lib.Songs;
+using MSOE.MediaComplete.Lib.Files;
 
 namespace MSOE.MediaComplete.Lib.Playlists
 {
@@ -28,7 +28,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
         public Playlist(IM3UFile file)
         {
             _file = file;
-            Songs = _file.Files.Select(AbstractSong.Create).ToList();
+            Songs = _file.Files.Select(PlaylistService.Create).ToList();
         }
 
         /// <summary>

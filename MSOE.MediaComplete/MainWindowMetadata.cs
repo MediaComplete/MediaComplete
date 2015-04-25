@@ -170,50 +170,39 @@ namespace MSOE.MediaComplete
             ToggleReadOnlyFields(true);
             foreach (SongListItem item in SelectedSongs())
             {
-                try
+                var song = item.Data;
+                foreach (var changedBox in _changedBoxes)
                 {
-                    var song = _fileManager.CreateTaglibFile((item.Data.GetPath()));
-                    foreach (var changedBox in _changedBoxes)
+                    if (changedBox.Equals(SongTitle))
                     {
-                        if (changedBox.Equals(SongTitle))
-                        {
-                            song.SetAttribute(MetaAttribute.SongTitle, changedBox.Text);
-                        }
-                        else if (changedBox.Equals(Album))
-                        {
-                            song.SetAttribute(MetaAttribute.Album, changedBox.Text);
-                        }
-                        else if (changedBox.Equals(Artist))
-                        {
-                            song.SetAttribute(MetaAttribute.Artist, changedBox.Text);
-                        }
-                        else if (changedBox.Equals(Genre))
-                        {
-                            song.SetAttribute(MetaAttribute.Genre, changedBox.Text);
-                        }
-                        else if (changedBox.Equals(Track))
-                        {
-                            song.SetAttribute(MetaAttribute.TrackNumber, changedBox.Text);
-                        }
-                        else if (changedBox.Equals(Year))
-                        {
-                            song.SetAttribute(MetaAttribute.Year, changedBox.Text);
-                        }
-                        else if (changedBox.Equals(Rating))
-                        {
-                            song.SetAttribute(MetaAttribute.Rating, changedBox.Text);
-                        }
-                        else if (changedBox.Equals(SuppArtist))
-                        {
-                            song.SetAttribute(MetaAttribute.SupportingArtist, changedBox.Text);
-                        }
+                        song.Title = changedBox.Text;
+                    }
+                    else if (changedBox.Equals(Album))
+                    {
+                        song.Album = changedBox.Text;
+                    }
+                    else if (changedBox.Equals(Artist))
+                    {
+                        song.Artist = changedBox.Text;
+                    }
+                    else if (changedBox.Equals(Genre))
+                    {
+                        song.Genre = changedBox.Text;
+                    }
+                    else if (changedBox.Equals(Track))
+                    {
+                        song.TrackNumber = changedBox.Text;
+                    }
+                    else if (changedBox.Equals(Year))
+                    {
+                        song.Year = changedBox.Text;
+                    }
+                    else if (changedBox.Equals(SuppArtist))
+                    {
+                        song.SupportingArtists = changedBox.Text;
                     }
                 }
-                catch (CorruptFileException)
-                {
-                    StatusBarHandler.Instance.ChangeStatusBarMessage("Save-Error", StatusBarHandler.StatusIcon.Error);
-                }
-            
+                _fileManager.SaveSong(song);
             }
             _changedBoxes.Clear();
             PopulateMetadataForm();

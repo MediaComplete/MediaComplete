@@ -3,9 +3,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using MSOE.MediaComplete.Lib.Background;
+using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
 using MSOE.MediaComplete.Lib.Metadata;
-using MSOE.MediaComplete.Lib.Songs;
+using MSOE.MediaComplete.Lib.Files;
 using Sys = System.Threading.Tasks;
 
 namespace MSOE.MediaComplete.Lib.Sorting
@@ -87,7 +88,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                             // TODO (MC-124) perhaps we should try comparing audio quality and pick the better one?
                             Actions.Add(new DeleteAction
                             {
-                                Target = song.SongPath
+                                Target = song
                             });
                         }
                         else
@@ -115,7 +116,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <param name="song">The source file to analyze</param>
         /// <param name="list">The sort-order of meta attributes</param>
         /// <returns>A new FileInfo describing where the source file should be moved to</returns>
-        private SongPath GetNewLocation(LocalSong song, IEnumerable<MetaAttribute> list)
+        private static SongPath GetNewLocation(LocalSong song, IEnumerable<MetaAttribute> list)
         {
             var metadataPath = new StringBuilder();
             foreach (var metaValue in list.Select(song.GetAttribute))
@@ -198,16 +199,16 @@ namespace MSOE.MediaComplete.Lib.Sorting
 
         public class DeleteAction : IAction
         {
-            public SongPath Target { get; set; }
+            public LocalSong Target { get; set; }
 
             public void Do()
             {
-                if (Target == null || !_fileManager.FileExists(Target)) // Will happen if something goes wrong in the calculation
+                if (Target == null || !_fileManager.FileExists(Target.SongPath)) // Will happen if something goes wrong in the calculation
                 {
                     return;
                 }
 
-                _fileManager.DeleteFile(Target); // TODO (MC-127) This should be a "recycle" delete. Not implemented yet.
+                _fileManager.DeleteSong(Target); // TODO (MC-127) This should be a "recycle" delete. Not implemented yet.
             }
         }
 

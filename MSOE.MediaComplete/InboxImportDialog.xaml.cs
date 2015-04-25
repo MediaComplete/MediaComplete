@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using MSOE.MediaComplete.Lib;
 using System;
+using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
 
 namespace MSOE.MediaComplete

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using MSOE.MediaComplete.Lib.Files;
 
 namespace MSOE.MediaComplete.Lib
 {
@@ -11,6 +12,18 @@ namespace MSOE.MediaComplete.Lib
     /// </summary>
     public static class SystemExtensions
     {
+        /// <summary>
+        /// This uses the DirectoryInfo GetFiles or createds a new directory if the rootDirInfo doesn't already exist
+        /// </summary>
+        /// <param name="rootDirInfo"></param>
+        /// <returns></returns>
+        public static IEnumerable<FileInfo> GetFilesOrCreateDir(this DirectoryInfo rootDirInfo)
+        {
+            if (!rootDirInfo.Exists) FileManager.Instance.CreateDirectory(new DirectoryPath(rootDirInfo.FullName));
+
+            return rootDirInfo.GetFiles();
+        }
+
         /// <summary>
         /// Returns true if the file is located somewhere within the parent's children, recursively.
         /// </summary>

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Forms;
 using MSOE.MediaComplete.Lib;
+using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Sorting;
 using ComboBox = System.Windows.Controls.ComboBox;
 
@@ -91,9 +92,9 @@ namespace MSOE.MediaComplete
 
             if (!_allDirs.Contains(SettingWrapper.HomeDir.FullPath))
             {
-                var tempPath = SettingWrapper.HomeDir + "temp"+new Random().Next();
-                _fileManager.MoveDirectory(SettingWrapper.HomeDir.FullPath, tempPath);
-                _fileManager.MoveDirectory(tempPath, SettingWrapper.MusicDir.FullPath);
+                var tempPath = new DirectoryPath(SettingWrapper.HomeDir.FullPath + "temp"+ new Random().Next());
+                _fileManager.MoveDirectory(SettingWrapper.HomeDir, tempPath);
+                _fileManager.MoveDirectory(tempPath, SettingWrapper.MusicDir);
                 _allDirs.Add(SettingWrapper.HomeDir.FullPath);
             }
 

@@ -1,24 +1,40 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using M3U.NET;
 using MSOE.MediaComplete.Lib.Metadata;
 
-namespace MSOE.MediaComplete.Lib.Songs
+namespace MSOE.MediaComplete.Lib.Files
 {
     /// <summary>
     /// Base class for Songs in the library. Subclasses provide implementations for local files and remotely streamed music
     /// </summary>
-    public abstract class AbstractSong
+    public abstract class AbstractSong 
     {
-        private static readonly IReadOnlyDictionary<string, Type> TypeDictionary = new Dictionary<string, Type>
-        {
-            // MP3/WMA file regex
-            {@".*\.[" + Constants.MusicFileExtensions.Aggregate((x, y) => x + "|" + y) + "]", typeof (LocalSong)}
-            // Future - youtube URLs regex
-        };
 
+
+        public SongPath SongPath { get; set; }
+        public abstract string Id { get; }
+        public string Title { get; set; }
+        public string SupportingArtists { get; set; }
+        public string TrackNumber { get; set; }
+        public string Year { get; set; }
+        public string Album { get; set; }
+        public string Artist { get; set; }
+        public string Genre { get; set; }
+        public int? Duration { get; set; }
+
+        public string Path
+        {
+            get { return SongPath.FullPath; }
+        }
+
+        public string Name
+        {
+            get
+            {
+                return string.Format("{0} {1} - {2}", TrackNumber, Title, Artist);
+            }
+        }
+
+        public abstract string GetPath();
         /// <summary>
         /// Creates and returns a subclass of the appropriate type, given the location format in the MediaItem. 
         /// </summary>
@@ -26,23 +42,6 @@ namespace MSOE.MediaComplete.Lib.Songs
         /// <returns>A new Song</returns>
         /// <exception cref="InvalidCastException">Thrown if the matched type of song doesn't provide the expected constructor signature.</exception>
         /// <exception cref="FormatException">Thrown if the MediaItem cannot be recognized as any type.</exception>
-        public static AbstractSong Create(MediaItem mediaItem)
-        {
-            foreach (var regex in TypeDictionary)
-            {
-                var hits = new Regex(regex.Key).Matches(mediaItem.Location).Count;
-                if (hits > 0)
-                {
-                    var constructor = regex.Value.GetConstructor(new[] {typeof (MediaItem)});
-                    if (constructor != null)
-                        return (AbstractSong) constructor.Invoke(new object[] {mediaItem});
-                    throw new InvalidCastException(
-                        String.Format("Missing MediaItem constructor for AbstractSong subclass {0}", regex.Value));
-                }
-            }
-
-            throw new FormatException(String.Format("{0} does not match any known song types", mediaItem.Location));
-        }
 
         /// <summary>
         /// Enforces an equality check on all subsongs.
@@ -51,16 +50,6 @@ namespace MSOE.MediaComplete.Lib.Songs
         /// <returns>True if this is logically equivalent to other, false otherwise</returns>
         public new abstract bool Equals(object other);
 
-        public abstract string GetPath();
-        public string Album { get; set; }
-
-        public string Artist { get; set; }
-        public string Genre { get; set; }
-        public string Title { get; set; }
-        public string SupportingArtists { get; set; }
-        public string TrackNumber { get; set; }
-        public string Year { get; set; }
-        public int? Duration { get; set; }
 
         public string GetAttribute(MetaAttribute attribute)
         {
@@ -84,6 +73,5 @@ namespace MSOE.MediaComplete.Lib.Songs
                     return null;
             }
         }
-        public string Path { get; set; }
     }
 }

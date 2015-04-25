@@ -32,7 +32,7 @@ namespace MSOE.MediaComplete.Lib
         /// <returns>music directory path</returns>
         public static DirectoryPath MusicDir
         {
-            get { return new DirectoryPath(HomeDir + Settings.Default.MusicDir + Path.DirectorySeparatorChar); }
+            get { return new DirectoryPath(HomeDir.FullPath + Settings.Default.MusicDir + Path.DirectorySeparatorChar); }
         }
         /// <summary>
         /// Gets the playlist directory from the settings
@@ -40,7 +40,7 @@ namespace MSOE.MediaComplete.Lib
         /// <returns>playlist directory path</returns>
         public static DirectoryPath PlaylistDir
         {
-            get { return new DirectoryPath(HomeDir + Settings.Default.PlaylistDir + Path.DirectorySeparatorChar); }
+            get { return new DirectoryPath(HomeDir.FullPath + Settings.Default.PlaylistDir + Path.DirectorySeparatorChar); }
         }
         /// <summary>
         /// gets the inbox directory path
