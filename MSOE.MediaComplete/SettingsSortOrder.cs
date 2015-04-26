@@ -75,7 +75,7 @@ namespace MSOE.MediaComplete
                     SelectedValue = showValue ? (object)_sortOrderList[attributeIndex] : -1,
                     Tag = i
                 };
-                comboBox.SetResourceReference(StyleProperty, "ComboBox");
+
                 var minus = new Button
                 {
                     Width = 20,

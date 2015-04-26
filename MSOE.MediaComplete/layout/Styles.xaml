@@ -268,7 +268,7 @@
         <Border x:Name="PART_ContentHost" Focusable="False" Background="{DynamicResource MenuBackgroundBrush}" />
     </ControlTemplate>
     
-    <Style TargetType="{x:Type ComboBox}" x:Key="ComboBox">
+    <Style TargetType="{x:Type ComboBox}">
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="OverridesDefaultStyle" Value="true" />
         <Setter Property="TextElement.Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
@@ -371,6 +371,20 @@
                 <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}" />
             </Trigger>
         </Style.Triggers>
+    </Style>
+    <Style TargetType="{x:Type Button}" x:Key="InformationIcon">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Ellipse Height="14" Width="14" Fill="{DynamicResource ButtonDefaultBrush}"/>
+                        <Polygon Points="6,2 8,2 8,4 6,4" Style="{DynamicResource IconStyle}"/>
+                        <Polygon Points="5,6 8,6 8,11 10,11 10,13 4,13 4,11 6,11 6,8 5,8 " Style="{DynamicResource IconStyle}"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="IsEnabled" Value="True"/>
     </Style>
     <Style TargetType="{x:Type TextBox}">
         <Setter Property="BorderBrush" Value="{DynamicResource TextBoxBorderBrush}" />
