@@ -41,14 +41,16 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void JumpTo_ArgumentIsPresent_ChangesIndex()
         {
-            var targetSong = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("notrealfile2")));
+            var Id = Guid.NewGuid().ToString();
+            var targetSong = new LocalSong(Id,new SongPath(("notrealfile2")));
+
             NowPlaying.Inst.Add(new List<AbstractSong>
             {
                 new LocalSong(Guid.NewGuid().ToString(),new SongPath(("notrealfile"))),
                 targetSong
             });
             var initialIndex = NowPlaying.Inst.Index;
-            var ret = NowPlaying.Inst.JumpTo(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("notrealfile2"))));
+            var ret = NowPlaying.Inst.JumpTo(new LocalSong(Id,new SongPath(("notrealfile2"))));
 
             Assert.IsTrue(ret, "Song should have been found.");
             Assert.AreNotEqual(initialIndex, NowPlaying.Inst.Index, "Index should have moved.");
@@ -400,9 +402,10 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void Remove_SongFound_ReturnsTrueAndQueueEmptied()
         {
-            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong1"))));
+            var id = Guid.NewGuid().ToString();
+            NowPlaying.Inst.Add(new LocalSong(id, new SongPath(("fakesong1"))));
 
-            var ret = NowPlaying.Inst.Remove(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1"))));
+            var ret = NowPlaying.Inst.Remove(new LocalSong(id, new SongPath(("fakesong1"))));
 
             Assert.IsTrue(ret, "Fake song should have been found.");
             Assert.AreEqual(0, NowPlaying.Inst.Playlist.Songs.Count, "Song should have been removed");
@@ -412,10 +415,11 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void Remove_SongFound_ReturnsTrueAndSongRemoved()
         {
-            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong1"))));
+            var id = Guid.NewGuid().ToString();
+            NowPlaying.Inst.Add(new LocalSong(id, new SongPath(("fakesong1"))));
             NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong2"))));
 
-            var ret = NowPlaying.Inst.Remove(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1"))));
+            var ret = NowPlaying.Inst.Remove(new LocalSong(id, new SongPath(("fakesong1"))));
 
             Assert.IsTrue(ret, "Fake song should have been found.");
             Assert.AreEqual(1, NowPlaying.Inst.Playlist.Songs.Count, "Song should have been removed");
@@ -462,10 +466,11 @@ namespace MSOE.MediaComplete.Test.Playing
         {
             var targetSong = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong3")));
             NowPlaying.Inst.Add(targetSong);
-            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong1"))));
+            var id = Guid.NewGuid().ToString();
+            NowPlaying.Inst.Add(new LocalSong(id, new SongPath(("fakesong1"))));
             NowPlaying.Inst.Remove(new List<AbstractSong>
             {
-                new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1"))),
+                new LocalSong(id,new SongPath(("fakesong1"))),
                 new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong2")))
             });
 

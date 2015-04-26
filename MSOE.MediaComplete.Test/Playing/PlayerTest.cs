@@ -24,15 +24,18 @@ namespace MSOE.MediaComplete.Test.Playing
         public void StateChanges_HappyPath()
         {
             var mockNAudioWrapper = new Mock<INAudioWrapper>();
+            var mockFileManager = new Mock<IFileManager>();
             var stuff = new Fixture().Create<string>();
-            var mockFile = new LocalSong("id", new SongPath(stuff));
+            var mockFile = new FileInfo(stuff);
+            var mockLocalSong = new LocalSong("id", new SongPath(stuff));
 
-            mockNAudioWrapper.Setup(m => m.Setup(mockFile.File, It.IsAny<EventHandler<StoppedEventArgs>>(),1.0));
+            mockNAudioWrapper.Setup(m => m.Setup(mockFile, It.IsAny<EventHandler<StoppedEventArgs>>(), 1.0));
+            mockFileManager.Setup(m => m.GetFileInfo(It.IsAny<LocalSong>())).Returns(mockFile);
 
-            var player = new Player(mockNAudioWrapper.Object);
+            var player = new Player(mockNAudioWrapper.Object, mockFileManager.Object);
             mockNAudioWrapper.Setup(m => m.Play()).Returns(PlaybackState.Playing);
 
-            NowPlaying.Inst.Add(mockFile);
+            NowPlaying.Inst.Add(mockLocalSong);
             player.Play();
             Assert.AreEqual(PlaybackState.Playing, player.PlaybackState);
 
@@ -56,15 +59,18 @@ namespace MSOE.MediaComplete.Test.Playing
         public void StateChanges_WeirdPath()
         {
             var mockNAudioWrapper = new Mock<INAudioWrapper>();
+            var mockFileManager = new Mock<IFileManager>();
             var stuff = new Fixture().Create<string>();
-            var mockFile = new LocalSong(new FileInfo(stuff));
+            var mockFile = new FileInfo(stuff);
+            var mockLocalSong = new LocalSong("id", new SongPath(stuff));
 
-            mockNAudioWrapper.Setup(m => m.Setup(mockFile.File, It.IsAny<EventHandler<StoppedEventArgs>>(),1.0));
+            mockNAudioWrapper.Setup(m => m.Setup(mockFile, It.IsAny<EventHandler<StoppedEventArgs>>(), 1.0));
+            mockFileManager.Setup(m => m.GetFileInfo(It.IsAny<LocalSong>())).Returns(mockFile);
 
-            var player = new Player(mockNAudioWrapper.Object);
+            var player = new Player(mockNAudioWrapper.Object, mockFileManager.Object);
             mockNAudioWrapper.Setup(m => m.Play()).Returns(PlaybackState.Playing);
 
-            NowPlaying.Inst.Add(mockFile);
+            NowPlaying.Inst.Add(mockLocalSong);
             player.Play();
             Assert.AreEqual(PlaybackState.Playing, player.PlaybackState);
 
@@ -109,13 +115,16 @@ namespace MSOE.MediaComplete.Test.Playing
         public void Play_InvalidFileInfo_ThrowsCorruptFileException()
         {
             var mockNAudioWrapper = new Mock<INAudioWrapper>();
+            var mockFileManager = new Mock<IFileManager>();
             var stuff = new Fixture().Create<string>();
-            var anyInvalidFile = new LocalSong(new FileInfo(stuff));
+            var mockFile = new FileInfo(stuff);
+            var mockLocalSong = new LocalSong("id", new SongPath(stuff));
 
-            mockNAudioWrapper.Setup(m => m.Setup(anyInvalidFile.File, It.IsAny<EventHandler<StoppedEventArgs>>(),1.0)).Throws(new CorruptFileException());
+            mockNAudioWrapper.Setup(m => m.Setup(mockFile, It.IsAny<EventHandler<StoppedEventArgs>>(), 1.0)).Throws(new CorruptFileException());
+            mockFileManager.Setup(m => m.GetFileInfo(It.IsAny<LocalSong>())).Returns(mockFile);
 
-            var player = new Player(mockNAudioWrapper.Object);
-            NowPlaying.Inst.Add(anyInvalidFile);
+            var player = new Player(mockNAudioWrapper.Object, mockFileManager.Object);
+            NowPlaying.Inst.Add(mockLocalSong);
             player.Play();
 
             Assert.Fail("Play should not have handled the CorruptFileException");
