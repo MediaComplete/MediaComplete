@@ -232,16 +232,9 @@
                 x:Name="Border"
                 Grid.ColumnSpan="2"
                 CornerRadius="0"
-                Background="{DynamicResource NormalBrush}"
-                BorderBrush="{DynamicResource NormalBorderBrush}"
+                Background="{DynamicResource MenuBackgroundBrush}"
+                BorderBrush="{DynamicResource MenuBackgroundBrush}"
                 BorderThickness="1" />
-            <Border
-                Grid.Column="0"
-                CornerRadius="0,0,0,0"
-                Margin="1"
-                Background="{DynamicResource WindowBackgroundBrush}"
-                BorderBrush="{DynamicResource NormalBorderBrush}"
-                BorderThickness="0,0,0,0" />
             <Path
                 x:Name="Arrow"
                 Grid.Column="1"
@@ -252,13 +245,18 @@
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="ToggleButton.IsMouseOver" Value="true">
-                <Setter TargetName="Border" Property="Background" Value="{DynamicResource DarkBrush}" />
+                <Setter TargetName="Border" Property="Background" Value="{DynamicResource ButtonDefaultHoverBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource MenuBackgroundBrush}" />
+            </Trigger>
+            <Trigger Property="ToggleButton.IsMouseOver" Value="False">
+                <Setter TargetName="Border" Property="Background" Value="{DynamicResource MenuBackgroundBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}" />
             </Trigger>
             <Trigger Property="ToggleButton.IsChecked" Value="true">
-                <Setter TargetName="Border" Property="Background" Value="{DynamicResource PressedBrush}" />
+                <Setter TargetName="Border" Property="Background" Value="{DynamicResource ButtonDefaultHoverBrush}" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
-                <Setter TargetName="Border" Property="Background" Value="{DynamicResource DisabledBackgroundBrush}" />
+                <Setter TargetName="Border" Property="Background" Value="{DynamicResource MenuBackgroundBrush}" />
                 <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource DisabledBorderBrush}" />
                 <Setter Property="Foreground" Value="{DynamicResource DisabledForegroundBrush}" />
                 <Setter TargetName="Arrow" Property="Fill" Value="{DynamicResource DisabledForegroundBrush}" />
@@ -267,24 +265,14 @@
     </ControlTemplate>
 
     <ControlTemplate x:Key="ComboBoxTextBox" TargetType="TextBox">
-        <Border x:Name="PART_ContentHost" Focusable="False" Background="{TemplateBinding Background}" />
+        <Border x:Name="PART_ContentHost" Focusable="False" Background="{DynamicResource MenuBackgroundBrush}" />
     </ControlTemplate>
-
-    <Style x:Key="{x:Type ComboBox}" TargetType="ComboBox">
-        <Setter Property="HorizontalAlignment" Value="Stretch" />
+    
+    <Style TargetType="{x:Type ComboBox}">
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="TextElement.Foreground" Value="Black" />
-        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-        <Setter Property="BorderBrush" Value="Black" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Background" Value="White" />
-        <Setter Property="SnapsToDevicePixels" Value="true" />
         <Setter Property="OverridesDefaultStyle" Value="true" />
-        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
-        <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
-        <Setter Property="MinWidth" Value="120" />
-        <Setter Property="MinHeight" Value="20" />
         <Setter Property="Margin" Value="4, 0, 8, 0" />
         <Setter Property="Template">
             <Setter.Value>
@@ -300,21 +288,10 @@
                             Name="ContentSite"
                             IsHitTestVisible="False"
                             Content="{TemplateBinding SelectionBoxItem}"
-                            ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                             ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
                             Margin="3,3,23,3"
                             VerticalAlignment="Center"
                             HorizontalAlignment="Left" />
-                        <TextBox x:Name="PART_EditableTextBox"
-                                 Style="{x:Null}"
-                                 Template="{StaticResource ComboBoxTextBox}"
-                                 HorizontalAlignment="Left"
-                                 VerticalAlignment="Center"
-                                 Margin="3,3,23,3"
-                                 Focusable="True"
-                                 Background="Transparent"
-                                 Visibility="Hidden"
-                                 IsReadOnly="{TemplateBinding IsReadOnly}" />
                         <Popup
                             Name="Popup"
                             Placement="Bottom"
@@ -329,9 +306,9 @@
                                 MaxHeight="{TemplateBinding MaxDropDownHeight}">
                                 <Border
                                     x:Name="DropDownBorder"
-                                    Background="{DynamicResource WindowBackgroundBrush}"
+                                    Background="{DynamicResource MenuBackgroundBrush}"
                                     BorderThickness="1"
-                                    BorderBrush="{DynamicResource SolidBorderBrush}"
+                                    BorderBrush="{DynamicResource MenuBackgroundBrush}"
                                     CornerRadius="0,0,0,0" />
                                 <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
                                     <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
@@ -339,46 +316,50 @@
                             </Grid>
                         </Popup>
                     </Grid>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="HasItems" Value="false">
-                            <Setter TargetName="DropDownBorder" Property="MinHeight" Value="95" />
-                        </Trigger>
-                        <Trigger Property="IsEnabled" Value="false">
-                            <Setter Property="Foreground" Value="{DynamicResource DisabledForegroundBrush}" />
-                        </Trigger>
-                        <Trigger Property="IsGrouping" Value="true">
-                            <Setter Property="ScrollViewer.CanContentScroll" Value="false" />
-                        </Trigger>
-                        <Trigger SourceName="Popup" Property="Popup.AllowsTransparency" Value="true">
-                            <Setter TargetName="DropDownBorder" Property="CornerRadius" Value="0" />
-                            <Setter TargetName="DropDownBorder" Property="Margin" Value="0,2,0,0" />
-                        </Trigger>
-                        <Trigger Property="IsEditable"
-                                 Value="true">
-                            <Setter Property="IsTabStop" Value="false" />
-                            <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible" />
-                            <Setter TargetName="ContentSite" Property="Visibility" Value="Hidden" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-    <Style TargetType="{x:Type Button}" x:Key="Plus/Minus">
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="Transparent" />
+    <Style TargetType="{x:Type Button}" x:Key="Plus">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <Border x:Name="bg"
-                            Background="{TemplateBinding Background}"
-                            BorderThickness="0">
-                        <ContentPresenter HorizontalAlignment="Center"
-                                          VerticalAlignment="Center" />
-                    </Border>
+                    <Grid>
+                        <Rectangle Height="20" Width="20" Style="{DynamicResource ToolbarRectangleStyle}"/>
+                        <Polygon Points="8,4 12,4 12,8 16,8 16,12 12,12 12,16 8,16 8,12 4,12 4,8 8,8" Fill="{DynamicResource ToolbarButtonPrimaryBrush}"/>
+                    </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+    <Style TargetType="{x:Type Button}" x:Key="Minus">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Rectangle Height="20" Width="20" Style="{DynamicResource ToolbarRectangleStyle}"/>
+                        <Polygon Points="16,8 16,12 4,12 4,8" Fill="{DynamicResource ToolbarButtonPrimaryBrush}"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="ToolbarRectangleStyle" TargetType="{x:Type Rectangle}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid,AncestorLevel=1}, Path=IsMouseOver}" Value="True">
+                <Setter Property="Fill" Value="{DynamicResource ButtonDefaultBrush}"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid,AncestorLevel=1}, Path=IsMouseOver}" Value="False">
+                <Setter Property="Fill" Value="Transparent"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="{x:Type Polygon}" x:Key="IconStyle" >
+        <Setter Property="Fill" Value="{DynamicResource ButtonAccentBrush}"/>
+    </Style>
+    <Style TargetType="{x:Type Polygon}" x:Key="FolderIconStyle" >
+        <Setter Property="Fill" Value="{DynamicResource ToolbarButtonPrimaryBrush}"/>
+        <Setter Property="Points" Value="4,4 8,4 10,6 18,6 18,18, 4,18"/>
     </Style>
     <Style TargetType="{x:Type TabControl}">
         <Setter Property="Background" Value="{DynamicResource BackgroundBrush}" />
@@ -390,6 +371,20 @@
                 <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}" />
             </Trigger>
         </Style.Triggers>
+    </Style>
+    <Style TargetType="{x:Type Button}" x:Key="InformationIcon">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Ellipse Height="14" Width="14" Fill="{DynamicResource ButtonDefaultBrush}"/>
+                        <Polygon Points="6,2 8,2 8,4 6,4" Style="{DynamicResource IconStyle}"/>
+                        <Polygon Points="5,6 8,6 8,11 10,11 10,13 4,13 4,11 6,11 6,8 5,8 " Style="{DynamicResource IconStyle}"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="IsEnabled" Value="True"/>
     </Style>
     <Style TargetType="{x:Type TextBox}">
         <Setter Property="BorderBrush" Value="{DynamicResource TextBoxBorderBrush}" />
