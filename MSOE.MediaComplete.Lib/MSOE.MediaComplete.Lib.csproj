@@ -96,6 +96,7 @@
     <Compile Include="Playing\NowPlaying.cs" />
     <Compile Include="Playlists\Playlist.cs" />
     <Compile Include="Playlists\PlaylistService.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="Songs\AbstractSong.cs" />
     <Compile Include="Songs\LocalSong.cs" />
     <Compile Include="Playing\IPlayer.cs" />

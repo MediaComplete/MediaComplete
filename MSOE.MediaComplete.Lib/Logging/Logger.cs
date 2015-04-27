@@ -6,7 +6,7 @@ namespace MSOE.MediaComplete.Lib.Logging
 {
     public static class Logger
     {
-        public static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// This logs informational messages about the current state of the application and code
@@ -17,6 +17,10 @@ namespace MSOE.MediaComplete.Lib.Logging
         /// <param name="message">the message to output to the log</param>
         public static void LogInformation(string message)
         {
+            Console.WriteLine("message:"+message); //TODO remove me
+            Console.WriteLine("LogLevel:"+SettingWrapper.LogLevel);
+            Console.WriteLine("Log4NetLevel:" + ((log4net.Repository.Hierarchy.Hierarchy)LogManager.GetRepository()).Root.Level);
+            Console.WriteLine("IsInfoEnabled:"+Log.IsInfoEnabled);
             if (Log.IsInfoEnabled)
                 Log.Info(message);
         }

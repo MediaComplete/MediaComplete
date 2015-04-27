@@ -144,7 +144,7 @@ namespace MSOE.MediaComplete.Lib
         /// </summary>
         public static int LogLevel
         {
-            get { return SettingWrapper.LogLevel; }
+            get { return Settings.Default.LogLevel; }
             set
             {
                 Settings.Default.LogLevel = value;

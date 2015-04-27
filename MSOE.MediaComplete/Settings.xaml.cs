@@ -2,9 +2,11 @@
 using System.Globalization;
 using System.IO;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Forms;
 using MSOE.MediaComplete.Lib;
+using MSOE.MediaComplete.Lib.Logging;
 using MSOE.MediaComplete.Lib.Sorting;
 using ComboBox = System.Windows.Controls.ComboBox;
 
@@ -27,7 +29,6 @@ namespace MSOE.MediaComplete
         private readonly IFileMover _fileMover;
         public Settings()
         {
-
             InitializeComponent();
             TxtboxSelectedFolder.Text = SettingWrapper.HomeDir;
             TxtInboxFolder.Text = SettingWrapper.InboxDir;
@@ -35,6 +36,8 @@ namespace MSOE.MediaComplete
             CheckboxPolling.IsChecked = SettingWrapper.IsPolling;
             CheckboxShowImportDialog.IsChecked = SettingWrapper.ShowInputDialog;
             CheckBoxSorting.IsChecked = SettingWrapper.IsSorting;
+            CheckBoxInfoLogging.IsChecked = SettingWrapper.LogLevel!=0;
+            Logger.SetLogLevel(SettingWrapper.LogLevel);
             MoveOrCopy.IsChecked = SettingWrapper.ShouldRemoveOnImport;
             _allDirs = SettingWrapper.AllDirectories;
             _fileMover = FileMover.Instance;
@@ -229,5 +232,23 @@ namespace MSOE.MediaComplete
             SettingWrapper.Save();
         }
 
+
+        private void CheckBoxInfoLoggingChanged(object sender, RoutedEventArgs e)
+        {
+            var cb = sender as System.Windows.Controls.CheckBox;
+            if (cb != null && cb.IsChecked == true)
+            {
+                SettingWrapper.LogLevel = 1;
+            }
+            else
+            {
+                SettingWrapper.LogLevel = 0;
+            }
+        }
+
+        private void OpenLogFolder(object sender, RoutedEventArgs e)
+        {
+            Process.Start("explorer.exe", "logs");
+        }
     }
 }
