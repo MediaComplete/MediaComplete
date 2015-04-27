@@ -3,7 +3,6 @@ using System.IO;
 using M3U.NET;
 using MSOE.MediaComplete.Lib.Files;
 using TagLib;
-using File = TagLib.File;
 
 namespace MSOE.MediaComplete.Lib.Songs
 {
@@ -37,7 +36,7 @@ namespace MSOE.MediaComplete.Lib.Songs
         /// <returns>A new media item</returns>
         public override MediaItem ToMediaItem()
         {
-            File tagFile;
+            TagLib.File tagFile;
             try
             {
                 tagFile = TagLib.File.Create(File.FullName);

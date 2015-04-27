@@ -1,53 +1,52 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
+using System.IO;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using System.Web;
-using ENMFPdotNet;
 using NAudio.Wave;
-using NAudio.Wave.SampleProviders;
 using Newtonsoft.Json.Linq;
-using TagLib;
+using File = TagLib.File;
 
 namespace MSOE.MediaComplete.Lib.Metadata
 {
+    /// <summary>
+    /// Provides functions for identifying a song
+    /// </summary>
     public static class MusicIdentifier
     {
-        private const int Freq = 22050;
-        private const int SampleSeconds = 30;
-        private const int SampleSize = Freq*SampleSeconds;
-        private static readonly UriBuilder Uri = new UriBuilder("http", "developer.echonest.com");
-        private const string Path = "/api/v4/song/identify";
-        private const string ApiKey = "MUIGA58IV1VQUOEJ5";
+        private const int Freq = 8000;
+        private const int SampleSeconds = 10;
 
-        public static async Task<string> IdentifySongAsync(FileMover fileMover, string filename)
+        /// <summary>
+        /// Identify a song; restoring its metadata based on the audio data
+        /// </summary>
+        /// <param name="fileMover">Service for accessing the song</param>
+        /// <param name="filename">The name of the target song</param>
+        /// <returns></returns>
+        public static async Task IdentifySongAsync(FileMover fileMover, string filename)
         {
             StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Started", StatusBarHandler.StatusIcon.Working);
 
             if (!fileMover.FileExists(filename))
             {
                 StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error-NoException", StatusBarHandler.StatusIcon.Error);
-                return null;
+                return;
             }
-            // We have to force "SampleAudio" onto a new thread, otherwise the main thread 
-            // will lock while doing the expensive file reading and audio manipulation.
-            var audioData = await Task.Run(() => SampleAudio(fileMover, filename));
+            
+            var audioData = await SampleAudioAsync(filename);
             if (audioData == null)
             {
                 StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error-NoException", StatusBarHandler.StatusIcon.Error);
-                return null;
+                return;
             }
 
-            var codegen = new FingerprintGenerator(audioData, 0);
-            var code = codegen.GetFingerprintCode().Code;
+            var client = new HttpClient { BaseAddress = new Uri(@"http://developer.doreso.com") };
 
-            var client = new HttpClient {BaseAddress = new Uri(Uri.ToString())};
+            var payload = new ByteArrayContent(audioData);
+            payload.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
 
-            var query = HttpUtility.ParseQueryString(string.Empty);
-            query["api_key"] = ApiKey;
-            query["code"] = code;
-            var response = await client.GetAsync(Path + "?" + query);
+            var response = await client.PostAsync(@"/api/v1/song/identify?api_key=IZY34FSerDqD8NiP2mDBTIqG4gOSeHuMHQqsZaekvRM", payload);
 
             // Parse the response body.
             var strResponse = await response.Content.ReadAsStringAsync();
@@ -55,73 +54,93 @@ namespace MSOE.MediaComplete.Lib.Metadata
 
             UpdateFileWithJson(json, fileMover.CreateTaglibFile(filename));
 
-            var resp = json.SelectToken("response").ToString();
             StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Success", StatusBarHandler.StatusIcon.Success);
-            return resp;
         }
 
-        private static void UpdateFileWithJson(JToken json, File create)
+        /// <summary>
+        /// Replace the metadata attributes with the new data obtained from the web
+        /// </summary>
+        /// <param name="json">The JSON web data. Currently assumed to be in Doreso's format</param>
+        /// <param name="metadata">The metadata object to repopulate</param>
+        private static void UpdateFileWithJson(JToken json, File metadata)
         {
-            const string song = "response.songs[0].";
-            var title = json.SelectToken(song + "title");
-            if (title!=null)
+            const string song = "data[0].";
+            var title = json.SelectToken(song + "name");
+            if (title != null)
             {
-                create.SetAttribute(MetaAttribute.SongTitle, title.ToString());
+                metadata.SetAttribute(MetaAttribute.SongTitle, title.ToString());
             }
             var artist = json.SelectToken(song + "artist_name");
             if (artist != null)
             {
-                create.SetAttribute(MetaAttribute.Artist, artist.ToString());
+                metadata.SetAttribute(MetaAttribute.Artist, artist.ToString());
+            }
+            var album = json.SelectToken(song + "album");
+            if (album != null)
+            {
+                metadata.SetAttribute(MetaAttribute.Album, album.ToString());
             }
 
             // TODO (MC-139, MC-45) add more - this will require using the ID passed in to access possible other databases...further research needed
         }
 
-        /*
-         * Parses an MP3 file and pulls the first 30 seconds into the format needed for the Echonest code generator
-         */
-        private static float[] SampleAudio(IFileMover fileMover, string filename)
+        /// <summary>
+        /// Read in audio data to send to the web identification service
+        /// </summary>
+        /// <param name="filename">The filename to read from</param>
+        /// <returns>A byte array of wav data</returns>
+        private async static Task<byte[]> SampleAudioAsync(string filename)
         {
-            var inFile = filename;
+            var wavData = new byte[Freq * SampleSeconds * 2];
+            var newFormat = new WaveFormat(Freq, 16, 1); // 16-bit quality, mono-channel
 
-            if (!fileMover.FileExists(inFile)) return null;
-
-            var result = new List<float>();
-
-            try
+            await Task.Run(delegate
             {
-                using (var reader = new Mp3FileReader(inFile))
+                var ffmpeg = new Process
                 {
-                    using (var pcmStream = WaveFormatConversionStream.CreatePcmStream(reader))
+                    StartInfo =
                     {
-                        var format = new WaveFormat(Freq, 1);
-                        using (var readerStream = new WaveFormatConversionStream(format, pcmStream))
-                        {
-                            var provider = new Pcm16BitToSampleProvider(readerStream);
-                            // Assumes 16 bit... works with all the fields we've tested, but we might need to enhance this later.
-                            // Read blocks of samples until no more available
-                            const int blockSize = 2000;
-                            var buffer = new float[blockSize];
-                            int rc;
-                            while ((result.Count + blockSize) < SampleSize &&
-                                   (rc = provider.Read(buffer, 0, blockSize)) > 0)
-                            {
-                                result.AddRange(buffer.Take(rc));
-                            }
-                        }
+                        FileName = "ffmpeg\\ffmpeg.exe",
+                        Arguments = String.Format("-i \"{0}\" -ac 1 -ar {1} -f wav -", filename, Freq),
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true
                     }
+                };
+                ffmpeg.Start();
+                var reader = new BinaryReader(ffmpeg.StandardOutput.BaseStream);
+                var count = 0;
+                while (count < wavData.Length - 1)
+                {
+                    count += reader.Read(wavData, count, wavData.Length - count);
                 }
-            }
-            catch (Exception e)
+
+                ffmpeg.Kill();
+
+                if (ffmpeg.WaitForExit(2000))
+                {
+                }
+                else
+                {
+                    // TODO this is bad This Is Bad THIS IS BAD
+                }
+            });
+
+#if DEBUG
+            // Write back to file, make sure it's a good (albeit low-quality) wav
+            using (var writer = new WaveFileWriter(filename + "-sampled.wav", newFormat))
             {
-                throw new IdentificationException(String.Format(
-                    "Could not identify music file {0}. It could be in use by another program, or not in a format we recognize.",
-                    filename), e);
+                writer.Write(wavData, 0, wavData.Length);
+                writer.Flush();
             }
-            return result.ToArray();
+#endif
+            return wavData;
         }
     }
 
+    /// <summary>
+    /// Represents an error in the identification process
+    /// </summary>
     public class IdentificationException : Exception
     {
         public IdentificationException(string message, Exception exception) : base(message, exception)
