@@ -255,15 +255,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\folder_add.png" />
-    <Resource Include="Resources\page_white_add.png" />
-    <Resource Include="Resources\wand.png" />
     <Resource Include="Resources\Error.png" />
     <Resource Include="Resources\Information.png" />
     <Resource Include="Resources\Success.png" />
     <Resource Include="Resources\Warning.png" />
     <Resource Include="Resources\Working.png" />
-    <Resource Include="Resources\folder_wrench.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
@@ -301,9 +297,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\delete.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\folder.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
