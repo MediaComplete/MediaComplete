@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace MSOE.MediaComplete.Lib
+namespace MSOE.MediaComplete.Lib.Files
 {
     public interface IPath
     {

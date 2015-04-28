@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Metadata;
 
 namespace MSOE.MediaComplete.Lib.Sorting

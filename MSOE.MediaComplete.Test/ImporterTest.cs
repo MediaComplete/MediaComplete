@@ -5,6 +5,7 @@ using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Import;
 using MSOE.MediaComplete.Test.Util;
 using System.IO;
+using MSOE.MediaComplete.Lib.Files;
 using Constants = MSOE.MediaComplete.Test.Util.Constants;
 
 namespace MSOE.MediaComplete.Test

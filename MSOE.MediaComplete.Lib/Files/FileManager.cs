@@ -244,6 +244,7 @@ namespace MSOE.MediaComplete.Lib.Files
         IEnumerable<LocalSong> GetAllSongs();
         void DeleteSong(LocalSong song);
         LocalSong GetSong(SongPath songPath);
+        AbstractSong GetSong(MediaItem mediaItem);
         void MoveDirectory(DirectoryPath oldPath, DirectoryPath newPath);
         void MoveFile(SongPath oldPath, SongPath newPath);
         void CopyFile(SongPath oldPath, SongPath newPath);
