@@ -135,7 +135,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
     #region File implementation
     public class PlaylistServiceImpl : IPlaylistService
     {
-        private IFileManager _fileManager;
+        private readonly IFileManager _fileManager;
         internal PlaylistServiceImpl(IFileManager fileManager)
         {
             _fileManager = fileManager;
@@ -165,11 +165,13 @@ namespace MSOE.MediaComplete.Lib.Playlists
         /// <returns>An IEnumerable of playlists</returns>
         public IEnumerable<Playlist> GetAllPlaylists()
         {
-            return
+            var y =
                 GetDirectoryInfo()
                     .EnumerateFiles(Constants.Wildcard, SearchOption.AllDirectories)
-                    .Where(f => Constants.PlaylistFileExtensions.Any(e => f.Extension.Equals(e)))
-                    .Select(f => new Playlist(new M3UFile(f)));
+                    .Where(f => Constants.PlaylistFileExtensions.Any(e => f.Extension.Equals(e)));
+            var z = y.Select(f => new Playlist(new M3UFile(f)));;
+            return z;
+
         }
 
         /// <summary>

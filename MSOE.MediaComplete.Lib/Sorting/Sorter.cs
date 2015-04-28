@@ -6,8 +6,6 @@ using MSOE.MediaComplete.Lib.Background;
 using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
 using MSOE.MediaComplete.Lib.Metadata;
-using MSOE.MediaComplete.Lib.Files;
-using TagLib.Id3v2;
 using Sys = System.Threading.Tasks;
 
 namespace MSOE.MediaComplete.Lib.Sorting

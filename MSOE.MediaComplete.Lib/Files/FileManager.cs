@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using M3U.NET;
 using MSOE.MediaComplete.Lib.Metadata;
-using MSOE.MediaComplete.Lib.Files;
 using TagLib;
 using File = System.IO.File;
 using TaglibFile = TagLib.File;
@@ -96,6 +95,7 @@ namespace MSOE.MediaComplete.Lib.Files
                 _cachedSongs.Add(id, newFile);
                 _cachedFiles.Add(id, file);
             }
+            catch (IOException) { }
             catch (UnsupportedFormatException) { }
         }
         #endregion
@@ -251,7 +251,8 @@ namespace MSOE.MediaComplete.Lib.Files
 
         public AbstractSong GetSong(MediaItem mediaItem)
         {
-            return _cachedSongs.Values.FirstOrDefault(x => x.SongPath.Equals(new SongPath(mediaItem.Location)));
+            // ReSharper disable once SuspiciousTypeConversion.Global
+            return _cachedSongs.Values.FirstOrDefault(x => x.SongPath != null && x.SongPath.FullPath.Equals(mediaItem.Location));
         }
     }
     

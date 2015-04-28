@@ -60,6 +60,8 @@ namespace MSOE.MediaComplete
         /// </summary>
         public MainWindow()
         {
+            _fileManager.Initialize(SettingWrapper.MusicDir);
+            _playlists = new ObservableCollection<Playlist>(PlaylistService.GetAllPlaylists());
             InitializeComponent();
             InitUi();
             InitEvents();
@@ -96,7 +98,6 @@ namespace MSOE.MediaComplete
         /// </summary>
         private void InitTreeView()
         {
-            _fileManager.Initialize(SettingWrapper.MusicDir);
             RefreshTreeView();
 
             var watcher = new FileSystemWatcher(SettingWrapper.MusicDir.FullPath)

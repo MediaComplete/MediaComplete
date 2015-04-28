@@ -4,7 +4,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using MSOE.MediaComplete.CustomControls;
-using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Playing;
 using MSOE.MediaComplete.Lib.Playlists;
 
@@ -20,7 +19,7 @@ namespace MSOE.MediaComplete
         /// Bindable list of Playlists. Gets used in context menus and elsewhere.
         /// </summary>
         public ObservableCollection<Playlist> Playlists { get { return _playlists; } }
-        private readonly ObservableCollection<Playlist> _playlists = new ObservableCollection<Playlist>(PlaylistService.GetAllPlaylists());
+        private readonly ObservableCollection<Playlist> _playlists;
 
         #region Event handlers
 
@@ -53,7 +52,7 @@ namespace MSOE.MediaComplete
                 list = PlaylistService.CreatePlaylist();
             }
 
-            list.Songs.AddRange(AllSongs().Select(s => FileManager.Instance.GetSong(s.Data.SongPath)));
+            list.Songs.AddRange(AllSongs().Select(s => s.Data));
             list.Save();
             _playlists.Add(list);
             // TODO MC-207 flow to rename
