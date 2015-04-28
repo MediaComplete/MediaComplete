@@ -243,7 +243,7 @@ namespace MSOE.MediaComplete
                 }
                 catch (Exception ex)
                 {
-                    // TODO (MC-125) Logging
+                    Logger.LogException("Automatic music identification error",ex);
                     StatusBarHandler.Instance.ChangeStatusBarMessage(
                         String.Format(Resources["MusicIdentification-Error"].ToString(), ex.Message),
                         StatusBarHandler.StatusIcon.Error);
@@ -274,7 +274,7 @@ namespace MSOE.MediaComplete
                 }
                 catch (Exception ex)
                 {
-                    // TODO (MC-125) Logging
+                    Logger.LogException("Automatic music identification error", ex);
                     StatusBarHandler.Instance.ChangeStatusBarMessage(
                         String.Format(Resources["MusicIdentification-Error"].ToString(), ex.Message), 
                         StatusBarHandler.StatusIcon.Error);
