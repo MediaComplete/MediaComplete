@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web.UI.WebControls;
 using MSOE.MediaComplete.Lib.Metadata;
 
 namespace MSOE.MediaComplete.Lib.Files
@@ -20,6 +21,7 @@ namespace MSOE.MediaComplete.Lib.Files
         public string Artist { get; set; }
         public string Genre { get; set; }
         public int? Duration { get; set; }
+        public string FileType { get { return Path.Substring(Path.LastIndexOf(".", StringComparison.Ordinal)); } }
 
         public string Path
         {

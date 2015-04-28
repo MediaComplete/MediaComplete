@@ -59,13 +59,13 @@ namespace MSOE.MediaComplete.Lib.Import
                 var total = 0;
                 foreach (var file in _files)
                 {
-                    var newFile = new SongPath(SettingWrapper.MusicDir + file.Name);
+                    var newFile = new SongPath(SettingWrapper.MusicDir.FullPath + file.Name);
                     if (_fileManager.FileExists(newFile)) continue;
                     try
                     {
                         if (_isMove)
                         {
-                            _fileManager.MoveFile(file, newFile);
+                            _fileManager.AddFile(file, newFile);
                         }
                         else
                         {

@@ -5,6 +5,8 @@ using System.Linq;
 using M3U.NET;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Files;
+using TagLib;
+using File = System.IO.File;
 using TaglibFile = TagLib.File;
 
 namespace MSOE.MediaComplete.Lib.Files
@@ -23,6 +25,8 @@ namespace MSOE.MediaComplete.Lib.Files
         
         public void Initialize(DirectoryPath directory)
         {
+            _cachedFiles.Clear();
+            _cachedSongs.Clear();
             var files = new DirectoryInfo(directory.FullPath).GetFiles("*", SearchOption.AllDirectories);
             foreach (var fileInfo in files)
             {
@@ -51,7 +55,7 @@ namespace MSOE.MediaComplete.Lib.Files
         }
         public LocalSong GetSong(SongPath s)
         {
-            return _cachedSongs.Values.First(x => x.SongPath.Equals(s));
+            return _cachedSongs.Values.FirstOrDefault(x => x.SongPath.Equals(s));
         }
 
         public static IEnumerable<SongPath> GetSongPaths(string selectedDir)
@@ -72,8 +76,9 @@ namespace MSOE.MediaComplete.Lib.Files
                 Year = tagFile.GetAttribute(MetaAttribute.Year),
                 TrackNumber = tagFile.GetAttribute(MetaAttribute.TrackNumber),
                 SupportingArtists = tagFile.GetAttribute(MetaAttribute.SupportingArtist),
-                Duration = (int?)tagFile.Properties.Duration.TotalSeconds
+                Duration = (int?) tagFile.Properties.Duration.TotalSeconds
             };
+            
         }
         private static LocalSong GetNewLocalSong(string id, FileSystemInfo file)
         {
@@ -81,15 +86,17 @@ namespace MSOE.MediaComplete.Lib.Files
         }
         private void AddFileToCache(string id, string path)
         {
-            var newFile = GetNewLocalSong(id, path);
-            _cachedSongs.Add(id, newFile);
-            _cachedFiles.Add(id, new FileInfo(path));
+            AddFileToCache(id, new FileInfo(path));
         }
         private void AddFileToCache(string id, FileInfo file)
         {
-            var newFile = GetNewLocalSong(id, file);
-            _cachedSongs.Add(id, newFile);
-            _cachedFiles.Add(id, file);
+            try
+            {
+                var newFile = GetNewLocalSong(id, file);
+                _cachedSongs.Add(id, newFile);
+                _cachedFiles.Add(id, file);
+            }
+            catch (UnsupportedFormatException) { }
         }
         #endregion
         #region File Operations
@@ -108,10 +115,10 @@ namespace MSOE.MediaComplete.Lib.Files
             return Directory.Exists(directory.FullPath);
         }
 
-        public void MoveFile(SongPath oldFile, SongPath newFile)
+        public void MoveFile(LocalSong oldFile, SongPath newFile)
         {
-            if (!_cachedSongs.ContainsKey(oldFile.FullPath)) throw new ArgumentException();
-            File.Move(oldFile.FullPath, newFile.FullPath);
+            if (!_cachedSongs.ContainsKey(oldFile.Id)) throw new ArgumentException();
+            File.Move(oldFile.SongPath.FullPath, newFile.FullPath);
         }
 
         public bool FileExists(SongPath fileName)
@@ -178,8 +185,14 @@ namespace MSOE.MediaComplete.Lib.Files
             if (firstOrDefault == null)
             {
                 var key = Guid.NewGuid().ToString();
-                AddFileToCache(key, e.FullPath);
-                SongCreated(_cachedSongs[key]);
+                try
+                {
+                    AddFileToCache(key, e.FullPath);
+                    SongChanged(_cachedSongs[key]);
+                }
+                catch (KeyNotFoundException)
+                {
+                }
             }
             else { 
                 var key = firstOrDefault.Id;
@@ -222,6 +235,10 @@ namespace MSOE.MediaComplete.Lib.Files
             }
         }
 
+        public void AddFile(SongPath songPath, SongPath newFile)
+        {
+            File.Move(songPath.FullPath, newFile.FullPath);
+        }
         
         public event SongRenamedHandler SongRenamed = delegate { };
         public event SongUpdatedHandler SongChanged = delegate { };
@@ -246,7 +263,7 @@ namespace MSOE.MediaComplete.Lib.Files
         LocalSong GetSong(SongPath songPath);
         AbstractSong GetSong(MediaItem mediaItem);
         void MoveDirectory(DirectoryPath oldPath, DirectoryPath newPath);
-        void MoveFile(SongPath oldPath, SongPath newPath);
+        void MoveFile(LocalSong oldPath, SongPath newPath);
         void CopyFile(SongPath oldPath, SongPath newPath);
         bool FileExists(SongPath oldPath);
         bool DirectoryExists(DirectoryPath directory);
@@ -258,6 +275,7 @@ namespace MSOE.MediaComplete.Lib.Files
         void DeletedFile(object sender, FileSystemEventArgs e);
         void CreatedFile(object sender, FileSystemEventArgs e);
         void SaveSong(AbstractSong song);
+        void AddFile(SongPath songPath, SongPath newFile);
     }
     
 }

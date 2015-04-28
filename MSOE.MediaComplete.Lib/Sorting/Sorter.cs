@@ -7,6 +7,7 @@ using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Files;
+using TagLib.Id3v2;
 using Sys = System.Threading.Tasks;
 
 namespace MSOE.MediaComplete.Lib.Sorting
@@ -82,7 +83,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                     // If the current and target paths are different, we know we need to move.
                     if (!sourcePath.Equals(targetPath))
                     {
-                        if (_fileManager.FileExists(sourcePath)) // If the file is already there
+                        if (_fileManager.FileExists(targetPath)) // If the file is already there
                         {
                             // Delete source, let the older file take precedence.
                             // TODO (MC-124) perhaps we should try comparing audio quality and pick the better one?
@@ -124,9 +125,8 @@ namespace MSOE.MediaComplete.Lib.Sorting
                 metadataPath.Append(metaValue);
                 metadataPath.Append(Path.DirectorySeparatorChar);
             }
-            var track = song.TrackNumber.Length == 1 ? "0" + song.TrackNumber : song.TrackNumber;
             //TODO MC-260 Rename songs/configure song naming
-            return new SongPath(SettingWrapper.MusicDir + metadataPath.ToString().GetValidFileName() + track + " " + song.Title + " - " + song.Artist); 
+            return new SongPath(SettingWrapper.MusicDir.FullPath + metadataPath.ToString().GetValidFileName() +song.SongPath.Name); 
         }
 
         #region Import Event Handling
@@ -193,7 +193,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                 if (!_fileManager.DirectoryExists(Dest.Directory)) {
                     _fileManager.CreateDirectory(Dest.Directory);
                 }
-                _fileManager.MoveFile(Source.SongPath, Dest);
+                _fileManager.MoveFile(Source, Dest);
             }
         }
 

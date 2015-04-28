@@ -22,8 +22,7 @@ namespace MSOE.MediaComplete.Lib.Files
         {
             get
             {
-                var split = FullPath.Split(Path.DirectorySeparatorChar);
-                return split[split.Length - 1];
+                return FullPath.Substring(FullPath.LastIndexOf(Path.DirectorySeparatorChar));
             }
         }
 
