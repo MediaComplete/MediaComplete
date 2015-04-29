@@ -4,6 +4,9 @@ using log4net.Core;
 
 namespace MSOE.MediaComplete.Lib.Logging
 {
+    /// <summary>
+    /// All logs are written to both the console and rolling file appender defined in <see>MediaCompleteLog4Net.config</see> file.
+    /// </summary>
     public static class Logger
     {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -17,10 +20,6 @@ namespace MSOE.MediaComplete.Lib.Logging
         /// <param name="message">the message to output to the log</param>
         public static void LogInformation(string message)
         {
-            Console.WriteLine("message:"+message); //TODO remove me
-            Console.WriteLine("LogLevel:"+SettingWrapper.LogLevel);
-            Console.WriteLine("Log4NetLevel:" + ((log4net.Repository.Hierarchy.Hierarchy)LogManager.GetRepository()).Root.Level);
-            Console.WriteLine("IsInfoEnabled:"+Log.IsInfoEnabled);
             if (Log.IsInfoEnabled)
                 Log.Info(message);
         }
@@ -52,7 +51,7 @@ namespace MSOE.MediaComplete.Lib.Logging
         }
 
         /// <summary>
-        /// This logs exceptions that occurr in the application.  These exceptions include caught exceptions.
+        /// This logs exceptions that occur in the application.  These exceptions include caught exceptions.
         /// These messages need to be acceptable for the user to see if researched, they can take reasonable amounts of space
         /// but should be available to always be logged if the user desires without significant performance hits
         /// e.g. "Exception with null music file", NullPointerException
@@ -83,15 +82,27 @@ namespace MSOE.MediaComplete.Lib.Logging
             var level = Level.Error;
             switch (logLevel)
             {
-                case 1:
+                case (int)LoggingLevel.Info:
                     level = Level.Info;
                     break;
-                case 314:
+                case (int)LoggingLevel.Debug:
                     level = Level.Debug;
                     break;
             }
             ((log4net.Repository.Hierarchy.Hierarchy)LogManager.GetRepository()).Root.Level = level;
             ((log4net.Repository.Hierarchy.Hierarchy)LogManager.GetRepository()).RaiseConfigurationChanged(EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// 0 -- Info Logging is off
+        /// 1 -- Info Logging is on
+        /// 314 -- Debug Logging is on (developer only)
+        /// </summary>
+        public enum LoggingLevel
+        {
+            Error=0,
+            Info=1,
+            Debug=314
         }
     }
 }

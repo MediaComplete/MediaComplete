@@ -137,11 +137,6 @@ namespace MSOE.MediaComplete.Lib
             set { Settings.Default.AllDirs = value.Aggregate((x, y) => x + ";" + y); }
         }
 
-        /// <summary>
-        /// 0 -- Info Logging is off
-        /// 1 -- Info Logging is on
-        /// 314 -- Debug Logging is on (developer only)
-        /// </summary>
         public static int LogLevel
         {
             get { return Settings.Default.LogLevel; }

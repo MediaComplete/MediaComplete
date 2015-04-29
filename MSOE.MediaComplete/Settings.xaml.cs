@@ -238,11 +238,11 @@ namespace MSOE.MediaComplete
             var cb = sender as System.Windows.Controls.CheckBox;
             if (cb != null && cb.IsChecked == true)
             {
-                SettingWrapper.LogLevel = 1;
+                SettingWrapper.LogLevel = (int)Logger.LoggingLevel.Info;
             }
             else
             {
-                SettingWrapper.LogLevel = 0;
+                SettingWrapper.LogLevel = (int)Logger.LoggingLevel.Error;
             }
         }
 

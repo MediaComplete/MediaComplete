@@ -2,6 +2,7 @@
 using System.IO;
 using M3U.NET;
 using MSOE.MediaComplete.Lib.Files;
+using MSOE.MediaComplete.Lib.Logging;
 using TagLib;
 using File = TagLib.File;
 
@@ -46,7 +47,7 @@ namespace MSOE.MediaComplete.Lib.Songs
             {
                 if (e is UnsupportedFormatException || e is CorruptFileException)
                 {
-                    // TODO MC-125 log
+                    Logger.LogException("Issues converting file to a taglib file.", e);
                     throw new FileNotFoundException(
                         String.Format("File ({0}) was not found or is not a recognized music file.", File.FullName), e);
                 }

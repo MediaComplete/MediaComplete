@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using MSOE.MediaComplete.Lib.Background;
 using MSOE.MediaComplete.Lib.Import;
+using MSOE.MediaComplete.Lib.Logging;
 using MSOE.MediaComplete.Lib.Metadata;
 using Sys = System.Threading.Tasks;
 
@@ -113,9 +114,9 @@ namespace MSOE.MediaComplete.Lib.Sorting
             {
                 metadata = _fileMover.CreateTaglibFile(file.FullName);
             }
-            catch (TagLib.CorruptFileException)
+            catch (TagLib.CorruptFileException ex)
             {
-                // TODO (MC-125) log
+                Logger.LogException("Taglib found a corrupt file while creating the taglib file.", ex);
                 return file; // Bad MP3 - just have it stay in the same place
             }
 

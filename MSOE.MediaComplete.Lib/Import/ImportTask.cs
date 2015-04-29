@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using MSOE.MediaComplete.Lib.Background;
+using MSOE.MediaComplete.Lib.Logging;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Sorting;
 using Sys = System.Threading.Tasks;
@@ -78,7 +79,7 @@ namespace MSOE.MediaComplete.Lib.Import
                     }
                     catch (IOException exception)
                     {
-                        Console.WriteLine(exception); // TODO (MC-125) log
+                        Logger.LogException("IO issue with adding/moving/copying files.",exception);
                         results.FailCount++;
                         Message = "Importing-Error";
                         Icon = StatusBarHandler.StatusIcon.Error;
@@ -87,7 +88,7 @@ namespace MSOE.MediaComplete.Lib.Import
                     }
                     catch (UnauthorizedAccessException exception)
                     {
-                        Console.WriteLine(exception); // TODO (MC-125) log
+                        Logger.LogException("Unable to access a file that is being used for adding/moving/copying.", exception);
                         results.FailCount++;
                         Message = "UnauthorizedAccess-Error";
                         Icon = StatusBarHandler.StatusIcon.Error;
