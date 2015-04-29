@@ -77,7 +77,6 @@ namespace MSOE.MediaComplete.Lib.Sorting
                     //TODO TODO FIX THIS FUCKING SHIT
                     var sourcePath = song.SongPath;
                     var targetPath = GetNewLocation(song, Settings.SortOrder);
-
                     // If the current and target paths are different, we know we need to move.
                     if (!sourcePath.Equals(targetPath))
                     {

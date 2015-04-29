@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
+using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Metadata;
 using TagLib;
+using File = TagLib.File;
 using TextBox = System.Windows.Controls.TextBox;
 
 namespace MSOE.MediaComplete
@@ -62,7 +65,8 @@ namespace MSOE.MediaComplete
                 try
                 {
                     if (initalAttributes.Count <= 1) break;
-                    var song = File.Create(item.Data.Path);///////////////////////////////////////////////////////////////////
+                    //TODO This should use the LocalSong data retrieved from the FileManager
+                    var song = File.Create((item as LibrarySongItem).ParentItem.GetPath()+Path.DirectorySeparatorChar+item);
                     foreach (var metaAttribute in Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>()
                                                                 .Where(metaAttribute => !finalAttributes.ContainsKey(metaAttribute)))
                     {
@@ -168,9 +172,8 @@ namespace MSOE.MediaComplete
             if (SongTitle.IsReadOnly) return;
             EditCancelButton.Content = Resources["EditButton"].ToString();
             ToggleReadOnlyFields(true);
-            foreach (SongListItem item in SelectedSongs())
+            foreach (var song in SelectedSongs().Select(item => item.Data))
             {
-                var song = item.Data;
                 foreach (var changedBox in _changedBoxes)
                 {
                     if (changedBox.Equals(SongTitle))
@@ -202,7 +205,7 @@ namespace MSOE.MediaComplete
                         song.SupportingArtists = changedBox.Text;
                     }
                 }
-                _fileManager.SaveSong(song);
+                _fileManager.SaveSong(song as LocalSong);
             }
             _changedBoxes.Clear();
             PopulateMetadataForm();
