@@ -30,10 +30,7 @@ namespace MSOE.MediaComplete.Lib.Files
 
         public string Name
         {
-            get
-            {
-                return string.Format("{0} {1} - {2}", TrackNumber, Title, Artist);
-            }
+            get { return SongPath.Name; }
         }
 
         public abstract string GetPath();

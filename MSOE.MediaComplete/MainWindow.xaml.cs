@@ -15,7 +15,6 @@ using MSOE.MediaComplete.Lib.Import;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Playing;
 using MSOE.MediaComplete.Lib.Playlists;
-using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Sorting;
 using NAudio.Wave;
 using WinForms = System.Windows.Forms;
@@ -104,14 +103,18 @@ namespace MSOE.MediaComplete
             {
                 NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName
             };
-            watcher.Changed += OnChanged;
-            watcher.Changed += _fileManager.ChangedFile;
-            watcher.Created += OnChanged;
-            watcher.Created += _fileManager.CreatedFile;
-            watcher.Deleted += OnChanged;
-            watcher.Deleted += _fileManager.DeletedFile;
-            watcher.Renamed += OnChanged;
             watcher.Renamed += _fileManager.UpdateFile;
+            watcher.Changed += _fileManager.ChangedFile;
+            watcher.Created += _fileManager.CreatedFile;
+            watcher.Deleted += _fileManager.DeletedFile;
+            _fileManager.SongCreated += OnChanged;
+            _fileManager.SongChanged += OnChanged;
+            _fileManager.SongRenamed += OnChanged;
+            _fileManager.SongDeleted += OnChanged;
+            //_fileManager.SongChanged += SongChanged;
+            //_fileManager.SongCreated += SongCreated;
+            //_fileManager.SongDeleted += SongDeleted;
+            //_fileManager.SongRenamed += SongRenamed;
 
             watcher.EnableRaisingEvents = true;
 
@@ -364,7 +367,43 @@ namespace MSOE.MediaComplete
         }
 
         #endregion
+        /*
+        private void SongChanged(IEnumerable<LocalSong> songs)
+        {
+            foreach (var song in songs)
+            {
+                var librarySongs = (ObservableCollection<SongListItem>)Songs.Source;
+                var selected = librarySongs.First(x => x.Data.Id.Equals(song.Id));
+                selected.Data = song;
+            }
+        }
 
+        private void SongDeleted(IEnumerable<LocalSong> songs)
+        {
+            foreach (var song in songs)
+            {
+                var librarySongs = ((ObservableCollection<SongListItem>)Songs.Source).First(x => x.Data.Id.Equals(song.Id));
+                ((ObservableCollection<SongListItem>)Songs.Source).Remove(librarySongs);
+            }
+        }
+
+        private void SongCreated(IEnumerable<LocalSong> songs)
+        {
+            foreach (var song in songs)
+            {
+                var songDir = song.SongPath.Directory.FullPath;
+                var parentName = songDir.Substring(songDir.LastIndexOf(Path.DirectorySeparatorChar));
+                var parent = FolderTree.
+                ((ObservableCollection<SongListItem>)Songs.Source).Add(new LibrarySongItem { Content = song.Name, ParentItem = parent, Data = thing });   
+            }
+        }
+
+        private void SongRenamed(IEnumerable<Tuple<LocalSong, LocalSong>> songs)
+        {
+            var selected = AllSongs().First(x => x.Data.Path.Equals(newSong.Path));
+            selected.Data = newSong;
+        }
+         * */
         #region Internally triggered events
 
         /// <summary>
@@ -373,7 +412,11 @@ namespace MSOE.MediaComplete
         /// </summary>
         /// <param name="source"></param>
         /// <param name="e"></param>
-        private void OnChanged(object source, FileSystemEventArgs e)
+        private void OnChanged(IEnumerable<LocalSong> songs)
+        {
+            _refreshTimer.Change(500, Timeout.Infinite);
+        }
+        private void OnChanged(IEnumerable<Tuple<LocalSong, LocalSong>> songs)
         {
             _refreshTimer.Change(500, Timeout.Infinite);
         }
@@ -489,9 +532,10 @@ namespace MSOE.MediaComplete
         private IEnumerable<SongListItem> SelectedSongs()
         {
             var currentSongs = (ObservableCollection<SongListItem>)(PlaylistTab.IsSelected ? PlaylistSongs : Songs).Source;
-            return from object song in currentSongs
-                   where ((SongListItem)song).IsSelected && ((SongListItem)song).IsVisible
-                   select (song as SongListItem);
+            return currentSongs.Where(x => x.IsSelected && x.IsVisible);
+//            return from object song in currentSongs
+            //                 where ((SongListItem)song).IsSelected && ((SongListItem)song).IsVisible
+            //               select (song as SongListItem);
         }
 
         /// <summary>

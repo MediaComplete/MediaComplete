@@ -54,7 +54,7 @@ namespace MSOE.MediaComplete.Lib.Files
         }
         public LocalSong GetSong(SongPath s)
         {
-            return _cachedSongs.Values.FirstOrDefault(x => x.SongPath.Equals(s));
+            return _cachedSongs.Values.FirstOrDefault(x => x.SongPath.FullPath.Equals(s.FullPath));
         }
 
         public static IEnumerable<SongPath> GetSongPaths(string selectedDir)
@@ -89,14 +89,9 @@ namespace MSOE.MediaComplete.Lib.Files
         }
         private void AddFileToCache(string id, FileInfo file)
         {
-            try
-            {
-                var newFile = GetNewLocalSong(id, file);
-                _cachedSongs.Add(id, newFile);
-                _cachedFiles.Add(id, file);
-            }
-            catch (IOException) { }
-            catch (UnsupportedFormatException) { }
+            var newFile = GetNewLocalSong(id, file);
+            _cachedSongs.Add(id, newFile);
+            _cachedFiles.Add(id, file);
         }
         #endregion
         #region File Operations
@@ -166,73 +161,124 @@ namespace MSOE.MediaComplete.Lib.Files
         #region FileWatcher and Events 
         public void UpdateFile(object sender, RenamedEventArgs e)
         {
-            var firstOrDefault = _cachedSongs.Values.FirstOrDefault(x => x.SongPath.Equals(new SongPath(e.OldFullPath)));
-            if (firstOrDefault == null)return;
-            
-            var key = firstOrDefault.Id;
-            var song = _cachedSongs[key];
+            var retEnum = new List<Tuple<LocalSong, LocalSong>>();
+            var firstOrDefault = _cachedSongs.Values.FirstOrDefault(x => x.SongPath.FullPath.Equals(e.OldFullPath));
+            if (firstOrDefault == null)
+            {
+                var allSongs = _cachedSongs.Values.Where(x => x.SongPath.FullPath.StartsWith(e.OldFullPath, StringComparison.Ordinal));
+                foreach (var song in allSongs)
+                {
+                    var oldSong = song;
+                    var tempPath = e.FullPath.EndsWith(Path.DirectorySeparatorChar + "", StringComparison.Ordinal)
+                        ? e.FullPath
+                        : e.FullPath + Path.DirectorySeparatorChar;
+                    var newPath = tempPath+song.Name;
+                    song.SongPath = new SongPath(newPath);
+                    retEnum.Add(new Tuple<LocalSong, LocalSong>(oldSong, song));
+                }
+            }
+            else 
+            {
+                var key = firstOrDefault.Id;
 
-            _cachedSongs[key].SongPath = new SongPath(e.FullPath);
-            _cachedFiles[key] = new FileInfo(e.FullPath);
-
-            SongRenamed(song, _cachedSongs[key]);
-            
+                _cachedSongs[key].SongPath = new SongPath(e.FullPath);
+                _cachedFiles[key] = new FileInfo(e.FullPath);
+            }
+            SongRenamed(retEnum);
         }
 
         public void ChangedFile(object sender, FileSystemEventArgs e)
         {
-            var firstOrDefault = _cachedSongs.Values.FirstOrDefault(x => x.SongPath.Equals(new SongPath(e.FullPath)));
-            if (firstOrDefault == null)
+            var retEnum = new List<LocalSong>();
+            if (Directory.Exists(e.FullPath))
             {
-                var key = Guid.NewGuid().ToString();
-                try
+                var files = new DirectoryInfo(e.FullPath).EnumerateFiles("*", SearchOption.AllDirectories).GetMusicFiles();
+                foreach (var file in files)
                 {
-                    AddFileToCache(key, e.FullPath);
-                    SongChanged(_cachedSongs[key]);
-                }
-                catch (KeyNotFoundException)
-                {
+                    var newValue =
+                        _cachedSongs.FirstOrDefault(x => x.Value.SongPath.FullPath.Equals(file.FullName)).Value;
+                    if (newValue != null)
+                    {
+                        newValue.SongPath = new SongPath(e.FullPath);
+                        _cachedFiles[newValue.Id] = file;
+                        retEnum.Add(newValue);
+                    }
+                    else
+                    {
+                        try
+                        {
+                            var key = Guid.NewGuid().ToString();
+                            AddFileToCache(key, file.FullName);
+                            retEnum.Add(_cachedSongs[key]);
+                        }
+                        catch (IOException) { }
+                    }
                 }
             }
-            else { 
-                var key = firstOrDefault.Id;
+            else if(File.Exists(e.FullPath))
+            {
+                var firstOrDefault = _cachedSongs.Values.FirstOrDefault(x => x.SongPath.FullPath.Equals(e.FullPath));
+                if (firstOrDefault != null)
+                {
+                    var key = firstOrDefault.Id;
 
-                var tagFile = TaglibFile.Create(e.FullPath);
-                _cachedSongs[key].Title = tagFile.GetAttribute(MetaAttribute.SongTitle);
-                _cachedSongs[key].Artist = tagFile.GetAttribute(MetaAttribute.Artist);
-                _cachedSongs[key].Album = tagFile.GetAttribute(MetaAttribute.Album);
-                _cachedSongs[key].Genre = tagFile.GetAttribute(MetaAttribute.Genre);
-                _cachedSongs[key].Year = tagFile.GetAttribute(MetaAttribute.Year);
-                _cachedSongs[key].TrackNumber = tagFile.GetAttribute(MetaAttribute.TrackNumber);
-                _cachedSongs[key].SupportingArtists = tagFile.GetAttribute(MetaAttribute.SupportingArtist);
-                SongChanged(_cachedSongs[key]);
+                    var tagFile = TaglibFile.Create(e.FullPath);
+                    _cachedSongs[key].Title = tagFile.GetAttribute(MetaAttribute.SongTitle);
+                    _cachedSongs[key].Artist = tagFile.GetAttribute(MetaAttribute.Artist);
+                    _cachedSongs[key].Album = tagFile.GetAttribute(MetaAttribute.Album);
+                    _cachedSongs[key].Genre = tagFile.GetAttribute(MetaAttribute.Genre);
+                    _cachedSongs[key].Year = tagFile.GetAttribute(MetaAttribute.Year);
+                    _cachedSongs[key].TrackNumber = tagFile.GetAttribute(MetaAttribute.TrackNumber);
+                    _cachedSongs[key].SupportingArtists = tagFile.GetAttribute(MetaAttribute.SupportingArtist);
+                    retEnum.Add(_cachedSongs[key]);
+                }
             }
+            SongChanged(retEnum);
         }
         public void DeletedFile(object sender, FileSystemEventArgs e)
         {
-            var firstOrDefault = _cachedSongs.Values.FirstOrDefault(x => x.SongPath.Equals(new SongPath(e.FullPath)));
-            if (firstOrDefault != null)
+            var retEnum = new List<LocalSong>();
+            var firstOrDefault = _cachedSongs.Values.FirstOrDefault(x => x.SongPath.FullPath.Equals(e.FullPath));
+            if (firstOrDefault == null)
+            {
+                var keys = _cachedSongs.Values.Where(x => x.SongPath.FullPath.StartsWith(e.FullPath, StringComparison.Ordinal)).Select(x => x.Id).ToList();
+                foreach (var key in keys)
+                {
+                    retEnum.Add(_cachedSongs[key]);
+                    _cachedFiles.Remove(key);
+                    _cachedSongs.Remove(key);
+                }
+            }
+            else
             {
                 var key = firstOrDefault.Id;
-                var oldSong = _cachedSongs[key];
+                retEnum.Add(_cachedSongs[key]);
                 _cachedFiles.Remove(key);
                 _cachedSongs.Remove(key);
-                SongDeleted(oldSong);
             }
+            SongDeleted(retEnum);
 
         }
         public void CreatedFile(object sender, FileSystemEventArgs e)
         {
-            try
+            var retEnum = new List<LocalSong>();
+            if (File.Exists(e.FullPath))
             {
                 var key = Guid.NewGuid().ToString();
-                AddFileToCache(key, e.FullPath);
-                SongCreated(_cachedSongs[key]);
+                AddFileToCache(key, new FileInfo(e.FullPath));
+                retEnum.Add(_cachedSongs[key]);
             }
-            catch (Exception)
+            else if (Directory.Exists(e.FullPath))
             {
-                // ignored
+                var files = new DirectoryInfo(e.FullPath).EnumerateFiles("*", SearchOption.AllDirectories).GetMusicFiles();
+                foreach (var file in files)
+                {
+                    var key = Guid.NewGuid().ToString();
+                    AddFileToCache(key, file);
+                    retEnum.Add(_cachedSongs[key]);
+                }
             }
+            SongCreated(retEnum);
         }
 
         public void AddFile(SongPath songPath, SongPath newFile)
@@ -245,8 +291,8 @@ namespace MSOE.MediaComplete.Lib.Files
         public event SongUpdatedHandler SongCreated = delegate { };
         public event SongUpdatedHandler SongDeleted = delegate { };
 
-        public delegate void SongUpdatedHandler(LocalSong e);
-        public delegate void SongRenamedHandler(LocalSong oldSong, LocalSong newSong);
+        public delegate void SongUpdatedHandler(IEnumerable<LocalSong> songs);
+        public delegate void SongRenamedHandler(IEnumerable<Tuple<LocalSong, LocalSong>> songs);
         #endregion
 
         public AbstractSong GetSong(MediaItem mediaItem)
@@ -277,6 +323,10 @@ namespace MSOE.MediaComplete.Lib.Files
         void CreatedFile(object sender, FileSystemEventArgs e);
         void SaveSong(AbstractSong song);
         void AddFile(SongPath songPath, SongPath newFile);
+        event FileManager.SongRenamedHandler SongRenamed;
+        event FileManager.SongUpdatedHandler SongChanged;
+        event FileManager.SongUpdatedHandler SongCreated;
+        event FileManager.SongUpdatedHandler SongDeleted;
     }
     
 }

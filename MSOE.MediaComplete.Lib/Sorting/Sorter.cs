@@ -124,7 +124,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                 metadataPath.Append(Path.DirectorySeparatorChar);
             }
             //TODO MC-260 Rename songs/configure song naming
-            return new SongPath(SettingWrapper.MusicDir.FullPath + metadataPath.ToString().GetValidFileName() +song.SongPath.Name); 
+            return new SongPath(SettingWrapper.MusicDir.FullPath + metadataPath.ToString().GetValidFileName() +song.Name); 
         }
 
         #region Import Event Handling

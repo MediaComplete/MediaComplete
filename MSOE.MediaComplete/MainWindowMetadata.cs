@@ -62,7 +62,7 @@ namespace MSOE.MediaComplete
                 try
                 {
                     if (initalAttributes.Count <= 1) break;
-                    var song = File.Create(item.Data.Path);
+                    var song = File.Create(item.Data.Path);///////////////////////////////////////////////////////////////////
                     foreach (var metaAttribute in Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>()
                                                                 .Where(metaAttribute => !finalAttributes.ContainsKey(metaAttribute)))
                     {
