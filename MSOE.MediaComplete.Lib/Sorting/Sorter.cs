@@ -61,20 +61,6 @@ namespace MSOE.MediaComplete.Lib.Sorting
 
                 foreach (var song in songs)
                 {
-                    //TODO TODO
-                    //TODO TODO
-                    //TODO TODO
-                    //TODO TODO
-                    //TODO TODO
-                    //TODO TODO
-                    //TODO TODO
-                    //TODO TODO
-                    //TODO TODO
-                    //TODO TODO
-                    //TODO TODO
-                    //TODO TODO
-                    //TODO TODO
-                    //TODO TODO FIX THIS FUCKING SHIT
                     var sourcePath = song.SongPath;
                     var targetPath = GetNewLocation(song, Settings.SortOrder);
                     // If the current and target paths are different, we know we need to move.
@@ -114,12 +100,14 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <param name="song">The source file to analyze</param>
         /// <param name="list">The sort-order of meta attributes</param>
         /// <returns>A new FileInfo describing where the source file should be moved to</returns>
-        private static SongPath GetNewLocation(LocalSong song, IEnumerable<MetaAttribute> list)
+        private static SongPath GetNewLocation(AbstractSong song, IReadOnlyList<MetaAttribute> list)
         {
             var metadataPath = new StringBuilder();
-            foreach (var metaValue in list.Select(song.GetAttribute))
+            for (var x = 0; x < list.Count(); x ++)
             {
-                metadataPath.Append(metaValue);
+                var metaValue = song.GetAttribute(list[x]);
+                var useableValue = metaValue ?? "Unknown " + list[x];
+                metadataPath.Append(useableValue);
                 metadataPath.Append(Path.DirectorySeparatorChar);
             }
             //TODO MC-260 Rename songs/configure song naming
