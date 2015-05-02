@@ -320,6 +320,22 @@ namespace MSOE.MediaComplete.Lib.Files
             }
             return false;
         }
+        /// <summary>
+        /// Used to update the attributes of the TagLibFile associated with the AbstractSong
+        /// </summary>
+        /// <param name="song"></param>
+        private void UpdateFile(AbstractSong song)
+        {
+            var tagFile = TaglibFile.Create(song.Path);
+            _cachedSongs[song.Id].Title = tagFile.GetAttribute(MetaAttribute.SongTitle);
+            _cachedSongs[song.Id].Artist = tagFile.GetAttribute(MetaAttribute.Artist);
+            _cachedSongs[song.Id].Album = tagFile.GetAttribute(MetaAttribute.Album);
+            _cachedSongs[song.Id].Genre = tagFile.GetAttribute(MetaAttribute.Genre);
+            _cachedSongs[song.Id].Year = tagFile.GetAttribute(MetaAttribute.Year);
+            _cachedSongs[song.Id].TrackNumber = tagFile.GetAttribute(MetaAttribute.TrackNumber);
+            _cachedSongs[song.Id].SupportingArtists = tagFile.GetAttribute(MetaAttribute.SupportingArtist);
+            
+        }
         #endregion
         
         #region FileWatcher and Events
@@ -373,15 +389,7 @@ namespace MSOE.MediaComplete.Lib.Files
                     if (newValue != null)
                     {
                         newValue.SongPath = new SongPath(file.FullName);
-
-                        var tagFile = TaglibFile.Create(file.FullName);
-                        _cachedSongs[newValue.Id].Title = tagFile.GetAttribute(MetaAttribute.SongTitle);
-                        _cachedSongs[newValue.Id].Artist = tagFile.GetAttribute(MetaAttribute.Artist);
-                        _cachedSongs[newValue.Id].Album = tagFile.GetAttribute(MetaAttribute.Album);
-                        _cachedSongs[newValue.Id].Genre = tagFile.GetAttribute(MetaAttribute.Genre);
-                        _cachedSongs[newValue.Id].Year = tagFile.GetAttribute(MetaAttribute.Year);
-                        _cachedSongs[newValue.Id].TrackNumber = tagFile.GetAttribute(MetaAttribute.TrackNumber);
-                        _cachedSongs[newValue.Id].SupportingArtists = tagFile.GetAttribute(MetaAttribute.SupportingArtist);
+                        UpdateFile(newValue);
                         _cachedFiles[newValue.Id] = file;
                         retEnum.Add(newValue);
                     }
@@ -402,15 +410,7 @@ namespace MSOE.MediaComplete.Lib.Files
                 if (firstOrDefault != null)
                 {
                     var key = firstOrDefault.Id;
-
-                    var tagFile = TaglibFile.Create(e.FullPath);
-                    _cachedSongs[key].Title = tagFile.GetAttribute(MetaAttribute.SongTitle);
-                    _cachedSongs[key].Artist = tagFile.GetAttribute(MetaAttribute.Artist);
-                    _cachedSongs[key].Album = tagFile.GetAttribute(MetaAttribute.Album);
-                    _cachedSongs[key].Genre = tagFile.GetAttribute(MetaAttribute.Genre);
-                    _cachedSongs[key].Year = tagFile.GetAttribute(MetaAttribute.Year);
-                    _cachedSongs[key].TrackNumber = tagFile.GetAttribute(MetaAttribute.TrackNumber);
-                    _cachedSongs[key].SupportingArtists = tagFile.GetAttribute(MetaAttribute.SupportingArtist);
+                    UpdateFile(_cachedSongs[key]);
                     retEnum.Add(_cachedSongs[key]);
                 }
             }

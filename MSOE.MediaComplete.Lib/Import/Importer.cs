@@ -53,6 +53,7 @@ namespace MSOE.MediaComplete.Lib.Import
         /// Otherwise, files are copied and the original files remain in the source location.</param>
         /// <returns>An awaitable task of ImportResults</returns>
         /// <exception cref="InvalidImportException">Thrown when files includes a file in the current home directory</exception>
+        // ReSharper disable once MemberCanBeMadeStatic.Global
         public async Task<ImportResults> ImportFilesAsync(IEnumerable<SongPath> files, bool isMove)
         {
             if (files.Any(f => f.HasParent(SettingWrapper.MusicDir)))
