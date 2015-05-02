@@ -95,7 +95,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
                 StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Warning-RateLimit",
                     StatusBarHandler.StatusIcon.Warning);
                 // TODO MC-45 Any other ID tasks in the queue should be cancelled somehow
-                return;
+                throw;
             }
 
             if (data.Title == null) // No match. Tell the user they'll have to do it themselves.

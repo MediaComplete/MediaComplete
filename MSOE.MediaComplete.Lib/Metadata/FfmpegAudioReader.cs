@@ -49,14 +49,6 @@ namespace MSOE.MediaComplete.Lib.Metadata
                 // This can return false if FFMPEG won't cooperate, but there's not much we can do about that.
             });
 
-#if DEBUG
-            // Write back to file, so we can make sure it's a good (albeit lower-quality) wav
-            using (var writer = new WaveFileWriter(filename + "-sampled.wav", newFormat))
-            {
-                writer.Write(wavData, 0, wavData.Length);
-                writer.Flush();
-            }
-#endif
             return wavData;
         }
     }

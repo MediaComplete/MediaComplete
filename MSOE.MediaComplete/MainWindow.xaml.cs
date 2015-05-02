@@ -238,12 +238,17 @@ namespace MSOE.MediaComplete
                     if (selection == null) continue;
                     await new MusicIdentifier().IdentifySongAsync(_fileMover, selection.Data.GetPath());
                 }
-                catch (Exception ex)
+                catch (IdentificationException)
                 {
                     // TODO (MC-125) Logging
-                    StatusBarHandler.Instance.ChangeStatusBarMessage(
-                        String.Format(Resources["MusicIdentification-Error"].ToString(), ex.Message),
-                        StatusBarHandler.StatusIcon.Error);
+                    StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Warning-RateLimit", StatusBarHandler.StatusIcon.Warning);
+                    break;
+                }
+                catch (Exception)
+                {
+                    // TODO (MC-125) Logging
+                    StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error", StatusBarHandler.StatusIcon.Error);
+                    break;
                 }
             }
         }
@@ -269,12 +274,17 @@ namespace MSOE.MediaComplete
                 {
                     await new MusicIdentifier().IdentifySongAsync(_fileMover, item.Data.GetPath());
                 }
-                catch (Exception ex)
+                catch (IdentificationException)
                 {
                     // TODO (MC-125) Logging
-                    StatusBarHandler.Instance.ChangeStatusBarMessage(
-                        String.Format(Resources["MusicIdentification-Error"].ToString(), ex.Message), 
-                        StatusBarHandler.StatusIcon.Error);
+                    StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Warning-RateLimit", StatusBarHandler.StatusIcon.Warning);
+                    break;
+                }
+                catch (Exception)
+                {
+                    // TODO (MC-125) Logging
+                    StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error", StatusBarHandler.StatusIcon.Error);
+                    break;
                 }
             }
         }

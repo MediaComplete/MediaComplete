@@ -27,9 +27,9 @@ namespace MSOE.MediaComplete.Lib.Metadata
                 {HttpRequestHeader.ContentType, "application/octet-stream"}
             }, audioBytes);
             var data = json["data"] as JArray;
-            var result = json["status"].ToObject<uint>();
+            var msg = json["msg"].ToObject<string>();
 
-            if (data == null && result != 0) // API busy, auth error, etc.
+            if (data == null && msg.Contains("API key")) // API busy
             {
                 throw new IdentificationException(String.Format("Received unexpected response from Doreso: {0}", json));
             }

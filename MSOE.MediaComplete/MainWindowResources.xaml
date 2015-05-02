@@ -47,7 +47,7 @@
     <system:String x:Key="Sorting-HadError">Encountered an error while sorting files: {0}</system:String>
     <system:String x:Key="MusicIdentification-Started">Music Identification Started</system:String>
     <system:String x:Key="MusicIdentification-Success">Music Identification Finished</system:String>
-    <system:String x:Key="MusicIdentification-Error">Music Identification Error: {0}</system:String>
+    <system:String x:Key="MusicIdentification-Error">Music Identification Error</system:String>
     <system:String x:Key="MusicIdentification-Error-NoException">Music Identification Error</system:String>
     <system:String x:Key="MusicIdentification-Warning-RateLimit">The music identification service is busy, please try again later</system:String>
     <system:String x:Key="MusicIdentification-Warning-NoMatch">Could not identify music file</system:String>
