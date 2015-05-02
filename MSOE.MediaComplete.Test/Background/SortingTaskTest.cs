@@ -1,10 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MSOE.MediaComplete.Lib.Background;
-using MSOE.MediaComplete.Lib.Import;
-using MSOE.MediaComplete.Lib.Metadata;
-using MSOE.MediaComplete.Lib.Sorting;
-using System.Collections.Generic;
-using MSOE.MediaComplete.Lib;
 
 namespace MSOE.MediaComplete.Test.Background
 {

@@ -84,6 +84,7 @@
     <Compile Include="Background\Queue.cs" />
     <Compile Include="Background\TaskAdder.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Files\AbstractSong.cs" />
     <Compile Include="Files\FilePaths.cs" />
     <Compile Include="Files\FileManager.cs" />
     <Compile Include="Import\ImportTask.cs" />
@@ -92,7 +93,6 @@
     <Compile Include="Playing\NowPlaying.cs" />
     <Compile Include="Playlists\Playlist.cs" />
     <Compile Include="Playlists\PlaylistService.cs" />
-    <Compile Include="Files\AbstractSong.cs" />
     <Compile Include="Files\LocalSong.cs" />
     <Compile Include="Playing\IPlayer.cs" />
     <Compile Include="Playing\INAudioWrapper.cs" />

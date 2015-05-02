@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Metadata;
 using TagLib;
-using File = TagLib.File;
 using TextBox = System.Windows.Controls.TextBox;
 
 namespace MSOE.MediaComplete
@@ -60,19 +57,16 @@ namespace MSOE.MediaComplete
         {
             var initalAttributes = SetupForm();
             var finalAttributes = new Dictionary<MetaAttribute, string>();
-            foreach (SongListItem item in SelectedSongs())
+            foreach (var item in SelectedSongs())
             {
                 try
                 {
                     if (initalAttributes.Count <= 1) break;
-                    //TODO This should use the LocalSong data retrieved from the FileManager
-                    var song = File.Create((item as LibrarySongItem).ParentItem.GetPath()+Path.DirectorySeparatorChar+item);
-                    foreach (var metaAttribute in Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>()
-                                                                .Where(metaAttribute => !finalAttributes.ContainsKey(metaAttribute)))
+                    foreach (var metaAttribute in Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>().Where(metaAttribute => !finalAttributes.ContainsKey(metaAttribute)))
                     {
                         if (initalAttributes[metaAttribute] == null)
-                            initalAttributes[metaAttribute] = song.GetAttribute(metaAttribute);
-                        else if (!initalAttributes[metaAttribute].Equals(song.GetAttribute(metaAttribute)))
+                            initalAttributes[metaAttribute] = item.Data.GetAttribute(metaAttribute);
+                        else if (!initalAttributes[metaAttribute].Equals(item.Data.GetAttribute(metaAttribute)))
                         {
                             initalAttributes[metaAttribute] = "-1";
                         }
@@ -93,7 +87,6 @@ namespace MSOE.MediaComplete
             }
             SetFinalAttributes(finalAttributes);
         }
-
         private void SetFinalAttributes(IReadOnlyDictionary<MetaAttribute, string> finalAttributes)
         {
             SongTitle.Text = finalAttributes[MetaAttribute.SongTitle] == "-1" ? Resources["VariousSongs"].ToString() : finalAttributes[MetaAttribute.SongTitle];

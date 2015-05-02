@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using MSOE.MediaComplete.Lib.Background;
 using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
@@ -43,11 +42,10 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// Performs the actual movement operations associated with the sort.
         /// </summary>
         /// <returns>The background queue tasks, so the status may be observed.</returns>
-        public SortingTask PerformSort()
+        public void PerformSort()
         {
             var task = new SortingTask(this);
             Queue.Inst.Add(task);
-            return task;
         }
 
         /// <summary>
@@ -102,16 +100,20 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <returns>A new FileInfo describing where the source file should be moved to</returns>
         private static SongPath GetNewLocation(AbstractSong song, IReadOnlyList<MetaAttribute> list)
         {
-            var metadataPath = new StringBuilder();
+            var path = "";
+            // This is using an indexed for loop for a reason.
+            // A foreach loop creates an enumerator. every time it's iterated, it advances to the next value. 
+            // Therefore on the first runthrough, enumerator.current returns the second element of the list.
+            // This breaks the naming.
             for (var x = 0; x < list.Count(); x ++)
             {
                 var metaValue = song.GetAttribute(list[x]);
                 var useableValue = metaValue ?? "Unknown " + list[x];
-                metadataPath.Append(useableValue);
-                metadataPath.Append(Path.DirectorySeparatorChar);
+                path += useableValue;
+                path += Path.DirectorySeparatorChar;
             }
             //TODO MC-260 Rename songs/configure song naming
-            return new SongPath(SettingWrapper.MusicDir.FullPath + metadataPath.ToString().GetValidFileName() +song.Name); 
+            return new SongPath(SettingWrapper.MusicDir.FullPath + path.GetValidFileName() +song.Name); 
         }
 
         #region Import Event Handling

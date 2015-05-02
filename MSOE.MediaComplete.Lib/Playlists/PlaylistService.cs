@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using M3U.NET;
 using MSOE.MediaComplete.Lib.Files;
-using TagLib;
 
 namespace MSOE.MediaComplete.Lib.Playlists
 {
@@ -169,7 +168,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
                 GetDirectoryInfo()
                     .EnumerateFiles(Constants.Wildcard, SearchOption.AllDirectories)
                     .Where(f => Constants.PlaylistFileExtensions.Any(e => f.Extension.Equals(e)));
-            var z = y.Select(f => new Playlist(new M3UFile(f)));;
+            var z = y.Select(f => new Playlist(new M3UFile(f)));
             return z;
 
         }

@@ -2,7 +2,6 @@
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Playing;
 using NAudio.Wave;
 using Ploeh.AutoFixture;

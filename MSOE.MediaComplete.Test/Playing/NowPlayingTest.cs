@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Playing;
 using MSOE.MediaComplete.Lib.Files;
 
@@ -41,8 +40,8 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void JumpTo_ArgumentIsPresent_ChangesIndex()
         {
-            var Id = Guid.NewGuid().ToString();
-            var targetSong = new LocalSong(Id,new SongPath(("notrealfile2")));
+            var id = Guid.NewGuid().ToString();
+            var targetSong = new LocalSong(id,new SongPath(("notrealfile2")));
 
             NowPlaying.Inst.Add(new List<AbstractSong>
             {
@@ -50,7 +49,7 @@ namespace MSOE.MediaComplete.Test.Playing
                 targetSong
             });
             var initialIndex = NowPlaying.Inst.Index;
-            var ret = NowPlaying.Inst.JumpTo(new LocalSong(Id,new SongPath(("notrealfile2"))));
+            var ret = NowPlaying.Inst.JumpTo(new LocalSong(id,new SongPath(("notrealfile2"))));
 
             Assert.IsTrue(ret, "Song should have been found.");
             Assert.AreNotEqual(initialIndex, NowPlaying.Inst.Index, "Index should have moved.");

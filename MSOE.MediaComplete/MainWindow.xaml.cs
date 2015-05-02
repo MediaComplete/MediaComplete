@@ -103,7 +103,7 @@ namespace MSOE.MediaComplete
             {
                 NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName
             };
-            watcher.Renamed += _fileManager.UpdateFile;
+            watcher.Renamed += _fileManager.RenamedFile;
             watcher.Changed += _fileManager.ChangedFile;
             watcher.Created += _fileManager.CreatedFile;
             watcher.Deleted += _fileManager.DeletedFile;
@@ -157,7 +157,7 @@ namespace MSOE.MediaComplete
             ImportResults results;
             try
             {
-                results = await new Importer(SettingWrapper.MusicDir, _fileManager).ImportFilesAsync(fileDialog.FileNames.Select(p => new SongPath(p)).ToList(), SettingWrapper.ShouldRemoveOnImport);
+                results = await new Importer(_fileManager).ImportFilesAsync(fileDialog.FileNames.Select(p => new SongPath(p)).ToList(), SettingWrapper.ShouldRemoveOnImport);
             }
             catch (InvalidImportException)
             {
@@ -189,7 +189,7 @@ namespace MSOE.MediaComplete
             if (folderDialog.ShowDialog() != WinForms.DialogResult.OK) return;
             var selectedDir = folderDialog.SelectedPath;
             var files = new DirectoryInfo(selectedDir).EnumerateFiles("*", SearchOption.AllDirectories).GetMusicFiles().Select(x => new SongPath(x.FullName));
-            var results = await new Importer(SettingWrapper.MusicDir, _fileManager).ImportDirectoryAsync(files, SettingWrapper.ShouldRemoveOnImport);
+            var results = await new Importer(_fileManager).ImportDirectoryAsync(files, SettingWrapper.ShouldRemoveOnImport);
             if (results.FailCount > 0)
             {
                 MessageBox.Show(Application.Current.MainWindow,
@@ -367,7 +367,8 @@ namespace MSOE.MediaComplete
         }
 
         #endregion
-        /*
+        /* TODO These need to be used to handle specific data changes propgatd from the filewatcher. 
+        // Right now, the UI does a full rebuild based on the directory, not by using the cache
         private void SongChanged(IEnumerable<LocalSong> songs)
         {
             foreach (var song in songs)
@@ -410,8 +411,7 @@ namespace MSOE.MediaComplete
         /// Triggered by the library filewatcher. Bumps the refresh timer so we don't make unnecessary 
         /// updates to the UI.
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="e"></param>
+        /// <param name="songs"></param>
         private void OnChanged(IEnumerable<LocalSong> songs)
         {
             _refreshTimer.Change(500, Timeout.Infinite);
@@ -518,7 +518,7 @@ namespace MSOE.MediaComplete
             }
             else
             {
-                await new Importer(SettingWrapper.MusicDir, _fileManager).ImportFilesAsync(files, true);
+                await new Importer(_fileManager).ImportFilesAsync(files, true);
             }
         }
         #endregion
