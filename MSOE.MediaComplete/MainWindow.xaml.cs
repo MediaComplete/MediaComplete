@@ -231,13 +231,12 @@ namespace MSOE.MediaComplete
         private async void Toolbar_AutoIDMusic_ClickAsync(object sender, RoutedEventArgs e)
         {
             // TODO (MC-45) mass ID of multi-selected songs and folders
-
-            foreach (var selection in SelectedSongs())
+            foreach (var selection in SelectedSongs().ToList())
             {
                 try
                 {
                     if (selection == null) continue;
-                    await MusicIdentifier.IdentifySongAsync(_fileMover, selection.Data.GetPath());
+                    await new MusicIdentifier().IdentifySongAsync(_fileMover, selection.Data.GetPath());
                 }
                 catch (Exception ex)
                 {
@@ -264,11 +263,11 @@ namespace MSOE.MediaComplete
             var contextMenu = menuItem.Parent as ContextMenu;
             if (contextMenu == null)
                 return;
-            foreach (var item in SelectedSongs())
+            foreach (var item in SelectedSongs().ToList())
             {
                 try
                 {
-                    await MusicIdentifier.IdentifySongAsync(_fileMover, item.Data.GetPath());
+                    await new MusicIdentifier().IdentifySongAsync(_fileMover, item.Data.GetPath());
                 }
                 catch (Exception ex)
                 {

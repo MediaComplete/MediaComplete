@@ -1,11 +1,4 @@
-﻿using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.IO;
-using MSOE.MediaComplete.Lib;
-using MSOE.MediaComplete.Lib.Metadata;
-using MSOE.MediaComplete.Test.Util;
-using Constants = MSOE.MediaComplete.Test.Util.Constants;
-using File = TagLib.File;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MSOE.MediaComplete.Test
 {

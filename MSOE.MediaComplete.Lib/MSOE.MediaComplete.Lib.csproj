@@ -87,8 +87,12 @@
     <Compile Include="Files\FileLocationComparator.cs" />
     <Compile Include="FileMover.cs" />
     <Compile Include="Import\ImportTask.cs" />
+    <Compile Include="Metadata\DoresoIdentifier.cs" />
+    <Compile Include="Metadata\FfmpegAudioReader.cs" />
     <Compile Include="Metadata\IdentifierTask.cs" />
     <Compile Include="Metadata\MetadataExtensions.cs" />
+    <Compile Include="Metadata\MetadataTypes.cs" />
+    <Compile Include="Metadata\SpotifyMetadataRetriever.cs" />
     <Compile Include="Playing\NowPlaying.cs" />
     <Compile Include="Playlists\Playlist.cs" />
     <Compile Include="Playlists\PlaylistService.cs" />
@@ -118,6 +122,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="SettingWrapper.cs" />
+    <Compile Include="Util\HttpUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="codegen.dll">

@@ -4,8 +4,10 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Principal;
+using TagLib;
 using TagLib.Id3v2;
 using File = TagLib.File;
+using Tag = TagLib.Id3v2.Tag;
 
 namespace MSOE.MediaComplete.Lib.Metadata
 {
@@ -54,6 +56,12 @@ namespace MSOE.MediaComplete.Lib.Metadata
             return fileTag.Album == otherTag.Album && fileTag.Track == otherTag.Track;
         }
 
+        /// <summary>
+        /// Set a metadata attribute. Value is casted based on the specified MetaAttribute.
+        /// </summary>
+        /// <param name="file">The taglib file to target</param>
+        /// <param name="attr">The metadata attribute</param>
+        /// <param name="value">The new data value</param>
         public static void SetAttribute(this File file, MetaAttribute attr, object value)
         {
             if (value == null) return;
@@ -64,8 +72,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
                     tag.Album = (string) value;
                     break;
                 case MetaAttribute.Artist:
-                    var aa = new List<String> {((string) value)};
-                    aa.AddRange(tag.AlbumArtists.Skip(1));
+                    var aa = (IEnumerable<string>)value;
                     tag.AlbumArtists = aa.ToArray();
                     break;
                 case MetaAttribute.Genre:
@@ -83,9 +90,8 @@ namespace MSOE.MediaComplete.Lib.Metadata
                     tag.Title = (string) value;
                     break;
                 case MetaAttribute.SupportingArtist:
-                    var aa2 = new List<String> {tag.AlbumArtists.Length < 1 ? "" : tag.AlbumArtists[0]};
-                    aa2.AddRange(((string)value).Split(','));
-                    tag.AlbumArtists = aa2.ToArray();
+                    var sa = (IEnumerable<string>)value;
+                    tag.Performers = sa.ToArray();
                     break;
                 case MetaAttribute.TrackNumber:
                     try
@@ -106,6 +112,9 @@ namespace MSOE.MediaComplete.Lib.Metadata
                     {
                         StatusBarHandler.Instance.ChangeStatusBarMessage("InvalidTrackNumber", StatusBarHandler.StatusIcon.Error);
                     }
+                    break;
+                case MetaAttribute.AlbumArt:
+                    tag.Pictures = new[] { value as IPicture };
                     break;
                 default:
                     return;
@@ -134,7 +143,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
                 case MetaAttribute.Album:
                     return tag.Album;
                 case MetaAttribute.Artist:
-                    return tag.FirstAlbumArtist;
+                    return tag.AlbumArtists.Any() ? tag.AlbumArtists.Aggregate((a1, a2) => a1 + "; " + a2) : "";
                 case MetaAttribute.Genre:
                     return tag.FirstGenre;
                 case MetaAttribute.Rating:
@@ -150,7 +159,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
                 case MetaAttribute.SongTitle:
                     return tag.Title;
                 case MetaAttribute.SupportingArtist:
-                    return String.Join(",", tag.AlbumArtists.Skip(1));
+                    return tag.Performers.Any() ? tag.Performers.Aggregate((a1, a2) => a1 + "; " + a2) : "";
                 case MetaAttribute.TrackNumber:
                     return tag.Track.ToString(CultureInfo.InvariantCulture);
                 case MetaAttribute.Year:

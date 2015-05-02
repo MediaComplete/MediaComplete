@@ -1,22 +1,61 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using NAudio.Wave;
-using Newtonsoft.Json.Linq;
-using File = TagLib.File;
+﻿using System.Threading.Tasks;
 
 namespace MSOE.MediaComplete.Lib.Metadata
 {
     /// <summary>
     /// Provides functions for identifying a song
     /// </summary>
-    public static class MusicIdentifier
+    public class MusicIdentifier
     {
         private const int Freq = 8000;
         private const int SampleSeconds = 10;
+
+        /// <summary>
+        /// Controls how music data is read in for identification
+        /// </summary>
+        public IAudioReader AudioReader { get; private set; }
+
+        /// <summary>
+        /// Controls how music data is read in for identification
+        /// </summary>
+        public IAudioIdentifier AudioIdentifier { get; private set; }
+
+        /// <summary>
+        /// Controls where additional metadata is retreived from after identifying a song.
+        /// </summary>
+        public IMetadataRetriever MetadataRetriever { get; private set; }
+
+        /// <summary>
+        /// Controls how files are accessed and edited
+        /// </summary>
+        public IFileMover FileMover { get; set; }
+
+        /// <summary>
+        /// Defaults to using FFMPEG for audio parsing, Doreso for identification, and our FileMover for file access. 
+        /// Spotify will be lazily constructed later for accessing additional metadata details, since it is not 
+        /// always necessary and needs asynchronous construction
+        /// </summary>
+        public MusicIdentifier()
+        {
+            AudioReader = new FfmpegAudioReader();
+            AudioIdentifier = new DoresoIdentifier();
+            FileMover = Lib.FileMover.Instance;
+        }
+
+        /// <summary>
+        /// Use the specified services for identification.
+        /// </summary>
+        /// <param name="reader">Audio reader for parsing in audio data</param>
+        /// <param name="identifier">Audio identifer for fingerprinting songs</param>
+        /// <param name="metadata">Metadata retreiver for finding additional metadata details.</param>
+        /// <param name="fileMover">Controls how files are accessed</param>
+        public MusicIdentifier(IAudioReader reader, IAudioIdentifier identifier, IMetadataRetriever metadata, IFileMover fileMover)
+        {
+            AudioReader = reader;
+            MetadataRetriever = metadata;
+            AudioIdentifier = identifier;
+            FileMover = fileMover;
+        }
 
         /// <summary>
         /// Identify a song; restoring its metadata based on the audio data
@@ -24,127 +63,106 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /// <param name="fileMover">Service for accessing the song</param>
         /// <param name="filename">The name of the target song</param>
         /// <returns></returns>
-        public static async Task IdentifySongAsync(FileMover fileMover, string filename)
+        public async Task IdentifySongAsync(FileMover fileMover, string filename)
         {
-            StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Started", StatusBarHandler.StatusIcon.Working);
+            StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Started",
+                StatusBarHandler.StatusIcon.Working);
 
+            // Check the file
             if (!fileMover.FileExists(filename))
             {
-                StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error-NoException", StatusBarHandler.StatusIcon.Error);
+                StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error-NoException",
+                    StatusBarHandler.StatusIcon.Error);
                 return;
             }
-            
-            var audioData = await SampleAudioAsync(filename);
+
+            // Read in audio data
+            var audioData = await AudioReader.ReadBytesAsync(filename, Freq, SampleSeconds);
             if (audioData == null)
             {
-                StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error-NoException", StatusBarHandler.StatusIcon.Error);
+                StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error-NoException",
+                    StatusBarHandler.StatusIcon.Error);
                 return;
             }
 
-            var client = new HttpClient { BaseAddress = new Uri(@"http://developer.doreso.com") };
+            Metadata data;
+            try
+            {
+                data = await AudioIdentifier.IdentifyAsync(audioData);
+            }
+            catch (IdentificationException) // We've exceeded our API rate limit. Tell the user to try again later.
+            {
+                StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Warning-RateLimit",
+                    StatusBarHandler.StatusIcon.Warning);
+                // TODO MC-45 Any other ID tasks in the queue should be cancelled somehow
+                return;
+            }
 
-            var payload = new ByteArrayContent(audioData);
-            payload.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+            if (data.Title == null) // No match. Tell the user they'll have to do it themselves.
+            {
+                StatusBarHandler.Instance.ChangeStatusBarMessage("{0}: {1}", "MusicIdentification-Warning-NoMatch",
+                    StatusBarHandler.StatusIcon.Warning, filename);
+                return;
+            }
 
-            var response = await client.PostAsync(@"/api/v1/song/identify?api_key=IZY34FSerDqD8NiP2mDBTIqG4gOSeHuMHQqsZaekvRM", payload);
+             // Found a match; populate the file
+            if (MetadataRetriever == null)
+                MetadataRetriever = await SpotifyMetadataRetriever.GetInstanceAsync();
+            await MetadataRetriever.GetMetadataAsync(data);
 
-            // Parse the response body.
-            var strResponse = await response.Content.ReadAsStringAsync();
-            var json = JObject.Parse(strResponse);
+            UpdateFileWithMetadata(data, filename);
 
-            UpdateFileWithJson(json, fileMover.CreateTaglibFile(filename));
-
-            StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Success", StatusBarHandler.StatusIcon.Success);
+            StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Success",
+                StatusBarHandler.StatusIcon.Success);
+            
         }
 
         /// <summary>
-        /// Replace the metadata attributes with the new data obtained from the web
+        /// Copies over attributes from a Metadata object to the specified file's taglib. 
+        /// Null attributes on the Metadata object are skipped, so there are no destructive overwrites.
         /// </summary>
-        /// <param name="json">The JSON web data. Currently assumed to be in Doreso's format</param>
-        /// <param name="metadata">The metadata object to repopulate</param>
-        private static void UpdateFileWithJson(JToken json, File metadata)
+        /// <param name="data">The new metadata</param>
+        /// <param name="filename">The file to update</param>
+        private void UpdateFileWithMetadata(Metadata data, string filename)
         {
-            const string song = "data[0].";
-            var title = json.SelectToken(song + "name");
-            if (title != null)
+            var metadata = FileMover.CreateTaglibFile(filename);
+
+            if (data.Title != null)
             {
-                metadata.SetAttribute(MetaAttribute.SongTitle, title.ToString());
+                metadata.SetAttribute(MetaAttribute.SongTitle, data.Title);
             }
-            var artist = json.SelectToken(song + "artist_name");
-            if (artist != null)
+            if (data.Album != null)
             {
-                metadata.SetAttribute(MetaAttribute.Artist, artist.ToString());
+                metadata.SetAttribute(MetaAttribute.Album, data.Album);
             }
-            var album = json.SelectToken(song + "album");
-            if (album != null)
+            if (data.TrackNumber.HasValue)
             {
-                metadata.SetAttribute(MetaAttribute.Album, album.ToString());
+                metadata.SetAttribute(MetaAttribute.Year, data.TrackNumber.Value);
             }
-
-            // TODO (MC-139, MC-45) add more - this will require using the ID passed in to access possible other databases...further research needed
-        }
-
-        /// <summary>
-        /// Read in audio data to send to the web identification service
-        /// </summary>
-        /// <param name="filename">The filename to read from</param>
-        /// <returns>A byte array of wav data</returns>
-        private async static Task<byte[]> SampleAudioAsync(string filename)
-        {
-            var wavData = new byte[Freq * SampleSeconds * 2];
-            var newFormat = new WaveFormat(Freq, 16, 1); // 16-bit quality, mono-channel
-
-            await Task.Run(delegate
+            if (data.SupportingArtists != null)
             {
-                var ffmpeg = new Process
-                {
-                    StartInfo =
-                    {
-                        FileName = "ffmpeg\\ffmpeg.exe",
-                        Arguments = String.Format("-i \"{0}\" -ac 1 -ar {1} -f wav -", filename, Freq),
-                        CreateNoWindow = true,
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true
-                    }
-                };
-                ffmpeg.Start();
-                var reader = new BinaryReader(ffmpeg.StandardOutput.BaseStream);
-                var count = 0;
-                while (count < wavData.Length - 1)
-                {
-                    count += reader.Read(wavData, count, wavData.Length - count);
-                }
-
-                ffmpeg.Kill();
-
-                if (ffmpeg.WaitForExit(2000))
-                {
-                }
-                else
-                {
-                    // TODO this is bad This Is Bad THIS IS BAD
-                }
-            });
-
-#if DEBUG
-            // Write back to file, make sure it's a good (albeit low-quality) wav
-            using (var writer = new WaveFileWriter(filename + "-sampled.wav", newFormat))
-            {
-                writer.Write(wavData, 0, wavData.Length);
-                writer.Flush();
+                metadata.SetAttribute(MetaAttribute.SupportingArtist, data.SupportingArtists);
             }
-#endif
-            return wavData;
-        }
-    }
-
-    /// <summary>
-    /// Represents an error in the identification process
-    /// </summary>
-    public class IdentificationException : Exception
-    {
-        public IdentificationException(string message, Exception exception) : base(message, exception)
-        {
+            if (data.AlbumArtists != null)
+            {
+                metadata.SetAttribute(MetaAttribute.Artist, data.AlbumArtists);
+            }
+            if (data.Rating.HasValue)
+            {
+                metadata.SetAttribute(MetaAttribute.Year, data.Rating.Value);
+            }
+            if (data.AlbumArt != null)
+            {
+                metadata.SetAttribute(MetaAttribute.AlbumArt, data.AlbumArt);
+            }
+            if (data.Genre != null)
+            {
+                metadata.SetAttribute(MetaAttribute.Genre, data.Genre);
+            }
+            if (data.Year.HasValue)
+            {
+                metadata.SetAttribute(MetaAttribute.Year, data.Year.Value);
+            }
         }
     }
 }

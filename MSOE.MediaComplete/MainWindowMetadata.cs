@@ -185,7 +185,7 @@ namespace MSOE.MediaComplete
                         }
                         else if (changedBox.Equals(Artist))
                         {
-                            song.SetAttribute(MetaAttribute.Artist, changedBox.Text);
+                            song.SetAttribute(MetaAttribute.Artist, changedBox.Text.Split(';'));
                         }
                         else if (changedBox.Equals(Genre))
                         {
@@ -205,7 +205,7 @@ namespace MSOE.MediaComplete
                         }
                         else if (changedBox.Equals(SuppArtist))
                         {
-                            song.SetAttribute(MetaAttribute.SupportingArtist, changedBox.Text);
+                            song.SetAttribute(MetaAttribute.SupportingArtist, changedBox.Text.Split(';'));
                         }
                     }
                 }
