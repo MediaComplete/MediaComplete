@@ -155,7 +155,8 @@ namespace MSOE.MediaComplete.Lib.Files
             if (!_cachedSongs.ContainsKey(song.Id)) throw new ArgumentException("Song does not exist in cache", "song");
             var file = TagLib.File.Create(song.Path);
 
-            foreach (var attribute in Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>().ToList().Where(x => file.GetAttribute(x) == null || !file.GetAttribute(x).Equals(song.GetAttribute(x))))
+            foreach (var attribute in Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>().ToList()
+                .Where(x => file.GetAttribute(x) == null || !file.GetAttribute(x).Equals(song.GetAttribute(x))))
             {
                 file.SetAttribute(attribute, song.GetAttribute(attribute));
             }
@@ -178,11 +179,9 @@ namespace MSOE.MediaComplete.Lib.Files
         /// <param name="deletedSong">the song that needs to be deleted</param>
         public void DeleteSong(LocalSong deletedSong)
         {
-            
             _cachedSongs.Remove(deletedSong.Id);
             _cachedFiles[deletedSong.Id].Delete();
             _cachedFiles.Remove(deletedSong.Id);
-            
         }
         
         /// <summary>

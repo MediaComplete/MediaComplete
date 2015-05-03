@@ -1,5 +1,4 @@
-﻿using System;
-using MSOE.MediaComplete.Lib.Metadata;
+﻿using MSOE.MediaComplete.Lib.Metadata;
 
 namespace MSOE.MediaComplete.Lib.Files
 {

@@ -41,7 +41,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// sets up the wrapper to play the given file
         /// required before each song to get it to begin playing
         /// </summary>
-        /// <param name="fileInfo"></param>
+        /// <param name="localSong"></param>
         /// <param name="handler"></param>
         /// <param name="currentVolume"></param>
         public void Setup(LocalSong localSong, EventHandler<StoppedEventArgs> handler, double currentVolume)
