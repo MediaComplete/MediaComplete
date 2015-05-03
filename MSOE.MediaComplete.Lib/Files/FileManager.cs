@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using M3U.NET;
 using MSOE.MediaComplete.Lib.Metadata;
+using TagLib;
 using File = System.IO.File;
 using TaglibFile = TagLib.File;
 
@@ -46,16 +47,7 @@ namespace MSOE.MediaComplete.Lib.Files
             var files = new DirectoryInfo(directory.FullPath).GetFiles("*", SearchOption.AllDirectories).GetMusicFiles();
             foreach (var fileInfo in files)
             {
-                try
-                {
-                    AddFileToCache(Guid.NewGuid().ToString(), fileInfo);
-                }
-                catch (Exception)
-                {
-                    var song = new LocalSong(Guid.NewGuid().ToString(), new SongPath(fileInfo.FullName));
-                    _cachedSongs.Add(song.Id, song);
-                    _cachedFiles.Add(song.Id, fileInfo);
-                }
+                AddFileToCache(Guid.NewGuid().ToString(), fileInfo);
             }
         }
         
@@ -140,18 +132,7 @@ namespace MSOE.MediaComplete.Lib.Files
             if (sourceDir.GetDirectories().Length == 0 && sourceDir.GetFiles().Length == 0) sourceDir.Delete();
         }
 
-        /// <summary>
-        /// DO NOT USE OFTEN. FILE OPERATIONS SHOULD BE SPECIFIED WITHIN THE FILEMANAGER
-        /// Returns a fileinfo object for the specified song. 
-        /// This is used in order to get a file object to make sound from
-        /// </summary>
-        /// <param name="song"></param>
-        /// <returns></returns>
-        public FileInfo GetFileInfo(LocalSong song)
-        {
-            return _cachedFiles[song.Id];
-        }
-        private readonly List<MetaAttribute> _enumVals = new List<MetaAttribute>
+        private readonly List<MetaAttribute> _attributes = new List<MetaAttribute>
             {
                 MetaAttribute.Album, 
                 MetaAttribute.Artist, 
@@ -159,7 +140,9 @@ namespace MSOE.MediaComplete.Lib.Files
                 MetaAttribute.SupportingArtist, 
                 MetaAttribute.TrackNumber, 
                 MetaAttribute.SongTitle, 
-                MetaAttribute.Genre
+                MetaAttribute.Genre,
+                MetaAttribute.AlbumArt,
+                MetaAttribute.Rating
             };
         /// <summary>
         /// Writes the attributes of the song parameter to the TagLib File and updates the stored FileInfo and song
@@ -170,7 +153,7 @@ namespace MSOE.MediaComplete.Lib.Files
             if (!_cachedSongs.ContainsKey(song.Id)) throw new ArgumentException("Song does not exist in cache","song");
             var file = TagLib.File.Create(song.Path);
             
-            foreach (var attribute in _enumVals.Where(x => file.GetAttribute(x) == null || !file.GetAttribute(x).Equals(song.GetAttribute(x))))
+            foreach (var attribute in _attributes.Where(x => file.GetAttribute(x) == null || !file.GetAttribute(x).Equals(song.GetAttribute(x))))
             {
                 file.SetAttribute(attribute, song.GetAttribute(attribute));
             }
@@ -278,18 +261,25 @@ namespace MSOE.MediaComplete.Lib.Files
         /// <returns>newly initialized and populated LocalSong object</returns>
         private static LocalSong GetNewLocalSong(string id, string path)
         {
-            var tagFile = TaglibFile.Create(path);
-            return new LocalSong(id, new SongPath(path))
+            try
             {
-                Title = tagFile.GetAttribute(MetaAttribute.SongTitle),
-                Artist = tagFile.GetAttribute(MetaAttribute.Artist),
-                Album = tagFile.GetAttribute(MetaAttribute.Album),
-                Genre = tagFile.GetAttribute(MetaAttribute.Genre),
-                Year = tagFile.GetAttribute(MetaAttribute.Year),
-                TrackNumber = tagFile.GetAttribute(MetaAttribute.TrackNumber),
-                SupportingArtists = tagFile.GetAttribute(MetaAttribute.SupportingArtist),
-                Duration = (int?) tagFile.Properties.Duration.TotalSeconds
-            };
+                var tagFile = TaglibFile.Create(path);
+                return new LocalSong(id, new SongPath(path))
+                {
+                    Title = tagFile.GetAttribute(MetaAttribute.SongTitle),
+                    Artist = tagFile.GetAttribute(MetaAttribute.Artist),
+                    Album = tagFile.GetAttribute(MetaAttribute.Album),
+                    Genre = tagFile.GetAttribute(MetaAttribute.Genre),
+                    Year = tagFile.GetAttribute(MetaAttribute.Year),
+                    TrackNumber = tagFile.GetAttribute(MetaAttribute.TrackNumber),
+                    SupportingArtists = tagFile.GetAttribute(MetaAttribute.SupportingArtist),
+                    Duration = (int?) tagFile.Properties.Duration.TotalSeconds
+                };
+            }
+            catch (CorruptFileException)
+            {
+                return new LocalSong(id, new SongPath(path));
+            }
             
         }
         
@@ -324,7 +314,7 @@ namespace MSOE.MediaComplete.Lib.Files
         /// Used to update the attributes of the TagLibFile associated with the AbstractSong
         /// </summary>
         /// <param name="song"></param>
-        private void UpdateFile(AbstractSong song)
+        private void UpdateFile(LocalSong song)
         {
             var tagFile = TaglibFile.Create(song.Path);
             _cachedSongs[song.Id].Title = tagFile.GetAttribute(MetaAttribute.SongTitle);
@@ -533,14 +523,6 @@ namespace MSOE.MediaComplete.Lib.Files
         /// </summary>
         /// <param name="directory">Destination location to create the folder, including foldername</param>
         void CreateDirectory(DirectoryPath directory);
-        /// <summary>
-        /// DO NOT USE OFTEN. FILE OPERATIONS SHOULD BE SPECIFIED WITHIN THE FILEMANAGER
-        /// Returns a fileinfo object for the specified song. 
-        /// This is used in order to get a file object to make sound from
-        /// </summary>
-        /// <param name="song"></param>
-        /// <returns></returns>
-        FileInfo GetFileInfo(LocalSong song);
         /// <summary>
         /// Writes the attributes of the song parameter to the TagLib File and updates the stored FileInfo and song
         /// </summary>

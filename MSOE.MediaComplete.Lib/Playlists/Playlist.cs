@@ -41,7 +41,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
             {
                 try
                 {
-                    _file.Files.Add(PlaylistService.ToMediaItem(song));
+                    _file.Files.Add(PlaylistService.ToMediaItem(song as LocalSong));
                 }
                 catch (FileNotFoundException)
                 {

@@ -98,7 +98,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <param name="song">The source file to analyze</param>
         /// <param name="list">The sort-order of meta attributes</param>
         /// <returns>A new FileInfo describing where the source file should be moved to</returns>
-        private static SongPath GetNewLocation(AbstractSong song, IReadOnlyList<MetaAttribute> list)
+        private static SongPath GetNewLocation(LocalSong song, IReadOnlyList<MetaAttribute> list)
         {
             var path = "";
             // This is using an indexed for loop for a reason.
@@ -113,7 +113,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                 path += Path.DirectorySeparatorChar;
             }
             //TODO MC-260 Rename songs/configure song naming
-            return new SongPath(SettingWrapper.MusicDir.FullPath + path.GetValidFileName() +song.Name); 
+            return new SongPath(SettingWrapper.MusicDir.FullPath + path.GetValidFileName() + song.Name); 
         }
 
         #region Import Event Handling
@@ -146,7 +146,6 @@ namespace MSOE.MediaComplete.Lib.Sorting
         {
             if (!SettingWrapper.IsSorting) return;
 
-            //TODO THIS IS ALSO PRETTY TOTALLY FUCKED
             var settings = new SortSettings
             {
                 SortOrder = SettingWrapper.SortOrder,
@@ -176,7 +175,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                 {
                     return;
                 }
-                //TODO TODO FIX THIS SHIT
+
                 if (!_fileManager.DirectoryExists(Dest.Directory)) {
                     _fileManager.CreateDirectory(Dest.Directory);
                 }

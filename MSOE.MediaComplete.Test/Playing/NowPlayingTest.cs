@@ -683,7 +683,11 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.IsTrue(NowPlaying.Inst.SongCount() == 3);
             NowPlaying.Inst.InsertRange(1, list);
             Assert.IsTrue(NowPlaying.Inst.SongCount() == 4);
-            Assert.AreEqual(NowPlaying.Inst.NextSong().GetPath(), secondSong.GetPath());
+            var localSong = NowPlaying.Inst.NextSong()as LocalSong;
+            if (localSong != null)
+                Assert.AreEqual(localSong.GetPath(), secondSong.GetPath());
+            else 
+                Assert.Fail("localSong should not be null");
         }
 
 
@@ -701,10 +705,30 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.IsTrue(NowPlaying.Inst.SongCount() == 3);
             NowPlaying.Inst.InsertRange(1, list);
             Assert.IsTrue(NowPlaying.Inst.SongCount() == 7);
-            Assert.AreEqual(NowPlaying.Inst.NextSong().GetPath(), secondSong.GetPath());
-            Assert.AreEqual(NowPlaying.Inst.NextSong().GetPath(), thirdSong.GetPath());
-            Assert.AreEqual(NowPlaying.Inst.NextSong().GetPath(), fourthSong.GetPath());
-            Assert.AreEqual(NowPlaying.Inst.NextSong().GetPath(), fifthSong.GetPath());
+
+            var localSong = NowPlaying.Inst.NextSong() as LocalSong;
+            if (localSong != null)
+                Assert.AreEqual(localSong.GetPath(), secondSong.GetPath());
+            else
+                Assert.Fail("localSong should not be null");
+
+            localSong = NowPlaying.Inst.NextSong() as LocalSong;
+            if (localSong != null)
+                Assert.AreEqual(localSong.GetPath(), thirdSong.GetPath());
+            else
+                Assert.Fail("localSong should not be null");
+
+            localSong = NowPlaying.Inst.NextSong() as LocalSong;
+            if (localSong != null)
+                Assert.AreEqual(localSong.GetPath(), fourthSong.GetPath());
+            else
+                Assert.Fail("localSong should not be null");
+
+            localSong = NowPlaying.Inst.NextSong() as LocalSong;
+            if (localSong != null)
+                Assert.AreEqual(localSong.GetPath(), fifthSong.GetPath());
+            else
+                Assert.Fail("localSong should not be null");
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]

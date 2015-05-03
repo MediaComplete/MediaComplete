@@ -78,7 +78,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
             return _service.CreatePlaylist();
         }
 
-        public static MediaItem ToMediaItem(AbstractSong song)
+        public static MediaItem ToMediaItem(LocalSong song)
         {
             return _service.ToMediaItem(song);
         }
@@ -127,7 +127,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
         Playlist CreatePlaylist();
 
         AbstractSong Create(MediaItem mediaItem);
-        MediaItem ToMediaItem(AbstractSong song);
+        MediaItem ToMediaItem(LocalSong song);
     }
     #endregion
 
@@ -231,7 +231,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
         /// Converts this LocalSong to a MediaItem so it can be serialized to a playlist.
         /// </summary>
         /// <returns>A new media item</returns>
-        public  MediaItem ToMediaItem(AbstractSong song)
+        public  MediaItem ToMediaItem(LocalSong song)
         {
             return new MediaItem
             {

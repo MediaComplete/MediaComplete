@@ -60,7 +60,6 @@ namespace MSOE.MediaComplete
         public MainWindow()
         {
             _fileManager.Initialize(SettingWrapper.MusicDir);
-            _playlists = new ObservableCollection<Playlist>(PlaylistService.GetAllPlaylists());
             InitializeComponent();
             InitUi();
             InitEvents();
@@ -111,6 +110,7 @@ namespace MSOE.MediaComplete
             _fileManager.SongChanged += OnChanged;
             _fileManager.SongRenamed += OnChanged;
             _fileManager.SongDeleted += OnChanged;
+            //TODO connect these
             //_fileManager.SongChanged += SongChanged;
             //_fileManager.SongCreated += SongCreated;
             //_fileManager.SongDeleted += SongDeleted;
@@ -246,7 +246,9 @@ namespace MSOE.MediaComplete
                 try
                 {
                     if (selection == null) continue;
-                    await MusicIdentifier.IdentifySongAsync(_fileManager, selection.Data.GetPath());
+                    var localSong = selection.Data as LocalSong;
+                    if (localSong != null)
+                        await MusicIdentifier.IdentifySongAsync(_fileManager, localSong.GetPath());
                 }
                 catch (Exception ex)
                 {
@@ -277,7 +279,9 @@ namespace MSOE.MediaComplete
             {
                 try
                 {
-                    await MusicIdentifier.IdentifySongAsync(_fileManager, item.Data.GetPath());
+                    var localSong = item.Data as LocalSong;
+                    if (localSong != null)
+                        await MusicIdentifier.IdentifySongAsync(_fileManager, localSong.GetPath());
                 }
                 catch (Exception ex)
                 {
@@ -296,7 +300,6 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private async void Toolbar_SortMusic_ClickAsync(object sender, RoutedEventArgs e)
         {
-            //TODO FIX THIS SO IT ISNT FUCKED TO SHIT
             var settings = new SortSettings
             {
                 SortOrder = SettingWrapper.SortOrder,

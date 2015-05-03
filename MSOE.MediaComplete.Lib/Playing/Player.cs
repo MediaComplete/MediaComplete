@@ -64,7 +64,7 @@ namespace MSOE.MediaComplete.Lib.Playing
             var localSong = song as LocalSong;
             if (localSong != null)
             {
-                _nAudioWrapper.Setup(_fileManager.GetFileInfo(localSong), WaveOutOnPlaybackStopped, _currentVolume);
+                _nAudioWrapper.Setup(localSong, WaveOutOnPlaybackStopped, _currentVolume);
             }
             PlaybackState = _nAudioWrapper.Play();
         }

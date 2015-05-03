@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace MSOE.MediaComplete.Lib.Files
 {
     /// <summary>
@@ -22,11 +24,51 @@ namespace MSOE.MediaComplete.Lib.Files
             get { return _id; }
         }
 
+        /// <summary>
+        /// Checks if the song is a child of the specified directory
+        /// </summary>
+        /// <param name="dir">directory to be compared</param>
+        /// <returns>true if song is a child</returns>
+        /// <returns>false if song is not a child</returns>
         public bool HasParent(DirectoryPath dir)
         {
             return SongPath.HasParent(dir);
         }
         
+        #region Path and File Information
+        /// <summary>
+        /// Contains path information relating to the song
+        /// </summary>
+        public SongPath SongPath { get; set; }
+        /// <summary>
+        /// The FileType, as defined by the full name of the file. This is required to save files properly.
+        /// </summary>
+        public string FileType { get { return Path.Substring(Path.LastIndexOf(".", StringComparison.Ordinal)); } }
+        /// <summary>
+        /// Returns the full path of the song on the drive.
+        /// </summary>
+        public string Path
+        {
+            get { return SongPath.FullPath; }
+        }
+        /// <summary>
+        /// Returns the filename of the song
+        /// </summary>
+        public string Name
+        {
+            get { return SongPath.Name; }
+        }
+        /// <summary>
+        /// Used to get the string path value. This is a carryover from an old implementation and will likely be deleted soon.
+        /// </summary>
+        /// <returns>SongPath.FullPath</returns>
+        public string GetPath()
+        {
+            return Path;
+        }
+        #endregion
+        
+        #region System Overrides
         /// <summary>
         /// Compares two local songs based on whether they refer to the same file.
         /// </summary>
@@ -47,11 +89,6 @@ namespace MSOE.MediaComplete.Lib.Files
         {
             return SongPath.Name;
         }
-
-        public override string GetPath()
-        {
-            return Path; 
-        }
-
+        #endregion
     }
 }
