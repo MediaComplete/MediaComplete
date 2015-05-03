@@ -110,7 +110,7 @@ namespace MSOE.MediaComplete
             _fileManager.SongChanged += OnChanged;
             _fileManager.SongRenamed += OnChanged;
             _fileManager.SongDeleted += OnChanged;
-            //TODO connect these
+            //TODO MC-301 connect these
             //_fileManager.SongChanged += SongChanged;
             //_fileManager.SongCreated += SongCreated;
             //_fileManager.SongDeleted += SongDeleted;
@@ -370,7 +370,7 @@ namespace MSOE.MediaComplete
         }
 
         #endregion
-        /* TODO These need to be used to handle specific data changes propgatd from the filewatcher. 
+        /* TODO MC-301 These need to be used to handle specific data changes propgated from the filewatcher. 
         // Right now, the UI does a full rebuild based on the directory, not by using the cache
         private void SongChanged(IEnumerable<LocalSong> songs)
         {
@@ -471,6 +471,7 @@ namespace MSOE.MediaComplete
         /// Recursively populates foldertree and songtree with elements
         /// </summary>
         /// <param name="parent"></param>
+        /// // TODO MC-301
         private void PopulateFromFolder(FolderTreeViewItem parent)
         {
             var songList = Songs.Source as ICollection<SongListItem>;

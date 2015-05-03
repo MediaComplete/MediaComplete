@@ -132,34 +132,6 @@ namespace MSOE.MediaComplete.Lib.Files
             if (sourceDir.GetDirectories().Length == 0 && sourceDir.GetFiles().Length == 0) sourceDir.Delete();
         }
 
-        private readonly List<MetaAttribute> _attributes = new List<MetaAttribute>
-            {
-                MetaAttribute.Album, 
-                MetaAttribute.Artist, 
-                MetaAttribute.Year, 
-                MetaAttribute.SupportingArtist, 
-                MetaAttribute.TrackNumber, 
-                MetaAttribute.SongTitle, 
-                MetaAttribute.Genre,
-                MetaAttribute.AlbumArt,
-                MetaAttribute.Rating
-            };
-        /// <summary>
-        /// Writes the attributes of the song parameter to the TagLib File and updates the stored FileInfo and song
-        /// </summary>
-        /// <param name="song">file with updated metadata</param>
-        public void SaveSong(LocalSong song)
-        {
-            if (!_cachedSongs.ContainsKey(song.Id)) throw new ArgumentException("Song does not exist in cache","song");
-            var file = TagLib.File.Create(song.Path);
-            
-            foreach (var attribute in _attributes.Where(x => file.GetAttribute(x) == null || !file.GetAttribute(x).Equals(song.GetAttribute(x))))
-            {
-                file.SetAttribute(attribute, song.GetAttribute(attribute));
-            }
-            _cachedFiles[song.Id] = new FileInfo(song.Path);
-            _cachedSongs[song.Id] = song;
-        }
 
         /// <summary>
         /// Moves a file from the directory of songPath to the directory at newFile. 
@@ -172,8 +144,25 @@ namespace MSOE.MediaComplete.Lib.Files
             File.Move(songPath.FullPath, newFile.FullPath);
         }
         #endregion
-        
+
         #region Data Operations
+        /// <summary>
+        /// Writes the attributes of the song parameter to the TagLib File and updates the stored FileInfo and song
+        /// </summary>
+        /// <param name="song">file with updated metadata</param>
+        public void SaveSong(LocalSong song)
+        {
+            if (!_cachedSongs.ContainsKey(song.Id)) throw new ArgumentException("Song does not exist in cache", "song");
+            var file = TagLib.File.Create(song.Path);
+
+            foreach (var attribute in Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>().ToList().Where(x => file.GetAttribute(x) == null || !file.GetAttribute(x).Equals(song.GetAttribute(x))))
+            {
+                file.SetAttribute(attribute, song.GetAttribute(attribute));
+            }
+            _cachedFiles[song.Id] = new FileInfo(song.Path);
+            _cachedSongs[song.Id] = song;
+        }
+
         /// <summary>
         /// Get every song object that exists in the cache
         /// </summary>
@@ -189,7 +178,9 @@ namespace MSOE.MediaComplete.Lib.Files
         /// <param name="deletedSong">the song that needs to be deleted</param>
         public void DeleteSong(LocalSong deletedSong)
         {
+            
             _cachedSongs.Remove(deletedSong.Id);
+            _cachedFiles[deletedSong.Id].Delete();
             _cachedFiles.Remove(deletedSong.Id);
             
         }

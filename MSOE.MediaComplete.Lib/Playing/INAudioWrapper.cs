@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using MSOE.MediaComplete.Lib.Files;
 using NAudio.Wave;
 

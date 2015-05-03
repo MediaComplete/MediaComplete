@@ -3,13 +3,7 @@ using System.IO;
 
 namespace MSOE.MediaComplete.Lib.Files
 {
-    public interface IPath
-    {
-        string FullPath { get; }
-        bool HasParent(DirectoryPath parent);
-    }
-
-    public class SongPath : IPath
+    public class SongPath
     {
         /// <summary>
         /// Full string Path, including the file's name and filetype
@@ -75,7 +69,7 @@ namespace MSOE.MediaComplete.Lib.Files
             return string.Format("{0}-{1}", FullPath, Name).GetHashCode();
         }
     }
-    public class DirectoryPath : IPath
+    public class DirectoryPath
     {
         /// <summary>
         /// Full string Path of the directory
