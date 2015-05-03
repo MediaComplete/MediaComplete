@@ -157,7 +157,7 @@
                         <Separator/>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
                             <CheckBox x:Name="CheckBoxInfoLogging" VerticalAlignment="Center" Checked="CheckBoxInfoLoggingChanged" Unchecked="CheckBoxInfoLoggingChanged"/>
-                            <Label Content="Logging general application information (Warning, this will take more space)" FontWeight="SemiBold" />
+                            <Label Content="Enable verbose logging (Warning: log files will consume additional space)" FontWeight="SemiBold" />
                         </StackPanel>
                         <Separator />
                         <Button Content="Open Log Folder" Width="150" Height="22" HorizontalAlignment="Left" Click="OpenLogFolder"/>
