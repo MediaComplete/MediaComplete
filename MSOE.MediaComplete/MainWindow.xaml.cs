@@ -100,7 +100,8 @@ namespace MSOE.MediaComplete
 
             var watcher = new FileSystemWatcher(SettingWrapper.MusicDir.FullPath)
             {
-                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName
+                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
+                IncludeSubdirectories = true
             };
             watcher.Renamed += _fileManager.RenamedFile;
             watcher.Changed += _fileManager.ChangedFile;

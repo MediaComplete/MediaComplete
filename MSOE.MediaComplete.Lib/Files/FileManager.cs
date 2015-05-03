@@ -306,6 +306,7 @@ namespace MSOE.MediaComplete.Lib.Files
         /// <param name="song"></param>
         private void UpdateFile(LocalSong song)
         {
+            if (!File.Exists(song.Path)) return;
             var tagFile = TaglibFile.Create(song.Path);
             _cachedSongs[song.Id].Title = tagFile.GetAttribute(MetaAttribute.SongTitle);
             _cachedSongs[song.Id].Artist = tagFile.GetAttribute(MetaAttribute.Artist);
@@ -400,8 +401,8 @@ namespace MSOE.MediaComplete.Lib.Files
         /// <summary>
         /// Updates cached song as a result of a 'deleted' event being triggered by the filewatcher.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender"/>
+        /// <param name="e"/>
         public void DeletedFile(object sender, FileSystemEventArgs e)
         {
             var retEnum = new List<LocalSong>();
