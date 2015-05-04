@@ -142,6 +142,30 @@ namespace MSOE.MediaComplete.Lib.Files
         {
             File.Move(songPath.FullPath, newFile.FullPath);
         }
+
+        public void ScrubEmptyDirectories(DirectoryPath directory)
+        {
+            var rootInfo = new DirectoryInfo(directory.FullPath);
+            foreach (var child in rootInfo.EnumerateDirectories("*", SearchOption.AllDirectories))
+            {
+                ScrubEmptyDirectories(child);
+                if (!child.EnumerateFileSystemInfos().Any())
+                {
+                    child.Delete();
+                }
+            }
+        }
+        private static void ScrubEmptyDirectories(DirectoryInfo directory)
+        {
+            foreach (var child in directory.EnumerateDirectories("*", SearchOption.AllDirectories))
+            {
+                ScrubEmptyDirectories(child);
+                if (!child.EnumerateFileSystemInfos().Any())
+                {
+                    child.Delete();
+                }
+            }
+        }
         #endregion
 
         #region Data Operations
@@ -470,6 +494,7 @@ namespace MSOE.MediaComplete.Lib.Files
         public event SongUpdatedHandler SongChanged = delegate { };
         public event SongUpdatedHandler SongCreated = delegate { };
         public event SongUpdatedHandler SongDeleted = delegate { };
+        
 
         public delegate void SongUpdatedHandler(IEnumerable<LocalSong> songs);
         public delegate void SongRenamedHandler(IEnumerable<Tuple<LocalSong, LocalSong>> songs);
@@ -588,6 +613,7 @@ namespace MSOE.MediaComplete.Lib.Files
         event FileManager.SongUpdatedHandler SongChanged;
         event FileManager.SongUpdatedHandler SongCreated;
         event FileManager.SongUpdatedHandler SongDeleted;
+        void ScrubEmptyDirectories(DirectoryPath directory);
     }
 
 }

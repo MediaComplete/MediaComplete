@@ -15,29 +15,24 @@ namespace MSOE.MediaComplete.Test
     [TestClass]
     public class SorterTest
     {
-        private readonly List<MetaAttribute> _sortOrder = new List<MetaAttribute>
+        private static readonly List<MetaAttribute> _sortOrder = new List<MetaAttribute>
         {
             MetaAttribute.Artist,
             MetaAttribute.Album
         };
-        private readonly DirectoryPath _homeDir = new DirectoryPath("homedir");
+        private static readonly DirectoryPath _homeDir = new DirectoryPath("homedir");
 
         #region CalculateActions
 
         [TestMethod]
         public void CalculateActions_MovesOnly()
         {
-            SettingWrapper.SortOrder = _sortOrder;
-            SettingWrapper.HomeDir = _homeDir;
-            var mock = new Mock<IFileManager>();
-            var allSongs = CreateAllSongsWithAlreadySorted();
-            mock.Setup(x => x.GetAllSongs()).Returns(allSongs);
-            mock.Setup(x => x.FileExists(It.IsIn(allSongs.Select(y => y.SongPath)))).Returns(true);
+            var manager = SetUpCalculateActionsMock();
             var songs = new List<SongPath>{
                new SongPath(SettingWrapper.MusicDir.FullPath + "song4.mp3"),
                new SongPath(SettingWrapper.MusicDir.FullPath + "song5.mp3"),
                new SongPath(SettingWrapper.MusicDir.FullPath + "song6.mp3")};
-            var sorter = new Sorter(mock.Object, songs);
+            var sorter = new Sorter(manager, songs);
             sorter.CalculateActionsAsync().Wait();
 
             Assert.AreEqual(3, sorter.Actions.Count());
@@ -48,17 +43,12 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void CalculateActions_DuplicateOnly()
         {
-            SettingWrapper.SortOrder = _sortOrder;
-            SettingWrapper.HomeDir = _homeDir;
-            var mock = new Mock<IFileManager>();
-            var allSongs = CreateAllSongsWithAlreadySorted();
-            mock.Setup(x => x.GetAllSongs()).Returns(allSongs);
-            mock.Setup(x => x.FileExists(It.IsIn(allSongs.Select(y => y.SongPath)))).Returns(true);
+            var manager = SetUpCalculateActionsMock();
             var songs = new List<SongPath>{
                 new SongPath(SettingWrapper.MusicDir.FullPath + "song8.mp3"),
                 new SongPath(SettingWrapper.MusicDir.FullPath + "song9.mp3"),
                 new SongPath(SettingWrapper.MusicDir.FullPath + "song10.mp3")};
-            var sorter = new Sorter(mock.Object, songs);
+            var sorter = new Sorter(manager, songs);
             sorter.CalculateActionsAsync().Wait();
 
             Assert.AreEqual(3, sorter.Actions.Count());
@@ -69,18 +59,13 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void CalculateActions_MoveAndDuplicate()
         {
-            SettingWrapper.SortOrder = _sortOrder;
-            SettingWrapper.HomeDir = _homeDir;
-            var mock = new Mock<IFileManager>();
-            var allSongs = CreateAllSongsWithAlreadySorted();
-            mock.Setup(x => x.GetAllSongs()).Returns(allSongs);
-            mock.Setup(x => x.FileExists(It.IsIn(allSongs.Select(y => y.SongPath)))).Returns(true);
+            var manager = SetUpCalculateActionsMock();
             var songs = new List<SongPath>{
                 new SongPath(SettingWrapper.MusicDir.FullPath + "song4.mp3"),
                 new SongPath(SettingWrapper.MusicDir.FullPath + "song5.mp3"),
                 new SongPath(SettingWrapper.MusicDir.FullPath + "song10.mp3")};
 
-            var sorter = new Sorter(mock.Object, songs);
+            var sorter = new Sorter(manager, songs);
             sorter.CalculateActionsAsync().Wait();
 
             Assert.AreEqual(3, sorter.Actions.Count());
@@ -91,17 +76,12 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void CalculateActions_NoValidFiles()
         {
-            SettingWrapper.SortOrder = _sortOrder;
-            SettingWrapper.HomeDir = _homeDir;
-            var mock = new Mock<IFileManager>();
-            var allSongs = CreateAllSongsWithAlreadySorted();
-            mock.Setup(x => x.GetAllSongs()).Returns(allSongs);
-            mock.Setup(x => x.FileExists(It.IsIn(allSongs.Select(y => y.SongPath)))).Returns(true);
+            var manager = SetUpCalculateActionsMock();
             var songs = new List<SongPath>{
                 new SongPath("song99.mp3"),
                 new SongPath("song100.mp3"), 
                 new SongPath("song101.mp3")};
-            var sorter = new Sorter(mock.Object, songs);
+            var sorter = new Sorter(manager, songs);
             sorter.CalculateActionsAsync().Wait();
 
             Assert.IsTrue(!sorter.Actions.Any());
@@ -111,18 +91,13 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void CalculateActions_MoveDupAndInvalid()
         {
-            SettingWrapper.SortOrder = _sortOrder;
-            SettingWrapper.HomeDir = _homeDir;
-            var mock = new Mock<IFileManager>();
-            var allSongs = CreateAllSongsWithAlreadySorted();
-            mock.Setup(x => x.GetAllSongs()).Returns(allSongs);
-            mock.Setup(x => x.FileExists(It.IsIn(allSongs.Select(y => y.SongPath)))).Returns(true);
+            var manager = SetUpCalculateActionsMock();
             var songs = new List<SongPath>{
                new SongPath(SettingWrapper.MusicDir.FullPath + "song1.mp3"),
                new SongPath(SettingWrapper.MusicDir.FullPath + "song4.mp3"),
                new SongPath(SettingWrapper.MusicDir.FullPath + "song8.mp3")};
 
-            var sorter = new Sorter(mock.Object, songs);
+            var sorter = new Sorter(manager, songs);
             sorter.CalculateActionsAsync().Wait();
 
             Assert.AreEqual(2, sorter.Actions.Count());
@@ -133,12 +108,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void CalculateActions_AlreadySorted()
         {
-            SettingWrapper.SortOrder = _sortOrder;
-            SettingWrapper.HomeDir = _homeDir;
-            var mock = new Mock<IFileManager>();
-            var allSongs = CreateAllSongsWithAlreadySorted();
-            mock.Setup(x => x.GetAllSongs()).Returns(allSongs);
-            mock.Setup(x => x.FileExists(It.IsIn(allSongs.Select(y => y.SongPath)))).Returns(true);
+            var manager = SetUpCalculateActionsMock();
             var songs = new List<SongPath>{
                 new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
                 "AlbumName"+Path.DirectorySeparatorChar +"song1.mp3"),
@@ -146,7 +116,7 @@ namespace MSOE.MediaComplete.Test
                 "AlbumName"+Path.DirectorySeparatorChar +"song2.mp3"),
                 new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
                 "AlbumName"+Path.DirectorySeparatorChar +"song3.mp3")};
-            var sorter = new Sorter(mock.Object, songs);
+            var sorter = new Sorter(manager, songs);
             sorter.CalculateActionsAsync().Wait();
 
             Assert.AreEqual(0, sorter.Actions.Count());
@@ -154,11 +124,12 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(0, sorter.MoveCount);
             
         }
-        #endregion
-
-        private static IEnumerable<LocalSong> CreateAllSongsWithAlreadySorted()
+        private static IFileManager SetUpCalculateActionsMock()
         {
-            return new List<LocalSong>{
+            SettingWrapper.SortOrder = _sortOrder;
+            SettingWrapper.HomeDir = _homeDir;
+            var mock = new Mock<IFileManager>();
+            var allSongs = new List<LocalSong>{
                 new LocalSong("id1", new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
                             "AlbumName"+Path.DirectorySeparatorChar +"song1.mp3"))
                 {
@@ -231,6 +202,12 @@ namespace MSOE.MediaComplete.Test
                     Album = "AlbumName"
                 }
             };
+            mock.Setup(x => x.GetAllSongs()).Returns(allSongs);
+            mock.Setup(x => x.FileExists(It.IsIn(allSongs.Select(y => y.SongPath)))).Returns(true);
+            return mock.Object;
         }
+        #endregion
+
+        
     }
 }

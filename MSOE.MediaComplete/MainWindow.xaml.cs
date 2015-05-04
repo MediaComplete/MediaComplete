@@ -405,13 +405,20 @@ namespace MSOE.MediaComplete
                 parent.Children.Add(child);
                 PopulateFromFolder(child);
             }
-            foreach (var file in dir.GetFilesOrCreateDir().GetMusicFiles())
+            foreach (var file in GetFilesOrDir(dir).GetMusicFiles())
             {
                 var thing = _fileManager.GetSong(new SongPath(file.FullName));
                 songList.Add(new LibrarySongItem { Content = file.Name, ParentItem = parent, Data = thing });
             }
 
         }
+        //TODO MC-301 get rid of this. This was in the 'systemextensions' file, but was moved here to discourage usage.
+        private IEnumerable<FileInfo> GetFilesOrDir(DirectoryInfo dir)
+        {
+            if (!dir.Exists) FileManager.Instance.CreateDirectory(new DirectoryPath(dir.FullName));
+
+            return dir.GetFiles();
+        } 
         #endregion
 
         #region Tab Selection

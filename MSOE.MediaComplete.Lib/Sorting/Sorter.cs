@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using MSOE.MediaComplete.Lib.Background;
@@ -107,9 +108,19 @@ namespace MSOE.MediaComplete.Lib.Sorting
                 path += Path.DirectorySeparatorChar;
             }
             //TODO MC-260 Rename songs/configure song naming
-            return new SongPath(SettingWrapper.MusicDir.FullPath + path.GetValidFileName() + song.Name); 
+            return new SongPath(SettingWrapper.MusicDir.FullPath + GetValidFileName(path) + song.Name); 
         }
 
+        public static string GetValidFileName(string path)
+        {
+            //special chars not allowed in filename 
+            const string specialChars = @"/:*?""<>|#%&.{}~";
+
+            //Replace special chars in raw filename with empty spaces to make it valid  
+            Array.ForEach(specialChars.ToCharArray(), specialChar => path = path.Replace(specialChar.ToString(CultureInfo.CurrentCulture), ""));
+
+            return path;
+        }
         #region Task Overrides
         /// <summary>
         /// Performs the sort, calculating the necessary actions first, if necessary.
@@ -154,7 +165,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                         TriggerUpdate(this);
                     }
                 }
-                new DirectoryInfo(SettingWrapper.MusicDir.FullPath).ScrubEmptyDirectories();
+                _fileManager.ScrubEmptyDirectories(SettingWrapper.MusicDir);
 
                 if (Error == null)
                 {
