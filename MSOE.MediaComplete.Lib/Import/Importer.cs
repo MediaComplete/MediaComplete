@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MSOE.MediaComplete.Lib.Background;
 using MSOE.MediaComplete.Lib.Files;
+using MSOE.MediaComplete.Lib.Metadata;
+using MSOE.MediaComplete.Lib.Sorting;
+using Task = MSOE.MediaComplete.Lib.Background.Task;
 
 namespace MSOE.MediaComplete.Lib.Import
 {
     /// <summary>
     /// Provides methods for adding new files into the application's library.
     /// </summary>
-    public class Importer
+    public class Importer : Task
     {
         /// <summary>
         /// This event is fired whenever any import completes. It is intended to be used for any 
@@ -19,7 +23,10 @@ namespace MSOE.MediaComplete.Lib.Import
         public static event ImportHandler ImportFinished = delegate {};
         public delegate void ImportHandler(ImportResults results);
 
+        public ImportResults Results { get; set; }
+        private IEnumerable<SongPath> _files; 
         private readonly IFileManager _fm;
+        private bool _isMove;
 
         /// <summary>
         /// Constructs an Importer with the given library home directory.
@@ -56,26 +63,134 @@ namespace MSOE.MediaComplete.Lib.Import
         // ReSharper disable once MemberCanBeMadeStatic.Global
         public async Task<ImportResults> ImportFilesAsync(IEnumerable<SongPath> files, bool isMove)
         {
+            _isMove = isMove;
             if (files.Any(f => f.HasParent(SettingWrapper.MusicDir)))
             {
                 throw new InvalidImportException();
             }
 
-            var task = new ImportTask(_fm, files, isMove);
+            _files = files;
 
-            Queue.Inst.Add(task);
+            Queue.Inst.Add(this);
 
-            task.Done += data =>
+            Done += data =>
             {
-                if (task.Results != null)
+                if (Results != null)
                 {
-                    ImportFinished(task.Results);
+                    ImportFinished(Results);
                 }
             };
 
-            await task.Lock.WaitAsync();
-            return task.Results;
+            await Lock.WaitAsync();
+            return Results;
         }
+        /// <summary>
+        /// Performs the import operation in the background.
+        /// </summary>
+        /// <param name="i">The task ID, assigned by the queue</param>
+        /// <returns>A system task that can be tracked</returns>
+        public override void Do(int i)
+        {
+            Id = i;
+            Message = "Import-InProgress";
+            Icon = StatusBarHandler.StatusIcon.Working;
+            var count = _files.Count();
+            var results = new ImportResults
+            {
+                FailCount = 0,
+                NewFiles = new List<SongPath>(count),
+            };
+
+            try
+            {
+                var counter = 0;
+                var max = (count > 100 ? count / 100 : 1);
+                var total = 0;
+                foreach (var file in _files)
+                {
+                    var newFile = new SongPath(SettingWrapper.MusicDir.FullPath + file.Name);
+                    if (_fm.FileExists(newFile)) continue;
+                    try
+                    {
+                        if (_isMove)
+                        {
+                            _fm.AddFile(file, newFile);
+                        }
+                        else
+                        {
+                            _fm.CopyFile(file, newFile);
+                        }
+                        results.NewFiles.Add(newFile);
+                    }
+                    catch (IOException exception)
+                    {
+                        Console.WriteLine(exception); // TODO (MC-125) log
+                        results.FailCount++;
+                        Message = "Importing-Error";
+                        Icon = StatusBarHandler.StatusIcon.Error;
+                        Error = exception;
+                        TriggerUpdate(this);
+                    }
+                    catch (UnauthorizedAccessException exception)
+                    {
+                        Console.WriteLine(exception); // TODO (MC-125) log
+                        results.FailCount++;
+                        Message = "UnauthorizedAccess-Error";
+                        Icon = StatusBarHandler.StatusIcon.Error;
+                        Error = exception;
+                        TriggerUpdate(this);
+                    }
+
+                    total++;
+                    if (counter++ >= max)
+                    {
+                        counter = 0;
+                        PercentComplete = ((double)total) / count;
+                        TriggerUpdate(this);
+                    }
+                }
+
+                Results = results;
+                if (Error == null)
+                {
+                    Message = "Import-Success";
+                    Icon = StatusBarHandler.StatusIcon.Success;
+                }
+            }
+            catch (Exception e)
+            {
+                Message = "Importing-Error";
+                Icon = StatusBarHandler.StatusIcon.Error;
+                Error = e;
+            }
+            finally
+            {
+                TriggerDone(this);
+            }
+        }
+
+        #region Task Overrides
+        public override IReadOnlyCollection<Type> InvalidBeforeTypes
+        {
+            get { return new List<Type>().AsReadOnly(); }
+        }
+
+        public override IReadOnlyCollection<Type> InvalidAfterTypes
+        {
+
+            get { return new List<Type> { typeof(Sorter), typeof(IdentifierTask) }.AsReadOnly(); }
+        }
+
+        public override IReadOnlyCollection<Type> InvalidDuringTypes
+        {
+            get { return new List<Type>().AsReadOnly(); }
+        }
+
+        public override bool RemoveOther(Task t)
+        {
+            return false;
+        }
+        #endregion
     }
 
     /// <summary>

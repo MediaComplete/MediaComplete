@@ -85,10 +85,10 @@ namespace MSOE.MediaComplete
         {
             StatusBarHandler.Instance.RaiseStatusBarEvent += HandleStatusBarChangeEvent;
             Polling.InboxFilesDetected += ImportFromInboxAsync;
-            // ReSharper disable once ObjectCreationAsStatement
-            new Sorter(_fileManager, null); // Run static constructor
             // ReSharper disable once UnusedVariable
             var tmp = Polling.Instance;  // Run singleton constructor
+            SettingWrapper.RaiseSettingEvent += Sorter.Resort;
+            Importer.ImportFinished += SortImports;
         }
 
         /// <summary>
@@ -122,19 +122,7 @@ namespace MSOE.MediaComplete
             Songs.Filter += LibrarySongFilter;
         }
         #endregion
-
-        #region User triggered events
-
-        /// <summary>
-        /// Open the Settings window
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ToolbarSettings_Click(object sender, RoutedEventArgs e)
-        {
-            new Settings { Owner = this }.ShowDialog();
-        }
-
+        #region Import
         /// <summary>
         /// Open a file selection dialog for importing, and do the import.
         /// </summary>
@@ -200,6 +188,26 @@ namespace MSOE.MediaComplete
             }
         }
 
+        private void SortImports(ImportResults results)
+        {
+            if (SettingWrapper.IsSorting)
+            {
+                new Sorter(_fileManager, results.NewFiles).PerformSort();
+            }
+        }
+        #endregion
+
+        #region User triggered events
+
+        /// <summary>
+        /// Open the Settings window
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolbarSettings_Click(object sender, RoutedEventArgs e)
+        {
+            new Settings { Owner = this }.ShowDialog();
+        }
         /// <summary>
         /// Updates the song list based on the folder selection
         /// </summary>
@@ -301,13 +309,7 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private async void Toolbar_SortMusic_ClickAsync(object sender, RoutedEventArgs e)
         {
-            var settings = new SortSettings
-            {
-                SortOrder = SettingWrapper.SortOrder,
-                Files = _fileManager.GetAllSongs().Select(x => x.SongPath),
-            };
-
-            var sorter = new Sorter(_fileManager, settings);
+            var sorter = new Sorter(_fileManager, _fileManager.GetAllSongs().Select(x => x.SongPath));
             await sorter.CalculateActionsAsync();
 
             if (sorter.Actions.Count == 0) // Nothing to do! Notify and return.

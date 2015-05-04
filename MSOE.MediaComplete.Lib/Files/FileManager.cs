@@ -180,7 +180,8 @@ namespace MSOE.MediaComplete.Lib.Files
         public void DeleteSong(LocalSong deletedSong)
         {
             _cachedSongs.Remove(deletedSong.Id);
-            _cachedFiles[deletedSong.Id].Delete();
+            if(_cachedFiles[deletedSong.Id].Exists)
+                _cachedFiles[deletedSong.Id].Delete();
             _cachedFiles.Remove(deletedSong.Id);
         }
         
@@ -306,7 +307,6 @@ namespace MSOE.MediaComplete.Lib.Files
         /// <param name="song"></param>
         private void UpdateFile(LocalSong song)
         {
-            if (!File.Exists(song.Path)) return;
             var tagFile = TaglibFile.Create(song.Path);
             _cachedSongs[song.Id].Title = tagFile.GetAttribute(MetaAttribute.SongTitle);
             _cachedSongs[song.Id].Artist = tagFile.GetAttribute(MetaAttribute.Artist);
@@ -367,7 +367,7 @@ namespace MSOE.MediaComplete.Lib.Files
                 foreach (var file in files)
                 {
                     var newValue = _cachedSongs.FirstOrDefault(x => x.Value.Path.Equals(file.FullName)).Value;
-                    if (newValue != null)
+                    if (newValue != null && file.Exists)
                     {
                         newValue.SongPath = new SongPath(file.FullName);
                         UpdateFile(newValue);
