@@ -43,15 +43,6 @@ namespace MSOE.MediaComplete.Lib.Sorting
         }
 
         /// <summary>
-        /// Performs the actual movement operations associated with the sort.
-        /// </summary>
-        /// <returns>The background queue tasks, so the status may be observed.</returns>
-        public void PerformSort()
-        {
-            Queue.Inst.Add(this);
-        }
-
-        /// <summary>
         /// Private function to determine what movements need to occur to put the library in order
         /// </summary>
         public async Sys.Task CalculateActionsAsync()
@@ -119,15 +110,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
             return new SongPath(SettingWrapper.MusicDir.FullPath + path.GetValidFileName() + song.Name); 
         }
 
-        public static void Resort()
-        {
-            if (!SortHelper.GetSorting()) return;
-
-            var sorter = new Sorter(FileManager.Instance, _fileManager.GetAllSongs().Select(x => x.SongPath));
-            sorter.PerformSort();
-        }
-
-
+        #region Task Overrides
         /// <summary>
         /// Performs the sort, calculating the necessary actions first, if necessary.
         /// </summary>
@@ -190,7 +173,6 @@ namespace MSOE.MediaComplete.Lib.Sorting
             }
         }
 
-        #region Task Overrides
         public override IReadOnlyCollection<Type> InvalidBeforeTypes
         {
             get { return new List<Type> { typeof(IdentifierTask), typeof(Importer) }.AsReadOnly(); }

@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using MSOE.MediaComplete.Lib.Background;
 using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Sorting;
 using Task = MSOE.MediaComplete.Lib.Background.Task;
+using Sys = System.Threading.Tasks;
 
 namespace MSOE.MediaComplete.Lib.Import
 {
@@ -24,55 +23,25 @@ namespace MSOE.MediaComplete.Lib.Import
         public delegate void ImportHandler(ImportResults results);
 
         public ImportResults Results { get; set; }
-        private IEnumerable<SongPath> _files; 
+        private readonly IEnumerable<SongPath> _files; 
         private readonly IFileManager _fm;
-        private bool _isMove;
+        private readonly bool _isMove;
 
         /// <summary>
         /// Constructs an Importer with the given library home directory.
         /// </summary>
         /// <param name="fms">FileManager used for dependency injection</param>
-        public Importer(IFileManager fms)
+        /// <param name="files"></param>
+        /// <param name="isMove"></param>
+        public Importer(IFileManager fms, IEnumerable<SongPath> files, bool isMove)
         {
             _fm = fms;
-        }
-
-        /// <summary>
-        /// Helper method to import all the files in a given directory, recursively. If the recursion 
-        /// would delve into this Importer's homedir, those files are ignored.
-        /// </summary>
-        /// <param name="files"></param>
-        /// <param name="isCopy">If true, files are copies and the original files remain in the source location. 
-        ///     Otherwise, files are "cut" and removed from the source directory.</param>
-        /// <returns>An awaitable task of ImportResults</returns>
-        public async Task<ImportResults> ImportDirectoryAsync(IEnumerable<SongPath> files, bool isCopy)
-        {
-            var copyFiles = files.Where(x => !_fm.GetAllSongs().Select(y => y.SongPath).Contains(x));
-            var results = await ImportFilesAsync(copyFiles, isCopy);
-            return results;
-        }
-
-        /// <summary>
-        /// Performs an asynchronous import operation.
-        /// </summary>
-        /// <param name="files">A list of full file paths to be imported</param>
-        /// <param name="isMove">If true, files are "cut" and removed from the source directory.
-        /// Otherwise, files are copied and the original files remain in the source location.</param>
-        /// <returns>An awaitable task of ImportResults</returns>
-        /// <exception cref="InvalidImportException">Thrown when files includes a file in the current home directory</exception>
-        // ReSharper disable once MemberCanBeMadeStatic.Global
-        public async Task<ImportResults> ImportFilesAsync(IEnumerable<SongPath> files, bool isMove)
-        {
             _isMove = isMove;
             if (files.Any(f => f.HasParent(SettingWrapper.MusicDir)))
             {
                 throw new InvalidImportException();
             }
-
             _files = files;
-
-            Queue.Inst.Add(this);
-
             Done += data =>
             {
                 if (Results != null)
@@ -81,9 +50,9 @@ namespace MSOE.MediaComplete.Lib.Import
                 }
             };
 
-            await Lock.WaitAsync();
-            return Results;
         }
+
+        #region Task Overrides
         /// <summary>
         /// Performs the import operation in the background.
         /// </summary>
@@ -169,7 +138,6 @@ namespace MSOE.MediaComplete.Lib.Import
             }
         }
 
-        #region Task Overrides
         public override IReadOnlyCollection<Type> InvalidBeforeTypes
         {
             get { return new List<Type>().AsReadOnly(); }
