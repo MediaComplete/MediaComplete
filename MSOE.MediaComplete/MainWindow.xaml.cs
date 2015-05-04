@@ -158,7 +158,6 @@ namespace MSOE.MediaComplete
                     Resources["Dialog-Common-Error-Title"].ToString(),
                     MessageBoxButton.OK, MessageBoxImage.Error);;
             }
-
         }
 
         private void FailedImport(ImportResults results)

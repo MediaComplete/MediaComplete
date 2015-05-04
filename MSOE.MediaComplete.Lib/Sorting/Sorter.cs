@@ -49,7 +49,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         {
             await Sys.Task.Run(() =>
             {
-                var songs = _fileManager.GetAllSongs();
+                var songs = _fileManager.GetAllSongs().Where(x => Files.Contains(x.SongPath));
 
                 foreach (var song in songs)
                 {
