@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib.Playing;
-using MSOE.MediaComplete.Lib.Songs;
+using MSOE.MediaComplete.Lib.Files;
 
 namespace MSOE.MediaComplete.Test.Playing
 {
@@ -28,11 +27,11 @@ namespace MSOE.MediaComplete.Test.Playing
         {
             NowPlaying.Inst.Add(new List<AbstractSong>
             {
-                new LocalSong(new FileInfo("notrealfile")),
-                new LocalSong(new FileInfo("notrealfile2"))
+                new LocalSong(Guid.NewGuid().ToString(),new SongPath("notrealfile")),
+                new LocalSong(Guid.NewGuid().ToString(),new SongPath(("notrealfile2")))
             });
             var initialIndex = NowPlaying.Inst.Index;
-            var ret = NowPlaying.Inst.JumpTo(new LocalSong(new FileInfo("notrealfile3")));
+            var ret = NowPlaying.Inst.JumpTo(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("notrealfile3"))));
 
             Assert.IsFalse(ret, "Return value should have been false for unknown song.");
             Assert.AreEqual(initialIndex, NowPlaying.Inst.Index, "Index should not have moved.");
@@ -41,14 +40,16 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void JumpTo_ArgumentIsPresent_ChangesIndex()
         {
-            var targetSong = new LocalSong(new FileInfo("notrealfile2"));
+            var id = Guid.NewGuid().ToString();
+            var targetSong = new LocalSong(id,new SongPath(("notrealfile2")));
+
             NowPlaying.Inst.Add(new List<AbstractSong>
             {
-                new LocalSong(new FileInfo("notrealfile")),
+                new LocalSong(Guid.NewGuid().ToString(),new SongPath(("notrealfile"))),
                 targetSong
             });
             var initialIndex = NowPlaying.Inst.Index;
-            var ret = NowPlaying.Inst.JumpTo(new LocalSong(new FileInfo("notrealfile2")));
+            var ret = NowPlaying.Inst.JumpTo(new LocalSong(id,new SongPath(("notrealfile2"))));
 
             Assert.IsTrue(ret, "Song should have been found.");
             Assert.AreNotEqual(initialIndex, NowPlaying.Inst.Index, "Index should have moved.");
@@ -72,10 +73,10 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void JumpTo_ArgumentOK_IndexChanges()
         {
-            var targetSong = new LocalSong(new FileInfo("notrealfile2"));
+            var targetSong = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("notrealfile2")));
             NowPlaying.Inst.Add(new List<AbstractSong>
             {
-                new LocalSong(new FileInfo("notrealfile")),
+                new LocalSong(Guid.NewGuid().ToString(),new SongPath(("notrealfile"))),
                 targetSong
             });
             var initialIndex = NowPlaying.Inst.Index;
@@ -101,8 +102,8 @@ namespace MSOE.MediaComplete.Test.Playing
         {
             NowPlaying.Inst.Add(new List<AbstractSong>
             {
-                new LocalSong(new FileInfo("notrealfile")),
-                new LocalSong(new FileInfo("notrealfile2"))
+                new LocalSong(Guid.NewGuid().ToString(),new SongPath(("notrealfile"))),
+                new LocalSong(Guid.NewGuid().ToString(),new SongPath(("notrealfile2")))
             });
             NowPlaying.Inst.JumpTo(1);
             var song = NowPlaying.Inst.NextSong();
@@ -114,10 +115,10 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void NextSong_BeginningOfQueue_ReturnsNextIndexChanges()
         {
-            var targetSong = new LocalSong(new FileInfo("notrealfile2"));
+            var targetSong = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("notrealfile2")));
             NowPlaying.Inst.Add(new List<AbstractSong>
             {
-                new LocalSong(new FileInfo("notrealfile")),
+                new LocalSong(Guid.NewGuid().ToString(),new SongPath(("notrealfile"))),
                 targetSong
             });
             var initialIndex = NowPlaying.Inst.Index;
@@ -144,8 +145,8 @@ namespace MSOE.MediaComplete.Test.Playing
         {
             NowPlaying.Inst.Add(new List<AbstractSong>
             {
-                new LocalSong(new FileInfo("notrealfile")),
-                new LocalSong(new FileInfo("notrealfile2"))
+                new LocalSong(Guid.NewGuid().ToString(),new SongPath(("notrealfile"))),
+                new LocalSong(Guid.NewGuid().ToString(),new SongPath(("notrealfile2")))
             });
             var song = NowPlaying.Inst.PreviousSong();
 
@@ -156,11 +157,11 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void PreviousSong_EndOfQueue_ReturnsPreviousIndexChanges()
         {
-            var targetSong = new LocalSong(new FileInfo("notrealfile2"));
+            var targetSong = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("notrealfile2")));
             NowPlaying.Inst.Add(new List<AbstractSong>
             {
                 targetSong,
-                new LocalSong(new FileInfo("notrealfile"))
+                new LocalSong(Guid.NewGuid().ToString(),new SongPath(("notrealfile")))
             });
             NowPlaying.Inst.JumpTo(1);
             var initialIndex = NowPlaying.Inst.Index;
@@ -184,7 +185,7 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void CurrentSong_QueueNotEmpty_ReturnsSongAtIndex()
         {
-            var targetSong = new LocalSong(new FileInfo("notrealfile2"));
+            var targetSong = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("notrealfile2")));
             NowPlaying.Inst.Add(new List<AbstractSong>
             {
                 targetSong
@@ -201,9 +202,9 @@ namespace MSOE.MediaComplete.Test.Playing
         public void HasNextSong_AddSimple()
         {
             Assert.IsFalse(NowPlaying.Inst.HasNextSong());
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("firstsong")));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("firstsong"))));
             Assert.IsFalse(NowPlaying.Inst.HasNextSong());
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("secondsong")));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("secondsong"))));
             Assert.IsTrue(NowPlaying.Inst.HasNextSong());
             NowPlaying.Inst.NextSong();
             Assert.IsFalse(NowPlaying.Inst.HasNextSong());
@@ -213,10 +214,10 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void HasNextSong_Move()
         {
-            var song = new LocalSong(new FileInfo("firstsong"));
+            var song = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("firstsong")));
             Assert.IsFalse(NowPlaying.Inst.HasNextSong());
             NowPlaying.Inst.Add(song);
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("song2")));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("song2"))));
             Assert.IsTrue(NowPlaying.Inst.HasNextSong());
             NowPlaying.Inst.Move(song, NowPlaying.Inst.SongCount() - 1);
             Assert.IsFalse(NowPlaying.Inst.HasNextSong());
@@ -230,9 +231,9 @@ namespace MSOE.MediaComplete.Test.Playing
         public void HasNextSong_ClearRemove()
         {
             Assert.IsFalse(NowPlaying.Inst.HasNextSong());
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("firstsong")));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("firstsong"))));
             Assert.IsFalse(NowPlaying.Inst.HasNextSong());
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("secondsong")));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("secondsong"))));
             Assert.IsTrue(NowPlaying.Inst.HasNextSong());
             NowPlaying.Inst.Remove(0);
             Assert.IsFalse(NowPlaying.Inst.HasNextSong());
@@ -246,7 +247,7 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void Add_EmptyQueue_HasOneSong()
         {
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong")));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong"))));
 
             Assert.AreEqual(1, NowPlaying.Inst.Playlist.Songs.Count, "Queue not the right size!");
             Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should have advanced to 0.");
@@ -255,8 +256,8 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void Add_PopulatedQueue_AddedToEnd()
         {
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong")));
-            var targetSong = new LocalSong(new FileInfo("fakesong2"));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong"))));
+            var targetSong = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong2")));
             NowPlaying.Inst.Add(targetSong);
 
             Assert.AreEqual(2, NowPlaying.Inst.Playlist.Songs.Count, "Queue not the right size!");
@@ -277,10 +278,10 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void Add_EmptyQueue_HasTwoSongs()
         {
-            var targetSong = new LocalSong(new FileInfo("fakesong2"));
+            var targetSong = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong2")));
             NowPlaying.Inst.Add(new List<AbstractSong>
             {
-                new LocalSong(new FileInfo("fakesong1")),
+                new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1"))),
                 targetSong
             });
 
@@ -301,12 +302,12 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void Add_PopulatedQueue_SongsAtEnd()
         {
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong1")));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1"))));
 
-            var targetSong = new LocalSong(new FileInfo("fakesong2"));
+            var targetSong = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong2")));
             NowPlaying.Inst.Add(new List<AbstractSong>
             {
-                new LocalSong(new FileInfo("fakesong1")),
+                new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1"))),
                 targetSong
             });
 
@@ -334,21 +335,21 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod, ExpectedException(typeof(IndexOutOfRangeException))]
         public void Remove_NegativeArg_Exception()
         {
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong")));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong"))));
             NowPlaying.Inst.Remove(-1);
         }
 
         [TestMethod, ExpectedException(typeof(IndexOutOfRangeException))]
         public void Remove_TooLargeArg_Exception()
         {
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong")));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong"))));
             NowPlaying.Inst.Remove(1);
         }
 
         [TestMethod]
         public void Remove_ValidArg_QueueEmpty()
         {
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong")));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong"))));
             NowPlaying.Inst.Remove(0);
 
             Assert.AreEqual(0, NowPlaying.Inst.Playlist.Songs.Count, "Wrong number of songs!");
@@ -358,8 +359,8 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void Remove_ValidArg_QueueShrink()
         {
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong")));
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong2")));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong"))));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong2"))));
             NowPlaying.Inst.Remove(0);
 
             Assert.AreEqual(1, NowPlaying.Inst.Playlist.Songs.Count, "Wrong number of songs!");
@@ -379,9 +380,9 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void Remove_SongNotFound_ReturnsFalseAndQueueIntact()
         {
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong1")));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1"))));
 
-            var ret = NowPlaying.Inst.Remove(new LocalSong(new FileInfo("fakesong2")));
+            var ret = NowPlaying.Inst.Remove(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong2"))));
 
             Assert.IsFalse(ret, "Fake song should not have been found.");
             Assert.AreEqual(1, NowPlaying.Inst.Playlist.Songs.Count, "Song should not have been removed");
@@ -391,7 +392,7 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void Remove_QueueEmpty_ReturnsFalse()
         {
-            var ret = NowPlaying.Inst.Remove(new LocalSong(new FileInfo("fakesong2")));
+            var ret = NowPlaying.Inst.Remove(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong2"))));
             Assert.IsFalse(ret, "Fake song should not have been found.");
             Assert.AreEqual(0, NowPlaying.Inst.Playlist.Songs.Count, "Queue should still be empty");
             Assert.AreEqual(-1, NowPlaying.Inst.Index, "Index should have remained at -1.");
@@ -400,9 +401,10 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void Remove_SongFound_ReturnsTrueAndQueueEmptied()
         {
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong1")));
+            var id = Guid.NewGuid().ToString();
+            NowPlaying.Inst.Add(new LocalSong(id, new SongPath(("fakesong1"))));
 
-            var ret = NowPlaying.Inst.Remove(new LocalSong(new FileInfo("fakesong1")));
+            var ret = NowPlaying.Inst.Remove(new LocalSong(id, new SongPath(("fakesong1"))));
 
             Assert.IsTrue(ret, "Fake song should have been found.");
             Assert.AreEqual(0, NowPlaying.Inst.Playlist.Songs.Count, "Song should have been removed");
@@ -412,10 +414,11 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void Remove_SongFound_ReturnsTrueAndSongRemoved()
         {
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong1")));
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong2")));
+            var id = Guid.NewGuid().ToString();
+            NowPlaying.Inst.Add(new LocalSong(id, new SongPath(("fakesong1"))));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong2"))));
 
-            var ret = NowPlaying.Inst.Remove(new LocalSong(new FileInfo("fakesong1")));
+            var ret = NowPlaying.Inst.Remove(new LocalSong(id, new SongPath(("fakesong1"))));
 
             Assert.IsTrue(ret, "Fake song should have been found.");
             Assert.AreEqual(1, NowPlaying.Inst.Playlist.Songs.Count, "Song should have been removed");
@@ -437,8 +440,8 @@ namespace MSOE.MediaComplete.Test.Playing
         {
             NowPlaying.Inst.Remove(new List<AbstractSong>
             {
-                new LocalSong(new FileInfo("fakesong1")),
-                new LocalSong(new FileInfo("fakesong2"))
+                new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1"))),
+                new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong2")))
             });
 
             Assert.AreEqual(0, NowPlaying.Inst.Playlist.Songs.Count, "Queue is the wrong size!");
@@ -448,7 +451,7 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void Remove_EmptyList_NothingHappens()
         {
-            var targetSong = new LocalSong(new FileInfo("fakesong1"));
+            var targetSong = new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong1")));
             NowPlaying.Inst.Add(targetSong);
             NowPlaying.Inst.Remove(new List<AbstractSong>());
 
@@ -460,13 +463,14 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void Remove_SomeExistSomeDoNot_FoundSongsRemoved()
         {
-            var targetSong = new LocalSong(new FileInfo("fakesong3"));
+            var targetSong = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong3")));
             NowPlaying.Inst.Add(targetSong);
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong1")));
+            var id = Guid.NewGuid().ToString();
+            NowPlaying.Inst.Add(new LocalSong(id, new SongPath(("fakesong1"))));
             NowPlaying.Inst.Remove(new List<AbstractSong>
             {
-                new LocalSong(new FileInfo("fakesong1")),
-                new LocalSong(new FileInfo("fakesong2"))
+                new LocalSong(id,new SongPath(("fakesong1"))),
+                new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong2")))
             });
 
             Assert.AreEqual(1, NowPlaying.Inst.Playlist.Songs.Count, "Queue is the wrong size!");
@@ -490,8 +494,8 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void Clear_QueuePopulated_QueueEmptied()
         {
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong1")));
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong2")));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1"))));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong2"))));
 
             NowPlaying.Inst.Clear();
 
@@ -506,38 +510,38 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod, ExpectedException(typeof(IndexOutOfRangeException))]
         public void Move_NewIndexNegative_Exception()
         {
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong1")));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong1"))));
             NowPlaying.Inst.Move(0, -1);
         }
 
         [TestMethod, ExpectedException(typeof(IndexOutOfRangeException))]
         public void Move_OldIndexNegative_Exception()
         {
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong1")));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong1"))));
             NowPlaying.Inst.Move(-1, 0);
         }
 
         [TestMethod, ExpectedException(typeof(IndexOutOfRangeException))]
         public void Move_NewIndexTooBig_Exception()
         {
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong1")));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong1"))));
             NowPlaying.Inst.Move(0, 1);
         }
 
         [TestMethod, ExpectedException(typeof(IndexOutOfRangeException))]
         public void Move_OldIndexTooBig_Exception()
         {
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong1")));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong1"))));
             NowPlaying.Inst.Move(1, 0);
         }
 
         [TestMethod]
         public void Move_OldIndexEqualsNewIndex_NoChange()
         {
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong1")));
-            var targetSong = new LocalSong(new FileInfo("fakesong2"));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1"))));
+            var targetSong = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong2")));
             NowPlaying.Inst.Add(targetSong);
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong3")));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong3"))));
 
             NowPlaying.Inst.Move(1, 1);
 
@@ -550,9 +554,9 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void Move_OldIndexLargerThanNewIndex_MoveBackwards()
         {
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong1")));
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong2")));
-            var targetSong = new LocalSong(new FileInfo("fakesong3"));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1"))));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong2"))));
+            var targetSong = new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong3")));
             NowPlaying.Inst.Add(targetSong);
             
             NowPlaying.Inst.Move(2, 1);
@@ -565,10 +569,10 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void Move_OldIndexSmallerThanNewIndex_MoveForwardsAndIndexUpdates()
         {
-            var targetSong = new LocalSong(new FileInfo("fakesong1"));
+            var targetSong = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1")));
             NowPlaying.Inst.Add(targetSong);
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong2")));
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong3")));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong2"))));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong3"))));
 
             NowPlaying.Inst.Move(0, 1);
 
@@ -584,14 +588,14 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
         public void Move_SongIsNull_Exception()
         {
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong1")));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong1"))));
             NowPlaying.Inst.Move(null, 0);
         }
 
         [TestMethod, ExpectedException(typeof(IndexOutOfRangeException))]
         public void Move_IndexIsNegative_Exception()
         {
-            var targetSong = new LocalSong(new FileInfo("fakesong1"));
+            var targetSong = new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong1")));
             NowPlaying.Inst.Add(targetSong);
             NowPlaying.Inst.Move(targetSong, -1);
         }
@@ -599,7 +603,7 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod, ExpectedException(typeof(IndexOutOfRangeException))]
         public void Move_IndexIsTooBig_Exception()
         {
-            var targetSong = new LocalSong(new FileInfo("fakesong1"));
+            var targetSong = new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong1")));
             NowPlaying.Inst.Add(targetSong);
             NowPlaying.Inst.Move(targetSong, 1);
         }
@@ -607,10 +611,10 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void Move_SongNotFound_ReturnsFalseAndNoChange()
         {
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong1")));
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong2")));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1"))));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong2"))));
 
-            var ret = NowPlaying.Inst.Move(new LocalSong(new FileInfo("fakesong3")), 1);
+            var ret = NowPlaying.Inst.Move(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong3"))), 1);
 
             Assert.IsFalse(ret, "Song should not have been found!");
             Assert.AreEqual(2, NowPlaying.Inst.Playlist.Songs.Count, "Queue is wrong size!");
@@ -620,10 +624,10 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void Move_SongAlreadyAtIndex_StaysStill()
         {
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong1")));
-            var targetSong = new LocalSong(new FileInfo("fakesong2"));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1"))));
+            var targetSong = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong2")));
             NowPlaying.Inst.Add(targetSong);
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong3")));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong3"))));
 
             var ret = NowPlaying.Inst.Move(targetSong, 1);
 
@@ -636,9 +640,9 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void Move_SongAheadOfIndex_MovesBack()
         {
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong1")));
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong2")));
-            var targetSong = new LocalSong(new FileInfo("fakesong3"));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1"))));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong2"))));
+            var targetSong = new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong3")));
             NowPlaying.Inst.Add(targetSong);
 
             var ret = NowPlaying.Inst.Move(targetSong, 1);
@@ -652,10 +656,10 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void Move_SongBehindIndex_MovesForwardAndIndexUpdates()
         {
-            var targetSong = new LocalSong(new FileInfo("fakesong1"));
+            var targetSong = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1")));
             NowPlaying.Inst.Add(targetSong);
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong2")));
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong3")));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong2"))));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong3"))));
 
             var ret = NowPlaying.Inst.Move(targetSong, 1);
 
@@ -671,63 +675,87 @@ namespace MSOE.MediaComplete.Test.Playing
         [TestMethod]
         public void InsertSingle()
         {
-            var secondSong = new LocalSong(new FileInfo("newSong"));
+            var secondSong = new LocalSong(Guid.NewGuid().ToString(), new SongPath(("newSong")));
             var list = new List<AbstractSong> { secondSong };
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong1")));
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong2")));
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong3")));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1"))));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong2"))));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong3"))));
             Assert.IsTrue(NowPlaying.Inst.SongCount() == 3);
             NowPlaying.Inst.InsertRange(1, list);
             Assert.IsTrue(NowPlaying.Inst.SongCount() == 4);
-            Assert.AreEqual(NowPlaying.Inst.NextSong().GetPath(), secondSong.GetPath());
+            var localSong = NowPlaying.Inst.NextSong()as LocalSong;
+            if (localSong != null)
+                Assert.AreEqual(localSong.GetPath(), secondSong.GetPath());
+            else 
+                Assert.Fail("localSong should not be null");
         }
 
 
         [TestMethod]
         public void InsertMany()
         {
-            var secondSong = new LocalSong(new FileInfo("newSong"));
-            var thirdSong = new LocalSong(new FileInfo("newerSong"));
-            var fourthSong = new LocalSong(new FileInfo("newerSong2"));
-            var fifthSong = new LocalSong(new FileInfo("notreallyanewSong"));
+            var secondSong = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("newSong")));
+            var thirdSong = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("newerSong")));
+            var fourthSong = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("newerSong2")));
+            var fifthSong = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("notreallyanewSong")));
             var list = new List<AbstractSong> { secondSong,thirdSong,fourthSong,fifthSong };
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong1")));
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong2")));
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong3")));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1"))));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong2"))));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong3"))));
             Assert.IsTrue(NowPlaying.Inst.SongCount() == 3);
             NowPlaying.Inst.InsertRange(1, list);
             Assert.IsTrue(NowPlaying.Inst.SongCount() == 7);
-            Assert.AreEqual(NowPlaying.Inst.NextSong().GetPath(), secondSong.GetPath());
-            Assert.AreEqual(NowPlaying.Inst.NextSong().GetPath(), thirdSong.GetPath());
-            Assert.AreEqual(NowPlaying.Inst.NextSong().GetPath(), fourthSong.GetPath());
-            Assert.AreEqual(NowPlaying.Inst.NextSong().GetPath(), fifthSong.GetPath());
+
+            var localSong = NowPlaying.Inst.NextSong() as LocalSong;
+            if (localSong != null)
+                Assert.AreEqual(localSong.GetPath(), secondSong.GetPath());
+            else
+                Assert.Fail("localSong should not be null");
+
+            localSong = NowPlaying.Inst.NextSong() as LocalSong;
+            if (localSong != null)
+                Assert.AreEqual(localSong.GetPath(), thirdSong.GetPath());
+            else
+                Assert.Fail("localSong should not be null");
+
+            localSong = NowPlaying.Inst.NextSong() as LocalSong;
+            if (localSong != null)
+                Assert.AreEqual(localSong.GetPath(), fourthSong.GetPath());
+            else
+                Assert.Fail("localSong should not be null");
+
+            localSong = NowPlaying.Inst.NextSong() as LocalSong;
+            if (localSong != null)
+                Assert.AreEqual(localSong.GetPath(), fifthSong.GetPath());
+            else
+                Assert.Fail("localSong should not be null");
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
         public void InsertNull()
         {
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong3")));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong3"))));
             NowPlaying.Inst.InsertRange(1, null);
         }
         [TestMethod, ExpectedException(typeof(IndexOutOfRangeException))]
         public void InsertIndexTooBig()
         {
-            var secondSong = new FileInfo("newSong");
-            var list = new List<AbstractSong> { new LocalSong(secondSong) };
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong1")));
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong2")));
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong3")));
+            var secondSong = new SongPath("newSong");
+            var list = new List<AbstractSong> { new LocalSong(Guid.NewGuid().ToString(), secondSong) };
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1"))));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong2"))));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong3"))));
             Assert.IsTrue(NowPlaying.Inst.SongCount() == 3);
             NowPlaying.Inst.InsertRange(8, list);
         }
         [TestMethod, ExpectedException(typeof(IndexOutOfRangeException))]
         public void InsertIndexTooSmall()
         {
-            var secondSong = new FileInfo("newSong");
-            var list = new List<AbstractSong> { new LocalSong(secondSong) };
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong1")));
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong2")));
-            NowPlaying.Inst.Add(new LocalSong(new FileInfo("fakesong3")));
+            var secondSong = new SongPath("newSong");
+            var list = new List<AbstractSong> { new LocalSong(Guid.NewGuid().ToString(), secondSong) };
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong1"))));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong2"))));
+            NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong3"))));
             Assert.IsTrue(NowPlaying.Inst.SongCount() == 3);
             NowPlaying.Inst.InsertRange(-1, list);
         }

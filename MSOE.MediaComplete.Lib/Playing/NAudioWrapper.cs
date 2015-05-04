@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using MSOE.MediaComplete.Lib.Files;
 using NAudio.Wave;
 using TagLib;
 
@@ -40,13 +41,13 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// sets up the wrapper to play the given file
         /// required before each song to get it to begin playing
         /// </summary>
-        /// <param name="fileInfo"></param>
+        /// <param name="localSong"></param>
         /// <param name="handler"></param>
         /// <param name="currentVolume"></param>
-        public void Setup(FileInfo fileInfo, EventHandler<StoppedEventArgs> handler, double currentVolume)
+        public void Setup(LocalSong localSong, EventHandler<StoppedEventArgs> handler, double currentVolume)
         {
             _waveOut = new WaveOut();
-            var waveStream = GetWaveStream(fileInfo);
+            var waveStream = GetWaveStream(new FileInfo(localSong.Path));
             ChangeVolume(currentVolume);
             _waveOut.Init(_waveStream = waveStream);
             _waveOut.PlaybackStopped += handler;

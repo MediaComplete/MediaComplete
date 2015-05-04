@@ -296,7 +296,7 @@ namespace MSOE.MediaComplete.CustomWindow
         /// <summary>
         /// Retrieve the position of the mouse on the screen
         /// 
-        /// <seealso cref="https://msdn.microsoft.com/en-us/library/windows/desktop/ms648390(v=vs.85).aspx"/>
+        /// <seealso cref="http://msdn.microsoft.com/en-us/library/windows/desktop/ms648390(v=vs.85).aspx"/>
         /// </summary>
         /// <param name="lpPoint">A pointer to a POINT structure that receives the screen coordinates of the cursor.</param>
         /// <returns>Nonzero if successful, zero otherwise</returns>
