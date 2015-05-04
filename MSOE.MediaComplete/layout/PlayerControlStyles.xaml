@@ -202,7 +202,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="RepeatButton">
-                    <Border SnapsToDevicePixels="True" Background="{DynamicResource RepeatButton1BorderBrush}"  BorderThickness="1" BorderBrush="{DynamicResource RepeatButton1BackgroundBrush}" Height="5"/>
+                    <Border SnapsToDevicePixels="True" Background="{DynamicResource CurrentSong}"  BorderThickness="1" BorderBrush="{DynamicResource RepeatButton1BorderBrush}" Height="5"/>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -214,7 +214,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Thumb">
-                    <Ellipse Height="15" Width="15" Fill="{DynamicResource SliderThumbBrush}"></Ellipse>
+                    <Ellipse Height="15" Width="15" Fill="{DynamicResource SliderThumbBrush}"/>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

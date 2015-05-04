@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using MSOE.MediaComplete.Lib.Files;
 
 namespace MSOE.MediaComplete.Lib
 {
@@ -18,8 +19,8 @@ namespace MSOE.MediaComplete.Lib
         /// <returns></returns>
         public static IEnumerable<FileInfo> GetFilesOrCreateDir(this DirectoryInfo rootDirInfo)
         {
-            if (!rootDirInfo.Exists) FileMover.Instance.CreateDirectory(rootDirInfo.FullName);
-                
+            if (!rootDirInfo.Exists) FileManager.Instance.CreateDirectory(new DirectoryPath(rootDirInfo.FullName));
+
             return rootDirInfo.GetFiles();
         }
 

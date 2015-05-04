@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using MSOE.MediaComplete.Lib;
 using System;
+using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
 
 namespace MSOE.MediaComplete
@@ -13,7 +13,7 @@ namespace MSOE.MediaComplete
     /// </summary>
     public partial class InboxImportDialog
     {
-        private static IEnumerable<FileInfo> _files;
+        private static IEnumerable<SongPath> _files;
         private static InboxImportDialog _instance;
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace MSOE.MediaComplete
         /// </summary>
         /// <param name="newOwner"></param>
         /// <param name="files"></param>
-        public static void Prompt(Window newOwner, IEnumerable<FileInfo> files)
+        public static void Prompt(Window newOwner, IEnumerable<SongPath> files)
         {
             _files = files;
             var inst = Instance(newOwner);
@@ -64,7 +64,7 @@ namespace MSOE.MediaComplete
             SettingWrapper.ShowInputDialog =!StopShowingCheckBox.IsChecked.GetValueOrDefault(false);
 
             //Do the move
-            var results = await new Importer(SettingWrapper.MusicDir).ImportFilesAsync(_files.Select(f => new FileInfo(f.FullName)).ToList(), false);
+            var results = await new Importer(FileManager.Instance).ImportFilesAsync(_files, false);
             if (results.FailCount > 0)
             {
                 try

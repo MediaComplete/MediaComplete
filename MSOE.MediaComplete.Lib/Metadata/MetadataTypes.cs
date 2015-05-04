@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MSOE.MediaComplete.Lib.Files;
 using TagLib;
 
 namespace MSOE.MediaComplete.Lib.Metadata
@@ -29,11 +30,11 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /// <summary>
         /// Reads in audio bytes.
         /// </summary>
-        /// <param name="filename">The music filename to read from. The encoding/extension do not matter.</param>
+        /// <param name="file">The music file to read from. The encoding/extension do not matter.</param>
         /// <param name="frequency">The desired frequency of sampling.</param>
         /// <param name="sampleSeconds">The number of seconds of audio</param>
         /// <returns>A byte array of WAV data</returns>
-        Task<byte[]> ReadBytesAsync(string filename, int frequency, uint sampleSeconds);
+        Task<byte[]> ReadBytesAsync(LocalSong file, int frequency, uint sampleSeconds);
     }
 
     /// <summary>
@@ -45,8 +46,9 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /// Returns a partially constructed Metadata object based on the audio WAV data.
         /// </summary>
         /// <param name="audioBytes">A sample of audio data</param>
+        /// <param name="file">The song object to fill in metadata on based on identification</param>
         /// <returns>A partially populated Metadata object</returns>
-        Task<Metadata> IdentifyAsync(byte[] audioBytes);
+        Task IdentifyAsync(byte[] audioBytes, LocalSong file);
     }
 
     /// <summary>
@@ -57,9 +59,9 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /// <summary>
         /// Locates more metadata to flesh out the passed in metadata object
         /// </summary>
-        /// <param name="data">Metadata object. Assumed to already contain information that can be used to look up more.</param>
+        /// <param name="file">Assumed to already contain information that can be used to look up more.</param>
         /// <returns>An awaitable</returns>
-        Task GetMetadataAsync(Metadata data);
+        Task GetMetadataAsync(LocalSong file);
     }
 
     /// <summary>

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
+using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Metadata;
 using TagLib;
 using TextBox = System.Windows.Controls.TextBox;
@@ -57,18 +57,16 @@ namespace MSOE.MediaComplete
         {
             var initalAttributes = SetupForm();
             var finalAttributes = new Dictionary<MetaAttribute, string>();
-            foreach (SongListItem item in SelectedSongs())
+            foreach (var item in SelectedSongs())
             {
                 try
                 {
                     if (initalAttributes.Count <= 1) break;
-                    var song = File.Create(item.Data.GetPath());
-                    foreach (var metaAttribute in Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>()
-                                                                .Where(metaAttribute => !finalAttributes.ContainsKey(metaAttribute)))
+                    foreach (var metaAttribute in Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>().Where(metaAttribute => !finalAttributes.ContainsKey(metaAttribute)))
                     {
                         if (initalAttributes[metaAttribute] == null)
-                            initalAttributes[metaAttribute] = song.GetAttribute(metaAttribute);
-                        else if (!initalAttributes[metaAttribute].Equals(song.GetAttribute(metaAttribute)))
+                            initalAttributes[metaAttribute] = item.Data.GetAttribute(metaAttribute);
+                        else if (!initalAttributes[metaAttribute].Equals(item.Data.GetAttribute(metaAttribute)))
                         {
                             initalAttributes[metaAttribute] = "-1";
                         }
@@ -89,7 +87,6 @@ namespace MSOE.MediaComplete
             }
             SetFinalAttributes(finalAttributes);
         }
-
         private void SetFinalAttributes(IReadOnlyDictionary<MetaAttribute, string> finalAttributes)
         {
             SongTitle.Text = finalAttributes[MetaAttribute.SongTitle] == "-1" ? Resources["VariousSongs"].ToString() : finalAttributes[MetaAttribute.SongTitle];
@@ -168,52 +165,40 @@ namespace MSOE.MediaComplete
             if (SongTitle.IsReadOnly) return;
             EditCancelButton.Content = Resources["EditButton"].ToString();
             ToggleReadOnlyFields(true);
-            foreach (SongListItem item in SelectedSongs())
+            foreach (var song in SelectedSongs().Select(item => item.Data))
             {
-                try
+                foreach (var changedBox in _changedBoxes)
                 {
-                    var song = _fileMover.CreateTaglibFile((item.Data.GetPath()));
-                    foreach (var changedBox in _changedBoxes)
+                    if (changedBox.Equals(SongTitle))
                     {
-                        if (changedBox.Equals(SongTitle))
-                        {
-                            song.SetAttribute(MetaAttribute.SongTitle, changedBox.Text);
-                        }
-                        else if (changedBox.Equals(Album))
-                        {
-                            song.SetAttribute(MetaAttribute.Album, changedBox.Text);
-                        }
-                        else if (changedBox.Equals(Artist))
-                        {
-                            song.SetAttribute(MetaAttribute.Artist, changedBox.Text.Split(';'));
-                        }
-                        else if (changedBox.Equals(Genre))
-                        {
-                            song.SetAttribute(MetaAttribute.Genre, changedBox.Text);
-                        }
-                        else if (changedBox.Equals(Track))
-                        {
-                            song.SetAttribute(MetaAttribute.TrackNumber, changedBox.Text);
-                        }
-                        else if (changedBox.Equals(Year))
-                        {
-                            song.SetAttribute(MetaAttribute.Year, changedBox.Text);
-                        }
-                        else if (changedBox.Equals(Rating))
-                        {
-                            song.SetAttribute(MetaAttribute.Rating, changedBox.Text);
-                        }
-                        else if (changedBox.Equals(SuppArtist))
-                        {
-                            song.SetAttribute(MetaAttribute.SupportingArtist, changedBox.Text.Split(';'));
-                        }
+                        song.Title = changedBox.Text;
+                    }
+                    else if (changedBox.Equals(Album))
+                    {
+                        song.Album = changedBox.Text;
+                    }
+                    else if (changedBox.Equals(Artist))
+                    {
+                        song.Artist = changedBox.Text;
+                    }
+                    else if (changedBox.Equals(Genre))
+                    {
+                        song.Genre = changedBox.Text;
+                    }
+                    else if (changedBox.Equals(Track))
+                    {
+                        song.TrackNumber = changedBox.Text;
+                    }
+                    else if (changedBox.Equals(Year))
+                    {
+                        song.Year = changedBox.Text;
+                    }
+                    else if (changedBox.Equals(SuppArtist))
+                    {
+                        song.SupportingArtists = changedBox.Text;
                     }
                 }
-                catch (CorruptFileException)
-                {
-                    StatusBarHandler.Instance.ChangeStatusBarMessage("Save-Error", StatusBarHandler.StatusIcon.Error);
-                }
-            
+                _fileManager.SaveSong(song as LocalSong);
             }
             _changedBoxes.Clear();
             PopulateMetadataForm();

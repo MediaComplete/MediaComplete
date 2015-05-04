@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Timers;
+using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Metadata;
 
 namespace MSOE.MediaComplete.Lib
@@ -16,7 +17,7 @@ namespace MSOE.MediaComplete.Lib
         public double TimeInMinutes { get; set; }
         private static Polling _instance;
 
-        public delegate void InboxFilesHandler(IEnumerable<FileInfo> files);
+        public delegate void InboxFilesHandler(IEnumerable<SongPath> files);
         public static event InboxFilesHandler InboxFilesDetected = delegate {};
 
         /// <summary>
@@ -84,8 +85,8 @@ namespace MSOE.MediaComplete.Lib
                 inbox.Create();
             }
 
-            var files = inbox.EnumerateFiles("*",SearchOption.AllDirectories).GetMusicFiles();
-            var fileInfos = files as FileInfo[] ?? files.ToArray();
+            var files = inbox.EnumerateFiles("*",SearchOption.AllDirectories).GetMusicFiles().Select(x => new SongPath(x.FullName));
+            var fileInfos = files as SongPath[] ?? files.ToArray();
             if(fileInfos.Any())
             {
                 InboxFilesDetected(fileInfos);

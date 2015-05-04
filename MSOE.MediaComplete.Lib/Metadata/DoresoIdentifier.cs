@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Util;
 using Newtonsoft.Json.Linq;
 
@@ -16,8 +17,9 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /// Perform a web request to identify the given audio data.
         /// </summary>
         /// <param name="audioBytes">The song data to analyze and identify</param>
+        /// <param name="file">The file to begin populating with metadata</param>
         /// <returns>A partially constructed metadata object with the new data</returns>
-        public async Task<Metadata> IdentifyAsync(byte[] audioBytes)
+        public async Task IdentifyAsync(byte[] audioBytes, LocalSong file)
         {
             // Fire off the request
             const string url =
@@ -34,11 +36,9 @@ namespace MSOE.MediaComplete.Lib.Metadata
                 throw new IdentificationException(String.Format("Received unexpected response from Doreso: {0}", json));
             }
 
-            Metadata metadata = new Metadata();
-
             if (data == null) // No matches
             {
-                return metadata;
+                return;
             }
 
             var songJson = data.First;
@@ -46,20 +46,18 @@ namespace MSOE.MediaComplete.Lib.Metadata
             var titleToken = songJson.SelectToken("name");
             if (titleToken != null)
             {
-                metadata.Title = titleToken.ToString();
+                file.Title = titleToken.ToString();
             }
             var artistToken = songJson.SelectToken("artist_name");
             if (artistToken != null)
             {
-                metadata.AlbumArtists = new List<string> { artistToken.ToString() };
+                file.Artists = new List<string> { artistToken.ToString() };
             }
             var albumToken = songJson.SelectToken("album");
             if (albumToken != null)
             {
-                metadata.Album = albumToken.ToString();
+                file.Album = albumToken.ToString();
             }
-
-            return metadata;
         }
     }
 }

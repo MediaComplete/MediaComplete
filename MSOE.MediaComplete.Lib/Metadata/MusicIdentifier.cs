@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+﻿using MSOE.MediaComplete.Lib.Files;
 
 namespace MSOE.MediaComplete.Lib.Metadata
 {
@@ -28,7 +29,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /// <summary>
         /// Controls how files are accessed and edited
         /// </summary>
-        public IFileMover FileMover { get; set; }
+        public IFileManager FileManager { get; set; }
 
         /// <summary>
         /// Defaults to using FFMPEG for audio parsing, Doreso for identification, and our FileMover for file access. 
@@ -39,7 +40,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
         {
             AudioReader = new FfmpegAudioReader();
             AudioIdentifier = new DoresoIdentifier();
-            FileMover = Lib.FileMover.Instance;
+            FileManager = Files.FileManager.Instance;
         }
 
         /// <summary>
@@ -48,28 +49,27 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /// <param name="reader">Audio reader for parsing in audio data</param>
         /// <param name="identifier">Audio identifer for fingerprinting songs</param>
         /// <param name="metadata">Metadata retreiver for finding additional metadata details.</param>
-        /// <param name="fileMover">Controls how files are accessed</param>
-        public MusicIdentifier(IAudioReader reader, IAudioIdentifier identifier, IMetadataRetriever metadata, IFileMover fileMover)
+        /// <param name="fileManager">Controls how files are accessed</param>
+        public MusicIdentifier(IAudioReader reader, IAudioIdentifier identifier, IMetadataRetriever metadata, IFileManager fileManager)
         {
             AudioReader = reader;
             MetadataRetriever = metadata;
             AudioIdentifier = identifier;
-            FileMover = fileMover;
+            FileManager = fileManager;
         }
 
         /// <summary>
         /// Identify a song; restoring its metadata based on the audio data
         /// </summary>
         /// <param name="fileMover">Service for accessing the song</param>
-        /// <param name="filename">The name of the target song</param>
+        /// <param name="file">The target song</param>
         /// <returns></returns>
-        public async Task IdentifySongAsync(FileMover fileMover, string filename)
+        public async Task IdentifySongAsync(IFileManager fileMover, LocalSong file)
         {
             StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Started",
                 StatusBarHandler.StatusIcon.Working);
 
-            // Check the file
-            if (!fileMover.FileExists(filename))
+            if (!fileMover.FileExists(file.SongPath))
             {
                 StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error-NoException",
                     StatusBarHandler.StatusIcon.Error);
@@ -77,7 +77,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
             }
 
             // Read in audio data
-            var audioData = await AudioReader.ReadBytesAsync(filename, Freq, SampleSeconds);
+            var audioData = await AudioReader.ReadBytesAsync(file, Freq, SampleSeconds);
             if (audioData == null)
             {
                 StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error-NoException",
@@ -85,10 +85,9 @@ namespace MSOE.MediaComplete.Lib.Metadata
                 return;
             }
 
-            Metadata data;
             try
             {
-                data = await AudioIdentifier.IdentifyAsync(audioData);
+                await AudioIdentifier.IdentifyAsync(audioData, file);
             }
             catch (IdentificationException) // We've exceeded our API rate limit. Tell the user to try again later.
             {
@@ -98,71 +97,24 @@ namespace MSOE.MediaComplete.Lib.Metadata
                 throw;
             }
 
-            if (data.Title == null) // No match. Tell the user they'll have to do it themselves.
+            if (file.Title == null) // No match. Tell the user they'll have to do it themselves.
             {
                 StatusBarHandler.Instance.ChangeStatusBarMessage("{0}: {1}", "MusicIdentification-Warning-NoMatch",
-                    StatusBarHandler.StatusIcon.Warning, filename);
+                    StatusBarHandler.StatusIcon.Warning, file.SongPath);
                 return;
             }
 
              // Found a match; populate the file
             if (MetadataRetriever == null)
                 MetadataRetriever = await SpotifyMetadataRetriever.GetInstanceAsync();
-            await MetadataRetriever.GetMetadataAsync(data);
+            await MetadataRetriever.GetMetadataAsync(file);
 
-            UpdateFileWithMetadata(data, filename);
+            // Save whatever we found
+            FileManager.SaveSong(file);
 
             StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Success",
                 StatusBarHandler.StatusIcon.Success);
             
-        }
-
-        /// <summary>
-        /// Copies over attributes from a Metadata object to the specified file's taglib. 
-        /// Null attributes on the Metadata object are skipped, so there are no destructive overwrites.
-        /// </summary>
-        /// <param name="data">The new metadata</param>
-        /// <param name="filename">The file to update</param>
-        private void UpdateFileWithMetadata(Metadata data, string filename)
-        {
-            var metadata = FileMover.CreateTaglibFile(filename);
-
-            if (data.Title != null)
-            {
-                metadata.SetAttribute(MetaAttribute.SongTitle, data.Title);
-            }
-            if (data.Album != null)
-            {
-                metadata.SetAttribute(MetaAttribute.Album, data.Album);
-            }
-            if (data.TrackNumber.HasValue)
-            {
-                metadata.SetAttribute(MetaAttribute.Year, data.TrackNumber.Value);
-            }
-            if (data.SupportingArtists != null)
-            {
-                metadata.SetAttribute(MetaAttribute.SupportingArtist, data.SupportingArtists);
-            }
-            if (data.AlbumArtists != null)
-            {
-                metadata.SetAttribute(MetaAttribute.Artist, data.AlbumArtists);
-            }
-            if (data.Rating.HasValue)
-            {
-                metadata.SetAttribute(MetaAttribute.Year, data.Rating.Value);
-            }
-            if (data.AlbumArt != null)
-            {
-                metadata.SetAttribute(MetaAttribute.AlbumArt, data.AlbumArt);
-            }
-            if (data.Genre != null)
-            {
-                metadata.SetAttribute(MetaAttribute.Genre, data.Genre);
-            }
-            if (data.Year.HasValue)
-            {
-                metadata.SetAttribute(MetaAttribute.Year, data.Year.Value);
-            }
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Util;
 using Newtonsoft.Json.Linq;
 using TagLib;
@@ -20,10 +21,11 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /// <summary>
         /// Gets the metadata for a song, based on the passed in artist, album, and track title.
         /// </summary>
-        /// <param name="data">A metadata object to populate. We assume the title, artist, and album have already been populated</param>
-        public async Task GetMetadataAsync(Metadata data)
+        /// <param name="file">A song to populate. We assume the title, artist, and album have already been populated</param>
+        public async Task GetMetadataAsync(LocalSong file)
         {
-            var query = HttpUtility.UrlEncode(String.Format("artist:{0} album:{1} track:{2}", data.AlbumArtists.FirstOrDefault(), data.Album, data.Title));
+            // TODO artist bad
+            var query = HttpUtility.UrlEncode(String.Format("artist:{0} album:{1} track:{2}", file.Artist.FirstOrDefault(), file.Album, file.Title));
             var url = "https://api.spotify.com/v1/search?type=track&limit=1&q=" + query;
 
             var json = await RequestWithAuthAsync(url);
@@ -40,16 +42,16 @@ namespace MSOE.MediaComplete.Lib.Metadata
                 return;
             }
 
-            await ParseMetadataAsync(data, firstTrack); // Return parsed data
+            await ParseMetadataAsync(file, firstTrack); // Return parsed data
         }
 
         /// <summary>
         /// Fill out and return a metadata object based on a metadata JSON. This method performs 
         /// secondary requests as necessary to obtain more information
         /// </summary>
-        /// <param name="data">The metadata object to populate</param>
+        /// <param name="song">The song to populate</param>
         /// <param name="json">The json of the song track</param>
-        private async Task ParseMetadataAsync(Metadata data, JToken json)
+        private async Task ParseMetadataAsync(AbstractSong song, JToken json)
         {
             // HTTP GET the album art first - Spotify provides several sizes, largest first.
             var imgJson = json.SelectToken("album.images[0].url");
@@ -59,7 +61,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
                 {
                     { HttpRequestHeader.Authorization, "Bearer " + _accessToken }
                 });
-                data.AlbumArt = new Picture(new ByteVector(bytes));
+                song.AlbumArt = new Picture(new ByteVector(bytes));
             }
 
             // The year, genre, and album artists also need a followup request to Spotify to get more album details
@@ -70,41 +72,40 @@ namespace MSOE.MediaComplete.Lib.Metadata
                 var genreJson = albumJson["genres"] as JArray;
                 if (genreJson != null && genreJson.Any())
                 {
-                    data.Genre = genreJson.Select(g => g.ToObject<string>()).Aggregate((g1, g2) => g1 + "; " + g2);
+                    song.Genre = genreJson.Select(g => g.ToObject<string>()).Aggregate((g1, g2) => g1 + "; " + g2);
                 }
 
                 var dateJson = albumJson["release_date"];
                 if (dateJson != null)
                 {
                     // First 4 chars are the year; month and day might follow
-                    var yearStr = dateJson.ToObject<string>().Substring(0, 4);
-                    data.Year = uint.Parse(yearStr);
+                    song.Year = dateJson.ToObject<string>().Substring(0, 4);
                 }
 
                 var albumArtists = albumJson["artists"] as JArray;
                 if (albumArtists != null)
                 {
-                    data.AlbumArtists = albumArtists.Select(j => j["name"].ToObject<string>());
+                    song.Artist = albumArtists.Select(j => j["name"].ToObject<string>());
                 }
             }
 
             var trackNumberJson = json["track_number"];
             if (trackNumberJson != null)
             {
-                data.TrackNumber = trackNumberJson.ToObject<uint>();
+                song.TrackNumber = trackNumberJson.ToObject<string>();
             }
 
             var popJson = json["popularity"];
             if (popJson != null)
             {
                 // Spotify's popularity is 0-100, ID3 rating is 0-255
-                data.Rating = popJson.ToObject<uint>() * 255 / 100; 
+                song.Rating = popJson.ToObject<uint>() * 255 / 100; 
             }
 
             var artists = json["artists"] as JArray;
             if (artists != null)
             {
-                data.SupportingArtists = artists.Select(j => j["name"].ToObject<string>());
+                song.SupportingArtists = artists.Select(j => j["name"].ToObject<string>());
             }
         }
 

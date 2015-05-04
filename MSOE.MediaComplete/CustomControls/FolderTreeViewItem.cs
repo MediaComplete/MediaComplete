@@ -81,7 +81,7 @@ namespace MSOE.MediaComplete.CustomControls
             {
                 return ParentItem.GetPath() + Header + Path.DirectorySeparatorChar;
             }
-            return SettingWrapper.MusicDir;
+            return SettingWrapper.MusicDir.FullPath;
             
         }
 

@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using MSOE.MediaComplete.Lib.Songs;
+using MSOE.MediaComplete.Lib.Files;
 
 namespace MSOE.MediaComplete.CustomControls
 {

@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
-using NAudio.Wave;
+using MSOE.MediaComplete.Lib.Files;
 
 namespace MSOE.MediaComplete.Lib.Metadata
 {
@@ -14,14 +14,13 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /// <summary>
         /// Reads audio bytes in from ffmpeg
         /// </summary>
-        /// <param name="filename">The target file path</param>
+        /// <param name="file">The target file</param>
         /// <param name="frequency">The expected frequency of the sampled data</param>
         /// <param name="sampleSeconds">The duration of the audio sample</param>
         /// <returns>An array of sampled byte data</returns>
-        public async Task<byte[]> ReadBytesAsync(string filename, int frequency, uint sampleSeconds)
+        public async Task<byte[]> ReadBytesAsync(LocalSong file, int frequency, uint sampleSeconds)
         {
             var wavData = new byte[frequency * sampleSeconds * 2];
-            var newFormat = new WaveFormat(frequency, 16, 1); // 16-bit quality, mono-channel
 
             await Task.Run(delegate
             {
@@ -30,7 +29,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
                     StartInfo =
                     {
                         FileName = "ffmpeg\\ffmpeg.exe",
-                        Arguments = String.Format("-i \"{0}\" -ac 1 -ar {1} -f wav -", filename, frequency),
+                        Arguments = String.Format("-i \"{0}\" -ac 1 -ar {1} -f wav -", file.GetPath(), frequency),
                         CreateNoWindow = true,
                         UseShellExecute = false,
                         RedirectStandardOutput = true
