@@ -81,7 +81,7 @@ namespace MSOE.MediaComplete.Lib.Files
 
         public override int GetHashCode()
         {
-            return string.Format("{0}-{1}-{2}-{3}", Path, Title, Artist, Album).GetHashCode();
+            return string.Format("{0}-{1}-{2}-{3}", Path, Title, Artists, Album).GetHashCode();
         }
 
         public override string ToString()

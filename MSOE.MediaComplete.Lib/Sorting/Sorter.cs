@@ -107,7 +107,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
             // This breaks the naming.
             for (var x = 0; x < list.Count(); x ++)
             {
-                var metaValue = song.GetAttribute(list[x]);
+                var metaValue = song.GetAttributeStr(list[x]);
                 var useableValue = metaValue ?? "Unknown " + list[x];
                 path += useableValue;
                 path += Path.DirectorySeparatorChar;

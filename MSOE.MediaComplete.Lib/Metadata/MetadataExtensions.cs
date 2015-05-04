@@ -66,7 +66,8 @@ namespace MSOE.MediaComplete.Lib.Metadata
                     tag.AlbumArtists = aa.ToArray();
                     break;
                 case MetaAttribute.Genre:
-                    tag.Genres = ((string) value).Split(',');
+                    var g = (IEnumerable<string>)value;
+                    tag.Genres = g.ToArray();
                     break;
                 case MetaAttribute.Rating:
                     var tag1 = tag as Tag;
@@ -125,7 +126,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /// <param name="file">The Music File</param>
         /// <param name="attr">The MetaAttribute for the specific ID3 value to be returned</param>
         /// <returns>The ID3 value from the tag</returns>
-        public static string GetAttribute(this File file, MetaAttribute attr)
+        public static object GetAttribute(this File file, MetaAttribute attr)
         {
             var tag = file.Tag;
             switch (attr)
@@ -133,9 +134,9 @@ namespace MSOE.MediaComplete.Lib.Metadata
                 case MetaAttribute.Album:
                     return tag.Album;
                 case MetaAttribute.Artist:
-                    return tag.AlbumArtists.Any() ? tag.AlbumArtists.Aggregate((a1, a2) => a1 + "; " + a2) : "";
+                    return tag.AlbumArtists;
                 case MetaAttribute.Genre:
-                    return tag.FirstGenre;
+                    return tag.Genres;
                 case MetaAttribute.Rating:
                     var tag1 = tag as Tag;
                     if (tag1 != null)
@@ -149,7 +150,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
                 case MetaAttribute.SongTitle:
                     return tag.Title;
                 case MetaAttribute.SupportingArtist:
-                    return tag.Performers.Any() ? tag.Performers.Aggregate((a1, a2) => a1 + "; " + a2) : "";
+                    return tag.Performers;
                 case MetaAttribute.TrackNumber:
                     return tag.Track.ToString(CultureInfo.InvariantCulture);
                 case MetaAttribute.Year:

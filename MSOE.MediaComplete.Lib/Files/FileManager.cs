@@ -254,15 +254,16 @@ namespace MSOE.MediaComplete.Lib.Files
             try
             {
                 var tagFile = TaglibFile.Create(path);
+                var tag = tagFile.Tag;
                 return new LocalSong(id, new SongPath(path))
                 {
-                    Title = tagFile.GetAttribute(MetaAttribute.SongTitle),
-                    Artist = tagFile.GetAttribute(MetaAttribute.Artist),
-                    Album = tagFile.GetAttribute(MetaAttribute.Album),
-                    Genre = tagFile.GetAttribute(MetaAttribute.Genre),
-                    Year = tagFile.GetAttribute(MetaAttribute.Year),
-                    TrackNumber = tagFile.GetAttribute(MetaAttribute.TrackNumber),
-                    SupportingArtists = tagFile.GetAttribute(MetaAttribute.SupportingArtist),
+                    Title = tag.Title,
+                    Artists = tag.AlbumArtists,
+                    Album = tag.Album,
+                    Genres = tag.Genres,
+                    Year = tag.Year,
+                    TrackNumber = tag.Track,
+                    SupportingArtists = tag.Performers,
                     Duration = (int?)tagFile.Properties.Duration.TotalSeconds
                 };
             }
@@ -307,14 +308,15 @@ namespace MSOE.MediaComplete.Lib.Files
         private void UpdateFile(LocalSong song)
         {
             var tagFile = TaglibFile.Create(song.Path);
-            _cachedSongs[song.Id].Title = tagFile.GetAttribute(MetaAttribute.SongTitle);
-            _cachedSongs[song.Id].Artist = tagFile.GetAttribute(MetaAttribute.Artist);
-            _cachedSongs[song.Id].Album = tagFile.GetAttribute(MetaAttribute.Album);
-            _cachedSongs[song.Id].Genre = tagFile.GetAttribute(MetaAttribute.Genre);
-            _cachedSongs[song.Id].Year = tagFile.GetAttribute(MetaAttribute.Year);
-            _cachedSongs[song.Id].TrackNumber = tagFile.GetAttribute(MetaAttribute.TrackNumber);
-            _cachedSongs[song.Id].SupportingArtists = tagFile.GetAttribute(MetaAttribute.SupportingArtist);
-
+            var tag = tagFile.Tag;
+            _cachedSongs[song.Id].Title = tag.Title;
+            _cachedSongs[song.Id].Artists = tag.AlbumArtists;
+            _cachedSongs[song.Id].Album = tag.Album;
+            _cachedSongs[song.Id].Genres = tag.Genres;
+            _cachedSongs[song.Id].Year = tag.Year;
+            _cachedSongs[song.Id].TrackNumber = tag.Track;
+            _cachedSongs[song.Id].SupportingArtists = tag.Performers;
+            // Duration is assumed to be fixed
         }
         #endregion
 

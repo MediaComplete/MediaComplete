@@ -11,7 +11,7 @@ using File = TagLib.File;
 
 namespace MSOE.MediaComplete.Test
 {
-    // TODO MC-139 ignored while we find an Echonest alternative
+    /*// TODO MC-139 ignored while we find an Echonest alternative
     [TestClass, Ignore]
     public class MusicIdentifierTest
     {
@@ -100,5 +100,5 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(typeof(IdentificationException), task.Exception != null ? task.Exception.InnerException.GetType() : null,
                 "Identification threw the wrong kind of exception.");
         }
-    }
+    }*/
 }

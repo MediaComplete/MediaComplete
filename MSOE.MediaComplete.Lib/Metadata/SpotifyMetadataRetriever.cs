@@ -24,8 +24,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /// <param name="file">A song to populate. We assume the title, artist, and album have already been populated</param>
         public async Task GetMetadataAsync(LocalSong file)
         {
-            // TODO artist bad
-            var query = HttpUtility.UrlEncode(String.Format("artist:{0} album:{1} track:{2}", file.Artist.FirstOrDefault(), file.Album, file.Title));
+            var query = HttpUtility.UrlEncode(String.Format("artist:{0} album:{1} track:{2}", file.Artists.FirstOrDefault(), file.Album, file.Title));
             var url = "https://api.spotify.com/v1/search?type=track&limit=1&q=" + query;
 
             var json = await RequestWithAuthAsync(url);
@@ -72,27 +71,31 @@ namespace MSOE.MediaComplete.Lib.Metadata
                 var genreJson = albumJson["genres"] as JArray;
                 if (genreJson != null && genreJson.Any())
                 {
-                    song.Genre = genreJson.Select(g => g.ToObject<string>()).Aggregate((g1, g2) => g1 + "; " + g2);
+                    song.Genres = genreJson.Select(g => g.ToObject<string>());
                 }
 
                 var dateJson = albumJson["release_date"];
                 if (dateJson != null)
                 {
-                    // First 4 chars are the year; month and day might follow
-                    song.Year = dateJson.ToObject<string>().Substring(0, 4);
+                    var dateStr = dateJson.ToObject<string>();
+                    if (dateStr != null && dateStr.Length > 3)
+                    {
+                        // First 4 chars are the year; month and day might follow
+                        song.Year = Convert.ToUInt32(dateJson.ToObject<string>().Substring(0, 4));
+                    }
                 }
 
                 var albumArtists = albumJson["artists"] as JArray;
                 if (albumArtists != null)
                 {
-                    song.Artist = albumArtists.Select(j => j["name"].ToObject<string>());
+                    song.Artists = albumArtists.Select(j => j["name"].ToObject<string>());
                 }
             }
 
             var trackNumberJson = json["track_number"];
             if (trackNumberJson != null)
             {
-                song.TrackNumber = trackNumberJson.ToObject<string>();
+                song.Year = trackNumberJson.ToObject<uint>();
             }
 
             var popJson = json["popularity"];
