@@ -88,7 +88,7 @@ namespace MSOE.MediaComplete
             var selectedSongs = SelectedSongs();
             var songs = selectedSongs.Any() ? selectedSongs : AllSongs();
 
-            list.Songs.AddRange(from LibrarySongItem song in songs select song.Data);
+            list.Songs.AddRange(from SongListItem song in songs select song.Data);
             list.Save();
             _playlists.Add(list);
             // TODO MC-207 flow to rename
@@ -112,7 +112,7 @@ namespace MSOE.MediaComplete
             var selectedSongs = SelectedSongs();
             var songs = selectedSongs.Any() ? selectedSongs : AllSongs();
 
-            list.Songs.AddRange(from LibrarySongItem song in songs select song.Data);
+            list.Songs.AddRange(from SongListItem song in songs select song.Data);
             list.Save();
         }
 

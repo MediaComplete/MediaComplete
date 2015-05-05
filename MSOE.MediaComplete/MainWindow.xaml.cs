@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Windows.Media.Imaging;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,6 +17,7 @@ using MSOE.MediaComplete.Lib.Playing;
 using MSOE.MediaComplete.Lib.Playlists;
 using MSOE.MediaComplete.Lib.Sorting;
 using NAudio.Wave;
+using Queue = MSOE.MediaComplete.Lib.Background.Queue;
 using WinForms = System.Windows.Forms;
 
 namespace MSOE.MediaComplete
@@ -33,7 +34,7 @@ namespace MSOE.MediaComplete
         /// </summary>
         public FolderTreeViewItem RootLibraryFolderItem
         {
-            get { return _rootLibItem; }
+            get { return _rootLibItem; } 
         }
         private readonly FolderTreeViewItem _rootLibItem = new FolderTreeViewItem { Header = SettingWrapper.MusicDir, IsSelected = true };
 
@@ -41,15 +42,17 @@ namespace MSOE.MediaComplete
         /// Contains the songs in the middle view. Filtered based on what's happening in the left pane.
         /// </summary>
         public CollectionViewSource Songs { get { return _songs; } }
-        private readonly CollectionViewSource _songs = new CollectionViewSource { Source = new ObservableCollection<SongListItem>() };
-
+        private readonly CollectionViewSource _songs = new CollectionViewSource { Source = new ObservableCollection<SongListItem>(), IsLiveFilteringRequested = true };
+        
         /// <summary>
         /// Contains the songs in the middle view. Filtered based on what's happening in the left pane.
         /// </summary>
         public CollectionViewSource PlaylistSongs { get { return _playlistSongs; } }
         private readonly CollectionViewSource _playlistSongs = new CollectionViewSource { Source = new ObservableCollection<SongListItem>() };
 
-        private readonly Timer _refreshTimer = new Timer(TimerProc);
+        /// <summary>
+        /// Private abstraction of the file system
+        /// </summary>
         private readonly IFileManager _fileManager = FileManager.Instance;
         #endregion
 
@@ -96,30 +99,22 @@ namespace MSOE.MediaComplete
         /// </summary>
         private void InitTreeView()
         {
-            RefreshTreeView();
+            // Set the library sorter
+            var songsView = Songs.View as ListCollectionView;
+            if (songsView != null)
+                songsView.CustomSort = new PathSorter();
 
-            var watcher = new FileSystemWatcher(SettingWrapper.MusicDir.FullPath)
-            {
-                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
-                IncludeSubdirectories = true
-            };
-            watcher.Renamed += _fileManager.RenamedFile;
-            watcher.Changed += _fileManager.ChangedFile;
-            watcher.Created += _fileManager.CreatedFile;
-            watcher.Deleted += _fileManager.DeletedFile;
-            _fileManager.SongCreated += OnChanged;
-            _fileManager.SongChanged += OnChanged;
-            _fileManager.SongRenamed += OnChanged;
-            _fileManager.SongDeleted += OnChanged;
-            //TODO MC-301 connect these
-            //_fileManager.SongChanged += SongChanged;
-            //_fileManager.SongCreated += SongCreated;
-            //_fileManager.SongDeleted += SongDeleted;
-            //_fileManager.SongRenamed += SongRenamed;
-
-            watcher.EnableRaisingEvents = true;
-
+            // Set the library filter
             Songs.Filter += LibrarySongFilter;
+
+            // Initial population
+            SongCreated(_fileManager.GetAllSongs()); 
+
+            // Subscribe to file system updates
+            _fileManager.SongChanged += SongChanged;
+            _fileManager.SongCreated += SongCreated;
+            _fileManager.SongDeleted += SongDeleted;
+            _fileManager.SongRenamed += SongRenamed;
         }
         #endregion
 
@@ -238,29 +233,10 @@ namespace MSOE.MediaComplete
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void Toolbar_AutoIDMusic_ClickAsync(object sender, RoutedEventArgs e)
+        private void Toolbar_AutoIDMusic_ClickAsync(object sender, RoutedEventArgs e)
         {
-            // TODO (MC-45) mass ID of multi-selected songs and folders
-            foreach (var selection in SelectedSongs().Select(l => l.Data).OfType<LocalSong>().ToList())
-            {
-                try
-                {
-                    if (selection == null) continue;
-                    await new MusicIdentifier().IdentifySongAsync(_fileManager, selection);
-                }
-                catch (IdentificationException)
-                {
-                    // TODO (MC-125) Logging
-                    StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Warning-RateLimit", StatusBarHandler.StatusIcon.Warning);
-                    break;
-                }
-                catch (Exception)
-                {
-                    // TODO (MC-125) Logging
-                    StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error", StatusBarHandler.StatusIcon.Error);
-                    break;
-                }
-            }
+            // TODO (MC-45) mass ID of folders
+            Queue.Inst.Add(new MusicIdentifier(SelectedSongs().Select(l => l.Data).OfType<LocalSong>().ToList()));
         }
 
         /// <summary>
@@ -268,35 +244,10 @@ namespace MSOE.MediaComplete
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void ContextMenu_AutoIDMusic_ClickAsync(object sender, RoutedEventArgs e)
+        private void ContextMenu_AutoIDMusic_ClickAsync(object sender, RoutedEventArgs e)
         {
-            // Access the targetted song 
-            // TODO (MC-45) mass ID of multi-selected songs and folders
-            var menuItem = sender as MenuItem;
-            if (menuItem == null)
-                return;
-            var contextMenu = menuItem.Parent as ContextMenu;
-            if (contextMenu == null)
-                return;
-            foreach (var selection in SelectedSongs().Select(l => l.Data).OfType<LocalSong>().ToList())
-            {
-                try
-                {
-                    await new MusicIdentifier().IdentifySongAsync(_fileManager, selection);
-                }
-                catch (IdentificationException)
-                {
-                    // TODO (MC-125) Logging
-                    StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Warning-RateLimit", StatusBarHandler.StatusIcon.Warning);
-                    break;
-                }
-                catch (Exception)
-                {
-                    // TODO (MC-125) Logging
-                    StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error", StatusBarHandler.StatusIcon.Error);
-                    break;
-                }
-            }
+            // TODO (MC-45) mass ID of folders
+            Queue.Inst.Add(new MusicIdentifier(SelectedSongs().Select(l => l.Data).OfType<LocalSong>().ToList()));
         }
 
         /// <summary>
@@ -376,75 +327,63 @@ namespace MSOE.MediaComplete
         }
 
         #endregion
-        /* TODO MC-301 These need to be used to handle specific data changes propgated from the filewatcher. 
-        // Right now, the UI does a full rebuild based on the directory, not by using the cache
+
+        #region Internally triggered events
+        /// <summary>
+        /// Updates the song items in the list. Just calls rename since both need to remove and re-add
+        /// </summary>
+        /// <param name="songs">The updated songs</param>
         private void SongChanged(IEnumerable<LocalSong> songs)
         {
-            foreach (var song in songs)
-            {
-                var librarySongs = (ObservableCollection<SongListItem>)Songs.Source;
-                var selected = librarySongs.First(x => x.Data.Id.Equals(song.Id));
-                selected.Data = song;
-            }
+            SongRenamed(songs.Select(s => new Tuple<LocalSong, LocalSong>(s, s)));
         }
 
+        /// <summary>
+        /// Removes songs from the list
+        /// </summary>
+        /// <param name="songs">The songs to remove</param>
         private void SongDeleted(IEnumerable<LocalSong> songs)
-        {
-            foreach (var song in songs)
-            {
-                var librarySongs = ((ObservableCollection<SongListItem>)Songs.Source).First(x => x.Data.Id.Equals(song.Id));
-                ((ObservableCollection<SongListItem>)Songs.Source).Remove(librarySongs);
-            }
-        }
-
-        private void SongCreated(IEnumerable<LocalSong> songs)
-        {
-            foreach (var song in songs)
-            {
-                var songDir = song.SongPath.Directory.FullPath;
-                var parentName = songDir.Substring(songDir.LastIndexOf(Path.DirectorySeparatorChar));
-                var parent = FolderTree.
-                ((ObservableCollection<SongListItem>)Songs.Source).Add(new LibrarySongItem { Content = song.Name, ParentItem = parent, Data = thing });   
-            }
-        }
-
-        private void SongRenamed(IEnumerable<Tuple<LocalSong, LocalSong>> songs)
-        {
-            var selected = AllSongs().First(x => x.Data.Path.Equals(newSong.Path));
-            selected.Data = newSong;
-        }
-         * */
-        #region Internally triggered events
-
-        /// <summary>
-        /// Triggered by the library filewatcher. Bumps the refresh timer so we don't make unnecessary 
-        /// updates to the UI.
-        /// </summary>
-        /// <param name="songs"></param>
-        private void OnChanged(IEnumerable<LocalSong> songs)
-        {
-            _refreshTimer.Change(500, Timeout.Infinite);
-        }
-        private void OnChanged(IEnumerable<Tuple<LocalSong, LocalSong>> songs)
-        {
-            _refreshTimer.Change(500, Timeout.Infinite);
-        }
-
-        /// <summary>
-        /// Triggered when the filewatcher timer expires. This prevents a swarm of redundant treeview 
-        /// updates for large-scale file movements.
-        /// </summary>
-        /// <param name="state"></param>
-        private static void TimerProc(object state)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                var win = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-                if (win != null)
+                foreach (var song in songs.Select(song => ((ObservableCollection<SongListItem>)Songs.Source).FirstOrDefault(x => x.Data.Id.Equals(song.Id))).Where(song => song != null))
                 {
-                    win.RefreshTreeView();
+                    ((ObservableCollection<SongListItem>)Songs.Source).Remove(song);
+                    // Roll up the empty folders
+                    var parent = song.ParentItem;
+                    while (_fileManager.DirectoryEmpty(new DirectoryPath(parent.GetPath())) && parent.ParentItem != null)
+                    {
+                        parent.ParentItem.Children.Remove(parent);
+                        parent = parent.ParentItem;
+                    }
                 }
             });
+        }
+
+        /// <summary>
+        /// Adds new songs into the list.
+        /// </summary>
+        /// <param name="songs">The new songs</param>
+        private void SongCreated(IEnumerable<LocalSong> songs)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                foreach (var song in songs)
+                {
+                    var parent = AddFolderTreeViewItems(song.SongPath.Directory);
+                    ((ObservableCollection<SongListItem>)Songs.Source).Add(new SongListItem { Content = song.Name, ParentItem = parent, Data = song });
+                }
+            });
+        }
+
+        /// <summary>
+        /// Adds and removes the song so it's place in the list is updated.
+        /// </summary>
+        /// <param name="songs">A tuple of old and new songs (may contain data edits)</param>
+        private void SongRenamed(IEnumerable<Tuple<LocalSong, LocalSong>> songs)
+        {
+            SongDeleted(songs.Select(t => t.Item1));
+            SongCreated(songs.Select(t => t.Item2));
         }
 
         /// <summary>
@@ -454,48 +393,8 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private static void LibrarySongFilter(object sender, FilterEventArgs e)
         {
-            var song = e.Item as LibrarySongItem;
+            var song = e.Item as SongListItem;
             e.Accepted = song != null && song.ParentItem.IsSelectedRecursive();
-        }
-
-        /// <summary>
-        /// populates the treeviews with all valid elements within the home directory
-        /// </summary>
-        public void RefreshTreeView()
-        {
-            var songs = Songs.Source as ObservableCollection<SongListItem>;
-            if (songs == null)
-                return; // TODO MC-125 log me
-            songs.Clear();
-
-            _rootLibItem.Children.Clear();
-
-            PopulateFromFolder(_rootLibItem);
-        }
-
-        /// <summary>
-        /// Recursively populates foldertree and songtree with elements
-        /// </summary>
-        /// <param name="parent"></param>
-        /// // TODO MC-301
-        private void PopulateFromFolder(FolderTreeViewItem parent)
-        {
-            var songList = Songs.Source as ICollection<SongListItem>;
-            if (songList == null)
-                return; // TODO MC-125 log me
-            var dir = new DirectoryInfo(parent.GetPath());
-
-            foreach (var child in dir.GetDirectories().Select(subdir => new FolderTreeViewItem { ParentItem = parent, Header = subdir.Name }))
-            {
-                parent.Children.Add(child);
-                PopulateFromFolder(child);
-            }
-            foreach (var file in dir.GetFilesOrCreateDir().GetMusicFiles())
-            {
-                var thing = _fileManager.GetSong(new SongPath(file.FullName));
-                songList.Add(new LibrarySongItem { Content = file.Name, ParentItem = parent, Data =  thing});
-            }
-
         }
 
         /// <summary>
@@ -543,9 +442,6 @@ namespace MSOE.MediaComplete
         {
             var currentSongs = (ObservableCollection<SongListItem>)(PlaylistTab.IsSelected ? PlaylistSongs : Songs).Source;
             return currentSongs.Where(x => x.IsSelected && x.IsVisible);
-//            return from object song in currentSongs
-            //                 where ((SongListItem)song).IsSelected && ((SongListItem)song).IsVisible
-            //               select (song as SongListItem);
         }
 
         /// <summary>
@@ -566,6 +462,51 @@ namespace MSOE.MediaComplete
         {
             var currentSongs = (ObservableCollection<SongListItem>)(PlaylistTab.IsSelected ? PlaylistSongs : Songs).Source;
             return currentSongs.IndexOf(currentSongs.FirstOrDefault(s => s.IsSelected));
+        }
+
+        /// <summary>
+        /// Builds out the treeview for the given folder path, as needed.
+        /// </summary>
+        /// <param name="path">The path to add to the treeview</param>
+        /// <returns>The last folder treeview item in the heirarchy</returns>
+        private FolderTreeViewItem AddFolderTreeViewItems(DirectoryPath path)
+        {
+            // First, lop off everything up to the music dir
+            var pathStr = path.FullPath.Substring(SettingWrapper.MusicDir.FullPath.Length);
+            // Now break into individual "folder" names
+            var folderNames = pathStr.Split(Path.DirectorySeparatorChar);
+
+            // Now fill out the treeview with the folder names
+            return folderNames.Aggregate(_rootLibItem, 
+                (parentTreeViewItem, folderName) => parentTreeViewItem.Children.FirstOrDefault(t => 
+                    (string) t.Header == folderName) ?? new FolderTreeViewItem { Header = folderName, ParentItem = parentTreeViewItem });
+        }
+
+        /// <summary>
+        /// Used for mapping the sort order to the song list's sort binding.
+        /// </summary>
+        private class PathSorter : IComparer
+        {
+            public int Compare(object o1, object o2)
+            {
+                var x = o1 as SongListItem;
+                var y = o2 as SongListItem;
+
+                if (x == null || y == null)
+                {
+                    throw new ArgumentException();
+                }
+
+                // Get the string paths of the parent folders, minus the music dir (speeds up a bit)
+                var xPath = x.ParentItem.GetPath().Substring(SettingWrapper.MusicDir.FullPath.Length);
+                var yPath = y.ParentItem.GetPath().Substring(SettingWrapper.MusicDir.FullPath.Length);
+
+                // Compare by path
+                var pathDiff = String.Compare(xPath, yPath, StringComparison.Ordinal);
+
+                // Compare by header (filename) if the paths are equal
+                return pathDiff != 0 ? pathDiff : String.Compare(x.ToString(), y.ToString(), StringComparison.Ordinal);
+            }
         }
 
         #endregion

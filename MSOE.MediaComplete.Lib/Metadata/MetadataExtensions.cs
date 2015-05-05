@@ -110,14 +110,6 @@ namespace MSOE.MediaComplete.Lib.Metadata
                 default:
                     return;
             }
-            try
-            {
-                file.Save();//TODO: MC-185 add catch for save when editing a file while it is playing
-            }
-            catch (UnauthorizedAccessException)
-            {
-                StatusBarHandler.Instance.ChangeStatusBarMessage("Save-Error", StatusBarHandler.StatusIcon.Error);
-            }
         }
 
         /// <summary>

@@ -11,8 +11,8 @@ using File = TagLib.File;
 
 namespace MSOE.MediaComplete.Test
 {
-    /*// TODO MC-139 ignored while we find an Echonest alternative
-    [TestClass, Ignore]
+    // TODO MC-139 ignored while we find an Echonest alternative
+    /*[TestClass, Ignore]
     public class MusicIdentifierTest
     {
         private DirectoryInfo _homeDir;

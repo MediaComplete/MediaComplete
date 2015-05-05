@@ -89,7 +89,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         #region Task Overrides
         public override IReadOnlyCollection<Type> InvalidBeforeTypes
         {
-            get { return new List<Type> { typeof(IdentifierTask), typeof(ImportTask) }.AsReadOnly(); }
+            get { return new List<Type> { typeof(MusicIdentifier), typeof(ImportTask) }.AsReadOnly(); }
         }
 
         public override IReadOnlyCollection<Type> InvalidAfterTypes

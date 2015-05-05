@@ -129,7 +129,7 @@ namespace MSOE.MediaComplete.Lib.Import
         public override IReadOnlyCollection<Type> InvalidAfterTypes
         {
             
-            get { return new List<Type> { typeof(SortingTask), typeof(IdentifierTask) }.AsReadOnly(); }
+            get { return new List<Type> { typeof(SortingTask), typeof(MusicIdentifier) }.AsReadOnly(); }
         }
 
         public override IReadOnlyCollection<Type> InvalidDuringTypes
