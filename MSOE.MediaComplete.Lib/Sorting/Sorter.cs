@@ -51,7 +51,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
             await Sys.Task.Run(() =>
             {
                 var songs = _fileManager.GetAllSongs().Where(x => Files.Contains(x.SongPath));
-
+                UnsortableCount += Files.Count() - songs.Count();
                 foreach (var song in songs)
                 {
                     var sourcePath = song.SongPath;
@@ -165,7 +165,6 @@ namespace MSOE.MediaComplete.Lib.Sorting
                         TriggerUpdate(this);
                     }
                 }
-                _fileManager.ScrubEmptyDirectories(SettingWrapper.MusicDir);
 
                 if (Error == null)
                 {
@@ -204,6 +203,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
             return t is Sorter;
         }
         #endregion
+
         #region Actions
 
         public interface IAction

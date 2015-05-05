@@ -95,7 +95,6 @@
     <Compile Include="Playlists\PlaylistTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PollingTest.cs" />
-    <Compile Include="SortingTest.cs" />
     <Compile Include="ImporterTest.cs" />
     <Compile Include="SorterTest.cs" />
     <Compile Include="Util\Constants.cs" />
