@@ -24,18 +24,18 @@ namespace MSOE.MediaComplete.Lib.Import
 
         public ImportResults Results { get; set; }
         private readonly IEnumerable<SongPath> _files; 
-        private readonly IFileManager _fm;
+        private readonly IFileManager _fileManager;
         private readonly bool _isMove;
 
         /// <summary>
         /// Constructs an Importer with the given library home directory.
         /// </summary>
-        /// <param name="fms">FileManager used for dependency injection</param>
+        /// <param name="fileManagers">FileManager used for dependency injection</param>
         /// <param name="files"></param>
         /// <param name="isMove"></param>
-        public Importer(IFileManager fms, IEnumerable<SongPath> files, bool isMove)
+        public Importer(IFileManager fileManagers, IEnumerable<SongPath> files, bool isMove)
         {
-            _fm = fms;
+            _fileManager = fileManagers;
             _isMove = isMove;
             if (files.Any(f => f.HasParent(SettingWrapper.MusicDir)))
             {
@@ -78,16 +78,16 @@ namespace MSOE.MediaComplete.Lib.Import
                 foreach (var file in _files)
                 {
                     var newFile = new SongPath(SettingWrapper.MusicDir.FullPath + file.Name);
-                    if (_fm.FileExists(newFile)) continue;
+                    if (_fileManager.FileExists(newFile)) continue;
                     try
                     {
                         if (_isMove)
-                        {
-                            _fm.AddFile(file, newFile);
+                        {   
+                            _fileManager.AddFile(file, newFile);
                         }
                         else
                         {
-                            _fm.CopyFile(file, newFile);
+                            _fileManager.CopyFile(file, newFile);
                         }
                         results.NewFiles.Add(newFile);
                     }
@@ -167,7 +167,6 @@ namespace MSOE.MediaComplete.Lib.Import
     public class ImportResults
     {
         public List<SongPath> NewFiles { get; set; } 
-        public DirectoryPath HomeDir { get; set; }
         public int FailCount { get; set; }
     }
 

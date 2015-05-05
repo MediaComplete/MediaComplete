@@ -25,7 +25,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void CalculateActions_MovesOnly()
         {
-            var manager = SetUpCalculateActionsMock();
+            var manager = SetUpMock();
             var songs = new List<SongPath>{
                new SongPath(SettingWrapper.MusicDir.FullPath + "song4.mp3"),
                new SongPath(SettingWrapper.MusicDir.FullPath + "song5.mp3"),
@@ -42,7 +42,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void CalculateActions_DuplicateOnly()
         {
-            var manager = SetUpCalculateActionsMock();
+            var manager = SetUpMock();
             var songs = new List<SongPath>{
                 new SongPath(SettingWrapper.MusicDir.FullPath + "song8.mp3"),
                 new SongPath(SettingWrapper.MusicDir.FullPath + "song9.mp3"),
@@ -59,7 +59,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void CalculateActions_MoveAndDuplicate()
         {
-            var manager = SetUpCalculateActionsMock();
+            var manager = SetUpMock();
             var songs = new List<SongPath>{
                 new SongPath(SettingWrapper.MusicDir.FullPath + "song4.mp3"),
                 new SongPath(SettingWrapper.MusicDir.FullPath + "song5.mp3"),
@@ -77,7 +77,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void CalculateActions_NoValidFiles()
         {
-            var manager = SetUpCalculateActionsMock();
+            var manager = SetUpMock();
             var songs = new List<SongPath>{
                 new SongPath("song99.mp3"),
                 new SongPath("song100.mp3"), 
@@ -93,7 +93,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void CalculateActions_MoveDupAndInvalid()
         {
-            var manager = SetUpCalculateActionsMock();
+            var manager = SetUpMock();
             var songs = new List<SongPath>{
                new SongPath(SettingWrapper.MusicDir.FullPath + "song1.mp3"),
                new SongPath(SettingWrapper.MusicDir.FullPath + "song4.mp3"),
@@ -111,7 +111,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void CalculateActions_AlreadySorted()
         {
-            var manager = SetUpCalculateActionsMock();
+            var manager = SetUpMock();
             var songs = new List<SongPath>{
                 new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
                 "AlbumName"+Path.DirectorySeparatorChar +"song1.mp3"),
@@ -126,14 +126,14 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(0, sorter.DupCount);
             Assert.AreEqual(0, sorter.UnsortableCount);
             Assert.AreEqual(0, sorter.MoveCount);
-
         }
         #endregion
+
         #region Do
         [TestMethod]
         public void Do_MovesOnly()
         {
-            var manager = SetUpCalculateActionsMock();
+            var manager = SetUpMock();
             var songs = new List<SongPath>{
                new SongPath(SettingWrapper.MusicDir.FullPath + "song4.mp3"),
                new SongPath(SettingWrapper.MusicDir.FullPath + "song5.mp3"),
@@ -153,7 +153,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void Do_DuplicateOnly()
         {
-            var manager = SetUpCalculateActionsMock();
+            var manager = SetUpMock();
             var songs = new List<SongPath>{
                 new SongPath(SettingWrapper.MusicDir.FullPath + "song8.mp3"),
                 new SongPath(SettingWrapper.MusicDir.FullPath + "song9.mp3"),
@@ -173,7 +173,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void Do_MoveAndDuplicate()
         {
-            var manager = SetUpCalculateActionsMock();
+            var manager = SetUpMock();
             var songs = new List<SongPath>{
                 new SongPath(SettingWrapper.MusicDir.FullPath + "song4.mp3"),
                 new SongPath(SettingWrapper.MusicDir.FullPath + "song5.mp3"),
@@ -194,7 +194,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void Do_NoValidFiles()
         {
-            var manager = SetUpCalculateActionsMock();
+            var manager = SetUpMock();
             var songs = new List<SongPath>{
                 new SongPath("song99.mp3"),
                 new SongPath("song100.mp3"), 
@@ -213,7 +213,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void Do_MoveDupAndInvalid()
         {
-            var manager = SetUpCalculateActionsMock();
+            var manager = SetUpMock();
             var songs = new List<SongPath>{
                new SongPath(SettingWrapper.MusicDir.FullPath + "song1.mp3"),
                new SongPath(SettingWrapper.MusicDir.FullPath + "song4.mp3"),
@@ -234,7 +234,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void Do_AlreadySorted()
         {
-            var manager = SetUpCalculateActionsMock();
+            var manager = SetUpMock();
             var songs = new List<SongPath>{
                 new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
                 "AlbumName"+Path.DirectorySeparatorChar +"song1.mp3"),
@@ -255,14 +255,13 @@ namespace MSOE.MediaComplete.Test
             manager.Verify(x => x.MoveFile(It.IsAny<LocalSong>(), It.IsAny<SongPath>()), Times.Exactly(0));
             manager.Verify(x => x.DeleteSong(It.IsAny<LocalSong>()), Times.Exactly(0));
         }
-
-
         #endregion
+
         #region DoNoCalculate
         [TestMethod]
         public void DoNoCalculate_MovesOnly()
         {
-            var manager = SetUpCalculateActionsMock();
+            var manager = SetUpMock();
             var songs = new List<SongPath>{
                new SongPath(SettingWrapper.MusicDir.FullPath + "song4.mp3"),
                new SongPath(SettingWrapper.MusicDir.FullPath + "song5.mp3"),
@@ -276,7 +275,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void DoNoCalculate_DuplicateOnly()
         {
-            var manager = SetUpCalculateActionsMock();
+            var manager = SetUpMock();
             var songs = new List<SongPath>{
                 new SongPath(SettingWrapper.MusicDir.FullPath + "song8.mp3"),
                 new SongPath(SettingWrapper.MusicDir.FullPath + "song9.mp3"),
@@ -290,7 +289,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void DoNoCalculate_MoveAndDuplicate()
         {
-            var manager = SetUpCalculateActionsMock();
+            var manager = SetUpMock();
             var songs = new List<SongPath>{
                 new SongPath(SettingWrapper.MusicDir.FullPath + "song4.mp3"),
                 new SongPath(SettingWrapper.MusicDir.FullPath + "song5.mp3"),
@@ -305,7 +304,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void DoNoCalculate_NoValidFiles()
         {
-            var manager = SetUpCalculateActionsMock();
+            var manager = SetUpMock();
             var songs = new List<SongPath>{
                 new SongPath("song99.mp3"),
                 new SongPath("song100.mp3"), 
@@ -318,7 +317,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void DoNoCalculate_MoveDupAndInvalid()
         {
-            var manager = SetUpCalculateActionsMock();
+            var manager = SetUpMock();
             var songs = new List<SongPath>{
                new SongPath(SettingWrapper.MusicDir.FullPath + "song1.mp3"),
                new SongPath(SettingWrapper.MusicDir.FullPath + "song4.mp3"),
@@ -333,7 +332,7 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void DoNoCalculate_AlreadySorted()
         {
-            var manager = SetUpCalculateActionsMock();
+            var manager = SetUpMock();
             var songs = new List<SongPath>{
                 new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
                 "AlbumName"+Path.DirectorySeparatorChar +"song1.mp3"),
@@ -349,7 +348,8 @@ namespace MSOE.MediaComplete.Test
 
 
         #endregion
-        private static Mock<IFileManager> SetUpCalculateActionsMock()
+        
+        private static Mock<IFileManager> SetUpMock()
         {
             SettingWrapper.SortOrder = SortOrder;
             SettingWrapper.HomeDir = HomeDir;
