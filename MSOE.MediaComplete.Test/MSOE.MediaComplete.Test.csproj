@@ -85,7 +85,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Background\ImportTaskTest.cs" />
+    <Compile Include="Background\ImporterManagementTest.cs" />
     <Compile Include="Background\QueueTest.cs" />
     <Compile Include="Background\SorterManagementTest.cs" />
     <Compile Include="MusicIdentifierTest.cs" />

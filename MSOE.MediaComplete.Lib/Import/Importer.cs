@@ -35,6 +35,7 @@ namespace MSOE.MediaComplete.Lib.Import
         /// <param name="isMove"></param>
         public Importer(IFileManager fileManagers, IEnumerable<SongPath> files, bool isMove)
         {
+            if(fileManagers == null || files == null) throw new ArgumentNullException();
             _fileManager = fileManagers;
             _isMove = isMove;
             if (files.Any(f => f.HasParent(SettingWrapper.MusicDir)))

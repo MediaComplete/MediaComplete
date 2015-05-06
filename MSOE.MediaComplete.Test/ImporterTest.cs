@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib;
 using Moq;
@@ -13,6 +14,33 @@ namespace MSOE.MediaComplete.Test
     {
         private static readonly DirectoryPath HomeDir = new DirectoryPath("homedir");
 
+        #region Constructor
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Constructor_NullEverything()
+        {
+            // ReSharper disable once ObjectCreationAsStatement
+            new Importer(null, null, false);
+        }
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Constructor_NullFiles()
+        {
+            // ReSharper disable once ObjectCreationAsStatement
+            new Importer(new Mock<IFileManager>().Object, null, false);
+        }
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Constructor_NullFileManager()
+        {
+            // ReSharper disable once ObjectCreationAsStatement
+            new Importer(null, new List<SongPath> { new SongPath("") }, false);
+        }
+
+
+        #endregion
+        
+        #region Do
         [TestMethod]
         public void Do_MoveOnly()
         {
@@ -112,6 +140,7 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(0, importer.Results.FailCount);
             Assert.AreEqual(0, importer.Results.NewFiles.Count);
         }
+        #endregion
 
         private static Mock<IFileManager> SetUpMock()
         {
