@@ -80,23 +80,12 @@
     <mediaComplete:ExpandWhenCheckedConverter x:Key="ExpandWhenChecked"/>
 
     <!-- Images -->
-    <BitmapImage x:Key="Toolbar-AddMusicFile-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
-                 UriSource=".\Resources\page_white_add.png" />
-    <BitmapImage x:Key="Toolbar-AddMusicFolder-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
-                 UriSource=".\Resources\folder_add.png" />
-    <BitmapImage x:Key="Toolbar-AutoIdMusic-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
-                 UriSource=".\Resources\wand.png" />
-    <BitmapImage x:Key="Toolbar-SortMusic-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
-                 UriSource=".\Resources\folder_wrench.png" />
     <BitmapImage x:Key="Settings-AddConfig-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
                  UriSource=".\Resources\add.png" />
     <BitmapImage x:Key="Settings-MinusConfig-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
                  UriSource=".\Resources\delete.png" />
     <BitmapImage x:Key="Settings-Info-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
                  UriSource=".\Resources\Information.png" />
-    <BitmapImage x:Key="Settings-Folder-Icon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad"
-                 UriSource=".\Resources\folder.png" />
-    
     <!-- Misc. -->
     <!-- See http://wilberbeast.com/2011/05/31/compositecollection-binding-problem/ -->
     <CollectionViewSource x:Key="PlaylistsCollection" Source="{Binding Path=Playlists}" />

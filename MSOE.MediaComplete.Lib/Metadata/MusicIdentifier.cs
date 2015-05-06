@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using ENMFPdotNet;
+using MSOE.MediaComplete.Lib.Files;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using Newtonsoft.Json.Linq;
@@ -21,11 +22,11 @@ namespace MSOE.MediaComplete.Lib.Metadata
         private const string Path = "/api/v4/song/identify";
         private const string ApiKey = "MUIGA58IV1VQUOEJ5";
 
-        public static async Task<string> IdentifySongAsync(FileMover fileMover, string filename)
+        public static async Task<string> IdentifySongAsync(IFileManager fileMover, string filename)
         {
             StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Started", StatusBarHandler.StatusIcon.Working);
 
-            if (!fileMover.FileExists(filename))
+            if (!fileMover.FileExists(new SongPath(filename)))
             {
                 StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error-NoException", StatusBarHandler.StatusIcon.Error);
                 return null;
@@ -53,7 +54,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
             var strResponse = await response.Content.ReadAsStringAsync();
             var json = JObject.Parse(strResponse);
 
-            UpdateFileWithJson(json, fileMover.CreateTaglibFile(filename));
+            UpdateFileWithJson(json, File.Create(filename));
 
             var resp = json.SelectToken("response").ToString();
             StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Success", StatusBarHandler.StatusIcon.Success);
@@ -80,11 +81,11 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /*
          * Parses an MP3 file and pulls the first 30 seconds into the format needed for the Echonest code generator
          */
-        private static float[] SampleAudio(IFileMover fileMover, string filename)
+        private static float[] SampleAudio(IFileManager fileManager, string filename)
         {
             var inFile = filename;
 
-            if (!fileMover.FileExists(inFile)) return null;
+            if (!fileManager.FileExists(new SongPath(inFile))) return null;
 
             var result = new List<float>();
 

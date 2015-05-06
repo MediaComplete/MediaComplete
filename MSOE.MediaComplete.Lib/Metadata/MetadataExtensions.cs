@@ -14,16 +14,6 @@ namespace MSOE.MediaComplete.Lib.Metadata
     /// </summary>
     public static class MetadataExtensions
     {
-        public static bool ContainsMusicFile(this DirectoryInfo dir, File matchFile)
-        {
-            if (dir == null || matchFile == null || !dir.Exists)
-            {
-                return false;
-            }
-
-            return dir.EnumerateFiles().GetMusicFiles().Any(f => matchFile.MusicFileEquals(FileMover.Instance.CreateTaglibFile(f.FullName)));
-        }
-
         /// <summary>
         /// This returns all files in the array dir with extensions listed in the Constants.MusicFileExtensions list
         /// </summary>

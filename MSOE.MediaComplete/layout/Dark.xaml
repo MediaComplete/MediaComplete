@@ -1,64 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <LinearGradientBrush x:Key="NormalBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientBrush.GradientStops>
-            <GradientStopCollection>
-                <GradientStop Color="#FFF0EFF1" Offset="1"/>
-                <GradientStop Color="#FF3E3E42" Offset="0"/>
-            </GradientStopCollection>
-        </GradientBrush.GradientStops>
-    </LinearGradientBrush>
-
-    <LinearGradientBrush x:Key="HorizontalNormalBrush" StartPoint="0,0" EndPoint="1,0">
-        <GradientBrush.GradientStops>
-            <GradientStopCollection>
-                <GradientStop Color="#FF707070" Offset="1"/>
-                <GradientStop Color="#FF3E3E42" Offset="0"/>
-            </GradientStopCollection>
-        </GradientBrush.GradientStops>
-    </LinearGradientBrush>
-
-    <LinearGradientBrush x:Key="LightBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientBrush.GradientStops>
-            <GradientStopCollection>
-                <GradientStop Color="#FF707070" Offset="1"/>
-                <GradientStop Color="#FF3E3E42" Offset="0"/>
-            </GradientStopCollection>
-        </GradientBrush.GradientStops>
-    </LinearGradientBrush>
-
-    <LinearGradientBrush x:Key="HorizontalLightBrush" StartPoint="0,0" EndPoint="1,0">
-        <GradientBrush.GradientStops>
-            <GradientStopCollection>
-                <GradientStop Color="#FF707070" Offset="1"/>
-                <GradientStop Color="#FF3E3E42" Offset="0"/>
-            </GradientStopCollection>
-        </GradientBrush.GradientStops>
-    </LinearGradientBrush>
-
-    <LinearGradientBrush x:Key="DarkBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientBrush.GradientStops>
-            <GradientStopCollection>
-                <GradientStop Color="#FF707070" Offset="1"/>
-                <GradientStop Color="#FF3E3E42" Offset="0"/>
-            </GradientStopCollection>
-        </GradientBrush.GradientStops>
-    </LinearGradientBrush>
-
-    <LinearGradientBrush x:Key="PressedBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientBrush.GradientStops>
-            <GradientStopCollection>
-                <GradientStop Color="#FF707070" Offset="1"/>
-                <GradientStop Color="#FF3E3E42" Offset="0"/>
-            </GradientStopCollection>
-        </GradientBrush.GradientStops>
-    </LinearGradientBrush>
 
     <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#888" />
-
-    <SolidColorBrush x:Key="DisabledBackgroundBrush" Color="#EEE" />
-
-    <SolidColorBrush x:Key="SelectedBackgroundBrush" Color="#DDD" />
 
     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="LightGray"/>
     <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#FF3E3E42"/>
@@ -73,44 +16,11 @@
             </GradientStopCollection>
         </GradientBrush.GradientStops>
     </LinearGradientBrush>
-
-    <LinearGradientBrush x:Key="HorizontalNormalBorderBrush" StartPoint="0,0" EndPoint="1,0">
-        <GradientBrush.GradientStops>
-            <GradientStopCollection>
-                <GradientStop Color="#FF707070" Offset="1"/>
-                <GradientStop Color="#FF3E3E42" Offset="0"/>
-            </GradientStopCollection>
-        </GradientBrush.GradientStops>
-    </LinearGradientBrush>
-
-    <LinearGradientBrush x:Key="DefaultedBorderBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientBrush.GradientStops>
-            <GradientStopCollection>
-                <GradientStop Color="#FF707070" Offset="1"/>
-                <GradientStop Color="#FF3E3E42" Offset="0"/>
-            </GradientStopCollection>
-        </GradientBrush.GradientStops>
-    </LinearGradientBrush>
-
-    <LinearGradientBrush x:Key="PressedBorderBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientBrush.GradientStops>
-            <GradientStopCollection>
-                <GradientStop Color="#FF707070" Offset="1"/>
-                <GradientStop Color="#FF3E3E42" Offset="0"/>
-            </GradientStopCollection>
-        </GradientBrush.GradientStops>
-    </LinearGradientBrush>
-
+    
     <SolidColorBrush x:Key="DisabledBorderBrush" Color="#AAA" />
-
-    <SolidColorBrush x:Key="SolidBorderBrush" Color="#888" />
-
-    <SolidColorBrush x:Key="LightBorderBrush" Color="#AAA" />
 
     <!-- Miscellaneous Brushes -->
     <SolidColorBrush x:Key="GlyphBrush" Color="#444" />
-
-    <SolidColorBrush x:Key="LightColorBrush" Color="#DDD" />
     
     <Brush x:Key="PrimaryTextBrush">#FFF0EFF1</Brush>
     <Brush x:Key="DefaultBackgroundBrush">#FF3E3E42</Brush>
@@ -159,7 +69,6 @@
     
     <Brush x:Key="RepeatButtonBrush">Black</Brush>
     <Brush x:Key="RepeatButton1BorderBrush">Green</Brush>
-    <Brush x:Key="RepeatButton1BackgroundBrush">YellowGreen</Brush>
 
     <Brush x:Key="SliderThumbBrush">#FF686868</Brush>
 

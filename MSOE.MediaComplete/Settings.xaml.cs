@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Forms;
 using MSOE.MediaComplete.Lib;
+using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Sorting;
 using ComboBox = System.Windows.Controls.ComboBox;
 
@@ -24,12 +25,12 @@ namespace MSOE.MediaComplete
         private LayoutType _changedType;
         private bool _layoutHasChanged;
         private readonly List<string> _allDirs;
-        private readonly IFileMover _fileMover;
+        private readonly IFileManager _fileManager;
         public Settings()
         {
 
             InitializeComponent();
-            TxtboxSelectedFolder.Text = SettingWrapper.HomeDir;
+            TxtboxSelectedFolder.Text = SettingWrapper.HomeDir.FullPath;
             TxtInboxFolder.Text = SettingWrapper.InboxDir;
             ComboBoxPollingTime.SelectedValue = SettingWrapper.PollingTime.ToString(CultureInfo.InvariantCulture);
             CheckboxPolling.IsChecked = SettingWrapper.IsPolling;
@@ -37,7 +38,7 @@ namespace MSOE.MediaComplete
             CheckBoxSorting.IsChecked = SettingWrapper.IsSorting;
             MoveOrCopy.IsChecked = SettingWrapper.ShouldRemoveOnImport;
             _allDirs = SettingWrapper.AllDirectories;
-            _fileMover = FileMover.Instance;
+            _fileManager = FileManager.Instance;
             PollingCheckBoxChanged(CheckboxPolling, null);
             if (SettingWrapper.Layout.Equals(_layoutsDict[LayoutType.Pink]))
             {
@@ -77,7 +78,7 @@ namespace MSOE.MediaComplete
             var homeDirChooser = new FolderBrowserDialog
             {
                 Description = Properties.Resources.Description,
-                SelectedPath = SettingWrapper.HomeDir
+                SelectedPath = SettingWrapper.HomeDir.FullPath
             };
 
             if (homeDirChooser.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
@@ -87,17 +88,17 @@ namespace MSOE.MediaComplete
             {
                 homeDir += Path.DirectorySeparatorChar;
             }
-            SettingWrapper.HomeDir = homeDir;
+            SettingWrapper.HomeDir = new DirectoryPath(homeDir);
 
-            if (!_allDirs.Contains(SettingWrapper.HomeDir))
+            if (!_allDirs.Contains(SettingWrapper.HomeDir.FullPath))
             {
-                var tempPath = SettingWrapper.HomeDir + "temp"+new Random().Next();
-                _fileMover.MoveDirectory(SettingWrapper.HomeDir, tempPath);
-                _fileMover.MoveDirectory(tempPath, SettingWrapper.MusicDir);
-                _allDirs.Add(SettingWrapper.HomeDir);
+                var tempPath = new DirectoryPath(SettingWrapper.HomeDir.FullPath + "temp"+ new Random().Next());
+                _fileManager.MoveDirectory(SettingWrapper.HomeDir, tempPath);
+                _fileManager.MoveDirectory(tempPath, SettingWrapper.MusicDir);
+                _allDirs.Add(SettingWrapper.HomeDir.FullPath);
             }
 
-            TxtboxSelectedFolder.Text = SettingWrapper.HomeDir;
+            TxtboxSelectedFolder.Text = SettingWrapper.HomeDir.FullPath;
         }
 
         /// <summary>
@@ -173,8 +174,8 @@ namespace MSOE.MediaComplete
 
             SettingWrapper.Save();
 
-            if (!_fileMover.DirectoryExists(SettingWrapper.MusicDir))
-                _fileMover.CreateDirectory(SettingWrapper.MusicDir);
+            if (!_fileManager.DirectoryExists(SettingWrapper.MusicDir))
+                _fileManager.CreateDirectory(SettingWrapper.MusicDir);
             
             Close();
         }
