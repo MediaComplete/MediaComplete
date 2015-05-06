@@ -88,6 +88,7 @@
     <Compile Include="Background\ImportTaskTest.cs" />
     <Compile Include="Background\QueueTest.cs" />
     <Compile Include="Background\SortingTaskTest.cs" />
+    <Compile Include="Background\MusicIdentiferManagementTest.cs" />
     <Compile Include="MusicIdentifierTest.cs" />
     <Compile Include="Playing\PlayerTest.cs" />
     <Compile Include="Playing\NowPlayingTest.cs" />
