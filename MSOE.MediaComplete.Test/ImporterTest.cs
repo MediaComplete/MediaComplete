@@ -59,6 +59,7 @@ namespace MSOE.MediaComplete.Test
                 new SongPath(SettingWrapper.MusicDir.FullPath+"song5.mp3"),
                 new SongPath(SettingWrapper.MusicDir.FullPath+"song6.mp3")
             };
+            // ReSharper disable once ObjectCreationAsStatement
             new Importer(manager.Object, files, true);
         }
 
@@ -73,6 +74,7 @@ namespace MSOE.MediaComplete.Test
                 new SongPath(SettingWrapper.MusicDir.FullPath+"song5.mp3"),
                 new SongPath(SettingWrapper.MusicDir.FullPath+"song6.mp3")
             };
+            // ReSharper disable once ObjectCreationAsStatement
             new Importer(manager.Object, files, false);
         }
 

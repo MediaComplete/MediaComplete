@@ -156,7 +156,7 @@ namespace MSOE.MediaComplete
                 MessageBox.Show(Application.Current.MainWindow,
                     String.Format(Resources["Dialog-Import-Invalid-Message"].ToString()),
                     Resources["Dialog-Common-Error-Title"].ToString(),
-                    MessageBoxButton.OK, MessageBoxImage.Error);;
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -413,7 +413,7 @@ namespace MSOE.MediaComplete
 
         }
         //TODO MC-301 get rid of this. This was in the 'systemextensions' file, but was moved here to discourage usage.
-        private IEnumerable<FileInfo> GetFilesOrDir(DirectoryInfo dir)
+        private static IEnumerable<FileInfo> GetFilesOrDir(DirectoryInfo dir)
         {
             if (!dir.Exists) FileManager.Instance.CreateDirectory(new DirectoryPath(dir.FullName));
 

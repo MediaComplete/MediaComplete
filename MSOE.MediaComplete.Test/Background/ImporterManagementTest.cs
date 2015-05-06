@@ -5,7 +5,6 @@ using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Sorting;
 using System.Collections.Generic;
 using Moq;
-using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Files;
 
 namespace MSOE.MediaComplete.Test.Background
@@ -15,7 +14,7 @@ namespace MSOE.MediaComplete.Test.Background
     /// ResolveConflicts, since the "Do" method is already largely tested by ImporterTest
     /// </summary>
     [TestClass]
-    public class ImportTaskTest
+    public class ImporterManagementTest
     {
         /// <summary>
         /// Test that an empty queue correctly accepts an ImportTask
@@ -48,7 +47,7 @@ namespace MSOE.MediaComplete.Test.Background
                 new List<Task>()
             };
 
-            var subject = new Importer(FileManager.Instance, new List<SongPath> { new SongPath("") }, false);
+            var subject = new Importer(mock.Object, new List<SongPath> { new SongPath("") }, false);
             TaskAdder.ResolveConflicts(subject, queue);
 
             Assert.AreEqual(4, queue.Count, "Queue doesn't have the right number of stages!");
