@@ -22,8 +22,9 @@ namespace MSOE.MediaComplete.Test.Background
         [TestMethod]
         public void Test_AddSorterEmptyQueue_Added()
         {
+            
             var queue = new List<List<Task>>();
-            var subject = new Sorter(null, null);
+            var subject = new Sorter(new Mock<IFileManager>().Object, null);
             TaskAdder.ResolveConflicts(subject, queue);
 
             Assert.AreEqual(1, queue.Count, "Queue doesn't have the right number of stages!");
@@ -43,7 +44,7 @@ namespace MSOE.MediaComplete.Test.Background
             {
                 new List<Task> {new Importer(mock.Object, list, false)},
                 new List<Task> {new IdentifierTask(), new IdentifierTask()},
-                new List<Task> {new IdentifierTask(), new Importer(null, list, false)},
+                new List<Task> {new IdentifierTask(), new Importer(new Mock<IFileManager>().Object, list, false)},
                 new List<Task>()
             };
 
@@ -76,7 +77,7 @@ namespace MSOE.MediaComplete.Test.Background
                 new List<Task> {new Importer(mock.Object, list, false)},
                 new List<Task> {new IdentifierTask(), new IdentifierTask()},
                 new List<Task> {new Sorter(null, null)},
-                new List<Task> {new IdentifierTask(), new Importer( null, list, false)}
+                new List<Task> {new IdentifierTask(), new Importer(new Mock<IFileManager>().Object, list, false)}
             };
 
             TaskAdder.ResolveConflicts(new Sorter(null,null), queue);
