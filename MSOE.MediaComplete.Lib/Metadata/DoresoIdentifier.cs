@@ -31,33 +31,27 @@ namespace MSOE.MediaComplete.Lib.Metadata
             var data = json["data"] as JArray;
             var msg = json["msg"].ToObject<string>();
 
-            if (data == null && msg.Contains("API key")) // API busy
-            {
+            if (data == null && msg.Contains("API key")) // API key overrun
                 throw new IdentificationException(String.Format("Received unexpected response from Doreso: {0}", json));
-            }
+            
 
             if (data == null) // No matches
-            {
                 return;
-            }
+            
 
             var songJson = data.First;
 
             var titleToken = songJson.SelectToken("name");
             if (titleToken != null)
-            {
                 file.Title = titleToken.ToString();
-            }
+            
             var artistToken = songJson.SelectToken("artist_name");
             if (artistToken != null)
-            {
                 file.Artists = new List<string> { artistToken.ToString() };
-            }
+            
             var albumToken = songJson.SelectToken("album");
             if (albumToken != null)
-            {
                 file.Album = albumToken.ToString();
-            }
         }
     }
 }

@@ -471,6 +471,10 @@ namespace MSOE.MediaComplete
         /// <returns>The last folder treeview item in the heirarchy</returns>
         private FolderTreeViewItem AddFolderTreeViewItems(DirectoryPath path)
         {
+            // First see if it's in the root of the library
+            if (path.FullPath.Length <= SettingWrapper.MusicDir.FullPath.Length)
+                return _rootLibItem;
+            
             // First, lop off everything up to the music dir
             var pathStr = path.FullPath.Substring(SettingWrapper.MusicDir.FullPath.Length);
             // Now break into individual "folder" names
