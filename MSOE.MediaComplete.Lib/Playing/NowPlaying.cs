@@ -49,6 +49,10 @@ namespace MSOE.MediaComplete.Lib.Playing
         #endregion
 
         #region Events
+        /// <summary>
+        /// event handler for ending playlist
+        /// TODO fix this and the one in PlayerS
+        /// </summary>
         public delegate void PlaylistEndedHandler();
         public event PlaylistEndedHandler PlaylistEnded = delegate { };
 

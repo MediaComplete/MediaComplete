@@ -172,8 +172,19 @@ namespace MSOE.MediaComplete.Lib.Playing
                 PlaylistFinishedEvent();
             }
         }
+        
+        /// <summary>
+        /// event for end of song
+        /// </summary>
+        /// <param name="oldPath"></param>
+        /// <param name="newPath"></param>
         public delegate void SongFinished(int oldPath, int newPath);
         public event SongFinished SongFinishedEvent = delegate { };
+
+        /// <summary>
+        /// event for end of playlist
+        /// TODO fix this and the one from NowPlaying
+        /// </summary>
         public delegate void PlaylistFinished();
         public event PlaylistFinished PlaylistFinishedEvent = delegate { };
         #endregion
