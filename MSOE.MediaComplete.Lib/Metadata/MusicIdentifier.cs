@@ -51,10 +51,16 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /// <param name="files">The files to indentify</param>
         public MusicIdentifier(IEnumerable<LocalSong> files)
         {
-            _audioReader = new FfmpegAudioReader();
-            _audioIdentifier = new DoresoIdentifier();
-            _fileManager = FileManager.Instance;
+            if (files == null)
+                throw new ArgumentNullException("files", "Files must not be null");
             Files = files;
+
+            if (_fileManager != null)
+                _fileManager = FileManager.Instance;
+            if (_audioIdentifier != null)
+                _audioIdentifier = new DoresoIdentifier();
+            if (_audioReader != null)
+                _audioReader = new FfmpegAudioReader();
         }
 
         /// <summary>
@@ -66,12 +72,12 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /// <param name="metadata">Metadata retreiver for finding additional metadata details.</param>
         /// <param name="fileManager">Controls how files are accessed</param>
         public MusicIdentifier(IEnumerable<LocalSong> files, IAudioReader reader, IAudioIdentifier identifier, IMetadataRetriever metadata, IFileManager fileManager)
+            : this(files)
         {
             _audioReader = reader;
             _metadataRetriever = metadata;
             _audioIdentifier = identifier;
             _fileManager = fileManager;
-            Files = files;
         }
 
         #endregion
@@ -104,18 +110,8 @@ namespace MSOE.MediaComplete.Lib.Metadata
                 return;
             }
 
-            try
-            {
-                await _audioIdentifier.IdentifyAsync(audioData, file);
-            }
-            catch (IdentificationException) // We've exceeded our API rate limit. Tell the user to try again later.
-            {
-                // TODO (MC-125) Logging
-                StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Warning-RateLimit",
-                    StatusBarHandler.StatusIcon.Warning);
-                // TODO MC-45 Any other ID tasks in the queue should be cancelled somehow
-                throw;
-            }
+            await _audioIdentifier.IdentifyAsync(audioData, file);
+            
 
             if (file.Title == null) // No match. Tell the user they'll have to do it themselves.
             {
@@ -151,17 +147,35 @@ namespace MSOE.MediaComplete.Lib.Metadata
             var count = Files.Count();
             var max = (count > 100 ? count/100 : 1);
             var total = 0;
-            foreach (var file in Files)
+            var stop = false;
+            var files = Files.ToList();
+            for (var idx = 0; idx < files.Count && !stop; idx++)
             {
                 try
                 {
-                    IdentifySongAsync(file).Wait();
+                    IdentifySongAsync(files[idx]).Wait();
                 }
-                catch (Exception e) {
-                    Error = e;
-                    Message = "MusicIdentification-Error";
-                    Icon = StatusBarHandler.StatusIcon.Error;
-                    TriggerUpdate(this);
+                catch (AggregateException e) {
+                    e.Handle(x =>
+                    {
+                        if (x is IdentificationException) // API overuse, back off
+                        {
+                            // TODO (MC-125) Logging
+                            Message = "MusicIdentification-Warning-RateLimit";
+                            Icon = StatusBarHandler.StatusIcon.Warning;
+                            // TODO MC-45 Any other ID tasks in the queue should be cancelled somehow
+                            TriggerUpdate(this);
+                            stop = true;
+                        }
+                        else
+                        {
+                            Error = x;
+                            Message = "MusicIdentification-Error";
+                            Icon = StatusBarHandler.StatusIcon.Error;
+                            TriggerUpdate(this);
+                        }
+                        return true;
+                    });
                 }
 
                 total++;

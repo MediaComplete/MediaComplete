@@ -1,104 +1,173 @@
 ﻿using System;
-using System.Threading;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.IO;
-using System.Text.RegularExpressions;
+using Moq;
 using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Metadata;
-using MSOE.MediaComplete.Test.Util;
-using Constants = MSOE.MediaComplete.Test.Util.Constants;
-using File = TagLib.File;
+using System.Threading.Tasks;
 
 namespace MSOE.MediaComplete.Test
 {
-    // TODO MC-139 ignored while we find an Echonest alternative
-    /*[TestClass, Ignore]
+    [TestClass]
     public class MusicIdentifierTest
     {
-        private DirectoryInfo _homeDir;
-        private File _mp3File;
+        private Mock<IFileManager> _fileManagerMock;
+        private Mock<IAudioReader> _audioReaderMock;
+        private Mock<IAudioIdentifier> _audioIdentifierMock;
+        private Mock<IMetadataRetriever> _metadataRetrieverMock;
 
         [TestInitialize]
         public void Setup()
         {
-            _homeDir = FileHelper.CreateDirectory("IdentifierTestHomeDir");
+            _fileManagerMock = new Mock<IFileManager>();
+            _fileManagerMock.Setup(m => m.FileExists(It.IsAny<SongPath>())).Returns(true);
+
+            var audioBytes = new byte[] {0x00, 0x12, 0x34, 0x56};
+
+            _audioReaderMock = new Mock<IAudioReader>();
+            _audioReaderMock.Setup(m => m.ReadBytesAsync(It.IsAny<LocalSong>(), It.IsAny<int>(), It.IsAny<uint>()))
+                .Returns(() => Task.FromResult(audioBytes));
+
+            _audioIdentifierMock = new Mock<IAudioIdentifier>();
+            _audioIdentifierMock.Setup(m => m.IdentifyAsync(audioBytes, It.IsAny<LocalSong>()))
+                .Returns(Task.FromResult((object) null)).Callback<byte[], LocalSong>((b, s) =>
+                {
+                    s.Title = "Title";
+                    s.Artists = new[]{"Artist"};
+                    s.Album = "Album";
+                });
+
+            _metadataRetrieverMock = new Mock<IMetadataRetriever>();
+            _metadataRetrieverMock.Setup(m => m.GetMetadataAsync(It.IsAny<LocalSong>()))
+                .Returns(Task.FromResult((object)null)).Callback<LocalSong>(s =>
+                {
+                    s.TrackNumber = 1;
+                    s.SupportingArtists = new[] { "SupportingArtist" };
+                    s.Genres = new[] {"Genre"};
+                    s.Rating = 1;
+                    s.Year = 1;
+                });
         }
 
-        [TestCleanup]
-        public void TearDown()
+        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        public void Identify_NullList_ThrowsException()
         {
-            Directory.Delete(_homeDir.FullName, true);
+            // ReSharper disable once ObjectCreationAsStatement
+            new MusicIdentifier(null, _audioReaderMock.Object, _audioIdentifierMock.Object,
+                _metadataRetrieverMock.Object, _fileManagerMock.Object);
         }
 
         [TestMethod]
-        public void Identify_KnownSong_RestoresName()
+        public void Identify_EmptyList_DoesNothing()
         {
-            var file = FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidMp3);
-            _mp3File = File.Create(file.FullName);
-            const string artist = "Not an Artist";
-            _mp3File.SetAttribute(MetaAttribute.Artist, artist);
-            var task = MusicIdentifier.IdentifySongAsync(FileManager.Instance, _mp3File.Name);
+            var subject = new MusicIdentifier(new List<LocalSong>(), _audioReaderMock.Object, _audioIdentifierMock.Object,
+                _metadataRetrieverMock.Object, _fileManagerMock.Object);
 
-            SpinWait.SpinUntil(() => task.IsCompleted, 30000);
-
-            _mp3File = File.Create(file.FullName);
-            Assert.AreNotEqual(artist, _mp3File.GetAttribute(MetaAttribute.Artist), "Name was not fixed!");
+            subject.Do(1);
+            _audioReaderMock.Verify(m => 
+                m.ReadBytesAsync(It.IsAny<LocalSong>(), It.IsAny<int>(), It.IsAny<uint>()), Times.Never);
+            _audioIdentifierMock.Verify(m =>
+                m.IdentifyAsync(It.IsAny<byte[]>(), It.IsAny<LocalSong>()), Times.Never);
+            _metadataRetrieverMock.Verify(m =>
+                m.GetMetadataAsync(It.IsAny<LocalSong>()), Times.Never);
         }
 
-        [TestMethod, Timeout(30000)]
-        public void Identify_UnknownSong_ReturnsNoData()
-        {
-            var file = FileHelper.CreateFile(_homeDir, Constants.FileTypes.Unknown);
 
-            var task = MusicIdentifier.IdentifySongAsync(FileManager.Instance, file.FullName);
-            while (!task.IsCompleted)
+        [TestMethod]
+        public void Identify_NullSong_Skip()
+        {
+            var song1 = new LocalSong("id1", new SongPath("path1"));
+            var subject = new MusicIdentifier(new List<LocalSong>
             {
-            }
+                song1, null, song1
+            }, _audioReaderMock.Object, _audioIdentifierMock.Object,
+                _metadataRetrieverMock.Object, _fileManagerMock.Object);
 
-            var equal = 0 == String.Compare("{\"status\":{\"version\":\"4.2\",\"code\":0,\"message\":\"Success\"},\"songs\":[]}",
-                Regex.Replace(task.Result, @"\s", ""), StringComparison.OrdinalIgnoreCase);
-            Assert.IsTrue(equal, "Identifier returned non-empty string for the unknown file!");
+            subject.Do(1);
+
+            _audioReaderMock.Verify(m =>
+                m.ReadBytesAsync(It.IsAny<LocalSong>(), It.IsAny<int>(), It.IsAny<uint>()), Times.Exactly(2));
+            _audioIdentifierMock.Verify(m =>
+                m.IdentifyAsync(It.IsAny<byte[]>(), It.IsAny<LocalSong>()), Times.Exactly(2));
+            _metadataRetrieverMock.Verify(m =>
+                m.GetMetadataAsync(It.IsAny<LocalSong>()), Times.Exactly(2));
+            _fileManagerMock.Verify(m => m.SaveSong(It.IsAny<LocalSong>()), Times.Exactly(2));
         }
 
-        [TestMethod, Timeout(30000)]
-        public void Identify_NonexistantSong_ReturnsNull()
+        [TestMethod]
+        public void Identify_SongDoesNotExist_Skip()
         {
-            var task = MusicIdentifier.IdentifySongAsync(FileManager.Instance, _homeDir.FullName + Path.DirectorySeparatorChar + "doesnotexist.mp3");
-            while (!task.IsCompleted)
+            var song1 = new LocalSong("id1", new SongPath("path1"));
+            var song2 = new LocalSong("id2", new SongPath("path2"));
+            var subject = new MusicIdentifier(new List<LocalSong>
             {
-            }
+                song2, song1, song2
+            }, _audioReaderMock.Object, _audioIdentifierMock.Object,
+                _metadataRetrieverMock.Object, _fileManagerMock.Object);
 
-            Assert.IsNull(task.Result, "Identifying a nonexistant file returned a non-null result!");
+            _fileManagerMock.Setup(m => m.FileExists(It.Is<SongPath>(s => s.Equals(song1.SongPath))))
+                .Returns(false);
+
+            subject.Do(1);
+
+            _audioReaderMock.Verify(m =>
+                m.ReadBytesAsync(It.IsAny<LocalSong>(), It.IsAny<int>(), It.IsAny<uint>()), Times.Exactly(2));
+            _audioIdentifierMock.Verify(m =>
+                m.IdentifyAsync(It.IsAny<byte[]>(), It.IsAny<LocalSong>()), Times.Exactly(2));
+            _metadataRetrieverMock.Verify(m =>
+                m.GetMetadataAsync(It.IsAny<LocalSong>()), Times.Exactly(2));
+            _fileManagerMock.Verify(m => m.SaveSong(It.IsAny<LocalSong>()), Times.Exactly(2));
         }
 
-        [TestMethod, Timeout(30000), Ignore] // Test is ignored pending completion of bug MC-107
-        public void Identify_CorruptedFile_ThrowsException()
+        [TestMethod]
+        public void Identify_UnknownSong_NoMetaRetrieval()
         {
-            var file = FileHelper.CreateFile(_homeDir, Constants.FileTypes.Invalid);
-
-            var task = MusicIdentifier.IdentifySongAsync(FileManager.Instance, file.FullName);
-            while (!task.IsCompleted && !task.IsFaulted)
+            var song1 = new LocalSong("id1", new SongPath("path1"));
+            var subject = new MusicIdentifier(new List<LocalSong>
             {
-            }
+                song1
+            }, _audioReaderMock.Object, _audioIdentifierMock.Object,
+                _metadataRetrieverMock.Object, _fileManagerMock.Object);
 
-            Assert.IsTrue(task.IsFaulted, "Identification didn't throw an exception.");
-            Assert.AreEqual(typeof(IdentificationException), task.Exception != null ? task.Exception.InnerException.GetType() : null, 
-                "Identification threw the wrong kind of exception.");
+            // No callback; "Title" will be null so metadata shouldn't be called
+            _audioIdentifierMock.Setup(m => 
+                m.IdentifyAsync(It.IsAny<byte[]>(), It.Is<LocalSong>(s => s.Id == song1.Id)));
+
+            subject.Do(1);
+
+            _audioReaderMock.Verify(m =>
+                m.ReadBytesAsync(It.IsAny<LocalSong>(), It.IsAny<int>(), It.IsAny<uint>()), Times.Once);
+            _audioIdentifierMock.Verify(m =>
+                m.IdentifyAsync(It.IsAny<byte[]>(), It.IsAny<LocalSong>()), Times.Once);
+            _metadataRetrieverMock.Verify(m =>
+                m.GetMetadataAsync(It.IsAny<LocalSong>()), Times.Never);
+            _fileManagerMock.Verify(m => m.SaveSong(It.IsAny<LocalSong>()), Times.Never);
         }
 
-        [TestMethod, Timeout(30000), Ignore] // Test is ignored pending completion of bug MC-107
-        public void Identify_NonMP3File_ThrowsException()
+        [TestMethod]
+        public void Identify_IdentifierOverrun_CutShort()
         {
-            var file = FileHelper.CreateFile(_homeDir, Constants.FileTypes.NonMusic);
-
-            var task = MusicIdentifier.IdentifySongAsync(FileManager.Instance, file.FullName);
-            while (!task.IsCompleted && !task.IsFaulted)
+            var song1 = new LocalSong("id1", new SongPath("path1"));
+            var song2 = new LocalSong("id2", new SongPath("path2"));
+            var subject = new MusicIdentifier(new List<LocalSong>
             {
-            }
+                song2, song1, song2
+            }, _audioReaderMock.Object, _audioIdentifierMock.Object,
+                _metadataRetrieverMock.Object, _fileManagerMock.Object);
 
-            Assert.IsTrue(task.IsFaulted, "Identification didn't throw an exception.");
-            Assert.AreEqual(typeof(IdentificationException), task.Exception != null ? task.Exception.InnerException.GetType() : null,
-                "Identification threw the wrong kind of exception.");
+            _audioIdentifierMock.Setup(m => 
+                m.IdentifyAsync(It.IsAny<byte[]>(), It.Is<LocalSong>(s => s.Equals(song1))))
+                .Throws(new IdentificationException("message"));
+
+            subject.Do(1);
+
+            _audioReaderMock.Verify(m =>
+                m.ReadBytesAsync(It.IsAny<LocalSong>(), It.IsAny<int>(), It.IsAny<uint>()), Times.Exactly(2));
+            _audioIdentifierMock.Verify(m =>
+                m.IdentifyAsync(It.IsAny<byte[]>(), It.IsAny<LocalSong>()), Times.Exactly(2));
+            _metadataRetrieverMock.Verify(m =>
+                m.GetMetadataAsync(It.IsAny<LocalSong>()), Times.Once);
+            _fileManagerMock.Verify(m => m.SaveSong(It.IsAny<LocalSong>()), Times.Once);
         }
-    }*/
+    }
 }
