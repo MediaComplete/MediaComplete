@@ -55,11 +55,11 @@ namespace MSOE.MediaComplete.Lib.Metadata
                 throw new ArgumentNullException("files", "Files must not be null");
             Files = files;
 
-            if (_fileManager != null)
+            if (_fileManager == null)
                 _fileManager = FileManager.Instance;
-            if (_audioIdentifier != null)
+            if (_audioIdentifier == null)
                 _audioIdentifier = new DoresoIdentifier();
-            if (_audioReader != null)
+            if (_audioReader == null)
                 _audioReader = new FfmpegAudioReader();
         }
 
