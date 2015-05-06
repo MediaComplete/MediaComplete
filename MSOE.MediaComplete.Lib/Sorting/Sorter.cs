@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using MSOE.MediaComplete.Lib.Background;
@@ -12,14 +14,17 @@ namespace MSOE.MediaComplete.Lib.Sorting
     /// <summary>
     /// Provides the implementation for sorting the library of music files by metadata
     /// </summary>
-    public class Sorter
+    public class Sorter : Task
     {
         private static IFileManager _fileManager;
         public List<IAction> Actions { get; private set; }
         public int UnsortableCount { get; private set; }
         public int MoveCount { get { return Actions.Count(a => a is MoveAction); } }
         public int DupCount { get { return Actions.Count(a => a is DeleteAction); } }
-        public SortSettings Settings { get; private set; }
+        /// <summary>
+        /// The specific files to sort
+        /// </summary>
+        public IEnumerable<SongPath> Files { get; set; }
 
         /// <summary>
         /// Creates a sorter with the specified sort settings.
@@ -29,23 +34,13 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// magnitude and specifics of the move.
         /// </summary>
         /// <param name="fileManager"></param>
-        /// <param name="settings">Sort settings</param>
-        public Sorter(IFileManager fileManager, SortSettings settings)
+        /// <param name="files"></param>
+        public Sorter(IFileManager fileManager, IEnumerable<SongPath> files)
         {
             _fileManager = fileManager;
-            Settings = settings;
+            Files = files;
             Actions = new List<IAction>();
             UnsortableCount = 0;
-        }
-
-        /// <summary>
-        /// Performs the actual movement operations associated with the sort.
-        /// </summary>
-        /// <returns>The background queue tasks, so the status may be observed.</returns>
-        public void PerformSort()
-        {
-            var task = new SortingTask(this);
-            Queue.Inst.Add(task);
         }
 
         /// <summary>
@@ -55,12 +50,12 @@ namespace MSOE.MediaComplete.Lib.Sorting
         {
             await Sys.Task.Run(() =>
             {
-                var songs = _fileManager.GetAllSongs();
-
+                var songs = _fileManager.GetAllSongs().Where(x => Files.Contains(x.SongPath));
+                UnsortableCount += Files.Count() - songs.Count();
                 foreach (var song in songs)
                 {
                     var sourcePath = song.SongPath;
-                    var targetPath = GetNewLocation(song, Settings.SortOrder);
+                    var targetPath = GetNewLocation(song, SettingWrapper.SortOrder);
                     // If the current and target paths are different, we know we need to move.
                     if (!sourcePath.Equals(targetPath))
                     {
@@ -84,7 +79,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                     }
 
                     // If the target path doesn't fulfill the sort settings, bump the counter.
-                    if (targetPath.FullPath.Remove(0, SettingWrapper.MusicDir.FullPath.Length).Split(Path.DirectorySeparatorChar).Count() != Settings.SortOrder.Count + 1)
+                    if (targetPath.FullPath.Remove(0, SettingWrapper.MusicDir.FullPath.Length).Split(Path.DirectorySeparatorChar).Count() != SettingWrapper.SortOrder.Count + 1)
                     {
                         UnsortableCount++;
                     }
@@ -113,48 +108,100 @@ namespace MSOE.MediaComplete.Lib.Sorting
                 path += Path.DirectorySeparatorChar;
             }
             //TODO MC-260 Rename songs/configure song naming
-            return new SongPath(SettingWrapper.MusicDir.FullPath + path.GetValidFileName() + song.Name); 
+            return new SongPath(SettingWrapper.MusicDir.FullPath + GetValidFileName(path) + song.Name); 
         }
 
-        #region Import Event Handling
-
-        static Sorter()
+        public static string GetValidFileName(string path)
         {
-            Importer.ImportFinished += SortNewImports;
-            SettingWrapper.RaiseSettingEvent += Resort;
+            //special chars not allowed in filename 
+            const string specialChars = @"/:*?""<>|#%&.{}~";
+
+            //Replace special chars in raw filename with empty spaces to make it valid  
+            Array.ForEach(specialChars.ToCharArray(), specialChar => path = path.Replace(specialChar.ToString(CultureInfo.CurrentCulture), ""));
+
+            return path;
         }
-
-        private static void Resort()
-        {
-            if (!SortHelper.GetSorting()) return;
-
-            var settings = new SortSettings
-            {
-                SortOrder = SettingWrapper.SortOrder,
-                
-                Files = _fileManager.GetAllSongs().Select(x => x.SongPath)
-            };
-            var sorter = new Sorter(FileManager.Instance, settings);
-            sorter.PerformSort();
-        }
-
+        #region Task Overrides
         /// <summary>
-        /// Sorts incoming files that have just been imported.
+        /// Performs the sort, calculating the necessary actions first, if necessary.
         /// </summary>
-        /// <param name="results">The results of the triggering import</param>
-        public static void SortNewImports(ImportResults results)
+        /// <param name="i">The task identifier</param>
+        /// <returns>An awaitable task</returns>
+        public override void Do(int i)
         {
-            if (!SettingWrapper.IsSorting) return;
-
-            var settings = new SortSettings
+            try
             {
-                SortOrder = SettingWrapper.SortOrder,
-                Files = results.NewFiles
-            };
-            var sorter = new Sorter(FileManager.Instance, settings);
-            sorter.PerformSort();
+                Id = i;
+                Message = "Sorting-InProgress";
+                Icon = StatusBarHandler.StatusIcon.Working;
+
+                if (Actions.Count == 0)
+                {
+                    Sys.Task.Run(() => CalculateActionsAsync()).Wait();
+                }
+
+                var counter = 0;
+                var max = (Actions.Count > 100 ? Actions.Count / 100 : 1);
+                var total = 0;
+                foreach (var action in Actions)
+                {
+                    try
+                    {
+                        action.Do();
+                    }
+                    catch (IOException e)
+                    {
+                        Error = e;
+                        Message = "Sorting-HadError";
+                        Icon = StatusBarHandler.StatusIcon.Error;
+                        TriggerUpdate(this);
+                    }
+
+                    total++;
+                    if (counter++ >= max)
+                    {
+                        counter = 0;
+                        PercentComplete = ((double)total) / Actions.Count;
+                        TriggerUpdate(this);
+                    }
+                }
+
+                if (Error == null)
+                {
+                    Icon = StatusBarHandler.StatusIcon.Success;
+                }
+            }
+            catch (Exception e)
+            {
+                Message = "Sorting-HadError";
+                Icon = StatusBarHandler.StatusIcon.Error;
+                Error = e;
+            }
+            finally
+            {
+                TriggerDone(this);
+            }
         }
 
+        public override IReadOnlyCollection<Type> InvalidBeforeTypes
+        {
+            get { return new List<Type> { typeof(IdentifierTask), typeof(Importer) }.AsReadOnly(); }
+        }
+
+        public override IReadOnlyCollection<Type> InvalidAfterTypes
+        {
+            get { return new List<Type>().AsReadOnly(); }
+        }
+
+        public override IReadOnlyCollection<Type> InvalidDuringTypes
+        {
+            get { return new List<Type>().AsReadOnly(); }
+        }
+
+        public override bool RemoveOther(Task t)
+        {
+            return t is Sorter;
+        }
         #endregion
 
         #region Actions

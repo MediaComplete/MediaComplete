@@ -1,134 +1,159 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib;
-using MSOE.MediaComplete.Test.Util;
-using System.IO;
+using Moq;
 using MSOE.MediaComplete.Lib.Files;
+using MSOE.MediaComplete.Lib.Import;
+using Assert = NUnit.Framework.Assert;
 
 namespace MSOE.MediaComplete.Test
 {
     [TestClass]
     public class ImporterTest
     {
-        private DirectoryInfo _homeDir;
-        private DirectoryInfo _importDir;
-        private DirectoryInfo _testDir;
+        private static readonly DirectoryPath HomeDir = new DirectoryPath("homedir");
 
-        [TestInitialize]
-        public void Setup()
+        #region Constructor
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Constructor_NullEverything()
         {
-            _testDir = FileHelper.CreateDirectory("ImporterTest");
-            _homeDir = FileHelper.CreateDirectory("ImporterTest" + Path.DirectorySeparatorChar + "HomeDir");
-            _importDir = FileHelper.CreateDirectory("ImporterTest" + Path.DirectorySeparatorChar + "ImportDir");
-            SettingWrapper.HomeDir = new DirectoryPath(_homeDir.FullName);
+            // ReSharper disable once ObjectCreationAsStatement
+            new Importer(null, null, false);
+        }
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Constructor_NullFiles()
+        {
+            // ReSharper disable once ObjectCreationAsStatement
+            new Importer(new Mock<IFileManager>().Object, null, false);
+        }
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Constructor_NullFileManager()
+        {
+            // ReSharper disable once ObjectCreationAsStatement
+            new Importer(null, new List<SongPath> { new SongPath("") }, false);
         }
 
-        [TestCleanup]
-        public void TearDown()
-        {
-            Directory.Delete(_homeDir.FullName, true);
-            Directory.Delete(_importDir.FullName, true);
-        }
 
-        [TestMethod, Timeout(30000)]
-        public void Import_FileInUse_SkipAndNotify()
-        {/*
-            var fileInUse = FileHelper.CreateFile(_importDir, Constants.FileTypes.ValidMp3);
-            Task<ImportResults> task;
-            using (fileInUse.OpenWrite())
+        #endregion
+        
+        #region Do
+        [TestMethod]
+        public void Do_MoveOnly()
+        {
+            var manager = SetUpMock();
+            var files = new List<SongPath>
             {
-                task = new Importer(_homeDir.FullName).ImportFilesAsync(new List<FileInfo> { fileInUse }, false);
-                while (!task.IsCompleted)
-                {
-                }
-            }
-
-            Assert.AreEqual(1, task.Result.FailCount, "The locked file wasn't counted!");
-            Assert.AreEqual(0, task.Result.NewFiles.Count, "The locked file was counted as a success!");
-            Assert.AreEqual(0, _homeDir.GetFiles().Length, "There shouldn't be any files in the library!");
-            Assert.IsTrue(fileInUse.Exists, "The source file doesn't exist!");
+                new SongPath("song4.mp3"),
+                new SongPath("song5.mp3"),
+                new SongPath("song6.mp3")
+            };
+            var importer = new Importer(manager.Object, files, true);
+            importer.Do(1);
+            manager.Verify(x => x.AddFile(It.IsAny<SongPath>(), It.IsAny<SongPath>()), Times.Exactly(3));
+            manager.Verify(x => x.CopyFile(It.IsAny<SongPath>(), It.IsAny<SongPath>()), Times.Never);
+            Assert.AreEqual(0, importer.Results.FailCount);
+            Assert.AreEqual(3, importer.Results.NewFiles.Count);
+        }
+        [TestMethod]
+        public void Do_CopyOnly()
+        {
+            var manager = SetUpMock();
+            var files = new List<SongPath>
+            {
+                new SongPath("song4.mp3"),
+                new SongPath("song5.mp3"),
+                new SongPath("song6.mp3")
+            };
+            var importer = new Importer(manager.Object, files, false);
+            importer.Do(1);
+            manager.Verify(x => x.AddFile(It.IsAny<SongPath>(), It.IsAny<SongPath>()), Times.Never);
+            manager.Verify(x => x.CopyFile(It.IsAny<SongPath>(), It.IsAny<SongPath>()), Times.Exactly(3));
+            Assert.AreEqual(0, importer.Results.FailCount);
+            Assert.AreEqual(3, importer.Results.NewFiles.Count);
         }
 
-        [TestMethod, Timeout(30000)]
-        public void Import_FromLibrary_Exception()
+        [TestMethod]
+        [ExpectedException(typeof(InvalidImportException))]
+        public void Do_MoveFromWithinDir()
         {
-            var fileInLib = FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidMp3);
-            var task = new Importer(_homeDir.FullName).ImportFilesAsync(new List<FileInfo> { fileInLib }, false);
-            while (!task.IsCompleted)
+            var manager = SetUpMock();
+            var files = new List<SongPath>
             {
-            }
-
-            
-            if (task.Exception == null)
-                Assert.Fail("No exception occured!");
-
-            Assert.IsInstanceOfType(task.Exception.InnerException, typeof(InvalidImportException), 
-                "Exception was not an InvalidImportException!");
-            Assert.IsTrue(fileInLib.Exists, "The source file doesn't exist!");
+                new SongPath(SettingWrapper.MusicDir.FullPath+"song4.mp3"),
+                new SongPath(SettingWrapper.MusicDir.FullPath+"song5.mp3"),
+                new SongPath(SettingWrapper.MusicDir.FullPath+"song6.mp3")
+            };
+            // ReSharper disable once ObjectCreationAsStatement
+            new Importer(manager.Object, files, true);
         }
 
-        [TestMethod, Timeout(30000)]
-        public void Import_FromAboveLibrary_Skips()
+        [TestMethod]
+        [ExpectedException(typeof(InvalidImportException))]
+        public void Do_CopyFromWithinDir()
         {
-            var newFile = FileHelper.CreateFile(_testDir, Constants.FileTypes.ValidMp3);
-            var oldFile = FileHelper.CreateFile(_homeDir, Constants.FileTypes.MissingAlbum);
-            var task = new Importer(_homeDir.FullName).ImportDirectoryAsync(_testDir.FullName, true);
-            while (!task.IsCompleted)
+            var manager = SetUpMock();
+            var files = new List<SongPath>
             {
-            }
-
-            Assert.AreEqual(0, task.Result.FailCount, "There was a failed file!");
-            Assert.AreEqual(1, task.Result.NewFiles.Count, "The file wasn't moved!");
-            Assert.AreEqual(2, _homeDir.GetFiles().Length, "The new and/or old files aren't in the home dir!");
-            Assert.IsTrue(oldFile.Exists, "Old file is gone!");
-            Assert.IsFalse(newFile.Exists, "New file is still in the import dir!");
+                new SongPath(SettingWrapper.MusicDir.FullPath+"song4.mp3"),
+                new SongPath(SettingWrapper.MusicDir.FullPath+"song5.mp3"),
+                new SongPath(SettingWrapper.MusicDir.FullPath+"song6.mp3")
+            };
+            // ReSharper disable once ObjectCreationAsStatement
+            new Importer(manager.Object, files, false);
         }
 
-        [TestMethod, Timeout(30000)]
-        public void Import_FromMultiTieredDirs_GetsAll()
+        [TestMethod]
+        public void Do_MoveAlreadyExists()
         {
-            var childFile = FileHelper.CreateFile(_importDir, Constants.FileTypes.ValidMp3);
-            var parentFile = FileHelper.CreateFile(_testDir, Constants.FileTypes.MissingAlbum);
-            var task = new Importer(_homeDir.FullName).ImportDirectoryAsync(_testDir.FullName, true);
-            while (!task.IsCompleted)
+            var manager = SetUpMock();
+            var files = new List<SongPath>
             {
-            }
-
-            Assert.AreEqual(0, task.Result.FailCount, "There was a failed file!");
-            Assert.AreEqual(2, task.Result.NewFiles.Count, "The files weren't moved!");
-            Assert.AreEqual(2, _homeDir.GetFiles().Length, "The files aren't in the home dir!");
-            Assert.IsFalse(childFile.Exists, "Nested child file wasn't moved!");
-            Assert.IsFalse(parentFile.Exists, "File in the root of the import wasn't moved!");
+                new SongPath("song1.mp3"),
+                new SongPath("song2.mp3"),
+                new SongPath("song3.mp3")
+            };
+            var importer = new Importer(manager.Object, files, true);
+            importer.Do(1);
+            manager.Verify(x => x.AddFile(It.IsAny<SongPath>(), It.IsAny<SongPath>()), Times.Never);
+            manager.Verify(x => x.CopyFile(It.IsAny<SongPath>(), It.IsAny<SongPath>()), Times.Never);
+            Assert.AreEqual(0, importer.Results.FailCount);
+            Assert.AreEqual(0, importer.Results.NewFiles.Count);
         }
-
-        [TestMethod, Timeout(30000)]
-        public void Import_MoveFiles_FilesMovedToNewLocation()
+        [TestMethod]
+        public void Do_CopyAlreadyExists()
         {
-            var childFile = FileHelper.CreateFile(_importDir, Constants.FileTypes.ValidMp3);
-            var task = new Importer(_homeDir.FullName).ImportDirectoryAsync(_testDir.FullName, true);
-            while (!task.IsCompleted)
+            var manager = SetUpMock();
+            var files = new List<SongPath>
             {
-            }
-
-            Assert.AreEqual(0, task.Result.FailCount, "There was a failed file!");
-            Assert.AreEqual(1, task.Result.NewFiles.Count, "The file wasn't moved!");
-            Assert.AreEqual(1, _homeDir.GetFiles().Length, "The file isn't in the home dir!");
-            Assert.IsTrue(!childFile.Exists, "Original file was only copied!");
+                new SongPath("song1.mp3"),
+                new SongPath("song2.mp3"),
+                new SongPath("song3.mp3")
+            };
+            var importer = new Importer(manager.Object, files, false);
+            importer.Do(1);
+            manager.Verify(x => x.AddFile(It.IsAny<SongPath>(), It.IsAny<SongPath>()), Times.Never);
+            manager.Verify(x => x.CopyFile(It.IsAny<SongPath>(), It.IsAny<SongPath>()), Times.Never);
+            Assert.AreEqual(0, importer.Results.FailCount);
+            Assert.AreEqual(0, importer.Results.NewFiles.Count);
         }
+        #endregion
 
-        [TestMethod, Timeout(30000)]
-        public void Import_CopyFiles_FilesCopiedToNewLocation()
+        private static Mock<IFileManager> SetUpMock()
         {
-            var childFile = FileHelper.CreateFile(_importDir, Constants.FileTypes.ValidMp3);
-            var task = new Importer(_homeDir.FullName).ImportDirectoryAsync(_testDir.FullName, false);
-            while (!task.IsCompleted)
-            {
-            }
+            SettingWrapper.HomeDir = HomeDir;
+            var mock = new Mock<IFileManager>();
+            var allSongs = new List<SongPath>{
+                new SongPath(SettingWrapper.MusicDir.FullPath+ "song1.mp3"),
+                new SongPath(SettingWrapper.MusicDir.FullPath+ "song2.mp3"),
+                new SongPath(SettingWrapper.MusicDir.FullPath+ "song3.mp3")
+            };
+            mock.Setup(x => x.FileExists(It.IsIn<SongPath>(allSongs))).Returns(true);
 
-            Assert.AreEqual(0, task.Result.FailCount, "There was a failed file!");
-            Assert.AreEqual(1, task.Result.NewFiles.Count, "The file wasn't moved!");
-            Assert.AreEqual(1, _homeDir.GetFiles().Length, "The file isn't in the home dir!");
-            Assert.IsTrue(childFile.Exists, "Original file was moved!");
-          * */
+            return mock;
         }
     }
 }
