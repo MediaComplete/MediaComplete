@@ -130,8 +130,11 @@ namespace MSOE.MediaComplete.Lib.Files
         /// <throws>ArgumentException if file does not exist in cache</throws>
         public void MoveFile(LocalSong oldFile, SongPath newFile)
         {
+            var sourceDir = oldFile.SongPath.Directory;
             if (!_cachedFiles.ContainsKey(oldFile.Id)) throw new ArgumentException();
+            
             _cachedFiles[oldFile.Id].MoveTo(newFile.FullPath);
+            ScrubEmptyDirectories(sourceDir);
         }
 
         /// <summary>
@@ -164,7 +167,7 @@ namespace MSOE.MediaComplete.Lib.Files
             folders.ForEach(x => x.MoveTo(newPath.FullPath + Path.DirectorySeparatorChar + x.Name));
             files.ForEach(x => x.MoveTo(newPath.FullPath + Path.DirectorySeparatorChar + x.Name));
 
-            if (sourceDir.GetDirectories().Length == 0 && sourceDir.GetFiles().Length == 0) sourceDir.Delete();
+            ScrubEmptyDirectories(sourceDir);
         }
 
 
@@ -177,6 +180,30 @@ namespace MSOE.MediaComplete.Lib.Files
         public void AddFile(SongPath songPath, SongPath newFile)
         {
             File.Move(songPath.FullPath, newFile.FullPath);
+        }
+
+        private static void ScrubEmptyDirectories(DirectoryPath directory)
+        {
+            var rootInfo = new DirectoryInfo(directory.FullPath);
+            foreach (var child in rootInfo.EnumerateDirectories("*", SearchOption.AllDirectories))
+            {
+                ScrubEmptyDirectories(child);
+                if (!child.EnumerateFileSystemInfos().Any())
+                {
+                    child.Delete();
+                }
+            }
+        }
+        private static void ScrubEmptyDirectories(DirectoryInfo directory)
+        {
+            foreach (var child in directory.EnumerateDirectories("*", SearchOption.AllDirectories))
+            {
+                ScrubEmptyDirectories(child);
+                if (!child.EnumerateFileSystemInfos().Any())
+                {
+                    child.Delete();
+                }
+            }
         }
         #endregion
 
@@ -223,10 +250,12 @@ namespace MSOE.MediaComplete.Lib.Files
         /// <param name="deletedSong">the song that needs to be deleted</param>
         public void DeleteSong(LocalSong deletedSong)
         {
+            var sourceDir = deletedSong.SongPath.Directory;
             _cachedSongs.Remove(deletedSong.Id);
             if (deletedSong.Path.Equals(_cachedFiles[deletedSong.Id].FullName) && File.Exists(deletedSong.Path))
                 File.Delete(deletedSong.Path);
             _cachedFiles.Remove(deletedSong.Id);
+            ScrubEmptyDirectories(sourceDir);
         }
 
         /// <summary>
@@ -411,6 +440,7 @@ namespace MSOE.MediaComplete.Lib.Files
         public void ChangedFile(object sender, FileSystemEventArgs e)
         {
             var retEnum = new List<LocalSong>();
+            var list = _cachedSongs.Values.ToList();
             if (Directory.Exists(e.FullPath))
             {
                 try
@@ -419,7 +449,7 @@ namespace MSOE.MediaComplete.Lib.Files
                         new DirectoryInfo(e.FullPath).EnumerateFiles("*", SearchOption.AllDirectories).GetMusicFiles();
                     foreach (var file in files)
                     {
-                        var newValue = _cachedSongs.FirstOrDefault(x => x.Value.Path.Equals(file.FullName)).Value;
+                        var newValue = list.FirstOrDefault(x => x != null && x.Path.Equals(file.FullName));
                         if (newValue != null && file.Exists)
                         {
                             newValue.SongPath = new SongPath(file.FullName);
@@ -445,7 +475,7 @@ namespace MSOE.MediaComplete.Lib.Files
             }
             else if (File.Exists(e.FullPath))
             {
-                var firstOrDefault = _cachedSongs.Values.FirstOrDefault(x => x.Path.Equals(e.FullPath));
+                var firstOrDefault = list.FirstOrDefault(x => x.Path.Equals(e.FullPath));
                 if (firstOrDefault != null)
                 {
                     var key = firstOrDefault.Id;
@@ -464,7 +494,8 @@ namespace MSOE.MediaComplete.Lib.Files
         public void DeletedFile(object sender, FileSystemEventArgs e)
         {
             var retEnum = new List<LocalSong>();
-            var firstOrDefault = _cachedSongs.Values.FirstOrDefault(x => x.Path.Equals(e.FullPath));
+            var list = _cachedSongs.Values.ToList();
+            var firstOrDefault = list.FirstOrDefault(x => x!=null && x.Path.Equals(e.FullPath));
             if (firstOrDefault != null)
             {
                 var key = firstOrDefault.Id;
@@ -473,7 +504,7 @@ namespace MSOE.MediaComplete.Lib.Files
             }
             else
             {
-                var keys = _cachedSongs.Values.Where(x => x.Path.StartsWith(e.FullPath, StringComparison.Ordinal)).Select(x => x.Id).ToList();
+                var keys = list.Where(x => x!=null && x.Path.StartsWith(e.FullPath, StringComparison.Ordinal)).Select(x => x.Id).ToList();
                 foreach (var key in keys)
                 {
                     retEnum.Add(_cachedSongs[key]);
@@ -518,6 +549,7 @@ namespace MSOE.MediaComplete.Lib.Files
         public event SongUpdatedHandler SongChanged = delegate { };
         public event SongUpdatedHandler SongCreated = delegate { };
         public event SongUpdatedHandler SongDeleted = delegate { };
+        
 
         public delegate void SongUpdatedHandler(IEnumerable<LocalSong> songs);
         public delegate void SongRenamedHandler(IEnumerable<Tuple<LocalSong, LocalSong>> songs);

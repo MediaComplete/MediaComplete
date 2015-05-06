@@ -88,10 +88,11 @@ namespace MSOE.MediaComplete
         {
             StatusBarHandler.Instance.RaiseStatusBarEvent += HandleStatusBarChangeEvent;
             Polling.InboxFilesDetected += ImportFromInboxAsync;
-            // ReSharper disable once ObjectCreationAsStatement
-            new Sorter(_fileManager, null); // Run static constructor
             // ReSharper disable once UnusedVariable
             var tmp = Polling.Instance;  // Run singleton constructor
+            SettingWrapper.RaiseSettingEvent += Resort;
+            Importer.ImportFinished += SortImports;
+            Importer.ImportFinished += FailedImport;
         }
 
         /// <summary>
@@ -118,24 +119,13 @@ namespace MSOE.MediaComplete
         }
         #endregion
 
-        #region User triggered events
-
-        /// <summary>
-        /// Open the Settings window
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ToolbarSettings_Click(object sender, RoutedEventArgs e)
-        {
-            new Settings { Owner = this }.ShowDialog();
-        }
-
+        #region Import
         /// <summary>
         /// Open a file selection dialog for importing, and do the import.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void AddFile_ClickAsync(object sender, RoutedEventArgs e)
+        private void AddFile_ClickAsync(object sender, RoutedEventArgs e)
         {
             var fileDialog = new WinForms.OpenFileDialog
             {
@@ -150,10 +140,10 @@ namespace MSOE.MediaComplete
 
             if (fileDialog.ShowDialog() != WinForms.DialogResult.OK) return;
 
-            ImportResults results;
             try
             {
-                results = await new Importer(_fileManager).ImportFilesAsync(fileDialog.FileNames.Select(p => new SongPath(p)).ToList(), SettingWrapper.ShouldRemoveOnImport);
+                Queue.Inst.Add(new Importer(_fileManager, fileDialog.FileNames.Select(p => new SongPath(p)).ToList(),
+                    SettingWrapper.ShouldRemoveOnImport));
             }
             catch (InvalidImportException)
             {
@@ -161,15 +151,24 @@ namespace MSOE.MediaComplete
                     String.Format(Resources["Dialog-Import-Invalid-Message"].ToString()),
                     Resources["Dialog-Common-Error-Title"].ToString(),
                     MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
             }
+        }
 
+        private void FailedImport(ImportResults results)
+        {
             if (results.FailCount > 0)
             {
-                MessageBox.Show(Application.Current.MainWindow,
-                    String.Format(Resources["Dialog-Import-ItemsFailed-Message"].ToString(), results.FailCount),
-                    Resources["Dialog-Common-Warning-Title"].ToString(),
-                    MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                try
+                {
+                    MessageBox.Show(this,
+                        String.Format(Resources["Dialog-Import-ItemsFailed-Message"].ToString(), results.FailCount),
+                        Resources["Dialog-Common-Warning-Title"].ToString(),
+                        MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+                catch (NullReferenceException)
+                {
+                    StatusBarHandler.Instance.ChangeStatusBarMessage("FailedImport-Error", StatusBarHandler.StatusIcon.Error);
+                }
             }
         }
 
@@ -178,56 +177,64 @@ namespace MSOE.MediaComplete
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void AddFolder_ClickAsync(object sender, RoutedEventArgs e)
+        private void AddFolder_ClickAsync(object sender, RoutedEventArgs e)
         {
             var folderDialog = new WinForms.FolderBrowserDialog();
 
             if (folderDialog.ShowDialog() != WinForms.DialogResult.OK) return;
             var selectedDir = folderDialog.SelectedPath;
             var files = new DirectoryInfo(selectedDir).EnumerateFiles("*", SearchOption.AllDirectories).GetMusicFiles().Select(x => new SongPath(x.FullName));
-            var results = await new Importer(_fileManager).ImportDirectoryAsync(files, SettingWrapper.ShouldRemoveOnImport);
-            if (results.FailCount > 0)
+            Queue.Inst.Add(new Importer(_fileManager, files, SettingWrapper.ShouldRemoveOnImport));
+        }
+
+        private void SortImports(ImportResults results)
+        {
+            if (SettingWrapper.IsSorting)
+            {
+                Queue.Inst.Add(new Sorter(_fileManager, results.NewFiles));
+            }
+        }
+        #endregion
+
+        #region Sort
+        /// <summary>
+        /// Triggers an asyncronous sort operation. The sort engine first calculates the magnitude of the changes, and reports it to the user.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void Toolbar_SortMusic_ClickAsync(object sender, RoutedEventArgs e)
+        {
+            var sorter = new Sorter(_fileManager, _fileManager.GetAllSongs().Select(x => x.SongPath));
+            await sorter.CalculateActionsAsync();
+
+            if (sorter.Actions.Count == 0) // Nothing to do! Notify and return.
             {
                 MessageBox.Show(Application.Current.MainWindow,
-                    String.Format(Resources["Dialog-Import-ItemsFailed-Message"].ToString(), results.FailCount),
-                    Resources["Dialog-Common-Warning-Title"].ToString(),
-                    MessageBoxButton.OK, MessageBoxImage.Exclamation);
-            }
-        }
-
-        /// <summary>
-        /// Updates the song list based on the folder selection
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void FolderTree_OnSelectionChanged(object sender, EventArgs e)
-        {
-            if (!IsLoaded)
+                    String.Format(Resources["Dialog-SortLibrary-NoSort"].ToString(), sorter.UnsortableCount),
+                    Resources["Dialog-SortLibrary-NoSortTitle"].ToString(), MessageBoxButton.OK,
+                    MessageBoxImage.Information);
                 return;
-
-            FormCheck();
-            if (FolderTree.SelectedItems != null)
-            {
-                RootLibraryFolderItem.IsSelected = FolderTree.SelectedItems.Count == 0;
-                Songs.View.Refresh();
             }
-            ClearDetailPane();
+
+            var result = MessageBox.Show(Application.Current.MainWindow,
+                String.Format(Resources["Dialog-SortLibrary-Confirm"].ToString(), sorter.MoveCount, sorter.DupCount,
+                    sorter.UnsortableCount),
+                Resources["Dialog-SortLibrary-Title"].ToString(), MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result != MessageBoxResult.Yes) return;
+
+            Queue.Inst.Add(sorter);
         }
 
-        /// <summary>
-        /// Updates the metadata form based on the song list selection
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SongList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void Resort()
         {
-            FormCheck();
-            if (AllSongs().Any())
-                PopulateMetadataForm();
-            else
-                ClearDetailPane();
-        }
+            if (!SortHelper.GetSorting()) return;
 
+            Queue.Inst.Add(new Sorter(FileManager.Instance, _fileManager.GetAllSongs().Select(x => x.SongPath)));
+        }
+        #endregion
+
+        #region Populate Metadata
         /// <summary>
         /// Perform an auto-metadata restoration of the selected songs
         /// </summary>
@@ -250,85 +257,9 @@ namespace MSOE.MediaComplete
             Queue.Inst.Add(new MusicIdentifier(SelectedSongs().Select(l => l.Data).OfType<LocalSong>().ToList()));
         }
 
-        /// <summary>
-        /// Triggers an asyncronous sort operation. The sort engine first calculates the magnitude of the changes, and reports it to the user.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private async void Toolbar_SortMusic_ClickAsync(object sender, RoutedEventArgs e)
-        {
-            var settings = new SortSettings
-            {
-                SortOrder = SettingWrapper.SortOrder,
-                Files = _fileManager.GetAllSongs().Select(x => x.SongPath),
-            };
-
-            var sorter = new Sorter(_fileManager, settings);
-            await sorter.CalculateActionsAsync();
-
-            if (sorter.Actions.Count == 0) // Nothing to do! Notify and return.
-            {
-                MessageBox.Show(Application.Current.MainWindow,
-                    String.Format(Resources["Dialog-SortLibrary-NoSort"].ToString(), sorter.UnsortableCount),
-                    Resources["Dialog-SortLibrary-NoSortTitle"].ToString(), MessageBoxButton.OK,
-                    MessageBoxImage.Information);
-                return;
-            }
-
-            var result = MessageBox.Show(Application.Current.MainWindow,
-                String.Format(Resources["Dialog-SortLibrary-Confirm"].ToString(), sorter.MoveCount, sorter.DupCount,
-                    sorter.UnsortableCount),
-                Resources["Dialog-SortLibrary-Title"].ToString(), MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-            if (result != MessageBoxResult.Yes) return;
-
-            sorter.PerformSort();
-        }
-
-        /// <summary>
-        /// Updates the active list reference based on the new tab. Actual list hiding and 
-        /// showing is done via bindings.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void LeftFrame_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (PlaylistTab.IsSelected)
-            {
-                NowPlayingItem.IsSelected = true;
-                // Manually fire this, NowPlayingItem.IsSelected won't do the job if that's already selected
-                PlaylistTree_SelectionChanged(null, null);
-            }
-            ClearDetailPane();
-        }
-
-        /// <summary>
-        /// Update the list of songs based on the selected playlist
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void PlaylistTree_SelectionChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            var playlistSongs = (ObservableCollection<SongListItem>)PlaylistSongs.Source;
-            var list = NowPlayingItem.IsSelected ? NowPlaying.Inst.Playlist : (Playlist)PlaylistTree.SelectedItem;
-
-            playlistSongs.Clear();
-            list.Songs.ForEach(s => playlistSongs.Add(new SongListItem { Content = s, Data = s }));
-
-            // If now-playing, highlight the current song
-            if (NowPlayingItem.IsSelected && NowPlaying.Inst.Index > -1 && !_player.PlaybackState.Equals(PlaybackState.Stopped))
-            {
-                var item = playlistSongs[NowPlaying.Inst.Index];
-                item.IsPlaying = true;
-                PlaylistSongList.ScrollIntoView(item);
-            }
-
-            ClearDetailPane();
-        }
-
         #endregion
 
-        #region Internally triggered events
+        #region UI Refresh
         /// <summary>
         /// Updates the song items in the list. Just calls rename since both need to remove and re-add
         /// </summary>
@@ -398,41 +329,131 @@ namespace MSOE.MediaComplete
         }
 
         /// <summary>
-        /// Catch status updates from the event and display them on the status bar.
+        /// Builds out the treeview for the given folder path, as needed.
         /// </summary>
-        /// <param name="format"></param>
-        /// <param name="message"></param>
-        /// <param name="icon"></param>
-        /// <param name="extraArgs"></param>
-        private void HandleStatusBarChangeEvent(string format, string message, StatusBarHandler.StatusIcon icon, params object[] extraArgs)
+        /// <param name="path">The path to add to the treeview</param>
+        /// <returns>The last folder treeview item in the heirarchy</returns>
+        private FolderTreeViewItem AddFolderTreeViewItems(DirectoryPath path)
         {
-            Dispatcher.Invoke(() =>
-            {
-                var args = (new[] { message == null ? "" : Resources[message] }).Concat(extraArgs);
-                StatusMessage.Text = String.Format(format, args.ToArray());
-                var sourceUri = new Uri("./Resources/" + icon + ".png", UriKind.Relative);
-                StatusIcon.Source = new BitmapImage(sourceUri);
-            });
+            // First see if it's in the root of the library
+            if (path.FullPath.Length <= SettingWrapper.MusicDir.FullPath.Length)
+                return _rootLibItem;
+
+            // First, lop off everything up to the music dir
+            var pathStr = path.FullPath.Substring(SettingWrapper.MusicDir.FullPath.Length);
+            // Now break into individual "folder" names
+            var folderNames = pathStr.Split(Path.DirectorySeparatorChar);
+
+            // Now fill out the treeview with the folder names
+            return folderNames.Aggregate(_rootLibItem,
+                (parentTreeViewItem, folderName) => parentTreeViewItem.Children.FirstOrDefault(t =>
+                    (string)t.Header == folderName) ?? new FolderTreeViewItem { Header = folderName, ParentItem = parentTreeViewItem });
         }
 
         /// <summary>
-        /// Triggered by the inbox file polling. Prompts the user, or just automagically imports.
+        /// Used for mapping the sort order to the song list's sort binding.
         /// </summary>
-        /// <param name="files">Newly discovered files.</param>
-        private async void ImportFromInboxAsync(IEnumerable<SongPath> files)
+        private class PathSorter : IComparer
         {
-            if (SettingWrapper.ShowInputDialog)
+            public int Compare(object o1, object o2)
             {
-                Dispatcher.BeginInvoke(new Action(() => InboxImportDialog.Prompt(this, files)));
-            }
-            else
-            {
-                await new Importer(_fileManager).ImportFilesAsync(files, true);
+                var x = o1 as SongListItem;
+                var y = o2 as SongListItem;
+
+                if (x == null || y == null)
+                {
+                    throw new ArgumentException();
+                }
+
+                // Get the string paths of the parent folders, minus the music dir (speeds up a bit)
+                var xPath = x.ParentItem.GetPath().Substring(SettingWrapper.MusicDir.FullPath.Length);
+                var yPath = y.ParentItem.GetPath().Substring(SettingWrapper.MusicDir.FullPath.Length);
+
+                // Compare by path
+                var pathDiff = String.Compare(xPath, yPath, StringComparison.Ordinal);
+
+                // Compare by header (filename) if the paths are equal
+                return pathDiff != 0 ? pathDiff : String.Compare(x.ToString(), y.ToString(), StringComparison.Ordinal);
             }
         }
         #endregion
 
-        #region Private helpers
+        #region Tab Selection
+        /// <summary>
+        /// Updates the active list reference based on the new tab. Actual list hiding and 
+        /// showing is done via bindings.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LeftFrame_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (PlaylistTab.IsSelected)
+            {
+                NowPlayingItem.IsSelected = true;
+                // Manually fire this, NowPlayingItem.IsSelected won't do the job if that's already selected
+                PlaylistTree_SelectionChanged(null, null);
+            }
+            ClearDetailPane();
+        }
+
+        /// <summary>
+        /// Update the list of songs based on the selected playlist
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PlaylistTree_SelectionChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            var playlistSongs = (ObservableCollection<SongListItem>)PlaylistSongs.Source;
+            var list = NowPlayingItem.IsSelected ? NowPlaying.Inst.Playlist : (Playlist)PlaylistTree.SelectedItem;
+
+            playlistSongs.Clear();
+            list.Songs.ForEach(s => playlistSongs.Add(new SongListItem { Content = s, Data = s }));
+
+            // If now-playing, highlight the current song
+            if (NowPlayingItem.IsSelected && NowPlaying.Inst.Index > -1 && !_player.PlaybackState.Equals(PlaybackState.Stopped))
+            {
+                var item = playlistSongs[NowPlaying.Inst.Index];
+                item.IsPlaying = true;
+                PlaylistSongList.ScrollIntoView(item);
+            }
+
+            ClearDetailPane();
+        }
+        #endregion
+
+        #region TreeSelections
+        /// <summary>
+        /// Updates the song list based on the folder selection
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FolderTree_OnSelectionChanged(object sender, EventArgs e)
+        {
+            if (!IsLoaded)
+                return;
+
+            FormCheck();
+            if (FolderTree.SelectedItems != null)
+            {
+                RootLibraryFolderItem.IsSelected = FolderTree.SelectedItems.Count == 0;
+                Songs.View.Refresh();
+            }
+            ClearDetailPane();
+        }
+
+        /// <summary>
+        /// Updates the metadata form based on the song list selection
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SongList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            FormCheck();
+            if (AllSongs().Any())
+                PopulateMetadataForm();
+            else
+                ClearDetailPane();
+        }
 
         /// <summary>
         /// Helper methods to return the selected song items from the currently visible list.
@@ -463,56 +484,53 @@ namespace MSOE.MediaComplete
             var currentSongs = (ObservableCollection<SongListItem>)(PlaylistTab.IsSelected ? PlaylistSongs : Songs).Source;
             return currentSongs.IndexOf(currentSongs.FirstOrDefault(s => s.IsSelected));
         }
+        #endregion
+
+        #region Internally triggered events
 
         /// <summary>
-        /// Builds out the treeview for the given folder path, as needed.
+        /// Catch status updates from the event and display them on the status bar.
         /// </summary>
-        /// <param name="path">The path to add to the treeview</param>
-        /// <returns>The last folder treeview item in the heirarchy</returns>
-        private FolderTreeViewItem AddFolderTreeViewItems(DirectoryPath path)
+        /// <param name="format"></param>
+        /// <param name="message"></param>
+        /// <param name="icon"></param>
+        /// <param name="extraArgs"></param>
+        private void HandleStatusBarChangeEvent(string format, string message, StatusBarHandler.StatusIcon icon, params object[] extraArgs)
         {
-            // First see if it's in the root of the library
-            if (path.FullPath.Length <= SettingWrapper.MusicDir.FullPath.Length)
-                return _rootLibItem;
-            
-            // First, lop off everything up to the music dir
-            var pathStr = path.FullPath.Substring(SettingWrapper.MusicDir.FullPath.Length);
-            // Now break into individual "folder" names
-            var folderNames = pathStr.Split(Path.DirectorySeparatorChar);
-
-            // Now fill out the treeview with the folder names
-            return folderNames.Aggregate(_rootLibItem, 
-                (parentTreeViewItem, folderName) => parentTreeViewItem.Children.FirstOrDefault(t => 
-                    (string) t.Header == folderName) ?? new FolderTreeViewItem { Header = folderName, ParentItem = parentTreeViewItem });
+            Dispatcher.Invoke(() =>
+            {
+                var args = (new[] { message == null ? "" : Resources[message] }).Concat(extraArgs);
+                StatusMessage.Text = String.Format(format, args.ToArray());
+                var sourceUri = new Uri("./Resources/" + icon + ".png", UriKind.Relative);
+                StatusIcon.Source = new BitmapImage(sourceUri);
+            });
         }
 
         /// <summary>
-        /// Used for mapping the sort order to the song list's sort binding.
+        /// Triggered by the inbox file polling. Prompts the user, or just automagically imports.
         /// </summary>
-        private class PathSorter : IComparer
+        /// <param name="files">Newly discovered files.</param>
+        private void ImportFromInboxAsync(IEnumerable<SongPath> files)
         {
-            public int Compare(object o1, object o2)
+            if (SettingWrapper.ShowInputDialog)
             {
-                var x = o1 as SongListItem;
-                var y = o2 as SongListItem;
-
-                if (x == null || y == null)
-                {
-                    throw new ArgumentException();
-                }
-
-                // Get the string paths of the parent folders, minus the music dir (speeds up a bit)
-                var xPath = x.ParentItem.GetPath().Substring(SettingWrapper.MusicDir.FullPath.Length);
-                var yPath = y.ParentItem.GetPath().Substring(SettingWrapper.MusicDir.FullPath.Length);
-
-                // Compare by path
-                var pathDiff = String.Compare(xPath, yPath, StringComparison.Ordinal);
-
-                // Compare by header (filename) if the paths are equal
-                return pathDiff != 0 ? pathDiff : String.Compare(x.ToString(), y.ToString(), StringComparison.Ordinal);
+                Dispatcher.BeginInvoke(new Action(() => InboxImportDialog.Prompt(this, files)));
+            }
+            else
+            {
+                Queue.Inst.Add(new Importer(_fileManager, files, true));
             }
         }
-
         #endregion
+
+        /// <summary>
+        /// Open the Settings window
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolbarSettings_Click(object sender, RoutedEventArgs e)
+        {
+            new Settings { Owner = this }.ShowDialog();
+        }
     }
 }

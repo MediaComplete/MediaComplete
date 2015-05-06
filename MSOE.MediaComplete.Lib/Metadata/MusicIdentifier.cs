@@ -49,18 +49,9 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /// always necessary and needs asynchronous construction
         /// </summary>
         /// <param name="files">The files to indentify</param>
-        public MusicIdentifier(IEnumerable<LocalSong> files)
+        public MusicIdentifier(IEnumerable<LocalSong> files): 
+            this(files, new FfmpegAudioReader(), new DoresoIdentifier(), null, FileManager.Instance)
         {
-            if (files == null)
-                throw new ArgumentNullException("files", "Files must not be null");
-            Files = files;
-
-            if (_fileManager == null)
-                _fileManager = FileManager.Instance;
-            if (_audioIdentifier == null)
-                _audioIdentifier = new DoresoIdentifier();
-            if (_audioReader == null)
-                _audioReader = new FfmpegAudioReader();
         }
 
         /// <summary>
@@ -72,12 +63,15 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /// <param name="metadata">Metadata retreiver for finding additional metadata details.</param>
         /// <param name="fileManager">Controls how files are accessed</param>
         public MusicIdentifier(IEnumerable<LocalSong> files, IAudioReader reader, IAudioIdentifier identifier, IMetadataRetriever metadata, IFileManager fileManager)
-            : this(files)
         {
             _audioReader = reader;
             _metadataRetriever = metadata;
             _audioIdentifier = identifier;
             _fileManager = fileManager;
+
+            if (files == null)
+                throw new ArgumentNullException("files", "Files must not be null");
+            Files = files;
         }
 
         #endregion
@@ -198,12 +192,12 @@ namespace MSOE.MediaComplete.Lib.Metadata
 
         public override IReadOnlyCollection<Type> InvalidBeforeTypes
         {
-            get { return new List<Type> { typeof(ImportTask) }.AsReadOnly(); }
+            get { return new List<Type> { typeof(Importer) }.AsReadOnly(); }
         }
 
         public override IReadOnlyCollection<Type> InvalidAfterTypes
         {
-            get { return new List<Type> { typeof(SortingTask) }.AsReadOnly(); }
+            get { return new List<Type> { typeof(Sorter) }.AsReadOnly(); }
         }
 
         public override IReadOnlyCollection<Type> InvalidDuringTypes
