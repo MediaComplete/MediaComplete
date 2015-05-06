@@ -48,6 +48,13 @@ namespace MSOE.MediaComplete.Lib.Playing
         }
         #endregion
 
+        #region Events
+        public delegate void PlaylistEndedHandler();
+        public event PlaylistEndedHandler PlaylistEnded = delegate { };
+
+
+        #endregion
+
         /// <summary>
         /// Private constructor. This class is a singleton.
         /// </summary>
@@ -111,6 +118,10 @@ namespace MSOE.MediaComplete.Lib.Playing
         {
             // TODO MC-38 MC-39 Looping and shuffling logic go here.
             Index = ++Index % _songs.Count;
+            if (Index == 0)
+            {
+                PlaylistEnded();//TODO fire playlist ended event?
+            }
             return _songs[Index];
         }
 
@@ -323,4 +334,5 @@ namespace MSOE.MediaComplete.Lib.Playing
         }
         #endregion
     }
+
 }
