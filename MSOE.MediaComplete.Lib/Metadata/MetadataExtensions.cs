@@ -62,12 +62,10 @@ namespace MSOE.MediaComplete.Lib.Metadata
                     tag.Album = (string) value;
                     break;
                 case MetaAttribute.Artist:
-                    var aa = (IEnumerable<string>)value;
-                    tag.AlbumArtists = aa.ToArray();
+                    tag.AlbumArtists = ((IEnumerable<string>)value).ToArray();
                     break;
                 case MetaAttribute.Genre:
-                    var g = (IEnumerable<string>)value;
-                    tag.Genres = g.ToArray();
+                    tag.Genres = ((IEnumerable<string>)value).ToArray();
                     break;
                 case MetaAttribute.Rating:
                     var tag1 = tag as Tag;
@@ -81,8 +79,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
                     tag.Title = (string) value;
                     break;
                 case MetaAttribute.SupportingArtist:
-                    var sa = (IEnumerable<string>)value;
-                    tag.Performers = sa.ToArray();
+                    tag.Performers = ((IEnumerable<string>)value).ToArray();
                     break;
                 case MetaAttribute.TrackNumber:
                     try

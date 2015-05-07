@@ -31,13 +31,13 @@ namespace MSOE.MediaComplete.Lib.Metadata
             var data = json["data"] as JArray;
             var msg = json["msg"].ToObject<string>();
 
-            if (data == null && msg.Contains("API key")) // API key overrun
+            // Doreso API key has been maxed out for now - show a warning and cancel the rest of the identifies
+            if (data == null && msg.Contains("API key")) 
                 throw new IdentificationException(String.Format("Received unexpected response from Doreso: {0}", json));
             
-
-            if (data == null) // No matches
+            // Doreso could not find a match
+            if (data == null) 
                 return;
-            
 
             var songJson = data.First;
 
