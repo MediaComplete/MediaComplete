@@ -127,6 +127,8 @@ namespace MSOE.MediaComplete.Lib.Files
 
         /// <summary>
         /// Set the property value from a string.
+        /// 
+        /// Parameter is assumed to be a semi-colon delimited string of all the artists.
         /// </summary>
         /// <param name="value">The new value</param>
         public void SetArtists(string value)
@@ -136,6 +138,8 @@ namespace MSOE.MediaComplete.Lib.Files
 
         /// <summary>
         /// Set the property value from a string.
+        /// 
+        /// Parameter is assumed to be a semi-colon delimited string of all the supporting artists.
         /// </summary>
         /// <param name="value">The new value</param>
         public void SetSupportingArtists(string value)
@@ -145,6 +149,8 @@ namespace MSOE.MediaComplete.Lib.Files
 
         /// <summary>
         /// Set the property value from a string.
+        /// 
+        /// Parameter is assumed to be a semi-colon delimited string of all the genres.
         /// </summary>
         /// <param name="value">The new value</param>
         public void SetGenres(string value)
