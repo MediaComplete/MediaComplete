@@ -1,5 +1,5 @@
 ﻿using System;
-using MSOE.MediaComplete.Lib.Songs;
+using MSOE.MediaComplete.Lib.Files;
 using NAudio.Wave;
 using TagLib;
 
@@ -26,15 +26,16 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// </summary>
         public static Player Instance
         {
-            get { return _instance ?? (_instance = new Player(new NAudioWrapper())); }
+            get { return _instance ?? (_instance = new Player(new NAudioWrapper(), FileManager.Instance)); }
         }
 
         /// <summary>
         /// private constructor to prevent creation of more than one Player instance
         /// </summary>
-        internal Player(INAudioWrapper nAudioWrapper)
+        internal Player(INAudioWrapper nAudioWrapper, IFileManager fileManager)
         {
             _nAudioWrapper = nAudioWrapper;
+            _fileManager = fileManager;
         }
         #endregion
 
@@ -44,6 +45,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// </summary>
         private readonly INAudioWrapper _nAudioWrapper;
 
+        private readonly IFileManager _fileManager;
         /// <summary>
         /// the state of the player
         /// </summary>
@@ -62,7 +64,7 @@ namespace MSOE.MediaComplete.Lib.Playing
             var localSong = song as LocalSong;
             if (localSong != null)
             {
-                _nAudioWrapper.Setup(localSong.File, WaveOutOnPlaybackStopped, _currentVolume);
+                _nAudioWrapper.Setup(localSong, WaveOutOnPlaybackStopped, _currentVolume);
             }
             PlaybackState = _nAudioWrapper.Play();
         }

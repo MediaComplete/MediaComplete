@@ -1,17 +1,10 @@
-﻿using System;
-using System.ComponentModel;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
+﻿using System.ComponentModel;
 
 namespace MSOE.MediaComplete.Lib.Metadata
 {
 	/// <summary>
 	/// An enum representing the ID3 metadata values we care about.
 	/// </summary>
-    ///
-    [ComVisible(true)]
-    [Flags]
-    [TypeConverter(typeof(KeysConverter))]
     public enum MetaAttribute
     {
         [Description("Album")]

@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using MSOE.MediaComplete.Lib.Background;
+using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Metadata;
+using MSOE.MediaComplete.Lib.Sorting;
+using Task = MSOE.MediaComplete.Lib.Background.Task;
+using Sys = System.Threading.Tasks;
 
 namespace MSOE.MediaComplete.Lib.Import
 {
     /// <summary>
     /// Provides methods for adding new files into the application's library.
     /// </summary>
-    public class Importer
+    public class Importer : Task
     {
         /// <summary>
         /// This event is fired whenever any import completes. It is intended to be used for any 
@@ -20,65 +22,144 @@ namespace MSOE.MediaComplete.Lib.Import
         public static event ImportHandler ImportFinished = delegate {};
         public delegate void ImportHandler(ImportResults results);
 
-        private readonly DirectoryInfo _homeDir;
+        public ImportResults Results { get; set; }
+        private readonly IEnumerable<SongPath> _files; 
+        private readonly IFileManager _fileManager;
+        private readonly bool _isMove;
 
         /// <summary>
         /// Constructs an Importer with the given library home directory.
         /// </summary>
-        /// <param name="dir">The full path to the library home directory.</param>
-        public Importer(string dir)
+        /// <param name="fileManagers">FileManager used for dependency injection</param>
+        /// <param name="files"></param>
+        /// <param name="isMove"></param>
+        public Importer(IFileManager fileManagers, IEnumerable<SongPath> files, bool isMove)
         {
-            _homeDir = new DirectoryInfo(dir);
-        }
-
-        /// <summary>
-        /// Helper method to import all the files in a given directory, recursively. If the recursion 
-        /// would delve into this Importer's homedir, those files are ignored.
-        /// </summary>
-        /// <param name="directory">The full path to the target directory</param>
-        /// <param name="isCopy">If true, files are copies and the original files remain in the source location. 
-        /// Otherwise, files are "cut" and removed from the source directory.</param>
-        /// <returns>An awaitable task of ImportResults</returns>
-        public async Task<ImportResults> ImportDirectoryAsync(string directory, bool isCopy)
-        {
-            var files =
-                new DirectoryInfo(directory).EnumerateFiles("*", SearchOption.AllDirectories)
-                    .GetMusicFiles()
-                    .Where(f => !f.HasParent(_homeDir));
-            var results = await ImportFilesAsync(files, isCopy);
-            return results;
-        }
-
-        /// <summary>
-        /// Performs an asynchronous import operation.
-        /// </summary>
-        /// <param name="files">A list of full file paths to be imported</param>
-        /// <param name="isMove">If true, files are "cut" and removed from the source directory.
-        /// Otherwise, files are copied and the original files remain in the source location.</param>
-        /// <returns>An awaitable task of ImportResults</returns>
-        /// <exception cref="InvalidImportException">Thrown when files includes a file in the current home directory</exception>
-        public async Task<ImportResults> ImportFilesAsync(IEnumerable<FileInfo> files, bool isMove)
-        {
-            if (files.Any(f => f.HasParent(_homeDir)))
+            if(fileManagers == null || files == null) throw new ArgumentNullException();
+            _fileManager = fileManagers;
+            _isMove = isMove;
+            if (files.Any(f => f.HasParent(SettingWrapper.MusicDir)))
             {
                 throw new InvalidImportException();
             }
-
-            var task = new ImportTask(FileMover.Instance, _homeDir, files, isMove);
-
-            Queue.Inst.Add(task);
-
-            task.Done += data =>
+            _files = files;
+            Done += data =>
             {
-                if (task.Results != null)
+                if (Results != null)
                 {
-                    ImportFinished(task.Results);
+                    ImportFinished(Results);
                 }
             };
 
-            await task.Lock.WaitAsync();
-            return task.Results;
         }
+
+        #region Task Overrides
+        /// <summary>
+        /// Performs the import operation in the background.
+        /// </summary>
+        /// <param name="i">The task ID, assigned by the queue</param>
+        /// <returns>A system task that can be tracked</returns>
+        public override void Do(int i)
+        {
+            Id = i;
+            Message = "Import-InProgress";
+            Icon = StatusBarHandler.StatusIcon.Working;
+            var count = _files.Count();
+            var results = new ImportResults
+            {
+                FailCount = 0,
+                NewFiles = new List<SongPath>(count),
+            };
+
+            try
+            {
+                var counter = 0;
+                var max = (count > 100 ? count / 100 : 1);
+                var total = 0;
+                foreach (var file in _files)
+                {
+                    var newFile = new SongPath(SettingWrapper.MusicDir.FullPath + file.Name);
+                    if (_fileManager.FileExists(newFile)) continue;
+                    try
+                    {
+                        if (_isMove)
+                        {   
+                            _fileManager.AddFile(file, newFile);
+                        }
+                        else
+                        {
+                            _fileManager.CopyFile(file, newFile);
+                        }
+                        results.NewFiles.Add(newFile);
+                    }
+                    catch (IOException exception)
+                    {
+                        Console.WriteLine(exception); // TODO (MC-125) log
+                        results.FailCount++;
+                        Message = "Importing-Error";
+                        Icon = StatusBarHandler.StatusIcon.Error;
+                        Error = exception;
+                        TriggerUpdate(this);
+                    }
+                    catch (UnauthorizedAccessException exception)
+                    {
+                        Console.WriteLine(exception); // TODO (MC-125) log
+                        results.FailCount++;
+                        Message = "UnauthorizedAccess-Error";
+                        Icon = StatusBarHandler.StatusIcon.Error;
+                        Error = exception;
+                        TriggerUpdate(this);
+                    }
+
+                    total++;
+                    if (counter++ >= max)
+                    {
+                        counter = 0;
+                        PercentComplete = ((double)total) / count;
+                        TriggerUpdate(this);
+                    }
+                }
+
+                Results = results;
+                if (Error == null)
+                {
+                    Message = "Import-Success";
+                    Icon = StatusBarHandler.StatusIcon.Success;
+                }
+            }
+            catch (Exception e)
+            {
+                Message = "Importing-Error";
+                Icon = StatusBarHandler.StatusIcon.Error;
+                Error = e;
+            }
+            finally
+            {
+                TriggerDone(this);
+            }
+        }
+
+        public override IReadOnlyCollection<Type> InvalidBeforeTypes
+        {
+            get { return new List<Type>().AsReadOnly(); }
+        }
+
+        public override IReadOnlyCollection<Type> InvalidAfterTypes
+        {
+
+            get { return new List<Type> { typeof(Sorter), typeof(IdentifierTask) }.AsReadOnly(); }
+        }
+
+        public override IReadOnlyCollection<Type> InvalidDuringTypes
+        {
+            get { return new List<Type>().AsReadOnly(); }
+        }
+
+        public override bool RemoveOther(Task t)
+        {
+            return false;
+        }
+        #endregion
     }
 
     /// <summary>
@@ -86,8 +167,7 @@ namespace MSOE.MediaComplete.Lib.Import
     /// </summary>
     public class ImportResults
     {
-        public List<FileInfo> NewFiles { get; set; } 
-        public DirectoryInfo HomeDir { get; set; }
+        public List<SongPath> NewFiles { get; set; } 
         public int FailCount { get; set; }
     }
 
@@ -96,9 +176,6 @@ namespace MSOE.MediaComplete.Lib.Import
     /// </summary>
     public class InvalidImportException : Exception
     {
-        public InvalidImportException() : base("Cannot import a file already located in the library directory tree!")
-        {
-        
-        }
+        public InvalidImportException() : base("Cannot import a file already located in the library directory tree!") { }
     }
 }

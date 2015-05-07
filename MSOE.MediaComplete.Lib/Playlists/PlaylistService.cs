@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using M3U.NET;
+using MSOE.MediaComplete.Lib.Files;
 
 namespace MSOE.MediaComplete.Lib.Playlists
 {
@@ -17,7 +19,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
         /// </summary>
         public const string PlaylistDefaultTitle = "New playlist";
 
-        private static IPlaylistService _service = new PlaylistServiceImpl();
+        private static IPlaylistService _service = new PlaylistServiceImpl(FileManager.Instance);
 
         /// <summary>
         /// Provides a way to substitute the implementation for playlist operations. 
@@ -75,6 +77,16 @@ namespace MSOE.MediaComplete.Lib.Playlists
         {
             return _service.CreatePlaylist();
         }
+
+        public static MediaItem ToMediaItem(LocalSong song)
+        {
+            return _service.ToMediaItem(song);
+        }
+
+        public static AbstractSong Create(MediaItem mediaItem)
+        {
+            return _service.Create(mediaItem);
+        }
     }
     #endregion
 
@@ -113,14 +125,19 @@ namespace MSOE.MediaComplete.Lib.Playlists
         /// </summary>
         /// <returns>The new Playlist object</returns>
         Playlist CreatePlaylist();
+
+        AbstractSong Create(MediaItem mediaItem);
+        MediaItem ToMediaItem(LocalSong song);
     }
     #endregion
 
     #region File implementation
     public class PlaylistServiceImpl : IPlaylistService
     {
-        internal PlaylistServiceImpl()
+        private readonly IFileManager _fileManager;
+        internal PlaylistServiceImpl(IFileManager fileManager)
         {
+            _fileManager = fileManager;
         }
 
         // TODO MC-192 rewrite class to use mockable injectable File service. Also write tests at this time - see PlaylistsTest.cs
@@ -133,7 +150,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
         /// <returns>A DirectoryInfo for the playlist storage directory</returns>
         public DirectoryInfo GetDirectoryInfo()
         {
-            var dir = new DirectoryInfo(SettingWrapper.PlaylistDir);
+            var dir = new DirectoryInfo(SettingWrapper.PlaylistDir.FullPath);
             if (!dir.Exists)
             {
                 Directory.CreateDirectory(dir.FullName);
@@ -147,11 +164,13 @@ namespace MSOE.MediaComplete.Lib.Playlists
         /// <returns>An IEnumerable of playlists</returns>
         public IEnumerable<Playlist> GetAllPlaylists()
         {
-            return
+            var y =
                 GetDirectoryInfo()
                     .EnumerateFiles(Constants.Wildcard, SearchOption.AllDirectories)
-                    .Where(f => Constants.PlaylistFileExtensions.Any(e => f.Extension.Equals(e)))
-                    .Select(f => new Playlist(new M3UFile(f)));
+                    .Where(f => Constants.PlaylistFileExtensions.Any(e => f.Extension.Equals(e)));
+            var z = y.Select(f => new Playlist(new M3UFile(f)));
+            return z;
+
         }
 
         /// <summary>
@@ -207,6 +226,35 @@ namespace MSOE.MediaComplete.Lib.Playlists
                 title = String.Format(PlaylistService.PlaylistDefaultTitle + " ({0})", i++);
             }
             return CreatePlaylist(title);
+        }
+        /// <summary>
+        /// Converts this LocalSong to a MediaItem so it can be serialized to a playlist.
+        /// </summary>
+        /// <returns>A new media item</returns>
+        public  MediaItem ToMediaItem(LocalSong song)
+        {
+            return new MediaItem
+            {
+                Location = song.Path,
+                Inf = song.Artist + " - " + song.Title,
+                Runtime = song.Duration ?? 0
+            };
+        }
+
+        private static readonly IReadOnlyDictionary<string, Type> TypeDictionary = new Dictionary<string, Type>
+        {
+            // MP3/WMA file regex
+            {@".*\.[" + Constants.MusicFileExtensions.Aggregate((x, y) => x + "|" + y) + "]", typeof (LocalSong)}
+            // Future - youtube URLs regex
+        };
+        public AbstractSong Create(MediaItem mediaItem)
+        {
+            if (TypeDictionary.Select(regex => new Regex(regex.Key).Matches(mediaItem.Location).Count).Any(hits => hits > 0))
+            {
+                return _fileManager.GetSong(mediaItem);
+            }
+
+            throw new FormatException(String.Format("{0} does not match any known song types", mediaItem.Location));
         }
     }
     #endregion

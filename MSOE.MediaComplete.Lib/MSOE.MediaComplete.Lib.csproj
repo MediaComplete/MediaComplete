@@ -87,26 +87,25 @@
     <Compile Include="Background\Queue.cs" />
     <Compile Include="Background\TaskAdder.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Files\FileLocationComparator.cs" />
     <Compile Include="FileMover.cs" />
     <Compile Include="Import\ImportTask.cs" />
     <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Files\AbstractSong.cs" />
+    <Compile Include="Files\FilePaths.cs" />
+    <Compile Include="Files\FileManager.cs" />
+
     <Compile Include="Metadata\IdentifierTask.cs" />
     <Compile Include="Metadata\MetadataExtensions.cs" />
     <Compile Include="Playing\NowPlaying.cs" />
     <Compile Include="Playlists\Playlist.cs" />
     <Compile Include="Playlists\PlaylistService.cs" />
-    <Compile Include="Settings.cs" />
-    <Compile Include="Songs\AbstractSong.cs" />
-    <Compile Include="Songs\LocalSong.cs" />
+    <Compile Include="Files\LocalSong.cs" />
     <Compile Include="Playing\IPlayer.cs" />
     <Compile Include="Playing\INAudioWrapper.cs" />
     <Compile Include="Playing\NAudioWrapper.cs" />
-    <Compile Include="Sorting\SortingTask.cs" />
     <Compile Include="LayoutType.cs" />
     <Compile Include="Playing\Player.cs" />
     <Compile Include="Sorting\SortHelper.cs" />
-    <Compile Include="SystemExtensions.cs" />
     <Compile Include="StatusBarHandler.cs" />
     <Compile Include="Import\Importer.cs" />
     <Compile Include="Metadata\MusicIdentifier.cs">
@@ -115,7 +114,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Metadata\MetaAttribute.cs" />
     <Compile Include="Sorting\Sorter.cs" />
-    <Compile Include="Sorting\SortSettings.cs" />
     <Compile Include="Polling.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
