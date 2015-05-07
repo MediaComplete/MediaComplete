@@ -59,7 +59,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         public void Play()
         {
             Stop();
-            //TODO refactor so Player doesnt use a reference to NowPlaying
+            //TODO refactor so Player doesnt use a reference to NowPlaying MC-307
             var song = NowPlaying.Inst.CurrentSong();
 
             var localSong = song as LocalSong;
@@ -136,7 +136,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         #endregion
 
         #region private methods
-        //TODO refactor so player doesnt use a reference to NowPlaying
+        //TODO refactor so player doesnt use a reference to NowPlaying MC-307
         /// <summary>
         /// passes the event from _waveout to the caller
         /// </summary>
@@ -183,7 +183,7 @@ namespace MSOE.MediaComplete.Lib.Playing
 
         /// <summary>
         /// event for end of playlist
-        /// TODO fix this and the one from NowPlaying
+        /// TODO fix this and the one from NowPlaying MC-307
         /// </summary>
         public delegate void PlaylistFinished();
         public event PlaylistFinished PlaylistFinishedEvent = delegate { };
