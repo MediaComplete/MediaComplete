@@ -193,10 +193,6 @@ namespace MSOE.MediaComplete
                 var song = nowPlayingSongs[NowPlaying.Inst.Index];
                 song.IsPlaying = false;
             }
-            else if(oldIndex == newIndex)
-            {
-                nowPlayingSongs[oldIndex].IsPlaying = true;
-            }
             else if (NowPlayingItem.IsSelected)
             {
                 var oldSong = nowPlayingSongs[oldIndex];
@@ -367,9 +363,9 @@ namespace MSOE.MediaComplete
             var old = queue.Index;
             queue.NextSong();
             var current = queue.Index;
+            UpdateColorEvent(old, current);
             if (queue.Index != 0)
             {
-                UpdateColorEvent(old, current);
                 Play();
             }
         }
