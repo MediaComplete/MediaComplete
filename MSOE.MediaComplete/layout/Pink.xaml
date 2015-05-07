@@ -31,7 +31,7 @@
     <Brush x:Key="TabTextBrush">#FFFFD6EE</Brush>
     <Brush x:Key="TextSelectedBackgroundBrush">LightPink</Brush>
     <Brush x:Key="TextSelectedForegroundBrush">DarkOrchid</Brush>
-    <Brush x:Key="TextMouseOverBackgroundBrush">LightPink</Brush>
+    <Brush x:Key="TextMouseOverBackgroundBrush">#FFE3B3CF</Brush>
     <Brush x:Key="TextMouseOverForegroundBrush">DarkOrchid</Brush>
     <Brush x:Key="ButtonAccentBrush">#FFF0EFF1</Brush>
     <Brush x:Key="ButtonAccent2Brush">#FFF0EFF1</Brush>

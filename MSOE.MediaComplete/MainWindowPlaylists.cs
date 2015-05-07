@@ -19,7 +19,18 @@ namespace MSOE.MediaComplete
         /// Bindable list of Playlists. Gets used in context menus and elsewhere.
         /// </summary>
         public ObservableCollection<Playlist> Playlists { get { return _playlists; } }
-        private readonly ObservableCollection<Playlist> _playlists = new ObservableCollection<Playlist>(PlaylistService.GetAllPlaylists());
+        private readonly ObservableCollection<Playlist> _playlists = new ObservableCollection<Playlist>();
+
+        /// <summary>
+        /// Populates the playlist treeview
+        /// </summary>
+        private void InitPlaylists()
+        {
+            foreach (var playlist in PlaylistService.GetAllPlaylists())
+            {
+                _playlists.Add(playlist);
+            }
+        }
 
         #region Event handlers
 
@@ -88,7 +99,7 @@ namespace MSOE.MediaComplete
             var selectedSongs = SelectedSongs();
             var songs = selectedSongs.Any() ? selectedSongs : AllSongs();
 
-            list.Songs.AddRange(from LibrarySongItem song in songs select song.Data);
+            list.Songs.AddRange(from SongListItem song in songs select song.Data);
             list.Save();
             _playlists.Add(list);
             // TODO MC-207 flow to rename
@@ -112,7 +123,7 @@ namespace MSOE.MediaComplete
             var selectedSongs = SelectedSongs();
             var songs = selectedSongs.Any() ? selectedSongs : AllSongs();
 
-            list.Songs.AddRange(from LibrarySongItem song in songs select song.Data);
+            list.Songs.AddRange(from SongListItem song in songs select song.Data);
             list.Save();
         }
 
