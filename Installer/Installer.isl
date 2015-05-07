@@ -341,6 +341,7 @@
 		<col def="S0">ISDotNetInstallerArgsCommit</col>
 		<col def="S0">ISDotNetInstallerArgsUninstall</col>
 		<col def="S0">ISDotNetInstallerArgsRollback</col>
+		<row><td>ISX_DEFAULTCOMPONENT1</td><td>{250FA597-5C51-4DCC-868B-555DA10684D3}</td><td>INSTALLDIR</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>MSOE.MediaComplete.Content_Files</td><td>{3F6866E8-8839-46F4-B582-25A134A832CB}</td><td>INSTALLDIR</td><td>2</td><td/><td>msoe.mediacomplete.content_f</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>MSOE.MediaComplete.Lib.Content_Files</td><td>{E2362930-FD4D-44C8-A01E-1FD6CA6B175F}</td><td>INSTALLDIR</td><td>2</td><td/><td>msoe.mediacomplete.lib.conte</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>MSOE.MediaComplete.Lib.Primary_output</td><td>{1C855621-0992-4F88-B2CC-CC18D78FB4EF}</td><td>INSTALLDIR</td><td>2</td><td/><td>msoe.mediacomplete.lib.prima</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
@@ -1055,6 +1056,7 @@
 	<table name="CreateFolder">
 		<col key="yes" def="s72">Directory_</col>
 		<col key="yes" def="s72">Component_</col>
+		<row><td>INSTALLDIR</td><td>ISX_DEFAULTCOMPONENT1</td></row>
 		<row><td>INSTALLDIR</td><td>NewComponent1</td></row>
 	</table>
 
@@ -1869,6 +1871,7 @@
 	<table name="FeatureComponents">
 		<col key="yes" def="s38">Feature_</col>
 		<col key="yes" def="s72">Component_</col>
+		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT1</td></row>
 		<row><td>AlwaysInstall</td><td>MSOE.MediaComplete.Content_Files</td></row>
 		<row><td>AlwaysInstall</td><td>MSOE.MediaComplete.Lib.Content_Files</td></row>
 		<row><td>AlwaysInstall</td><td>MSOE.MediaComplete.Lib.Primary_output</td></row>
@@ -2035,6 +2038,7 @@
 		<col def="S0">FTPLocation</col>
 		<col def="S0">HTTPLocation</col>
 		<col def="S0">Miscellaneous</col>
+		<row><td>ISX_DEFAULTCOMPONENT1</td><td/><td/><td>_4A9D3242_0DB3_4B68_AE53_23DF4E83C4E9_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>MSOE.MediaComplete.Content_Files</td><td/><td/><td>_DB5B65B1_D40F_4C5B_BEF6_67674B10D483_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>MSOE.MediaComplete.Lib.Content_Files</td><td/><td/><td>_6FFD7A99_7D01_4853_97D9_87611C6724BE_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>MSOE.MediaComplete.Lib.Primary_output</td><td/><td/><td>_9D788229_BBEE_4DA1_AD0D_80BFF62F436A_FILTER</td><td/><td/><td/><td/></row>
@@ -2658,7 +2662,7 @@
 		<col def="I2">Encoded</col>
 		<col def="S0">Comment</col>
 		<col def="I4">TimeStamp</col>
-		<row><td>COMPANY_NAME</td><td>1033</td><td>Media Complete</td><td>0</td><td/><td>1512262031</td></row>
+		<row><td>COMPANY_NAME</td><td>1033</td><td>Media Complete</td><td>0</td><td/><td>446944879</td></row>
 		<row><td>DN_AlwaysInstall</td><td>1033</td><td>Always Install</td><td>0</td><td/><td>1512249743</td></row>
 		<row><td>IDPROP_EXPRESS_LAUNCH_CONDITION_COLOR</td><td>1033</td><td>The color settings of your system are not adequate for running [ProductName].</td><td>0</td><td/><td>1512249743</td></row>
 		<row><td>IDPROP_EXPRESS_LAUNCH_CONDITION_DOTNETVERSION45FULL</td><td>1033</td><td>Microsoft .NET Framework 4.5 Full package or greater needs to be installed for this installation to continue.</td><td>0</td><td/><td>1512253903</td></row>
@@ -3763,8 +3767,8 @@
 		<row><td>IDS__TargetReq_DESC_RAM</td><td>1033</td><td>The amount of RAM is not adequate for running [ProductName].</td><td>0</td><td/><td>1512249743</td></row>
 		<row><td>IDS__TargetReq_DESC_RESOLUTION</td><td>1033</td><td>The screen resolution is not adequate for running [ProductName].</td><td>0</td><td/><td>1512249743</td></row>
 		<row><td>ID_STRING1</td><td>1033</td><td/><td>0</td><td/><td>1512251791</td></row>
-		<row><td>ID_STRING2</td><td>1033</td><td>http://www.MediaComplete.com</td><td>0</td><td/><td>1512262031</td></row>
-		<row><td>ID_STRING3</td><td>1033</td><td>Media Complete</td><td>0</td><td/><td>1512262031</td></row>
+		<row><td>ID_STRING2</td><td>1033</td><td>http://www.MediaComplete.com</td><td>0</td><td/><td>446944879</td></row>
+		<row><td>ID_STRING3</td><td>1033</td><td>Media Complete</td><td>0</td><td/><td>446944879</td></row>
 		<row><td>IIDS_UITEXT_FeatureUninstalled</td><td>1033</td><td>This feature will remain uninstalled.</td><td>0</td><td/><td>1512249743</td></row>
 	</table>
 
@@ -3988,8 +3992,8 @@
 		<col def="S0">Value</col>
 		<row><td>ActiveLanguage</td><td>1033</td></row>
 		<row><td>Comments</td><td/></row>
-		<row><td>CurrentMedia</td><td dt:dt="bin.base64" md5="de9f554a3bc05c12be9c31b998217995">
-UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
+		<row><td>CurrentMedia</td><td dt:dt="bin.base64" md5="a4f66fafb30885f14d732b73e196bba0">
+RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
 			</td></row>
 		<row><td>DefaultProductConfiguration</td><td>Express</td></row>
 		<row><td>EnableSwidtag</td><td>1</td></row>
@@ -4006,7 +4010,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>ISTheme</td><td>InstallShield Blue.theme</td></row>
 		<row><td>ISUSLock</td><td>{4758A928-47E8-4006-B370-800C9D409E4A}</td></row>
 		<row><td>ISUSSignature</td><td>{2C09852F-877C-4A1D-B699-956FB0DEB5FF}</td></row>
-		<row><td>ISVisitedViews</td><td>viewAssistant,viewShortcuts,viewISToday</td></row>
+		<row><td>ISVisitedViews</td><td>viewAssistant,viewShortcuts,viewISToday,viewProject,viewRealSetupDesign,viewRelease,viewInstallScriptStd,viewAppFiles,viewFeatureFiles,viewObjects,viewDependencies,viewEnvironmentVariables,viewRegistry,viewServices,viewSystemSearch,viewCustomActions,viewAppV</td></row>
 		<row><td>Limited</td><td>1</td></row>
 		<row><td>LockPermissionMode</td><td>1</td></row>
 		<row><td>MsiExecCmdLineOptions</td><td/></row>

@@ -1,5 +1,9 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using log4net;
+using log4net.Appender;
+using log4net.Config;
 using log4net.Core;
 
 namespace MSOE.MediaComplete.Lib.Logging
@@ -9,7 +13,19 @@ namespace MSOE.MediaComplete.Lib.Logging
     /// </summary>
     public static class Logger
     {
-        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log;
+
+        static Logger()
+        {
+            XmlConfigurator.Configure(new FileInfo("Logging/MediaCompleteLog4Net.config"));
+            var h = (log4net.Repository.Hierarchy.Hierarchy)LogManager.GetRepository();
+            foreach (var rfa in h.Root.Appenders.OfType<RollingFileAppender>())
+            {
+                rfa.File = LogDir+"\\MediaComplete.log";
+                rfa.ActivateOptions();
+            }
+            Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        }
 
         /// <summary>
         /// This logs informational messages about the current state of the application and code
@@ -103,6 +119,18 @@ namespace MSOE.MediaComplete.Lib.Logging
             Error=0,
             Info=1,
             Debug=314
+        }
+
+        public static string LogDir
+        {
+            get
+            {
+                //var logDir = AppDomain.CurrentDomain.BaseDirectory + "Logs";
+                var logDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)+"\\MediaComplete\\Logs";
+                if (!Directory.Exists(logDir))
+                    Directory.CreateDirectory(logDir);
+                return logDir;
+            }
         }
     }
 }
