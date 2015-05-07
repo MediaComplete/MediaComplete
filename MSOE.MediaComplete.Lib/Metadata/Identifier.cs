@@ -11,7 +11,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
     /// <summary>
     /// Provides functions for identifying a song
     /// </summary>
-    public class MusicIdentifier : Background.Task
+    public class Identifier : Background.Task
     {
         #region Properties and constructors
 
@@ -44,17 +44,6 @@ namespace MSOE.MediaComplete.Lib.Metadata
         public IEnumerable<LocalSong> Files { get; private set; }
 
         /// <summary>
-        /// Defaults to using FFMPEG for audio parsing, Doreso for identification, and our FileMover for file access. 
-        /// Spotify will be lazily constructed later for accessing additional metadata details, since it is not 
-        /// always necessary and needs asynchronous construction
-        /// </summary>
-        /// <param name="files">The files to indentify</param>
-        public MusicIdentifier(IEnumerable<LocalSong> files): 
-            this(files, new FfmpegAudioReader(), new DoresoIdentifier(), null, FileManager.Instance)
-        {
-        }
-
-        /// <summary>
         /// Use the specified services for identification.
         /// </summary>
         /// <param name="files">The files to indentify</param>
@@ -62,7 +51,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /// <param name="identifier">Audio identifer for fingerprinting songs</param>
         /// <param name="metadata">Metadata retreiver for finding additional metadata details.</param>
         /// <param name="fileManager">Controls how files are accessed</param>
-        public MusicIdentifier(IEnumerable<LocalSong> files, IAudioReader reader, IAudioIdentifier identifier, IMetadataRetriever metadata, IFileManager fileManager)
+        public Identifier(IEnumerable<LocalSong> files, IAudioReader reader, IAudioIdentifier identifier, IMetadataRetriever metadata, IFileManager fileManager)
         {
             _audioReader = reader;
             _metadataRetriever = metadata;
@@ -212,7 +201,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /// <returns>false</returns>
         public override bool RemoveOther(Background.Task t)
         {
-            var idTask = t as MusicIdentifier;
+            var idTask = t as Identifier;
             if (idTask != null)
             {
                 Files = Files.Except(idTask.Files); // Remove duplicates

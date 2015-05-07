@@ -91,6 +91,7 @@
     <Compile Include="Metadata\FfmpegAudioReader.cs" />
     <Compile Include="Metadata\MetadataExtensions.cs" />
     <Compile Include="Metadata\MetadataTypes.cs" />
+    <Compile Include="Metadata\Identifier.cs" />
     <Compile Include="Metadata\SpotifyMetadataRetriever.cs" />
     <Compile Include="Playing\NowPlaying.cs" />
     <Compile Include="Playlists\Playlist.cs" />
@@ -104,9 +105,6 @@
     <Compile Include="Sorting\SortHelper.cs" />
     <Compile Include="StatusBarHandler.cs" />
     <Compile Include="Import\Importer.cs" />
-    <Compile Include="Metadata\MusicIdentifier.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Metadata\MetaAttribute.cs" />
     <Compile Include="Sorting\Sorter.cs" />

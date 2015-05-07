@@ -9,7 +9,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
     /// <summary>
     /// Parse audio data by spawning an Fffmpeg process.
     /// </summary>
-    internal class FfmpegAudioReader : IAudioReader
+    public class FfmpegAudioReader : IAudioReader
     {
         /// <summary>
         /// Reads audio bytes in from ffmpeg

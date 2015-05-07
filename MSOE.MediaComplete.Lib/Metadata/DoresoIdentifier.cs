@@ -11,7 +11,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
     /// <summary>
     /// Uses Doreso to identify the song. Doreso returns the song title, album, and artist.
     /// </summary>
-    internal class DoresoIdentifier : IAudioIdentifier
+    public class DoresoIdentifier : IAudioIdentifier
     {
         /// <summary>
         /// Perform a web request to identify the given audio data.

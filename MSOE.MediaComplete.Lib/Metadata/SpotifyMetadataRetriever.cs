@@ -16,7 +16,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
     /// <summary>
     /// Retrieves additional metadata by using the Spotify web API.
     /// </summary>
-    internal class SpotifyMetadataRetriever : IMetadataRetriever
+    public class SpotifyMetadataRetriever : IMetadataRetriever
     {
         /// <summary>
         /// Gets the metadata for a song, based on the passed in artist, album, and track title.

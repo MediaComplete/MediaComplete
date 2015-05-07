@@ -185,7 +185,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
 
         public override IReadOnlyCollection<Type> InvalidBeforeTypes
         {
-            get { return new List<Type> { typeof(MusicIdentifier), typeof(Importer) }.AsReadOnly(); }
+            get { return new List<Type> { typeof(Identifier), typeof(Importer) }.AsReadOnly(); }
         }
 
         public override IReadOnlyCollection<Type> InvalidAfterTypes

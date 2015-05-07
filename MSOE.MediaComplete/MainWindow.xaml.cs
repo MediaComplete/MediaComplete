@@ -8,6 +8,8 @@ using System.Windows.Media.Imaging;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using Autofac;
+using Autofac.Core;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Files;
@@ -54,6 +56,11 @@ namespace MSOE.MediaComplete
         /// Private abstraction of the file system
         /// </summary>
         private readonly IFileManager _fileManager = FileManager.Instance;
+
+        /// <summary>
+        /// The root context for resolve dependencies
+        /// </summary>
+        private IContainer _autoFacContainer;
         #endregion
 
         #region Construction
@@ -62,7 +69,7 @@ namespace MSOE.MediaComplete
         /// </summary>
         public MainWindow()
         {
-            _fileManager.Initialize(SettingWrapper.MusicDir);
+            InitServicesAsync();
             InitializeComponent();
             InitUi();
             InitEvents();
@@ -71,9 +78,50 @@ namespace MSOE.MediaComplete
         }
 
         /// <summary>
+        /// Setup services to use dependencies
+        /// </summary>
+        private async void InitServicesAsync()
+        {
+            var builder = new ContainerBuilder();
+
+            // Register file manager
+            var fileManager = FileManager.Instance;
+            fileManager.Initialize(SettingWrapper.MusicDir);
+            builder.RegisterInstance(fileManager).ExternallyOwned().As<IFileManager>();
+
+            // Register identifier
+            builder.RegisterType<FfmpegAudioReader>().As<IAudioReader>();
+            builder.RegisterType<DoresoIdentifier>().As<IAudioIdentifier>();
+            builder.RegisterInstance(await SpotifyMetadataRetriever.GetInstanceAsync())
+                .ExternallyOwned().As<IMetadataRetriever>();
+            builder.RegisterType<Identifier>().WithParameters(new[]
+            {
+                new ResolvedParameter((pi, c) => pi.ParameterType == typeof(IAudioReader), (pi, c) => c.Resolve<IAudioReader>()),
+                new ResolvedParameter((pi, c) => pi.ParameterType == typeof(IAudioIdentifier), (pi, c) => c.Resolve<IAudioIdentifier>()),
+                new ResolvedParameter((pi, c) => pi.ParameterType == typeof(IMetadataRetriever), (pi, c) => c.Resolve<IMetadataRetriever>()),
+                new ResolvedParameter((pi, c) => pi.ParameterType == typeof(IFileManager), (pi, c) => c.Resolve<IFileManager>())
+            });
+
+            // Register sorter
+            builder.RegisterType<Sorter>().WithParameters(new[]
+            {
+                new ResolvedParameter((pi, c) => pi.ParameterType == typeof(IFileManager), (pi, c) => c.Resolve<IFileManager>())
+            });
+
+            // Register importer
+            builder.RegisterType<Importer>().WithParameters(new[]
+            {
+                new ResolvedParameter((pi, c) => pi.ParameterType == typeof(IFileManager), (pi, c) => c.Resolve<IFileManager>())
+            });
+
+            // Build
+            _autoFacContainer = builder.Build();
+        }
+
+        /// <summary>
         /// Setup special UI elements
         /// </summary>
-        public static void InitUi()
+        private static void InitUi()
         {
             var dictUri = new Uri(SettingWrapper.Layout, UriKind.Relative);
             var resourceDict = Application.LoadComponent(dictUri) as ResourceDictionary;
@@ -124,8 +172,8 @@ namespace MSOE.MediaComplete
         /// Open a file selection dialog for importing, and do the import.
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void AddFile_ClickAsync(object sender, RoutedEventArgs e)
+        /// <param name="evt"></param>
+        private void AddFile_ClickAsync(object sender, RoutedEventArgs evt)
         {
             var fileDialog = new WinForms.OpenFileDialog
             {
@@ -142,15 +190,24 @@ namespace MSOE.MediaComplete
 
             try
             {
-                Queue.Inst.Add(new Importer(_fileManager, fileDialog.FileNames.Select(p => new SongPath(p)).ToList(),
-                    SettingWrapper.ShouldRemoveOnImport));
+                var files = fileDialog.FileNames.Select(p => new SongPath(p)).ToList();
+                var move = SettingWrapper.ShouldRemoveOnImport;
+
+                using (var scope = _autoFacContainer.BeginLifetimeScope())
+                {
+                    var importer = scope.Resolve<Importer>(new TypedParameter(typeof(IEnumerable<SongPath>), files), new TypedParameter(typeof(bool), move));
+                    Queue.Inst.Add(importer);
+                }
             }
-            catch (InvalidImportException)
+            catch (DependencyResolutionException e)
             {
-                MessageBox.Show(Application.Current.MainWindow,
-                    String.Format(Resources["Dialog-Import-Invalid-Message"].ToString()),
-                    Resources["Dialog-Common-Error-Title"].ToString(),
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                if (e.InnerException is InvalidImportException)
+                    MessageBox.Show(Application.Current.MainWindow,
+                        String.Format(Resources["Dialog-Import-Invalid-Message"].ToString()),
+                        Resources["Dialog-Common-Error-Title"].ToString(),
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                else
+                    throw;
             }
         }
 
@@ -184,14 +241,24 @@ namespace MSOE.MediaComplete
             if (folderDialog.ShowDialog() != WinForms.DialogResult.OK) return;
             var selectedDir = folderDialog.SelectedPath;
             var files = new DirectoryInfo(selectedDir).EnumerateFiles("*", SearchOption.AllDirectories).GetMusicFiles().Select(x => new SongPath(x.FullName));
-            Queue.Inst.Add(new Importer(_fileManager, files, SettingWrapper.ShouldRemoveOnImport));
+            var move = SettingWrapper.ShouldRemoveOnImport;
+
+            using (var scope = _autoFacContainer.BeginLifetimeScope())
+            {
+                var importer = scope.Resolve<Importer>(new TypedParameter(typeof(IEnumerable<SongPath>), files), new TypedParameter(typeof(bool), move));
+                Queue.Inst.Add(importer);
+            }
         }
 
         private void SortImports(ImportResults results)
         {
             if (SettingWrapper.IsSorting)
             {
-                Queue.Inst.Add(new Sorter(_fileManager, results.NewFiles));
+                using (var scope = _autoFacContainer.BeginLifetimeScope())
+                {
+                    var sorter = scope.Resolve<Sorter>(new TypedParameter(typeof(IEnumerable<SongPath>), results.NewFiles));
+                    Queue.Inst.Add(sorter);
+                }
             }
         }
         #endregion
@@ -204,33 +271,44 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private async void Toolbar_SortMusic_ClickAsync(object sender, RoutedEventArgs e)
         {
-            var sorter = new Sorter(_fileManager, _fileManager.GetAllSongs().Select(x => x.SongPath));
-            await sorter.CalculateActionsAsync();
-
-            if (sorter.Actions.Count == 0) // Nothing to do! Notify and return.
+            using (var scope = _autoFacContainer.BeginLifetimeScope())
             {
-                MessageBox.Show(Application.Current.MainWindow,
-                    String.Format(Resources["Dialog-SortLibrary-NoSort"].ToString(), sorter.UnsortableCount),
-                    Resources["Dialog-SortLibrary-NoSortTitle"].ToString(), MessageBoxButton.OK,
-                    MessageBoxImage.Information);
-                return;
+                var files = _fileManager.GetAllSongs().Select(x => x.SongPath);
+                var sorter = scope.Resolve<Sorter>(new TypedParameter(typeof(IEnumerable<SongPath>), files));
+
+                await sorter.CalculateActionsAsync();
+
+                if (sorter.Actions.Count == 0) // Nothing to do! Notify and return.
+                {
+                    MessageBox.Show(Application.Current.MainWindow,
+                        String.Format(Resources["Dialog-SortLibrary-NoSort"].ToString(), sorter.UnsortableCount),
+                        Resources["Dialog-SortLibrary-NoSortTitle"].ToString(), MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                    return;
+                }
+
+                var result = MessageBox.Show(Application.Current.MainWindow,
+                    String.Format(Resources["Dialog-SortLibrary-Confirm"].ToString(), sorter.MoveCount, sorter.DupCount,
+                        sorter.UnsortableCount),
+                    Resources["Dialog-SortLibrary-Title"].ToString(), MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (result != MessageBoxResult.Yes) return;
+
+                Queue.Inst.Add(sorter);
             }
-
-            var result = MessageBox.Show(Application.Current.MainWindow,
-                String.Format(Resources["Dialog-SortLibrary-Confirm"].ToString(), sorter.MoveCount, sorter.DupCount,
-                    sorter.UnsortableCount),
-                Resources["Dialog-SortLibrary-Title"].ToString(), MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-            if (result != MessageBoxResult.Yes) return;
-
-            Queue.Inst.Add(sorter);
         }
 
         private void Resort()
         {
             if (!SortHelper.GetSorting()) return;
 
-            Queue.Inst.Add(new Sorter(FileManager.Instance, _fileManager.GetAllSongs().Select(x => x.SongPath)));
+            var files = _fileManager.GetAllSongs().Select(x => x.SongPath);
+
+            using (var scope = _autoFacContainer.BeginLifetimeScope())
+            {
+                var sorter = scope.Resolve<Sorter>(new TypedParameter(typeof (IEnumerable<SongPath>), files));
+                Queue.Inst.Add(sorter);
+            }
         }
         #endregion
 
@@ -243,7 +321,12 @@ namespace MSOE.MediaComplete
         private void Toolbar_AutoIDMusic_ClickAsync(object sender, RoutedEventArgs e)
         {
             // TODO (MC-45) mass ID of folders
-            Queue.Inst.Add(new MusicIdentifier(SelectedSongs().Select(l => l.Data).OfType<LocalSong>().ToList()));
+            using (var scope = _autoFacContainer.BeginLifetimeScope())
+            {
+                var files = SelectedSongs().Select(l => l.Data).OfType<LocalSong>().ToList();
+                var id = scope.Resolve<Identifier>(new TypedParameter(typeof(IEnumerable<LocalSong>), files));
+                Queue.Inst.Add(id);
+            }
         }
 
         /// <summary>
@@ -254,7 +337,12 @@ namespace MSOE.MediaComplete
         private void ContextMenu_AutoIDMusic_ClickAsync(object sender, RoutedEventArgs e)
         {
             // TODO (MC-45) mass ID of folders
-            Queue.Inst.Add(new MusicIdentifier(SelectedSongs().Select(l => l.Data).OfType<LocalSong>().ToList()));
+            using (var scope = _autoFacContainer.BeginLifetimeScope())
+            {
+                var files = SelectedSongs().Select(l => l.Data).OfType<LocalSong>().ToList();
+                var id = scope.Resolve<Identifier>(new TypedParameter(typeof(IEnumerable<SongPath>), files));
+                Queue.Inst.Add(id);
+            }
         }
 
         #endregion
@@ -518,7 +606,11 @@ namespace MSOE.MediaComplete
             }
             else
             {
-                Queue.Inst.Add(new Importer(_fileManager, files, true));
+                using (var scope = _autoFacContainer.BeginLifetimeScope())
+                {
+                    var importer = scope.Resolve<Importer>(new TypedParameter(typeof(IEnumerable<SongPath>), files), new TypedParameter(typeof(bool), true));
+                    Queue.Inst.Add(importer);
+                }
             }
         }
         #endregion

@@ -42,8 +42,8 @@ namespace MSOE.MediaComplete.Test.Background
             var queue = new List<List<Task>>
             {
                 new List<Task> {new Sorter(mock.Object, null)},
-                new List<Task> {new MusicIdentifier(new LocalSong[]{}, null, null, null, null), new MusicIdentifier(new LocalSong[]{}, null, null, null, null)},
-                new List<Task> {new MusicIdentifier(new LocalSong[]{}, null, null, null, null), new Sorter(mock.Object, null)},
+                new List<Task> {new Identifier(new LocalSong[]{}, null, null, null, null), new Identifier(new LocalSong[]{}, null, null, null, null)},
+                new List<Task> {new Identifier(new LocalSong[]{}, null, null, null, null), new Sorter(mock.Object, null)},
                 new List<Task>()
             };
 
@@ -57,10 +57,10 @@ namespace MSOE.MediaComplete.Test.Background
             Assert.AreEqual(1, queue[1].Count, "Stage 2 isn't the same size!");
             Assert.IsInstanceOfType(queue[1][0], typeof(Sorter), "Stage 2 doesn't have an SortingTask!");
             Assert.AreEqual(2, queue[2].Count, "Stage 3 isn't the same size!");
-            Assert.IsInstanceOfType(queue[2][0], typeof(MusicIdentifier), "Stage 3 task 1 isn't an IdentifierTask!");
-            Assert.IsInstanceOfType(queue[2][1], typeof(MusicIdentifier), "Stage 3 task 2 isn't an IdentifierTask!");
+            Assert.IsInstanceOfType(queue[2][0], typeof(Identifier), "Stage 3 task 1 isn't an IdentifierTask!");
+            Assert.IsInstanceOfType(queue[2][1], typeof(Identifier), "Stage 3 task 2 isn't an IdentifierTask!");
             Assert.AreEqual(2, queue[3].Count, "Stage 4 isn't the same size!");
-            Assert.IsInstanceOfType(queue[3][0], typeof(MusicIdentifier), "Stage 4 task 1 isn't an IdentifierTask!");
+            Assert.IsInstanceOfType(queue[3][0], typeof(Identifier), "Stage 4 task 1 isn't an IdentifierTask!");
             Assert.IsInstanceOfType(queue[3][1], typeof(Sorter), "Stage 4 task 2 isn't an ImportTask!");
 
         }
@@ -75,7 +75,7 @@ namespace MSOE.MediaComplete.Test.Background
             var queue = new List<List<Task>>
             {
                 new List<Task> {new Importer(mock.Object, new List<SongPath>{new SongPath("")}, false)},
-                new List<Task> {new MusicIdentifier(new LocalSong[]{}, null, null, null, null), new MusicIdentifier(new LocalSong[]{}, null, null, null, null)}
+                new List<Task> {new Identifier(new LocalSong[]{}, null, null, null, null), new Identifier(new LocalSong[]{}, null, null, null, null)}
             };
 
             var subject = new Importer(mock.Object, new List<SongPath> { new SongPath("") }, false);
@@ -87,8 +87,8 @@ namespace MSOE.MediaComplete.Test.Background
             Assert.IsInstanceOfType(queue[0][0], typeof(Importer), "Stage 1 doesn't have the old import task!");
             Assert.AreSame(subject, queue[0][1], "Stage 1 doesn't have the subject task!");
             Assert.AreEqual(2, queue[1].Count, "Stage 2 isn't the same size!");
-            Assert.IsInstanceOfType(queue[1][0], typeof(MusicIdentifier), "Stage 2 task 1 isn't an IdentifierTask!");
-            Assert.IsInstanceOfType(queue[1][1], typeof(MusicIdentifier), "Stage 2 task 2 isn't an IdentifierTask!");
+            Assert.IsInstanceOfType(queue[1][0], typeof(Identifier), "Stage 2 task 1 isn't an IdentifierTask!");
+            Assert.IsInstanceOfType(queue[1][1], typeof(Identifier), "Stage 2 task 2 isn't an IdentifierTask!");
 
         }
     }

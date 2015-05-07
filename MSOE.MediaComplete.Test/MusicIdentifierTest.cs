@@ -53,14 +53,14 @@ namespace MSOE.MediaComplete.Test
         public void Identify_NullList_ThrowsException()
         {
             // ReSharper disable once ObjectCreationAsStatement
-            new MusicIdentifier(null, _audioReaderMock.Object, _audioIdentifierMock.Object,
+            new Identifier(null, _audioReaderMock.Object, _audioIdentifierMock.Object,
                 _metadataRetrieverMock.Object, _fileManagerMock.Object);
         }
 
         [TestMethod]
         public void Identify_EmptyList_DoesNothing()
         {
-            var subject = new MusicIdentifier(new List<LocalSong>(), _audioReaderMock.Object, _audioIdentifierMock.Object,
+            var subject = new Identifier(new List<LocalSong>(), _audioReaderMock.Object, _audioIdentifierMock.Object,
                 _metadataRetrieverMock.Object, _fileManagerMock.Object);
 
             subject.Do(1);
@@ -77,7 +77,7 @@ namespace MSOE.MediaComplete.Test
         public void Identify_NullSong_Skip()
         {
             var song1 = new LocalSong("id1", new SongPath("path1"));
-            var subject = new MusicIdentifier(new List<LocalSong>
+            var subject = new Identifier(new List<LocalSong>
             {
                 song1, null, song1
             }, _audioReaderMock.Object, _audioIdentifierMock.Object,
@@ -99,7 +99,7 @@ namespace MSOE.MediaComplete.Test
         {
             var song1 = new LocalSong("id1", new SongPath("path1"));
             var song2 = new LocalSong("id2", new SongPath("path2"));
-            var subject = new MusicIdentifier(new List<LocalSong>
+            var subject = new Identifier(new List<LocalSong>
             {
                 song2, song1, song2
             }, _audioReaderMock.Object, _audioIdentifierMock.Object,
@@ -123,7 +123,7 @@ namespace MSOE.MediaComplete.Test
         public void Identify_UnknownSong_NoMetaRetrieval()
         {
             var song1 = new LocalSong("id1", new SongPath("path1"));
-            var subject = new MusicIdentifier(new List<LocalSong>
+            var subject = new Identifier(new List<LocalSong>
             {
                 song1
             }, _audioReaderMock.Object, _audioIdentifierMock.Object,
@@ -149,7 +149,7 @@ namespace MSOE.MediaComplete.Test
         {
             var song1 = new LocalSong("id1", new SongPath("path1"));
             var song2 = new LocalSong("id2", new SongPath("path2"));
-            var subject = new MusicIdentifier(new List<LocalSong>
+            var subject = new Identifier(new List<LocalSong>
             {
                 song2, song1, song2
             }, _audioReaderMock.Object, _audioIdentifierMock.Object,
