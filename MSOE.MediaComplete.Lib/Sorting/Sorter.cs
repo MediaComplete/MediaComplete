@@ -172,10 +172,13 @@ namespace MSOE.MediaComplete.Lib.Sorting
                     Icon = StatusBarHandler.StatusIcon.Success;
                 }
             }
-            catch (TagLib.CorruptFileException ex)
+            catch (TagLib.CorruptFileException e)
             {
-                Logger.LogException("Taglib found a corrupt file while creating the taglib file.", ex);
-                return file; // Bad MP3 - just have it stay in the same place
+                Logger.LogException("Taglib found a corrupt file while creating the taglib file.", e);
+                Message = "Sorting-HadError";
+                Icon = StatusBarHandler.StatusIcon.Error;
+                Error = e;
+            }
             catch (Exception e)
             {
                 Message = "Sorting-HadError";
