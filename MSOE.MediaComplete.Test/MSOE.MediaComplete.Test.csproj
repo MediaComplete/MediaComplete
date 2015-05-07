@@ -85,9 +85,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Background\ImportTaskTest.cs" />
+    <Compile Include="Background\ImporterManagementTest.cs" />
     <Compile Include="Background\QueueTest.cs" />
-    <Compile Include="Background\SortingTaskTest.cs" />
+    <Compile Include="Background\SorterManagementTest.cs" />
     <Compile Include="MusicIdentifierTest.cs" />
     <Compile Include="Playing\PlayerTest.cs" />
     <Compile Include="Playing\NowPlayingTest.cs" />
@@ -95,8 +95,8 @@
     <Compile Include="Playlists\PlaylistTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PollingTest.cs" />
-    <Compile Include="SortingTest.cs" />
     <Compile Include="ImporterTest.cs" />
+    <Compile Include="SorterTest.cs" />
     <Compile Include="Util\Constants.cs" />
     <Compile Include="Util\FileHelper.cs" />
     <Compile Include="StatusBarTest.cs" />

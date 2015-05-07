@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using MSOE.MediaComplete.Lib;
 using System;
+using MSOE.MediaComplete.Lib.Background;
 using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
 
@@ -59,26 +60,13 @@ namespace MSOE.MediaComplete
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void okButton_ClickAsync(object sender, RoutedEventArgs e)
+        private void okButton_ClickAsync(object sender, RoutedEventArgs e)
         {
             SettingWrapper.ShowInputDialog =!StopShowingCheckBox.IsChecked.GetValueOrDefault(false);
 
             //Do the move
-            var results = await new Importer(FileManager.Instance).ImportFilesAsync(_files, false);
-            if (results.FailCount > 0)
-            {
-                try
-                {
-                    MessageBox.Show(this,
-                        String.Format(Resources["Dialog-Import-ItemsFailed-Message"].ToString(), results.FailCount),
-                        Resources["Dialog-Common-Warning-Title"].ToString(),
-                        MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                }
-                catch (NullReferenceException)
-                {
-                    StatusBarHandler.Instance.ChangeStatusBarMessage("FailedImport-Error", StatusBarHandler.StatusIcon.Error);
-                }
-            }
+            Queue.Inst.Add(new Importer(FileManager.Instance, _files, false));
+            
 
             Polling.Instance.Reset();
             DialogResult = true;
