@@ -150,6 +150,7 @@
                     </StackPanel>
                 </Border>
             </TabItem>
+            <!--TODO MC-308 Make this work with the installed application...
             <TabItem Header="Advanced" Padding="10,3,10,3">
                 <Border Padding="4">
                     <StackPanel>
@@ -164,6 +165,7 @@
                     </StackPanel>
                 </Border>
             </TabItem>
+            -->
         </TabControl>
     </DockPanel>
 </customWindow:BaseWindow>
