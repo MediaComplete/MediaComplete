@@ -24,7 +24,7 @@ namespace MSOE.MediaComplete.Test.Background
         {
             var mock = new Mock<IFileManager>();
             var queue = new List<List<Task>>();
-            var subject = new Importer(mock.Object, new List<SongPath>{new SongPath("")}, false);
+            var subject = new Importer(mock.Object, new List<SongPath> { new SongPath("") }, false);
             TaskAdder.ResolveConflicts(subject, queue);
 
             Assert.AreEqual(1, queue.Count, "Queue doesn't have the right number of stages!");

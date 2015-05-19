@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MSOE.MediaComplete.Lib.Logging;
 
 namespace MSOE.MediaComplete.Lib.Background
 {
@@ -64,7 +65,7 @@ namespace MSOE.MediaComplete.Lib.Background
 
             if (!inserted) // Queue cannot accept this task at this time
             {
-                // TODO MC-125 log
+                Logger.LogWarning("The queue cannot accept the task " + newTask + " at this time.");
                 throw new InvalidQueueStateException(newTask);
             }
         }

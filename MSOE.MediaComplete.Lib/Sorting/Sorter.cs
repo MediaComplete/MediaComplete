@@ -6,6 +6,7 @@ using System.Linq;
 using MSOE.MediaComplete.Lib.Background;
 using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
+using MSOE.MediaComplete.Lib.Logging;
 using MSOE.MediaComplete.Lib.Metadata;
 using Sys = System.Threading.Tasks;
 
@@ -170,6 +171,13 @@ namespace MSOE.MediaComplete.Lib.Sorting
                 {
                     Icon = StatusBarHandler.StatusIcon.Success;
                 }
+            }
+            catch (TagLib.CorruptFileException e)
+            {
+                Logger.LogException("Taglib found a corrupt file while creating the taglib file.", e);
+                Message = "Sorting-HadError";
+                Icon = StatusBarHandler.StatusIcon.Error;
+                Error = e;
             }
             catch (Exception e)
             {

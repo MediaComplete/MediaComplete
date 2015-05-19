@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
+using MSOE.MediaComplete.Lib.Logging;
 using MSOE.MediaComplete.Lib.Playing;
 using NAudio.Wave;
 using TagLib;
@@ -156,6 +157,7 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void PlayPauseButton_OnClick(object sender, RoutedEventArgs e)
         {
+            Logger.LogInformation("Play button clicked");
             switch (_player.PlaybackState)
             {
                 case PlaybackState.Paused:

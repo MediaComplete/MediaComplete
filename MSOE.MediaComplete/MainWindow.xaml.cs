@@ -13,6 +13,7 @@ using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Background;
 using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
+using MSOE.MediaComplete.Lib.Logging;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Playing;
 using MSOE.MediaComplete.Lib.Playlists;
@@ -85,6 +86,7 @@ namespace MSOE.MediaComplete
         private void InitEvents()
         {
             StatusBarHandler.Instance.RaiseStatusBarEvent += HandleStatusBarChangeEvent;
+            Logger.SetLogLevel(SettingWrapper.LogLevel);
             Polling.InboxFilesDetected += ImportFromInboxAsync;
             // ReSharper disable once UnusedVariable
             var tmp = Polling.Instance;  // Run singleton constructor
@@ -261,7 +263,7 @@ namespace MSOE.MediaComplete
                 }
                 catch (Exception ex)
                 {
-                    // TODO (MC-125) Logging
+                    Logger.LogException("Automatic music identification error",ex);
                     StatusBarHandler.Instance.ChangeStatusBarMessage(
                         String.Format(Resources["MusicIdentification-Error"].ToString(), ex.Message),
                         StatusBarHandler.StatusIcon.Error);
@@ -294,7 +296,7 @@ namespace MSOE.MediaComplete
                 }
                 catch (Exception ex)
                 {
-                    // TODO (MC-125) Logging
+                    Logger.LogException("Automatic music identification error", ex);
                     StatusBarHandler.Instance.ChangeStatusBarMessage(
                         String.Format(Resources["MusicIdentification-Error"].ToString(), ex.Message),
                         StatusBarHandler.StatusIcon.Error);
@@ -380,7 +382,11 @@ namespace MSOE.MediaComplete
         {
             var songs = Songs.Source as ObservableCollection<SongListItem>;
             if (songs == null)
-                return; // TODO MC-125 log me
+            {
+                Logger.LogWarning("No songs were available for the tree view refresh.");
+                return;
+            }
+                
             songs.Clear();
 
             _rootLibItem.Children.Clear();
@@ -397,7 +403,10 @@ namespace MSOE.MediaComplete
         {
             var songList = Songs.Source as ICollection<SongListItem>;
             if (songList == null)
-                return; // TODO MC-125 log me
+            {
+                Logger.LogWarning("No songs were available from the folder.");
+                return;
+            }
             var dir = new DirectoryInfo(parent.GetPath());
 
             foreach (var child in dir.GetDirectories().Select(subdir => new FolderTreeViewItem { ParentItem = parent, Header = subdir.Name }))
