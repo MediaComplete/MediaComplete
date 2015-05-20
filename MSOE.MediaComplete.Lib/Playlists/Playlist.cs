@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using M3U.NET;
+using MSOE.MediaComplete.Lib.Logging;
 using MSOE.MediaComplete.Lib.Files;
 
 namespace MSOE.MediaComplete.Lib.Playlists
@@ -43,9 +44,9 @@ namespace MSOE.MediaComplete.Lib.Playlists
                 {
                     _file.Files.Add(PlaylistService.ToMediaItem(song as LocalSong));
                 }
-                catch (FileNotFoundException)
+                catch (FileNotFoundException e)
                 {
-                    // TODO MC-125 log - 
+                    Logger.LogException("File attempting to be added playlist could not be found", e);
                 }
             }
             _file.Save();

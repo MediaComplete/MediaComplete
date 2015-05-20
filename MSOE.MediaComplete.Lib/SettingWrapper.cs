@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
+using MSOE.MediaComplete.Lib.Logging;
 using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Properties;
@@ -135,7 +136,17 @@ namespace MSOE.MediaComplete.Lib
         {
             get { return (Settings.Default.AllDirs).Split(';').ToList(); }
             set { Settings.Default.AllDirs = value.Aggregate((x, y) => x + ";" + y); }
-        } 
+        }
+
+        public static int LogLevel
+        {
+            get { return Settings.Default.LogLevel; }
+            set
+            {
+                Settings.Default.LogLevel = value;
+                Logger.SetLogLevel(value);
+            }
+        }
 
         /// <summary>
         /// saves the settings

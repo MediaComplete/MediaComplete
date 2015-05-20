@@ -22,7 +22,7 @@ namespace MSOE.MediaComplete.Test.Background
         [TestMethod]
         public void Test_AddSorterEmptyQueue_Added()
         {
-            
+
             var queue = new List<List<Task>>();
             var subject = new Sorter(new Mock<IFileManager>().Object, null);
             TaskAdder.ResolveConflicts(subject, queue);
@@ -39,7 +39,7 @@ namespace MSOE.MediaComplete.Test.Background
         public void Test_AddSorter_GoesAfterImportAndIdentify()
         {
             var mock = new Mock<IFileManager>();
-            var list = new List<SongPath> {new SongPath("string")};
+            var list = new List<SongPath> { new SongPath("string") };
             var queue = new List<List<Task>>
             {
                 new List<Task> {new Importer(mock.Object, list, false)},
@@ -80,7 +80,7 @@ namespace MSOE.MediaComplete.Test.Background
                 new List<Task> {new Identifier(new LocalSong[]{}, null, null, null, null), new Importer(new Mock<IFileManager>().Object, list, false)}
             };
 
-            TaskAdder.ResolveConflicts(new Sorter(null,null), queue);
+            TaskAdder.ResolveConflicts(new Sorter(null, null), queue);
 
             Assert.AreEqual(4, queue.Count, "Queue doesn't have the right number of stages!");
             Assert.AreEqual(1, queue[0].Count, "Stage 1 isn't the same size!");

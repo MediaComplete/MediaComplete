@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 ﻿using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
 using MSOE.MediaComplete.Lib.Sorting;
+using MSOE.MediaComplete.Lib.Logging;
 
 namespace MSOE.MediaComplete.Lib.Metadata
 {
@@ -143,7 +144,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
                     {
                         if (x is IdentificationException) // API overuse, back off
                         {
-                            // TODO (MC-125) Logging
+                            Logger.LogException("Automatic music identification error", x);
                             Message = "MusicIdentification-Warning-RateLimit";
                             Icon = StatusBarHandler.StatusIcon.Warning;
                             // TODO MC-45 Any other ID tasks in the queue should be cancelled somehow
@@ -152,6 +153,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
                         }
                         else
                         {
+                            Logger.LogException("Automatic music identification error", x);
                             Error = x;
                             Message = "MusicIdentification-Error";
                             Icon = StatusBarHandler.StatusIcon.Error;

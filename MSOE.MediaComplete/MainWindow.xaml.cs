@@ -14,6 +14,7 @@ using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
+using MSOE.MediaComplete.Lib.Logging;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Playing;
 using MSOE.MediaComplete.Lib.Playlists;
@@ -135,6 +136,7 @@ namespace MSOE.MediaComplete
         private void InitEvents()
         {
             StatusBarHandler.Instance.RaiseStatusBarEvent += HandleStatusBarChangeEvent;
+            Logger.SetLogLevel(SettingWrapper.LogLevel);
             Polling.InboxFilesDetected += ImportFromInboxAsync;
             // ReSharper disable once UnusedVariable
             var tmp = Polling.Instance;  // Run singleton constructor
@@ -423,10 +425,6 @@ namespace MSOE.MediaComplete
         /// <returns>The last folder treeview item in the heirarchy</returns>
         private FolderTreeViewItem AddFolderTreeViewItems(DirectoryPath path)
         {
-            // First see if it's in the root of the library
-            if (path.FullPath.Length <= SettingWrapper.MusicDir.FullPath.Length)
-                return _rootLibItem;
-
             // First, lop off everything up to the music dir
             var pathStr = path.FullPath.Substring(SettingWrapper.MusicDir.FullPath.Length);
             // Now break into individual "folder" names
@@ -450,7 +448,9 @@ namespace MSOE.MediaComplete
 
                 if (x == null || y == null)
                 {
-                    throw new ArgumentException();
+                    var e = new ArgumentException();
+                    Logger.LogException("Attempted to compare null tree view item's paths", e);
+                    throw e;
                 }
 
                 // Get the string paths of the parent folders, minus the music dir (speeds up a bit)
