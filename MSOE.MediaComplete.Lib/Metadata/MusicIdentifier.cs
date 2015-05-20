@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
-using ENMFPdotNet;
 using MSOE.MediaComplete.Lib.Files;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
@@ -40,8 +39,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
                 return null;
             }
 
-            var codegen = new FingerprintGenerator(audioData, 0);
-            var code = codegen.GetFingerprintCode().Code;
+            var code = "deprecated";
 
             var client = new HttpClient {BaseAddress = new Uri(Uri.ToString())};
 
