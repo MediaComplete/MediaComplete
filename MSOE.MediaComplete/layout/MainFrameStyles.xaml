@@ -9,12 +9,6 @@
         <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
         <Setter Property="BorderThickness" Value="0"/>
     </Style>
-
-    <Style TargetType="{x:Type ListView}">
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
-    </Style>
     
     <Style TargetType="{x:Type ListView}" x:Key="ExternalScrollView" BasedOn="{StaticResource {x:Type ListView}}">
         <Setter Property="Template">
@@ -26,7 +20,7 @@
         </Setter>
     </Style>
 
-    <Style TargetType="{x:Type customControls:SongListItem}">
+    <!--<Style TargetType="{x:Type customControls:SongListItem}">
         <Style.Triggers>
             <Trigger Property="IsPlaying" Value="False">
                 <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
@@ -45,7 +39,7 @@
                 <Setter Property="FontWeight" Value="ExtraBold"/>
             </Trigger>
         </Style.Triggers>
-    </Style>
+    </Style>-->
     
     <!-- Folder tree view items -->
     <HierarchicalDataTemplate DataType="{x:Type customControls:FolderTreeViewItem}" ItemsSource="{Binding Children}">

@@ -19,7 +19,18 @@ namespace MSOE.MediaComplete
         /// Bindable list of Playlists. Gets used in context menus and elsewhere.
         /// </summary>
         public ObservableCollection<Playlist> Playlists { get { return _playlists; } }
-        private readonly ObservableCollection<Playlist> _playlists = new ObservableCollection<Playlist>(PlaylistService.GetAllPlaylists());
+        private readonly ObservableCollection<Playlist> _playlists = new ObservableCollection<Playlist>();
+
+        /// <summary>
+        /// Populates the playlist treeview
+        /// </summary>
+        private void InitPlaylists()
+        {
+            foreach (var playlist in PlaylistService.GetAllPlaylists())
+            {
+                _playlists.Add(playlist);
+            }
+        }
 
         #region Event handlers
 

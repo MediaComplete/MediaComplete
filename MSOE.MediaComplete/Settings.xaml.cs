@@ -3,7 +3,6 @@ using System.Globalization;
 using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
 using MSOE.MediaComplete.Lib;

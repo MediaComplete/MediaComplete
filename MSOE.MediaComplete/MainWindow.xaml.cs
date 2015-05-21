@@ -72,6 +72,7 @@ namespace MSOE.MediaComplete
         {
             InitServicesAsync();
             InitializeComponent();
+            InitPlaylists();
             InitUi();
             InitEvents();
             InitTreeView();
@@ -495,7 +496,7 @@ namespace MSOE.MediaComplete
             var list = NowPlayingItem.IsSelected ? NowPlaying.Inst.Playlist : (Playlist)PlaylistTree.SelectedItem;
 
             playlistSongs.Clear();
-            list.Songs.ForEach(s => playlistSongs.Add(new SongListItem { Content = s, Data = s }));
+            list.Songs.ForEach(s => playlistSongs.Add(new SongListItem { Content = s.Title, Data = s }));
 
             // If now-playing, highlight the current song
             if (NowPlayingItem.IsSelected && NowPlaying.Inst.Index > -1 && !_player.PlaybackState.Equals(PlaybackState.Stopped))

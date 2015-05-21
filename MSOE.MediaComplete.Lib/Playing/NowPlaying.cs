@@ -48,6 +48,17 @@ namespace MSOE.MediaComplete.Lib.Playing
         }
         #endregion
 
+        #region Events
+        /// <summary>
+        /// event handler for ending playlist
+        /// TODO fix this and the one in Player MC-307
+        /// </summary>
+        public delegate void PlaylistEndedHandler();
+        public event PlaylistEndedHandler PlaylistEnded = delegate { };
+
+
+        #endregion
+
         /// <summary>
         /// Private constructor. This class is a singleton.
         /// </summary>
@@ -110,7 +121,14 @@ namespace MSOE.MediaComplete.Lib.Playing
         public AbstractSong NextSong()
         {
             // TODO MC-38 MC-39 Looping and shuffling logic go here.
-            return Index >= _songs.Count - 1 ? null : _songs[++Index];
+            if (_songs.Count == 0) return null;
+
+            Index = ++Index % _songs.Count;
+            if (Index == 0)
+            {
+                PlaylistEnded();
+            }
+            return _songs[Index];
         }
 
         /// <summary>
@@ -120,7 +138,10 @@ namespace MSOE.MediaComplete.Lib.Playing
         public AbstractSong PreviousSong()
         {
             // TODO MC-38 MC-39 Looping and shuffling logic go here.
-            return Index <= 0 ? null : _songs[--Index];
+            if (_songs.Count == 0) return null;
+            var count = _songs.Count;
+            Index = ((--Index % count) + count) % count;
+            return _songs[Index];
         }
 
         public void InsertRange(int insertIndex, IEnumerable<AbstractSong> songs)
@@ -320,4 +341,5 @@ namespace MSOE.MediaComplete.Lib.Playing
         }
         #endregion
     }
+
 }
