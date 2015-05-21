@@ -3,7 +3,6 @@ using System.Globalization;
 using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
 using MSOE.MediaComplete.Lib;
@@ -37,7 +36,8 @@ namespace MSOE.MediaComplete
             CheckboxPolling.IsChecked = SettingWrapper.IsPolling;
             CheckboxShowImportDialog.IsChecked = SettingWrapper.ShowInputDialog;
             CheckBoxSorting.IsChecked = SettingWrapper.IsSorting;
-            CheckBoxInfoLogging.IsChecked = SettingWrapper.LogLevel!=0;
+            // TODO MC-308 Commented out until we figure out how to get an installed app logging
+            //CheckBoxInfoLogging.IsChecked = SettingWrapper.LogLevel!=0;
             Logger.SetLogLevel(SettingWrapper.LogLevel);
             MoveOrCopy.IsChecked = SettingWrapper.ShouldRemoveOnImport;
             _allDirs = SettingWrapper.AllDirectories;

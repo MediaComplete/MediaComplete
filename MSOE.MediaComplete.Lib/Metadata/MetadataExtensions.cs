@@ -4,8 +4,10 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Principal;
+using TagLib;
 using TagLib.Id3v2;
 using File = TagLib.File;
+using Tag = TagLib.Id3v2.Tag;
 
 namespace MSOE.MediaComplete.Lib.Metadata
 {
@@ -44,6 +46,12 @@ namespace MSOE.MediaComplete.Lib.Metadata
             return fileTag.Album == otherTag.Album && fileTag.Track == otherTag.Track;
         }
 
+        /// <summary>
+        /// Set a metadata attribute. Value is casted based on the specified MetaAttribute.
+        /// </summary>
+        /// <param name="file">The taglib file to target</param>
+        /// <param name="attr">The metadata attribute</param>
+        /// <param name="value">The new data value</param>
         public static void SetAttribute(this File file, MetaAttribute attr, object value)
         {
             if (value == null) return;
@@ -54,12 +62,10 @@ namespace MSOE.MediaComplete.Lib.Metadata
                     tag.Album = (string) value;
                     break;
                 case MetaAttribute.Artist:
-                    var aa = new List<String> {((string) value)};
-                    aa.AddRange(tag.AlbumArtists.Skip(1));
-                    tag.AlbumArtists = aa.ToArray();
+                    tag.AlbumArtists = ((IEnumerable<string>)value).ToArray();
                     break;
                 case MetaAttribute.Genre:
-                    tag.Genres = ((string) value).Split(',');
+                    tag.Genres = ((IEnumerable<string>)value).ToArray();
                     break;
                 case MetaAttribute.Rating:
                     var tag1 = tag as Tag;
@@ -73,9 +79,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
                     tag.Title = (string) value;
                     break;
                 case MetaAttribute.SupportingArtist:
-                    var aa2 = new List<String> {tag.AlbumArtists.Length < 1 ? "" : tag.AlbumArtists[0]};
-                    aa2.AddRange(((string)value).Split(','));
-                    tag.AlbumArtists = aa2.ToArray();
+                    tag.Performers = ((IEnumerable<string>)value).ToArray();
                     break;
                 case MetaAttribute.TrackNumber:
                     try
@@ -97,16 +101,11 @@ namespace MSOE.MediaComplete.Lib.Metadata
                         StatusBarHandler.Instance.ChangeStatusBarMessage("InvalidTrackNumber", StatusBarHandler.StatusIcon.Error);
                     }
                     break;
+                case MetaAttribute.AlbumArt:
+                    tag.Pictures = new[] { value as IPicture };
+                    break;
                 default:
                     return;
-            }
-            try
-            {
-                file.Save();//TODO: MC-185 add catch for save when editing a file while it is playing
-            }
-            catch (UnauthorizedAccessException)
-            {
-                StatusBarHandler.Instance.ChangeStatusBarMessage("Save-Error", StatusBarHandler.StatusIcon.Error);
             }
         }
 
@@ -116,7 +115,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /// <param name="file">The Music File</param>
         /// <param name="attr">The MetaAttribute for the specific ID3 value to be returned</param>
         /// <returns>The ID3 value from the tag</returns>
-        public static string GetAttribute(this File file, MetaAttribute attr)
+        public static object GetAttribute(this File file, MetaAttribute attr)
         {
             var tag = file.Tag;
             switch (attr)
@@ -124,9 +123,9 @@ namespace MSOE.MediaComplete.Lib.Metadata
                 case MetaAttribute.Album:
                     return tag.Album;
                 case MetaAttribute.Artist:
-                    return tag.FirstAlbumArtist;
+                    return tag.AlbumArtists;
                 case MetaAttribute.Genre:
-                    return tag.FirstGenre;
+                    return tag.Genres;
                 case MetaAttribute.Rating:
                     var tag1 = tag as Tag;
                     if (tag1 != null)
@@ -140,7 +139,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
                 case MetaAttribute.SongTitle:
                     return tag.Title;
                 case MetaAttribute.SupportingArtist:
-                    return String.Join(",", tag.AlbumArtists.Skip(1));
+                    return tag.Performers;
                 case MetaAttribute.TrackNumber:
                     return tag.Track.ToString(CultureInfo.InvariantCulture);
                 case MetaAttribute.Year:

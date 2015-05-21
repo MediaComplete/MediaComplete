@@ -236,7 +236,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
             return new MediaItem
             {
                 Location = song.Path,
-                Inf = song.Artist + " - " + song.Title,
+                Inf = song.Artists + " - " + song.Title,
                 Runtime = song.Duration ?? 0
             };
         }

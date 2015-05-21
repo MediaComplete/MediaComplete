@@ -358,72 +358,72 @@ namespace MSOE.MediaComplete.Test
                 new LocalSong("id1", new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
                             "AlbumName"+Path.DirectorySeparatorChar +"song1.mp3"))
                 {
-                    Artist = "ArtistName",
+                    Artists = new [] { "ArtistName" },
                     Album = "AlbumName"
                 },
                 new LocalSong("id2", new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
                             "AlbumName"+Path.DirectorySeparatorChar +"song2.mp3"))
                 {
-                    Artist = "ArtistName",
+                    Artists = new [] { "ArtistName" },
                     Album = "AlbumName"
                 },
                 new LocalSong("id3", new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
                             "AlbumName"+Path.DirectorySeparatorChar +"song3.mp3"))
                 {
-                    Artist = "ArtistName",
+                    Artists = new [] { "ArtistName" },
                     Album = "AlbumName"
                 },
                 new LocalSong("id4", new SongPath(SettingWrapper.MusicDir.FullPath + "song4.mp3"))
                 {
-                    Artist = "ArtistName",
+                    Artists = new [] { "ArtistName" },
                     Album = "AlbumName"
                 },
                 new LocalSong("id5", new SongPath(SettingWrapper.MusicDir.FullPath + "song5.mp3"))
                 {
-                    Artist = "ArtistName",
+                    Artists = new [] { "ArtistName" },
                     Album = "AlbumName"
                 },
                 new LocalSong("id6", new SongPath(SettingWrapper.MusicDir.FullPath + "song6.mp3"))
                 {
-                    Artist = "ArtistName",
+                    Artists = new [] { "ArtistName" },
                     Album = "AlbumName"
                 },
                 new LocalSong("id7", new SongPath(SettingWrapper.MusicDir.FullPath + "song7.mp3"))
                 {
-                    Artist = "ArtistName",
+                    Artists = new [] { "ArtistName" },
                     Album = "AlbumName"
                 },
                 new LocalSong("id8", new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
                             "AlbumName"+Path.DirectorySeparatorChar +"song8.mp3"))
                 {
-                    Artist = "ArtistName",
+                    Artists = new [] { "ArtistName" },
                     Album = "AlbumName"
                 },
                 new LocalSong("id9", new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
                             "AlbumName"+Path.DirectorySeparatorChar +"song9.mp3"))
                 {
-                    Artist = "ArtistName",
+                    Artists = new [] { "ArtistName" },
                     Album = "AlbumName"
                 },
                 new LocalSong("id10", new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
                             "AlbumName"+Path.DirectorySeparatorChar +"song10.mp3"))
                 {
-                    Artist = "ArtistName",
+                    Artists = new [] { "ArtistName" },
                     Album = "AlbumName"
                 },
                 new LocalSong("id11", new SongPath(SettingWrapper.MusicDir.FullPath + "song8.mp3"))
                 {
-                    Artist = "ArtistName",
+                    Artists = new [] { "ArtistName" },
                     Album = "AlbumName"
                 },
                 new LocalSong("id12", new SongPath(SettingWrapper.MusicDir.FullPath + "song9.mp3"))
                 {
-                    Artist = "ArtistName",
+                    Artists = new [] { "ArtistName" },
                     Album = "AlbumName"
                 },
                 new LocalSong("id13", new SongPath(SettingWrapper.MusicDir.FullPath + "song10.mp3"))
                 {
-                    Artist = "ArtistName",
+                    Artists = new [] { "ArtistName" },
                     Album = "AlbumName"
                 }
             };

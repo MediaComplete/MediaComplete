@@ -103,7 +103,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
             // This breaks the naming.
             for (var x = 0; x < list.Count(); x ++)
             {
-                var metaValue = song.GetAttribute(list[x]);
+                var metaValue = song.GetAttributeStr(list[x]);
                 var useableValue = metaValue ?? "Unknown " + list[x];
                 path += useableValue;
                 path += Path.DirectorySeparatorChar;
@@ -193,7 +193,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
 
         public override IReadOnlyCollection<Type> InvalidBeforeTypes
         {
-            get { return new List<Type> { typeof(IdentifierTask), typeof(Importer) }.AsReadOnly(); }
+            get { return new List<Type> { typeof(Identifier), typeof(Importer) }.AsReadOnly(); }
         }
 
         public override IReadOnlyCollection<Type> InvalidAfterTypes

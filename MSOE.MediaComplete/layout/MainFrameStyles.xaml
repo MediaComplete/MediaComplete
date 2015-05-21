@@ -30,21 +30,13 @@
                 <Setter Property="Foreground" Value="{DynamicResource TextSelectedForegroundBrush}"/>
                 <Setter Property="Background" Value="{DynamicResource TextSelectedBackgroundBrush}"/>
             </Trigger>
-            <Trigger Property="IsPlaying" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource CurrentSong}"/>
-                <Setter Property="FontWeight" Value="ExtraBold"/>
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-    <Style TargetType="{x:Type customControls:LibrarySongItem}">
-        <Style.Triggers>
             <Trigger Property="IsMouseDirectlyOver" Value="True">
                 <Setter Property="Background" Value="{DynamicResource TextMouseOverBackgroundBrush}"/>
                 <Setter Property="Foreground" Value="{DynamicResource TextMouseOverForegroundBrush}"/>
             </Trigger>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource TextSelectedForegroundBrush}"/>
-                <Setter Property="Background" Value="{DynamicResource TextSelectedBackgroundBrush}"/>
+            <Trigger Property="IsPlaying" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource CurrentSong}"/>
+                <Setter Property="FontWeight" Value="ExtraBold"/>
             </Trigger>
         </Style.Triggers>
     </Style>-->

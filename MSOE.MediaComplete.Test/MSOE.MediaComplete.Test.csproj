@@ -90,6 +90,7 @@
   <ItemGroup>
     <Compile Include="Background\ImporterManagementTest.cs" />
     <Compile Include="Background\QueueTest.cs" />
+    <Compile Include="Background\MusicIdentiferManagementTest.cs" />
     <Compile Include="Background\SorterManagementTest.cs" />
     <Compile Include="MusicIdentifierTest.cs" />
     <Compile Include="Playing\PlayerTest.cs" />
