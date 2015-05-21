@@ -89,6 +89,7 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Files\AbstractSong.cs" />
+    <Compile Include="Files\ErrorSong.cs" />
     <Compile Include="Files\FilePaths.cs" />
     <Compile Include="Files\FileManager.cs" />
     <Compile Include="Metadata\IdentifierTask.cs" />

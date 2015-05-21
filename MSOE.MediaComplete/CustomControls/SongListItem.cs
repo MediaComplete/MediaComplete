@@ -10,6 +10,8 @@ namespace MSOE.MediaComplete.CustomControls
     {
         public AbstractSong Data { get; set; }
 
+        public FolderTreeViewItem ParentItem { get; set; }
+
         public bool IsPlaying
         {
             get { return (bool) GetValue(IsPlayingProperty); }
@@ -28,10 +30,5 @@ namespace MSOE.MediaComplete.CustomControls
         {
             return (string)Content;
         }
-    }
-
-    public class LibrarySongItem : SongListItem
-    {
-        public FolderTreeViewItem ParentItem { get; set; }
     }
 }

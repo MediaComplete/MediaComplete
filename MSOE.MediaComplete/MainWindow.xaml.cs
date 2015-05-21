@@ -63,6 +63,7 @@ namespace MSOE.MediaComplete
         {
             _fileManager.Initialize(SettingWrapper.MusicDir);
             InitializeComponent();
+            InitPlaylists();
             InitUi();
             InitEvents();
             InitTreeView();
@@ -417,7 +418,7 @@ namespace MSOE.MediaComplete
             foreach (var file in GetFilesOrDir(dir).GetMusicFiles())
             {
                 var thing = _fileManager.GetSong(new SongPath(file.FullName));
-                songList.Add(new LibrarySongItem { Content = file.Name, ParentItem = parent, Data = thing });
+                songList.Add(new SongListItem { Content = file.Name, ParentItem = parent, Data = thing });
             }
 
         }
@@ -459,7 +460,7 @@ namespace MSOE.MediaComplete
             var list = NowPlayingItem.IsSelected ? NowPlaying.Inst.Playlist : (Playlist)PlaylistTree.SelectedItem;
 
             playlistSongs.Clear();
-            list.Songs.ForEach(s => playlistSongs.Add(new SongListItem { Content = s, Data = s }));
+            list.Songs.ForEach(s => playlistSongs.Add(new SongListItem { Content = s.Title, Data = s }));
 
             // If now-playing, highlight the current song
             if (NowPlayingItem.IsSelected && NowPlaying.Inst.Index > -1 && !_player.PlaybackState.Equals(PlaybackState.Stopped))
@@ -515,9 +516,6 @@ namespace MSOE.MediaComplete
         {
             var currentSongs = (ObservableCollection<SongListItem>)(PlaylistTab.IsSelected ? PlaylistSongs : Songs).Source;
             return currentSongs.Where(x => x.IsSelected && x.IsVisible);
-            //            return from object song in currentSongs
-            //                 where ((SongListItem)song).IsSelected && ((SongListItem)song).IsVisible
-            //               select (song as SongListItem);
         }
 
         /// <summary>
@@ -550,7 +548,7 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private static void LibrarySongFilter(object sender, FilterEventArgs e)
         {
-            var song = e.Item as LibrarySongItem;
+            var song = e.Item as SongListItem;
             e.Accepted = song != null && song.ParentItem.IsSelectedRecursive();
         }
 

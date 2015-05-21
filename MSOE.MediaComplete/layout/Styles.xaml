@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:customControls="clr-namespace:MSOE.MediaComplete.CustomControls"
                     x:Class="MSOE.MediaComplete.layout.Styles">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="MultiSelectTreeView.xaml"/>
@@ -7,12 +8,44 @@
     </ResourceDictionary.MergedDictionaries>
     
     <Style TargetType="{x:Type ListView}">
-        <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
+        <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
         <EventSetter Event="MouseUp" Handler="ListView_OnMouseUp"/>
     </Style>
-    
+
+    <Style x:Key="{x:Type customControls:SongListItem}" TargetType="{x:Type customControls:SongListItem}">
+        <Setter Property="SnapsToDevicePixels" Value="true"/>
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type customControls:SongListItem}">
+                    <Border Name="Border" Padding="2" SnapsToDevicePixels="true" Background="{TemplateBinding Background}">
+                        <TextBlock VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
+                                   Text="{TemplateBinding Content}"
+                                   FontWeight="{TemplateBinding FontWeight}"
+                                   Foreground="{TemplateBinding Foreground}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource TextMouseOverForegroundBrush}"/>
+                <Setter Property="Background" Value="{DynamicResource TextMouseOverBackgroundBrush}"/>
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource TextSelectedForegroundBrush}"/>
+                <Setter Property="Background" Value="{DynamicResource TextSelectedBackgroundBrush}"/>
+            </Trigger>
+            <Trigger Property="IsPlaying" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource CurrentSong}"/>
+                <Setter Property="FontWeight" Value="ExtraBold"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style TargetType="{x:Type TabItem}">
         <Setter Property="Foreground" Value="{DynamicResource TabTextBrush}" />
         <Setter Property="Template">

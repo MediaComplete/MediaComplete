@@ -251,7 +251,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
         {
             if (TypeDictionary.Select(regex => new Regex(regex.Key).Matches(mediaItem.Location).Count).Any(hits => hits > 0))
             {
-                return _fileManager.GetSong(mediaItem);
+                return _fileManager.GetSong(mediaItem) ?? new ErrorSong(null){ Title = mediaItem.Inf };
             }
 
             throw new FormatException(String.Format("{0} does not match any known song types", mediaItem.Location));

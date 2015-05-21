@@ -1,7 +1,6 @@
 <customWindow:BaseWindow
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:customControls="clr-namespace:MSOE.MediaComplete.CustomControls"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:customWindow="clr-namespace:MSOE.MediaComplete.CustomWindow"
@@ -121,12 +120,6 @@
                           Visibility="{Binding ElementName=LibraryTab, Path=IsSelected, Converter={StaticResource BoolToVis}}"
                           ItemsSource="{Binding Songs.View}" MouseDoubleClick="SongList_OnMouseDoubleClick"
                           SelectionChanged="SongList_OnSelectionChanged">
-                    <ListView.ItemTemplate>
-                        <HierarchicalDataTemplate ItemsSource="{Binding}"
-                                                  DataType="{x:Type customControls:SongListItem}">
-                            <TextBlock Text="{Binding}" />
-                        </HierarchicalDataTemplate>
-                    </ListView.ItemTemplate>
                     <ListView.ContextMenu>
                         <ContextMenu StaysOpen="True">
                             <MenuItem Header="{StaticResource ContextMenu-PlayMusic-Header}"
@@ -188,12 +181,6 @@
                               ItemsSource="{Binding PlaylistSongs.View}"
                               SelectionChanged="SongList_OnSelectionChanged"
                               MouseDoubleClick="PlaylistSongs_OnMouseDoubleClick">
-                        <ListView.ItemTemplate>
-                            <HierarchicalDataTemplate ItemsSource="{Binding}"
-                                                      DataType="{x:Type customControls:SongListItem}">
-                                <TextBlock Text="{Binding}" />
-                            </HierarchicalDataTemplate>
-                        </ListView.ItemTemplate>
                     </ListView>
                 </ScrollViewer>
             </Grid>
