@@ -49,6 +49,8 @@ namespace MSOE.MediaComplete
             PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
             _player = Player.Instance;
             _player.PlaybackEnded += AutomaticStop;
+            Player.Instance.PlaylistFinishedEvent += PlaylistEnded;
+            NowPlaying.Inst.PlaylistEnded += PlaylistEnded;
             _player.ChangeVolume(VolumeSlider.Value);
             Player.Instance.SongFinishedEvent += UpdateColorEvent;
             Player.Instance.SongFinishedEvent += ResetTrackBar;
@@ -337,8 +339,19 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void PreviousButton_OnClick(object sender, RoutedEventArgs e)
         {
-            //TODO: MC-34 or MC-35
-            //throw new System.NotImplementedException();
+            if (_player.CurrentTime > TimeSpan.FromSeconds(2))
+            {
+                _player.Seek(TimeSpan.FromSeconds(0));//better way to do this?
+            }
+            else
+            {
+                var queue = NowPlaying.Inst;
+                var old = queue.Index;
+                queue.PreviousSong();
+                var current = queue.Index;
+                UpdateColorEvent(old, current);
+                Play();
+            }
         }
 
         /// <summary>
@@ -348,8 +361,15 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void SkipButton_OnClick(object sender, RoutedEventArgs e)
         {
-            //TODO: MC-34 or MC-35
-            //throw new System.NotImplementedException();
+            var queue = NowPlaying.Inst;
+            var old = queue.Index;
+            queue.NextSong();
+            var current = queue.Index;
+            UpdateColorEvent(old, current);
+            if (queue.Index != 0)
+            {
+                Play();
+            }
         }
 
         /// <summary>
@@ -401,7 +421,7 @@ namespace MSOE.MediaComplete
                         var songTreeViewItem = selectedItems.FirstOrDefault();
                         if (songTreeViewItem != null)
                             NowPlaying.Inst.JumpTo(songTreeViewItem.Data);
-                        Play();
+                        Play();//TODO is this necessary?
                     }
                 }
 
@@ -597,5 +617,13 @@ namespace MSOE.MediaComplete
             StartListeningToUpdateTrackbar();
         }
         #endregion
+
+
+        private void PlaylistEnded()
+        {
+            _player.Stop();
+            PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
+            PlaylistSongList.SelectedIndex = 0;
+        }
     }
 }

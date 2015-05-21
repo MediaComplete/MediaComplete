@@ -94,7 +94,7 @@ namespace MSOE.MediaComplete.Test.Playing
             var song = NowPlaying.Inst.NextSong();
 
             Assert.IsNull(song, "Should not have conjured a song");
-            Assert.AreEqual(-1, NowPlaying.Inst.Index, "Index should still be -1.");
+            Assert.AreEqual(-1, NowPlaying.Inst.Index);
         }
 
         [TestMethod]
@@ -108,8 +108,8 @@ namespace MSOE.MediaComplete.Test.Playing
             NowPlaying.Inst.JumpTo(1);
             var song = NowPlaying.Inst.NextSong();
 
-            Assert.IsNull(song, "Should not have conjured a song");
-            Assert.AreEqual(1, NowPlaying.Inst.Index, "Index should still be 1.");
+            Assert.IsNotNull(song);
+            Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should wrap to be 0.");
         }
 
         [TestMethod]
@@ -150,8 +150,8 @@ namespace MSOE.MediaComplete.Test.Playing
             });
             var song = NowPlaying.Inst.PreviousSong();
 
-            Assert.IsNull(song, "Should not have conjured a song");
-            Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should still be 0.");
+            Assert.IsNotNull(song);
+            Assert.AreEqual(1, NowPlaying.Inst.Index, "Index should wrap to be 1.");
         }
 
         [TestMethod]
