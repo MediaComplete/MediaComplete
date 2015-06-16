@@ -170,14 +170,12 @@ namespace MSOE.MediaComplete
                     break;
                 default:
                     var newSongs = AllSongs();
-                    if (newSongs.Any())
-                    {
-                        NowPlaying.Inst.Clear();
-                        NowPlaying.Inst.Add(newSongs.Select(s => s.Data));
-                        NowPlaying.Inst.JumpTo(SelectedSongIndex());
-                    }
-                    Play();
-                    break;
+                if (!newSongs.Any()) return;
+                NowPlaying.Inst.Clear();
+                NowPlaying.Inst.Add(newSongs.Select(s => s.Data));
+                NowPlaying.Inst.JumpTo(0);
+                Play();
+                break;
             }
         }
 
@@ -407,6 +405,7 @@ namespace MSOE.MediaComplete
             {
                 if (NowPlayingItem.IsSelected) // Jump in current now playing
                 {
+                    if (targetSong.IsPlaying) return;
                     targetSong.IsPlaying = true;
                     playlistSongs[NowPlaying.Inst.Index].IsPlaying = false;
                     NowPlaying.Inst.JumpTo(SelectedSongIndex());
