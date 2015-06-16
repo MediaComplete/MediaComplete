@@ -101,7 +101,7 @@
                               SelectedItemChanged="PlaylistTree_SelectionChanged">
                         <TreeView.ItemsSource>
                             <CompositeCollection>
-                                <TreeViewItem Name="NowPlayingItem" Header="{StaticResource NowPlaying}" />
+                                <TreeViewItem Name="NowPlayingList" Header="{StaticResource NowPlaying}" />
                                 <CollectionContainer Collection="{Binding Source={StaticResource PlaylistsCollection}}" />
                             </CompositeCollection>
                         </TreeView.ItemsSource>

@@ -195,7 +195,7 @@ namespace MSOE.MediaComplete
                 var song = nowPlayingSongs[NowPlaying.Inst.Index];
                 song.IsPlaying = false;
             }
-            else if (NowPlayingItem.IsSelected)
+            else if (NowPlayingList.IsSelected)
             {
                 var oldSong = nowPlayingSongs[oldIndex];
                 var newSong = nowPlayingSongs[newIndex];
@@ -405,7 +405,7 @@ namespace MSOE.MediaComplete
 
             if (targetSong != null)
             {
-                if (NowPlayingItem.IsSelected) // Jump in current now playing
+                if (NowPlayingList.IsSelected) // Jump in current now playing
                 {
                     if (targetSong.IsPlaying) return;
                     targetSong.IsPlaying = true;

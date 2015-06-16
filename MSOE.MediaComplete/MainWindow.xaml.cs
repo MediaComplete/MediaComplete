@@ -478,7 +478,7 @@ namespace MSOE.MediaComplete
         {
             if (PlaylistTab.IsSelected)
             {
-                NowPlayingItem.IsSelected = true;
+                NowPlayingList.IsSelected = true;
                 // Manually fire this, NowPlayingItem.IsSelected won't do the job if that's already selected
                 PlaylistTree_SelectionChanged(null, null);
             }
@@ -493,13 +493,13 @@ namespace MSOE.MediaComplete
         private void PlaylistTree_SelectionChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             var playlistSongs = (ObservableCollection<SongListItem>)PlaylistSongs.Source;
-            var list = NowPlayingItem.IsSelected ? NowPlaying.Inst.Playlist : (Playlist)PlaylistTree.SelectedItem;
+            var list = NowPlayingList.IsSelected ? NowPlaying.Inst.Playlist : (Playlist)PlaylistTree.SelectedItem;
 
             playlistSongs.Clear();
             list.Songs.ForEach(s => playlistSongs.Add(new SongListItem { Content = s.Title, Data = s }));
 
             // If now-playing, highlight the current song
-            if (NowPlayingItem.IsSelected && NowPlaying.Inst.Index > -1 && !_player.PlaybackState.Equals(PlaybackState.Stopped))
+            if (NowPlayingList.IsSelected && NowPlaying.Inst.Index > -1 && !_player.PlaybackState.Equals(PlaybackState.Stopped))
             {
                 var item = playlistSongs[NowPlaying.Inst.Index];
                 item.IsPlaying = true;
