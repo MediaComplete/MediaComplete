@@ -407,6 +407,7 @@ namespace MSOE.MediaComplete
             {
                 if (NowPlayingItem.IsSelected) // Jump in current now playing
                 {
+                    if (targetSong.IsPlaying) return;
                     targetSong.IsPlaying = true;
                     playlistSongs[NowPlaying.Inst.Index].IsPlaying = false;
                     NowPlaying.Inst.JumpTo(SelectedSongIndex());
