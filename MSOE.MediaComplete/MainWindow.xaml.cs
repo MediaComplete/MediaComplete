@@ -39,7 +39,7 @@ namespace MSOE.MediaComplete
         {
             get { return _rootLibItem; } 
         }
-        private readonly FolderTreeViewItem _rootLibItem = new FolderTreeViewItem { Header = SettingWrapper.MusicDir, IsSelected = true };
+        private FolderTreeViewItem _rootLibItem = new FolderTreeViewItem { Header = SettingWrapper.MusicDir, IsSelected = true };
 
         /// <summary>
         /// Contains the songs in the middle view. Filtered based on what's happening in the left pane.
@@ -142,15 +142,23 @@ namespace MSOE.MediaComplete
             // ReSharper disable once UnusedVariable
             var tmp = Polling.Instance;  // Run singleton constructor
             SettingWrapper.RaiseSettingEvent += Resort;
+            SettingWrapper.RaiseSettingEvent += InitTreeView;
             Importer.ImportFinished += SortImports;
             Importer.ImportFinished += FailedImport;
         }
-
+        private void InitFolderView()
+        {
+            _rootLibItem.Children.Clear();
+            _rootLibItem.Header = SettingWrapper.MusicDir;
+        }
         /// <summary>
         /// Setup the song library
         /// </summary>
         private void InitTreeView()
         {
+            _fileManager.Initialize(SettingWrapper.MusicDir);
+            InitFolderView();
+            ((ObservableCollection<SongListItem>)Songs.Source).Clear();
             // Set the library sorter
             var songsView = Songs.View as ListCollectionView;
             if (songsView != null)
@@ -428,9 +436,10 @@ namespace MSOE.MediaComplete
         {
             // First, lop off everything up to the music dir
             var pathStr = path.FullPath.Substring(SettingWrapper.MusicDir.FullPath.Length);
+            if(pathStr.Equals(""))return null;
             // Now break into individual "folder" names
             var folderNames = pathStr.Split(Path.DirectorySeparatorChar);
-
+            
             // Now fill out the treeview with the folder names
             return folderNames.Aggregate(_rootLibItem,
                 (parentTreeViewItem, folderName) => parentTreeViewItem.Children.FirstOrDefault(t =>
