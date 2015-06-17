@@ -434,9 +434,10 @@ namespace MSOE.MediaComplete
         /// <returns>The last folder treeview item in the heirarchy</returns>
         private FolderTreeViewItem AddFolderTreeViewItems(DirectoryPath path)
         {
+            //TODO Fix root level files being added
             // First, lop off everything up to the music dir
             var pathStr = path.FullPath.Substring(SettingWrapper.MusicDir.FullPath.Length);
-            if(pathStr.Equals(""))return null;
+            if (pathStr.Equals("")) return RootLibraryFolderItem;
             // Now break into individual "folder" names
             var folderNames = pathStr.Split(Path.DirectorySeparatorChar);
             
