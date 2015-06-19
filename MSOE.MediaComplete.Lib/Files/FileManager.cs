@@ -410,7 +410,7 @@ namespace MSOE.MediaComplete.Lib.Files
                 foreach (var song in allSongs)
                 {
                     var oldSong = song;
-                    var tempPath = e.FullPath.EndsWith(Path.DirectorySeparatorChar + "", StringComparison.Ordinal)
+                    var tempPath = e.EndsWith(Path.DirectorySeparatorChar + "")
                         ? e.FullPath
                         : e.FullPath + Path.DirectorySeparatorChar;
                     var newPath = tempPath + song.Name;
