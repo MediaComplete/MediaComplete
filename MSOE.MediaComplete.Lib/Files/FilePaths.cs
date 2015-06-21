@@ -82,7 +82,10 @@ namespace MSOE.MediaComplete.Lib.Files
         /// <param name="path"></param>
         public DirectoryPath(string path)
         {
-            FullPath = path;
+            if (path.EndsWith(Path.DirectorySeparatorChar.ToString()))
+                FullPath = path;
+            else
+                FullPath = path += Path.DirectorySeparatorChar;
         }
 
         /// <summary>
