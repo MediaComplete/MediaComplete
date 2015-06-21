@@ -43,12 +43,12 @@ namespace MSOE.MediaComplete.Lib.Files
         /// <summary>
         /// Rebuilds the dictionaries using the parameter as the source. 
         /// </summary>
-        /// <param name="directory">Source Directory for populating the dictionarires</param>
-        public void Initialize(DirectoryPath directory)
+        /// <param name="musicDir">Source Directory for populating the dictionarires</param>
+        public void Initialize(DirectoryPath musicDir)
         {
             _cachedFiles.Clear();
             _cachedSongs.Clear();
-            var files = new DirectoryInfo(directory.FullPath).GetFiles("*", SearchOption.AllDirectories).GetMusicFiles();
+            var files = new DirectoryInfo(musicDir.FullPath).GetFiles("*", SearchOption.AllDirectories).GetMusicFiles();
             foreach (var fileInfo in files)
             {
                 AddFileToCache(Guid.NewGuid().ToString(), fileInfo);
