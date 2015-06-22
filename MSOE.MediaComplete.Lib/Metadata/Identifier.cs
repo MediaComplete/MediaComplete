@@ -147,7 +147,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
                             Logger.LogException("Automatic music identification error", x);
                             Message = "MusicIdentification-Warning-RateLimit";
                             Icon = StatusBarHandler.StatusIcon.Warning;
-                            // TODO MC-45 Any other ID tasks in the queue should be cancelled somehow
+                            // TODO MC-76 Any other ID tasks in the queue should be cancelled somehow
                             TriggerUpdate(this);
                             stop = true;
                         }

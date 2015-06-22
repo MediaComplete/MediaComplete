@@ -140,7 +140,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
             _fileManager = fileManager;
         }
 
-        // TODO MC-192 rewrite class to use mockable injectable File service. Also write tests at this time - see PlaylistsTest.cs
+        // TODO rewrite class to use mockable injectable File service. Also write tests at this time - see PlaylistsTest.cs
 
         private static readonly string DefaultExtension = Constants.PlaylistFileExtensions.First();
 

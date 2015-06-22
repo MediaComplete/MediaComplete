@@ -104,7 +104,7 @@ namespace MSOE.MediaComplete.Lib.Files
             return Directory.Exists(directory.FullPath);
         }
 
-        // TODO MC-212 keep directories and files that aren't music, so they can be managed in-app
+        // TODO MC-35 keep directories and files that aren't music, so they can be managed in-app
         /// <summary>
         /// Verifies if the specified directory has no child directories or music files.
         /// 
@@ -224,7 +224,7 @@ namespace MSOE.MediaComplete.Lib.Files
             }
             try
             {
-                file.Save(); //TODO: MC-185 add catch for save when editing a file while it is playing
+                file.Save(); //TODO: MC-4 add catch for save when editing a file while it is playing
             }
             catch (UnauthorizedAccessException)
             {

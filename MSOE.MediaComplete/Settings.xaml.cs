@@ -36,7 +36,7 @@ namespace MSOE.MediaComplete
             CheckboxPolling.IsChecked = SettingWrapper.IsPolling;
             CheckboxShowImportDialog.IsChecked = SettingWrapper.ShowInputDialog;
             CheckBoxSorting.IsChecked = SettingWrapper.IsSorting;
-            // TODO MC-308 Commented out until we figure out how to get an installed app logging
+            // TODO MC-1 Commented out until we figure out how to get an installed app logging
             //CheckBoxInfoLogging.IsChecked = SettingWrapper.LogLevel!=0;
             Logger.SetLogLevel(SettingWrapper.LogLevel);
             MoveOrCopy.IsChecked = SettingWrapper.ShouldRemoveOnImport;

@@ -63,7 +63,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                         if (_fileManager.FileExists(targetPath)) // If the file is already there
                         {
                             // Delete source, let the older file take precedence.
-                            // TODO (MC-124) perhaps we should try comparing audio quality and pick the better one?
+                            // TODO (MC-29) perhaps we should try comparing audio quality and pick the better one?
                             Actions.Add(new DeleteAction
                             {
                                 Target = song
@@ -108,7 +108,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                 path += useableValue;
                 path += Path.DirectorySeparatorChar;
             }
-            //TODO MC-260 Rename songs/configure song naming
+            //TODO MC-53 Rename songs/configure song naming
             return new SongPath(SettingWrapper.MusicDir.FullPath + GetValidFileName(path) + song.Name); 
         }
 
@@ -249,7 +249,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                     return;
                 }
 
-                _fileManager.DeleteSong(Target); // TODO (MC-127) This should be a "recycle" delete. Not implemented yet.
+                _fileManager.DeleteSong(Target); // TODO (MC-74) This should be a "recycle" delete. Not implemented yet.
             }
         }
 
