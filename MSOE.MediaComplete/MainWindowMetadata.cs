@@ -196,7 +196,7 @@ namespace MSOE.MediaComplete
                             if (ex is FormatException || ex is OverflowException)
                             {
                                 changedBox.Text = song.GetAttributeStr(MetaAttribute.TrackNumber);
-                                // TODO MC-306 make the user fix it
+                                // TODO MC-41 make the user fix it
                             }
                             else
                             {
@@ -215,7 +215,7 @@ namespace MSOE.MediaComplete
                             if (ex is FormatException || ex is OverflowException)
                             {
                                 changedBox.Text = song.GetAttributeStr(MetaAttribute.Year);
-                                // TODO MC-306 make the user fix it
+                                // TODO MC-41 make the user fix it
                             }
                             else
                             {
@@ -238,7 +238,7 @@ namespace MSOE.MediaComplete
                             if (ex is FormatException || ex is OverflowException)
                             {
                                 changedBox.Text = song.GetAttributeStr(MetaAttribute.Rating);
-                                // TODO MC-306 make the user fix it
+                                // TODO MC-41 make the user fix it
                             }
                             else
                             {

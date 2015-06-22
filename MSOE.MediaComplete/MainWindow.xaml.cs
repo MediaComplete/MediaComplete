@@ -331,7 +331,6 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void Toolbar_AutoIDMusic_ClickAsync(object sender, RoutedEventArgs e)
         {
-            // TODO (MC-45) mass ID of folders
             using (var scope = _autoFacContainer.BeginLifetimeScope())
             {
                 var files = SelectedSongs().Select(l => l.Data).OfType<LocalSong>().ToList();
@@ -347,7 +346,6 @@ namespace MSOE.MediaComplete
         /// <param name="e"></param>
         private void ContextMenu_AutoIDMusic_ClickAsync(object sender, RoutedEventArgs e)
         {
-            // TODO (MC-45) mass ID of folders
             using (var scope = _autoFacContainer.BeginLifetimeScope())
             {
                 var files = SelectedSongs().Select(l => l.Data).OfType<LocalSong>().ToList();

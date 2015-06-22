@@ -3,7 +3,7 @@
                     xmlns:system="clr-namespace:System;assembly=mscorlib"
                     xmlns:mediaComplete="clr-namespace:MSOE.MediaComplete">
 
-    <!-- Put strings up here - TODO MC-297 Internationalization -->
+    <!-- Put strings up here - TODO MC-45 Internationalization -->
     <system:String x:Key="Toolbar-AddFile-Tooltip">Add File(s)</system:String>
     <system:String x:Key="Toolbar-AddFolder-Tooltip">Add Folder</system:String>
     <system:String x:Key="Toolbar-AutoIdMusic-Tooltip">Restore Metadata</system:String>

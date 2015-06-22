@@ -238,7 +238,7 @@ namespace MSOE.MediaComplete.CustomWindow
 
                 if (closeToTop)
                     AdjustWindowSize();
-                // TODO MC-270 - support left/right screen snapping as well.
+                // TODO MC-49 - support left/right screen snapping as well.
 
                 _mousePosition = null;
             }

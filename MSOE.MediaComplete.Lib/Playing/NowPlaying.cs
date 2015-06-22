@@ -51,7 +51,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         #region Events
         /// <summary>
         /// event handler for ending playlist
-        /// TODO fix this and the one in Player MC-307
+        /// TODO fix this and the one in Player MC-23
         /// </summary>
         public delegate void PlaylistEndedHandler();
         public event PlaylistEndedHandler PlaylistEnded = delegate { };
@@ -110,7 +110,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// <returns>True if calling NextSong() will return a song</returns>
         public bool HasNextSong()
         {
-            // TODO MC-38 MC-39 Looping and shuffling logic go here.
+            // TODO MC-54 MC-55 Looping and shuffling logic go here.
             return Index < _songs.Count-1 && Index >= 0;
         }
 
@@ -120,7 +120,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// <returns>The chosen song</returns>
         public AbstractSong NextSong()
         {
-            // TODO MC-38 MC-39 Looping and shuffling logic go here.
+            // TODO MC-54 MC-55 Looping and shuffling logic go here.
             if (_songs.Count == 0) return null;
 
             Index = ++Index % _songs.Count;
@@ -137,7 +137,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// <returns>The chosen song</returns>
         public AbstractSong PreviousSong()
         {
-            // TODO MC-38 MC-39 Looping and shuffling logic go here.
+            // TODO MC-54 MC-55 Looping and shuffling logic go here.
             if (_songs.Count == 0) return null;
             var count = _songs.Count;
             Index = ((--Index % count) + count) % count;
