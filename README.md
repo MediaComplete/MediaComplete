@@ -3,23 +3,23 @@
 Media Complete is a desktop application for Windows that quickly and easily allows you to manage a library of music. It can be downloaded at [**mediacomplete.github.io**](http://mediacomplete.github.io).
 
 
-###What can I do with Media Complete?###
+###What can I do with Media Complete?
 
-*Sort music files, with configurable settings
-*Quickly edit file metadata
-*Find missing metadata information
-*Automatically import and sort music
-*Listen to music
-*Create and manage playlists
+* Sort music files, with configurable settings
+* Quickly edit file metadata
+* Find missing metadata information
+* Automatically import and sort music
+* Listen to music
+* Create and manage playlists
 
-###What will be added to Media Complete?###
+###What will be added to Media Complete?
 
-*Search for music in your library
-*Stream songs from YouTube
-*Search for songs on YouTube
-*Additional playlist controls
-*Full media player controls
-*Anything else we can think of!
+* Search for music in your library
+* Stream songs from YouTube
+* Search for songs on YouTube
+* Additional playlist controls
+* Full media player controls
+* Anything else we can think of!
 
 
 ###How can I help?###
