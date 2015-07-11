@@ -1,6 +1,6 @@
 # MediaComplete #
 
-Media Complete is a desktop application for Windows that quickly and easily allows you to manage a library of music. It can be downloaded at [mediacomplete.github.io](mediacomplete.github.io).
+Media Complete is a desktop application for Windows that quickly and easily allows you to manage a library of music. It can be downloaded at [**mediacomplete.github.io**](http://mediacomplete.github.io).
 
 
 ###What can I do with Media Complete?###
@@ -26,3 +26,6 @@ Media Complete is a desktop application for Windows that quickly and easily allo
 
 Feel free to [log an issue](https://github.com/MediaComplete/MediaComplete/issues/new), if you find one, or even suggest a feature. We are aware of some major issues and are working to get them resolved. 
 Otherwise, feel free to fork and adapt this for your own use. If you do, we'd love to know what you added, or what you used it for! 
+
+###License###
+[The MIT License](http://opensource.org/licenses/MIT)
