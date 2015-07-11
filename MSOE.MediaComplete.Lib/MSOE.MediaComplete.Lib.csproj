@@ -87,6 +87,7 @@
     <Compile Include="Background\Queue.cs" />
     <Compile Include="Background\TaskAdder.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Files\FileSystem.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Files\AbstractSong.cs" />
     <Compile Include="Files\ErrorSong.cs" />
