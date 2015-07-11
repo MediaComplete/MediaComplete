@@ -1,29 +1,28 @@
-# README #
+# MediaComplete #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+Media Complete is a desktop application for Windows that quickly and easily allows you to manage a library of music.
 
-### What is this repository for? ###
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+###What can I do with Media Complete?###
 
-### How do I get set up? ###
+Sort music files, with configurable settings
+Quickly edit file metadata
+Find missing metadata information
+Automatically import and sort music
+Listen to music
+Create and manage playlists
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+###What will be added to Media Complete?###
 
-### Contribution guidelines ###
+Search for music in your library
+Stream songs from YouTube
+Search for songs on YouTube
+Additional playlist controls
+Full media player controls
+Anything else we can think of!
 
-* Writing tests
-* Code review
-* Other guidelines
 
-### Who do I talk to? ###
+###How can I help?###
 
-* Repo owner or admin
-* Other community or team contact
+Feel free to log an issue, if you find one, or even suggest a feature. We are aware of some major issues and are working to get them resolved. 
+Otherwise, feel free to fork and adapt this for your own use. If you do, we'd love to know what you added, or what you used it for! 
