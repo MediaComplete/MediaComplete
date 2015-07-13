@@ -80,7 +80,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                     }
 
                     // If the target path doesn't fulfill the sort settings, bump the counter.
-                    if (targetPath.FullPath.Remove(0, SettingWrapper.MusicDir.FullPath.Length).Split(Path.DirectorySeparatorChar).Count() != SettingWrapper.SortOrder.Count + 1)
+                    if (targetPath.FullPath.Remove(0, SettingWrapper.MusicDir.Length).Split(Path.DirectorySeparatorChar).Count() != SettingWrapper.SortOrder.Count + 1)
                     {
                         UnsortableCount++;
                     }
