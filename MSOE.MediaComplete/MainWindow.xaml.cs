@@ -433,7 +433,7 @@ namespace MSOE.MediaComplete
         private FolderTreeViewItem AddFolderTreeViewItems(DirectoryPath path)
         {
             // First, lop off everything up to the music dir
-            var pathStr = path.FullPath.Substring(SettingWrapper.MusicDir.FullPath.Length);
+            var pathStr = path.FullPath.Substring(SettingWrapper.MusicDir.Length);
             // Now break into individual "folder" names
             var folderNames = pathStr.Split(Path.DirectorySeparatorChar).ToList();
             folderNames.RemoveAt(folderNames.Count-1);
@@ -462,8 +462,8 @@ namespace MSOE.MediaComplete
                 }
 
                 // Get the string paths of the parent folders, minus the music dir (speeds up a bit)
-                var xPath = x.ParentItem.GetPath().Substring(SettingWrapper.MusicDir.FullPath.Length);
-                var yPath = y.ParentItem.GetPath().Substring(SettingWrapper.MusicDir.FullPath.Length);
+                var xPath = x.ParentItem.GetPath().Substring(SettingWrapper.MusicDir.Length);
+                var yPath = y.ParentItem.GetPath().Substring(SettingWrapper.MusicDir.Length);
 
                 // Compare by path
                 var pathDiff = String.Compare(xPath, yPath, StringComparison.Ordinal);
