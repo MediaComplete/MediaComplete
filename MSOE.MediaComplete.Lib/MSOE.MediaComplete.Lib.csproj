@@ -87,12 +87,12 @@
     <Compile Include="Background\Queue.cs" />
     <Compile Include="Background\TaskAdder.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Files\FileSystem.cs" />
+    <Compile Include="Library\FileSystem\FileSystem.cs" />
     <Compile Include="Logging\Logger.cs" />
-    <Compile Include="Files\AbstractSong.cs" />
-    <Compile Include="Files\ErrorSong.cs" />
-    <Compile Include="Files\FilePaths.cs" />
-    <Compile Include="Files\FileManager.cs" />
+    <Compile Include="Library\AbstractSong.cs" />
+    <Compile Include="Library\ErrorSong.cs" />
+    <Compile Include="Library\FileSystem\FilePaths.cs" />
+    <Compile Include="Library\Library.cs" />
     <Compile Include="Metadata\DoresoIdentifier.cs" />
     <Compile Include="Metadata\FfmpegAudioReader.cs" />
     <Compile Include="Metadata\MetadataExtensions.cs" />
@@ -102,7 +102,7 @@
     <Compile Include="Playing\NowPlaying.cs" />
     <Compile Include="Playlists\Playlist.cs" />
     <Compile Include="Playlists\PlaylistService.cs" />
-    <Compile Include="Files\LocalSong.cs" />
+    <Compile Include="Library\FileSystem\LocalSong.cs" />
     <Compile Include="Playing\IPlayer.cs" />
     <Compile Include="Playing\INAudioWrapper.cs" />
     <Compile Include="Playing\NAudioWrapper.cs" />

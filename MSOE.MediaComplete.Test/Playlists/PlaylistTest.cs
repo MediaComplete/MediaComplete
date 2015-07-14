@@ -28,7 +28,7 @@ namespace MSOE.MediaComplete.Test.Playlists
         {
             const string testTitle = "Test title";
             var mock = BuildM3UMock(testTitle, new List<MediaItem> { BuildMediaItem(), BuildMediaItem1() });
-            var mockManager = new Mock<IFileManager>();
+            var mockManager = new Mock<ILibrary>();
 
             var song = new LocalSong("id", new SongPath("path"));
             mockManager.Setup(x => x.GetSong(It.IsAny<MediaItem>())).Returns(song);
@@ -62,7 +62,7 @@ namespace MSOE.MediaComplete.Test.Playlists
         {
             const string testTitle = "Test title";
             var mock = BuildM3UMock(testTitle, new List<MediaItem> { BuildMediaItem(), BuildMediaItem1() });
-            var mockManager = new Mock<IFileManager>();
+            var mockManager = new Mock<ILibrary>();
 
             var song = new LocalSong("id", new SongPath("path"));
             mockManager.Setup(x => x.GetSong(It.IsAny<MediaItem>())).Returns(song);
@@ -102,7 +102,7 @@ namespace MSOE.MediaComplete.Test.Playlists
             const string newTitle = "New title";
             var mock = BuildM3UMock(testTitle, new List<MediaItem> { BuildMediaItem(), BuildMediaItem1() });
 
-            var mockManager = new Mock<IFileManager>();
+            var mockManager = new Mock<ILibrary>();
             var song = new LocalSong("id", new SongPath("path"));
             mockManager.Setup(x => x.GetSong(It.IsAny<MediaItem>())).Returns(song);
             var service = new PlaylistServiceImpl(mockManager.Object);

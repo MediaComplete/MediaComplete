@@ -11,7 +11,7 @@ namespace MSOE.MediaComplete.Test
     [TestClass]
     public class MusicIdentifierTest
     {
-        private Mock<IFileManager> _fileManagerMock;
+        private Mock<ILibrary> _fileManagerMock;
         private Mock<IAudioReader> _audioReaderMock;
         private Mock<IAudioIdentifier> _audioIdentifierMock;
         private Mock<IMetadataRetriever> _metadataRetrieverMock;
@@ -19,7 +19,7 @@ namespace MSOE.MediaComplete.Test
         [TestInitialize]
         public void Setup()
         {
-            _fileManagerMock = new Mock<IFileManager>();
+            _fileManagerMock = new Mock<ILibrary>();
             _fileManagerMock.Setup(m => m.FileExists(It.IsAny<SongPath>())).Returns(true);
 
             var audioBytes = new byte[] {0x00, 0x12, 0x34, 0x56};

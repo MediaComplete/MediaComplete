@@ -26,7 +26,7 @@ namespace MSOE.MediaComplete
         private LayoutType _changedType;
         private bool _layoutHasChanged;
         private readonly List<string> _allDirs;
-        private readonly IFileManager _fileManager;
+        private readonly ILibrary _library;
         public Settings()
         {
             InitializeComponent();
@@ -41,7 +41,7 @@ namespace MSOE.MediaComplete
             Logger.SetLogLevel(SettingWrapper.LogLevel);
             MoveOrCopy.IsChecked = SettingWrapper.ShouldRemoveOnImport;
             _allDirs = SettingWrapper.AllDirectories;
-            _fileManager = FileManager.Instance;
+            _library = Library.Instance;
             PollingCheckBoxChanged(CheckboxPolling, null);
             if (SettingWrapper.Layout.Equals(_layoutsDict[LayoutType.Pink]))
             {
@@ -96,8 +96,8 @@ namespace MSOE.MediaComplete
             if (!_allDirs.Contains(SettingWrapper.HomeDir.FullPath))
             {
                 var tempPath = new DirectoryPath(SettingWrapper.HomeDir.FullPath + "temp"+ new Random().Next());
-                _fileManager.MoveDirectory(SettingWrapper.HomeDir, tempPath);
-                _fileManager.MoveDirectory(tempPath, SettingWrapper.MusicDir);
+                _library.MoveDirectory(SettingWrapper.HomeDir, tempPath);
+                _library.MoveDirectory(tempPath, SettingWrapper.MusicDir);
                 _allDirs.Add(SettingWrapper.HomeDir.FullPath);
             }
 
@@ -177,8 +177,8 @@ namespace MSOE.MediaComplete
 
             SettingWrapper.Save();
 
-            if (!_fileManager.DirectoryExists(SettingWrapper.MusicDir))
-                _fileManager.CreateDirectory(SettingWrapper.MusicDir);
+            if (!_library.DirectoryExists(SettingWrapper.MusicDir))
+                _library.CreateDirectory(SettingWrapper.MusicDir);
             
             Close();
         }

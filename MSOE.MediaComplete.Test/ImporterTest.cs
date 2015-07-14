@@ -27,7 +27,7 @@ namespace MSOE.MediaComplete.Test
         public void Constructor_NullFiles()
         {
             // ReSharper disable once ObjectCreationAsStatement
-            new Importer(new Mock<IFileManager>().Object, null, false);
+            new Importer(new Mock<ILibrary>().Object, null, false);
         }
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
@@ -142,10 +142,10 @@ namespace MSOE.MediaComplete.Test
         }
         #endregion
 
-        private static Mock<IFileManager> SetUpMock()
+        private static Mock<ILibrary> SetUpMock()
         {
             SettingWrapper.HomeDir = HomeDir;
-            var mock = new Mock<IFileManager>();
+            var mock = new Mock<ILibrary>();
             var allSongs = new List<SongPath>{
                 new SongPath(SettingWrapper.MusicDir.FullPath+ "song1.mp3"),
                 new SongPath(SettingWrapper.MusicDir.FullPath+ "song2.mp3"),

@@ -349,11 +349,11 @@ namespace MSOE.MediaComplete.Test
 
         #endregion
         
-        private static Mock<IFileManager> SetUpMock()
+        private static Mock<ILibrary> SetUpMock()
         {
             SettingWrapper.SortOrder = SortOrder;
             SettingWrapper.HomeDir = HomeDir;
-            var mock = new Mock<IFileManager>();
+            var mock = new Mock<ILibrary>();
             var allSongs = new List<LocalSong>{
                 new LocalSong("id1", new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
                             "AlbumName"+Path.DirectorySeparatorChar +"song1.mp3"))

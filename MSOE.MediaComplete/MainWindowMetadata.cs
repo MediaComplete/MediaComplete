@@ -247,7 +247,7 @@ namespace MSOE.MediaComplete
                         }
                     }
                 }
-                _fileManager.SaveSong(song as LocalSong);
+                _library.SaveSong(song as LocalSong);
             }
             _changedBoxes.Clear();
             PopulateMetadataForm();

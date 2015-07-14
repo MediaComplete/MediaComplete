@@ -65,7 +65,7 @@ namespace MSOE.MediaComplete
             SettingWrapper.ShowInputDialog =!StopShowingCheckBox.IsChecked.GetValueOrDefault(false);
 
             //Do the move
-            Queue.Inst.Add(new Importer(FileManager.Instance, _files, false));
+            Queue.Inst.Add(new Importer(Library.Instance, _files, false));
             
 
             Polling.Instance.Reset();

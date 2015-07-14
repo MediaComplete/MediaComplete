@@ -56,7 +56,7 @@ namespace MSOE.MediaComplete
         /// <summary>
         /// Private abstraction of the file system
         /// </summary>
-        private readonly IFileManager _fileManager = FileManager.Instance;
+        private readonly ILibrary _library = Library.Instance;
 
         /// <summary>
         /// The root context for resolve dependencies
@@ -87,9 +87,9 @@ namespace MSOE.MediaComplete
             var builder = new ContainerBuilder();
 
             // Register file manager
-            var fileManager = FileManager.Instance;
+            var fileManager = Library.Instance;
             fileManager.Initialize(SettingWrapper.MusicDir);
-            builder.RegisterInstance(fileManager).ExternallyOwned().As<IFileManager>();
+            builder.RegisterInstance(fileManager).ExternallyOwned().As<ILibrary>();
 
             // Register identifier
             builder.RegisterType<FfmpegAudioReader>().As<IAudioReader>();
@@ -101,19 +101,19 @@ namespace MSOE.MediaComplete
                 new ResolvedParameter((pi, c) => pi.ParameterType == typeof(IAudioReader), (pi, c) => c.Resolve<IAudioReader>()),
                 new ResolvedParameter((pi, c) => pi.ParameterType == typeof(IAudioIdentifier), (pi, c) => c.Resolve<IAudioIdentifier>()),
                 new ResolvedParameter((pi, c) => pi.ParameterType == typeof(IMetadataRetriever), (pi, c) => c.Resolve<IMetadataRetriever>()),
-                new ResolvedParameter((pi, c) => pi.ParameterType == typeof(IFileManager), (pi, c) => c.Resolve<IFileManager>())
+                new ResolvedParameter((pi, c) => pi.ParameterType == typeof(ILibrary), (pi, c) => c.Resolve<ILibrary>())
             });
 
             // Register sorter
             builder.RegisterType<Sorter>().WithParameters(new[]
             {
-                new ResolvedParameter((pi, c) => pi.ParameterType == typeof(IFileManager), (pi, c) => c.Resolve<IFileManager>())
+                new ResolvedParameter((pi, c) => pi.ParameterType == typeof(ILibrary), (pi, c) => c.Resolve<ILibrary>())
             });
 
             // Register importer
             builder.RegisterType<Importer>().WithParameters(new[]
             {
-                new ResolvedParameter((pi, c) => pi.ParameterType == typeof(IFileManager), (pi, c) => c.Resolve<IFileManager>())
+                new ResolvedParameter((pi, c) => pi.ParameterType == typeof(ILibrary), (pi, c) => c.Resolve<ILibrary>())
             });
 
             // Build
@@ -156,7 +156,7 @@ namespace MSOE.MediaComplete
         /// </summary>
         private void InitTreeView()
         {
-            _fileManager.Initialize(SettingWrapper.MusicDir);
+            _library.Initialize(SettingWrapper.MusicDir);
             InitFolderView();
             ((ObservableCollection<SongListItem>)Songs.Source).Clear();
             // Set the library sorter
@@ -168,13 +168,13 @@ namespace MSOE.MediaComplete
             Songs.Filter += LibrarySongFilter;
 
             // Initial population
-            SongCreated(_fileManager.GetAllSongs()); 
+            SongCreated(_library.GetAllSongs()); 
 
             // Subscribe to file system updates
-            _fileManager.SongChanged += SongChanged;
-            _fileManager.SongCreated += SongCreated;
-            _fileManager.SongDeleted += SongDeleted;
-            _fileManager.SongRenamed += SongRenamed;
+            _library.SongChanged += SongChanged;
+            _library.SongCreated += SongCreated;
+            _library.SongDeleted += SongDeleted;
+            _library.SongRenamed += SongRenamed;
         }
         #endregion
 
@@ -284,7 +284,7 @@ namespace MSOE.MediaComplete
         {
             using (var scope = _autoFacContainer.BeginLifetimeScope())
             {
-                var files = _fileManager.GetAllSongs().Select(x => x.SongPath);
+                var files = _library.GetAllSongs().Select(x => x.SongPath);
                 var sorter = scope.Resolve<Sorter>(new TypedParameter(typeof(IEnumerable<SongPath>), files));
 
                 await sorter.CalculateActionsAsync();
@@ -313,7 +313,7 @@ namespace MSOE.MediaComplete
         {
             if (!SortHelper.GetSorting()) return;
 
-            var files = _fileManager.GetAllSongs().Select(x => x.SongPath);
+            var files = _library.GetAllSongs().Select(x => x.SongPath);
 
             using (var scope = _autoFacContainer.BeginLifetimeScope())
             {
@@ -379,7 +379,7 @@ namespace MSOE.MediaComplete
                     ((ObservableCollection<SongListItem>)Songs.Source).Remove(song);
                     // Roll up the empty folders
                     var parent = song.ParentItem;
-                    while (_fileManager.DirectoryEmpty(new DirectoryPath(parent.GetPath())) && parent.ParentItem != null)
+                    while (_library.DirectoryEmpty(new DirectoryPath(parent.GetPath())) && parent.ParentItem != null)
                     {
                         parent.ParentItem.Children.Remove(parent);
                         parent = parent.ParentItem;

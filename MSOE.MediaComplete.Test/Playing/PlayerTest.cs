@@ -22,7 +22,7 @@ namespace MSOE.MediaComplete.Test.Playing
         public void StateChanges_HappyPath()
         {
             var mockNAudioWrapper = new Mock<INAudioWrapper>();
-            var mockFileManager = new Mock<IFileManager>();
+            var mockFileManager = new Mock<ILibrary>();
             var stuff = new Fixture().Create<string>();
             var mockLocalSong = new LocalSong("id", new SongPath(stuff));
 
@@ -55,7 +55,7 @@ namespace MSOE.MediaComplete.Test.Playing
         public void StateChanges_WeirdPath()
         {
             var mockNAudioWrapper = new Mock<INAudioWrapper>();
-            var mockFileManager = new Mock<IFileManager>();
+            var mockFileManager = new Mock<ILibrary>();
             var stuff = new Fixture().Create<string>();
             var mockLocalSong = new LocalSong("id", new SongPath(stuff));
 
@@ -109,7 +109,7 @@ namespace MSOE.MediaComplete.Test.Playing
         public void Play_InvalidFileInfo_ThrowsCorruptFileException()
         {
             var mockNAudioWrapper = new Mock<INAudioWrapper>();
-            var mockFileManager = new Mock<IFileManager>();
+            var mockFileManager = new Mock<ILibrary>();
             var stuff = new Fixture().Create<string>();
             var mockLocalSong = new LocalSong("id", new SongPath(stuff));
 

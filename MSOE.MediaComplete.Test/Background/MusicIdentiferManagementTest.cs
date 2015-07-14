@@ -31,7 +31,7 @@ namespace MSOE.MediaComplete.Test.Background
         [TestMethod]
         public void Test_AddID_GoesBeforeSortButAfterIdentify()
         {
-            var mock = new Mock<IFileManager>();
+            var mock = new Mock<ILibrary>();
             var queue = new List<List<Task>>
             {
                 new List<Task> {new Importer(mock.Object, new SongPath[]{}, false), new Importer(mock.Object, new SongPath[]{}, false)},

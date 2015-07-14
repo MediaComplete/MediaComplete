@@ -24,19 +24,19 @@ namespace MSOE.MediaComplete.Lib.Import
 
         public ImportResults Results { get; set; }
         private readonly IEnumerable<SongPath> _files; 
-        private readonly IFileManager _fileManager;
+        private readonly ILibrary _library;
         private readonly bool _isMove;
 
         /// <summary>
         /// Constructs an Importer with the given library home directory.
         /// </summary>
-        /// <param name="fileManagers">FileManager used for dependency injection</param>
+        /// <param name="libraries">FileManager used for dependency injection</param>
         /// <param name="files"></param>
         /// <param name="isMove"></param>
-        public Importer(IFileManager fileManagers, IEnumerable<SongPath> files, bool isMove)
+        public Importer(ILibrary libraries, IEnumerable<SongPath> files, bool isMove)
         {
-            if(fileManagers == null || files == null) throw new ArgumentNullException();
-            _fileManager = fileManagers;
+            if(libraries == null || files == null) throw new ArgumentNullException();
+            _library = libraries;
             _isMove = isMove;
             if (files.Any(f => f.HasParent(SettingWrapper.MusicDir)))
             {
@@ -79,16 +79,16 @@ namespace MSOE.MediaComplete.Lib.Import
                 foreach (var file in _files)
                 {
                     var newFile = new SongPath(SettingWrapper.MusicDir.FullPath + file.Name);
-                    if (_fileManager.FileExists(newFile)) continue;
+                    if (_library.SongExists(newFile)) continue;
                     try
                     {
                         if (_isMove)
                         {   
-                            _fileManager.AddFile(file, newFile);
+                            _library.AddFile(file, newFile);
                         }
                         else
                         {
-                            _fileManager.CopyFile(file, newFile);
+                            _library.CopyFile(file, newFile);
                         }
                         results.NewFiles.Add(newFile);
                     }

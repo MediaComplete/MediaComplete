@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using M3U.NET;
+using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Metadata;
-using TagLib;
 using File = System.IO.File;
-using TaglibFile = TagLib.File;
 
-namespace MSOE.MediaComplete.Lib.Files
+namespace MSOE.MediaComplete.Lib.Library.FileSystem
 {
     public class FileSystem : IFileSystem
     {
-        public static FileSystem instance = new FileSystem();
+        private static FileSystem _instance;
+        public static IFileSystem Instance { get { return _instance ?? (_instance = new FileSystem()); } }
         /// <summary>
         /// Copies a file between two specified paths. 
         /// This is currently only used in the Importer
@@ -60,6 +57,7 @@ namespace MSOE.MediaComplete.Lib.Files
             var hasMusic = new DirectoryInfo(directory.FullPath).EnumerateFiles().GetMusicFiles().Any();
             return hasDirs || hasMusic;
         }
+        
         /// <summary>
         /// Verifies if the specified file exists.
         /// </summary>
@@ -70,6 +68,7 @@ namespace MSOE.MediaComplete.Lib.Files
         {
             return File.Exists(file.FullPath);
         }
+
         /// <summary>
         /// Moves a file from an old location to a new one
         /// Move operation is performed on the stored FileInfo, and the 
@@ -83,7 +82,6 @@ namespace MSOE.MediaComplete.Lib.Files
             oldFile.MoveTo(newFile.FullPath);
             
         }
-
 
         /// <summary>
         /// used to migrate an entire directories files and folders to a new location.
@@ -105,7 +103,6 @@ namespace MSOE.MediaComplete.Lib.Files
             files.ForEach(x => x.MoveTo(newPath.FullPath + Path.DirectorySeparatorChar + x.Name));
         }
 
-
         /// <summary>
         /// Moves a file from the directory of songPath to the directory at newFile. 
         /// This is used in the importer, to move a file that does not exist in our directory into the working directory.
@@ -120,5 +117,52 @@ namespace MSOE.MediaComplete.Lib.Files
 
     public interface IFileSystem
     {
+        /// <summary>
+        /// Copies a file between two specified paths. 
+        /// This is currently only used in the Importer
+        /// </summary>
+        /// <param name="file">Original location of the song, including filename</param>
+        /// <param name="newFile">Destination location of the song, including filename</param>
+        void CopyFile(SongPath file, SongPath newFile);
+        /// <summary>
+        /// Create a folder at a specified location.
+        /// Used by Sorter and to initialize music/playlist folders where necessary
+        /// </summary>
+        /// <param name="directory">Destination location to create the folder, including foldername</param>
+        void CreateDirectory(DirectoryPath directory);
+        /// <summary>
+        /// Verifies if the specified directory exists.
+        /// </summary>
+        /// <param name="directory">directory location to check</param>
+        /// <returns>true if the directory exists</returns>
+        /// <returns>false if the directory does not exist</returns>
+        bool DirectoryExists(DirectoryPath directory);
+        /// <summary>
+        /// Verifies if the specified directory has no children.
+        /// </summary>
+        /// <param name="directory">directory location to check</param>
+        /// <returns>true if the directory is empty</returns>
+        /// <returns>false if the directory contains additional directories or files</returns>
+        bool DirectoryEmpty(DirectoryPath directory);
+        /// <summary>
+        /// Verifies if the specified file exists.
+        /// </summary>
+        /// <param name="file">file location to check</param>
+        /// <returns>true if the file exists</returns>
+        /// <returns>false if the file does not exist</returns>
+        bool FileExists(SongPath file);
+        /// <summary>
+        /// Moves a file from the directory of songPath to the directory at newFile. 
+        /// This is used in the importer, to move a file that does not exist in our directory into the working directory.
+        /// </summary>
+        /// <param name="songPath"></param>
+        /// <param name="newFile"></param>
+        void AddFile(SongPath songPath, SongPath newFile);
+        /// <summary>
+        /// used to migrate an entire directories files and folders to a new location.
+        /// </summary>
+        /// <param name="oldPath">Original directory to move</param>
+        /// <param name="newPath">Destination to move directory to</param>
+        void MoveDirectory(DirectoryPath oldPath, DirectoryPath newPath);
     }
 }

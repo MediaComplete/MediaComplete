@@ -37,7 +37,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /// <summary>
         /// Controls how files are accessed and edited
         /// </summary>
-        private readonly IFileManager _fileManager;
+        private readonly ILibrary _library;
 
         /// <summary>
         /// The collection of songs to identify
@@ -51,13 +51,13 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /// <param name="reader">Audio reader for parsing in audio data</param>
         /// <param name="identifier">Audio identifer for fingerprinting songs</param>
         /// <param name="metadata">Metadata retreiver for finding additional metadata details.</param>
-        /// <param name="fileManager">Controls how files are accessed</param>
-        public Identifier(IEnumerable<LocalSong> files, IAudioReader reader, IAudioIdentifier identifier, IMetadataRetriever metadata, IFileManager fileManager)
+        /// <param name="library">Controls how files are accessed</param>
+        public Identifier(IEnumerable<LocalSong> files, IAudioReader reader, IAudioIdentifier identifier, IMetadataRetriever metadata, ILibrary library)
         {
             _audioReader = reader;
             _metadataRetriever = metadata;
             _audioIdentifier = identifier;
-            _fileManager = fileManager;
+            _library = library;
 
             if (files == null)
                 throw new ArgumentNullException("files", "Files must not be null");
@@ -76,7 +76,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
             StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Started",
                 StatusBarHandler.StatusIcon.Working);
 
-            if (!_fileManager.FileExists(file.SongPath))
+            if (!_library.SongExists(file.SongPath))
             {
                 // TODO (MC-125) Logging
                 StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error-NoException",
@@ -111,7 +111,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
             await _metadataRetriever.GetMetadataAsync(file);
 
             // Save whatever we found
-            _fileManager.SaveSong(file);
+            _library.SaveSong(file);
         }
 
         #region Task overrides

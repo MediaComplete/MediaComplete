@@ -22,7 +22,7 @@ namespace MSOE.MediaComplete.Test.Background
         [TestMethod]
         public void Test_AddImportEmptyQueue_Added()
         {
-            var mock = new Mock<IFileManager>();
+            var mock = new Mock<ILibrary>();
             var queue = new List<List<Task>>();
             var subject = new Importer(mock.Object, new List<SongPath> { new SongPath("") }, false);
             TaskAdder.ResolveConflicts(subject, queue);
@@ -38,7 +38,7 @@ namespace MSOE.MediaComplete.Test.Background
         [TestMethod]
         public void Test_AddImport_GoesBeforeSortAndIdentify()
         {
-            var mock = new Mock<IFileManager>();
+            var mock = new Mock<ILibrary>();
             var queue = new List<List<Task>>
             {
                 new List<Task> {new Sorter(mock.Object, null)},
@@ -71,7 +71,7 @@ namespace MSOE.MediaComplete.Test.Background
         [TestMethod]
         public void Test_AddImport_GoesWithOtherImport()
         {
-            var mock = new Mock<IFileManager>();
+            var mock = new Mock<ILibrary>();
             var queue = new List<List<Task>>
             {
                 new List<Task> {new Importer(mock.Object, new List<SongPath>{new SongPath("")}, false)},

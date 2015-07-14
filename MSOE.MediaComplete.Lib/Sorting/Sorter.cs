@@ -17,7 +17,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
     /// </summary>
     public class Sorter : Task
     {
-        private static IFileManager _fileManager;
+        private static ILibrary _library;
         public List<IAction> Actions { get; private set; }
         public int UnsortableCount { get; private set; }
         public int MoveCount { get { return Actions.Count(a => a is MoveAction); } }
@@ -34,11 +34,11 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <see cref="Actions">MoveActions</see> can be accessed directly after to anticipate the
         /// magnitude and specifics of the move.
         /// </summary>
-        /// <param name="fileManager"></param>
+        /// <param name="library"></param>
         /// <param name="files"></param>
-        public Sorter(IFileManager fileManager, IEnumerable<SongPath> files)
+        public Sorter(ILibrary library, IEnumerable<SongPath> files)
         {
-            _fileManager = fileManager;
+            _library = library;
             Files = files;
             Actions = new List<IAction>();
             UnsortableCount = 0;
@@ -51,7 +51,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         {
             await Sys.Task.Run(() =>
             {
-                var songs = _fileManager.GetAllSongs().Where(x => Files.Contains(x.SongPath));
+                var songs = _library.GetAllSongs().Where(x => Files.Contains(x.SongPath));
                 UnsortableCount += Files.Count() - songs.Count();
                 foreach (var song in songs)
                 {
@@ -60,7 +60,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                     // If the current and target paths are different, we know we need to move.
                     if (!sourcePath.Equals(targetPath))
                     {
-                        if (_fileManager.FileExists(targetPath)) // If the file is already there
+                        if (_library.SongExists(targetPath)) // If the file is already there
                         {
                             // Delete source, let the older file take precedence.
                             // TODO (MC-29) perhaps we should try comparing audio quality and pick the better one?
@@ -231,10 +231,10 @@ namespace MSOE.MediaComplete.Lib.Sorting
                     return;
                 }
 
-                if (!_fileManager.DirectoryExists(Dest.Directory)) {
-                    _fileManager.CreateDirectory(Dest.Directory);
+                if (!_library.DirectoryExists(Dest.Directory)) {
+                    _library.CreateDirectory(Dest.Directory);
                 }
-                _fileManager.MoveFile(Source, Dest);
+                _library.MoveFile(Source, Dest);
             }
         }
 
@@ -244,12 +244,12 @@ namespace MSOE.MediaComplete.Lib.Sorting
 
             public void Do()
             {
-                if (Target == null || !_fileManager.FileExists(Target.SongPath)) // Will happen if something goes wrong in the calculation
+                if (Target == null || !_library.FileExists(Target.SongPath)) // Will happen if something goes wrong in the calculation
                 {
                     return;
                 }
 
-                _fileManager.DeleteSong(Target); // TODO (MC-74) This should be a "recycle" delete. Not implemented yet.
+                _library.DeleteSong(Target); // TODO (MC-74) This should be a "recycle" delete. Not implemented yet.
             }
         }
 

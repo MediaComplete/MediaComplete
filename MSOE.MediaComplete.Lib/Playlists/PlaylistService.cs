@@ -19,7 +19,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
         /// </summary>
         public const string PlaylistDefaultTitle = "New playlist";
 
-        private static IPlaylistService _service = new PlaylistServiceImpl(FileManager.Instance);
+        private static IPlaylistService _service = new PlaylistServiceImpl(Library.Instance);
 
         /// <summary>
         /// Provides a way to substitute the implementation for playlist operations. 
@@ -134,10 +134,10 @@ namespace MSOE.MediaComplete.Lib.Playlists
     #region File implementation
     public class PlaylistServiceImpl : IPlaylistService
     {
-        private readonly IFileManager _fileManager;
-        internal PlaylistServiceImpl(IFileManager fileManager)
+        private readonly ILibrary _library;
+        internal PlaylistServiceImpl(ILibrary library)
         {
-            _fileManager = fileManager;
+            _library = library;
         }
 
         // TODO rewrite class to use mockable injectable File service. Also write tests at this time - see PlaylistsTest.cs
@@ -251,7 +251,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
         {
             if (TypeDictionary.Select(regex => new Regex(regex.Key).Matches(mediaItem.Location).Count).Any(hits => hits > 0))
             {
-                return _fileManager.GetSong(mediaItem) ?? new ErrorSong(null){ Title = mediaItem.Inf };
+                return _library.GetSong(mediaItem) ?? new ErrorSong(null){ Title = mediaItem.Inf };
             }
 
             throw new FormatException(String.Format("{0} does not match any known song types", mediaItem.Location));

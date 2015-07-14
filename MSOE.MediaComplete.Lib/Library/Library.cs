@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using M3U.NET;
+using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Metadata;
 using TagLib;
 using File = System.IO.File;
 using TaglibFile = TagLib.File;
 
-namespace MSOE.MediaComplete.Lib.Files
+namespace MSOE.MediaComplete.Lib.Library
 {
-    public class FileManager : IFileManager
+    public class Library : ILibrary
     {
         /// <summary>
         /// Dictionary of Id, song pairs. songs carry a reference to the ID identifying them
@@ -30,10 +31,10 @@ namespace MSOE.MediaComplete.Lib.Files
         /// <summary>
         /// singleton instance of the Filemanager
         /// </summary>
-        private static FileManager _instance;
-        public static IFileManager Instance { get { return _instance ?? (_instance = new FileManager()); } }
+        private static Library _instance;
+        public static ILibrary Instance { get { return _instance ?? (_instance = new Library()); } }
 
-        private FileManager()
+        private Library()
         {
             _cachedFiles = new Dictionary<string, FileInfo>();
             _cachedSongs = new Dictionary<string, LocalSong>();
@@ -72,34 +73,6 @@ namespace MSOE.MediaComplete.Lib.Files
         }
 
         #region File Operations
-
-        /// <summary>
-        /// Moves a file from an old location to a new one
-        /// Move operation is performed on the stored FileInfo, and the 
-        /// stored song's Path object is updated as well.
-        /// </summary>
-        /// <param name="oldFile">song that needs to be moved</param>
-        /// <param name="newFile">expected location of the file.</param>
-        /// <throws>ArgumentException if file does not exist in cache</throws>
-        public void MoveFile(LocalSong oldFile, SongPath newFile)
-        {
-            var sourceDir = oldFile.SongPath.Directory;
-            if (!_cachedFiles.ContainsKey(oldFile.Id)) throw new ArgumentException();
-            FileSystem.instance.MoveFile(_cachedFiles[oldFile.Id], newFile);
-            ScrubEmptyDirectories(sourceDir);
-        }
-
-        
-        /// <summary>
-        /// Moves a file from the directory of songPath to the directory at newFile. 
-        /// This is used in the importer, to move a file that does not exist in our directory into the working directory.
-        /// </summary>
-        /// <param name="songPath"></param>
-        /// <param name="newFile"></param>
-        public void AddFile(SongPath songPath, SongPath newFile)
-        {
-            File.Move(songPath.FullPath, newFile.FullPath);
-        }
 
         private static void ScrubEmptyDirectories(DirectoryPath directory)
         {
@@ -468,7 +441,11 @@ namespace MSOE.MediaComplete.Lib.Files
         public event SongUpdatedHandler SongChanged = delegate { };
         public event SongUpdatedHandler SongCreated = delegate { };
         public event SongUpdatedHandler SongDeleted = delegate { };
-        
+        public bool SongExists(SongPath newFile)
+        {
+            throw new NotImplementedException();
+        }
+
 
         public delegate void SongUpdatedHandler(IEnumerable<LocalSong> songs);
         public delegate void SongRenamedHandler(IEnumerable<Tuple<LocalSong, LocalSong>> songs);
@@ -476,7 +453,7 @@ namespace MSOE.MediaComplete.Lib.Files
 
     }
 
-    public interface IFileManager
+    public interface ILibrary
     {
         /// <summary>
         /// Rebuilds the dictionaries using the parameter as the source. 
@@ -484,66 +461,10 @@ namespace MSOE.MediaComplete.Lib.Files
         /// <param name="directory">Source Directory for populating the dictionarires</param>
         void Initialize(DirectoryPath directory);
         /// <summary>
-        /// used to migrate an entire directories files and folders to a new location.
-        /// </summary>
-        /// <param name="oldPath">Original directory to move</param>
-        /// <param name="newPath">Destination to move directory to</param>
-        void MoveDirectory(DirectoryPath oldPath, DirectoryPath newPath);
-        /// <summary>
-        /// Moves a file from an old location to a new one
-        /// Move operation is performed on the stored FileInfo, and the 
-        /// stored song's Path object is updated as well.
-        /// </summary>
-        /// <param name="oldFile">song that needs to be moved</param>
-        /// <param name="newFile">expected location of the file.</param>
-        /// <throws>ArgumentException if file does not exist in cache</throws>
-        void MoveFile(LocalSong oldFile, SongPath newFile);
-        /// <summary>
-        /// Copies a file between two specified paths. 
-        /// This is currently only used in the Importer
-        /// </summary>
-        /// <param name="file">Original location of the song, including filename</param>
-        /// <param name="newFile">Destination location of the song, including filename</param>
-        void CopyFile(SongPath file, SongPath newFile);
-        /// <summary>
-        /// Verifies if the specified file exists.
-        /// </summary>
-        /// <param name="file">file location to check</param>
-        /// <returns>true if the file exists</returns>
-        /// <returns>false if the file does not exist</returns>
-        bool FileExists(SongPath file);
-        /// <summary>
-        /// Verifies if the specified directory exists.
-        /// </summary>
-        /// <param name="directory">directory location to check</param>
-        /// <returns>true if the directory exists</returns>
-        /// <returns>false if the directory does not exist</returns>
-        bool DirectoryExists(DirectoryPath directory);
-        /// <summary>
-        /// Verifies if the specified directory has no children.
-        /// </summary>
-        /// <param name="directory">directory location to check</param>
-        /// <returns>true if the directory is empty</returns>
-        /// <returns>false if the directory contains additional directories or files</returns>
-        bool DirectoryEmpty(DirectoryPath directory);
-        /// <summary>
-        /// Create a folder at a specified location.
-        /// Used by Sorter and to initialize music/playlist folders where necessary
-        /// </summary>
-        /// <param name="directory">Destination location to create the folder, including foldername</param>
-        void CreateDirectory(DirectoryPath directory);
-        /// <summary>
         /// Writes the attributes of the song parameter to the TagLib File and updates the stored FileInfo and song
         /// </summary>
         /// <param name="song">file with updated metadata</param>
         void SaveSong(LocalSong song);
-        /// <summary>
-        /// Moves a file from the directory of songPath to the directory at newFile. 
-        /// This is used in the importer, to move a file that does not exist in our directory into the working directory.
-        /// </summary>
-        /// <param name="songPath"></param>
-        /// <param name="newFile"></param>
-        void AddFile(SongPath songPath, SongPath newFile);
         /// <summary>
         /// Get every song object that exists in the cache
         /// </summary>
@@ -566,11 +487,21 @@ namespace MSOE.MediaComplete.Lib.Files
         /// <param name="mediaItem">MediaItem for which the song is needed</param>
         /// <returns>LocalSong if it exists, null if it doesn't</returns>
         AbstractSong GetSong(MediaItem mediaItem);
-
-        event FileManager.SongRenamedHandler SongRenamed;
-        event FileManager.SongUpdatedHandler SongChanged;
-        event FileManager.SongUpdatedHandler SongCreated;
-        event FileManager.SongUpdatedHandler SongDeleted;
+        /*/// <summary>
+        /// Moves a file from an old location to a new one
+        /// Move operation is performed on the stored FileInfo, and the 
+        /// stored song's Path object is updated as well.
+        /// </summary>
+        /// <param name="oldFile">song that needs to be moved</param>
+        /// <param name="newFile">expected location of the file.</param>
+        /// <throws>ArgumentException if file does not exist in cache</throws>
+        void MoveFile(LocalSong oldFile, SongPath newFile);
+        */
+        event Library.SongRenamedHandler SongRenamed;
+        event Library.SongUpdatedHandler SongChanged;
+        event Library.SongUpdatedHandler SongCreated;
+        event Library.SongUpdatedHandler SongDeleted;
+        bool SongExists(SongPath newFile);
     }
 
 }
