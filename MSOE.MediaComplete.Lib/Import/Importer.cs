@@ -30,13 +30,13 @@ namespace MSOE.MediaComplete.Lib.Import
         /// <summary>
         /// Constructs an Importer with the given library home directory.
         /// </summary>
-        /// <param name="fileManagers">FileManager used for dependency injection</param>
+        /// <param name="fileManager"></param>
         /// <param name="files"></param>
         /// <param name="isMove"></param>
-        public Importer(IFileManager fileManagers, IEnumerable<SongPath> files, bool isMove)
+        public Importer(IFileManager fileManager, IEnumerable<SongPath> files, bool isMove)
         {
-            if(fileManagers == null || files == null) throw new ArgumentNullException();
-            _fileManager = fileManagers;
+            if(fileManager == null || files == null) throw new ArgumentNullException();
+            _fileManager = fileManager;
             _isMove = isMove;
             if (files.Any(f => f.HasParent(SettingWrapper.MusicDir)))
             {

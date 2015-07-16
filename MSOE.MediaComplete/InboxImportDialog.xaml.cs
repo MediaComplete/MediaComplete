@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using MSOE.MediaComplete.Lib;
 using System;
+using Autofac;
 using MSOE.MediaComplete.Lib.Background;
 using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
@@ -65,7 +66,7 @@ namespace MSOE.MediaComplete
             SettingWrapper.ShowInputDialog =!StopShowingCheckBox.IsChecked.GetValueOrDefault(false);
 
             //Do the move
-            Queue.Inst.Add(new Importer(FileManager.Instance, _files, false));
+            Queue.Inst.Add(new Importer(Dependency.Resolve<IFileManager>(), _files, false));
             
 
             Polling.Instance.Reset();

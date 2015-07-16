@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Autofac;
 using M3U.NET;
 using MSOE.MediaComplete.Lib.Files;
 
@@ -19,7 +20,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
         /// </summary>
         public const string PlaylistDefaultTitle = "New playlist";
 
-        private static IPlaylistService _service = new PlaylistServiceImpl(FileManager.Instance);
+        private static IPlaylistService _service = new PlaylistServiceImpl(Dependency.Resolve<IFileManager>());
 
         /// <summary>
         /// Provides a way to substitute the implementation for playlist operations. 

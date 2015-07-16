@@ -41,6 +41,9 @@
     <OutputPath>bin\x86\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac">
+      <HintPath>..\packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
@@ -86,6 +89,7 @@
     <Compile Include="Background\Task.cs" />
     <Compile Include="Background\Queue.cs" />
     <Compile Include="Background\TaskAdder.cs" />
+    <Compile Include="Dependency.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Files\AbstractSong.cs" />
