@@ -17,6 +17,7 @@ namespace MSOE.MediaComplete
     {
         private static IEnumerable<SongPath> _files;
         private static InboxImportDialog _instance;
+        private IPolling _polling = Dependency.Resolve<IPolling>();
 
         /// <summary>
         /// initializes the component
@@ -67,9 +68,8 @@ namespace MSOE.MediaComplete
 
             //Do the move
             Queue.Inst.Add(new Importer(Dependency.Resolve<IFileManager>(), _files, false));
-            
 
-            Polling.Instance.Reset();
+            _polling.Reset();
             DialogResult = true;
         }
 
@@ -81,7 +81,7 @@ namespace MSOE.MediaComplete
         private void CancelButton_OnClick(object sender, RoutedEventArgs e)
         {
             SettingWrapper.IsPolling = !StopShowingCheckBox.IsChecked.GetValueOrDefault((false));
-            Polling.Instance.Reset();
+            _polling.Reset();
             DialogResult = false;
             SettingWrapper.Save();
         }

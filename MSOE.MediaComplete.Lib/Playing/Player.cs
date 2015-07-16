@@ -27,7 +27,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// </summary>
         public static Player Instance
         {
-            get { return _instance ?? (_instance = new Player(new NAudioWrapper(), Dependency.Resolve<IFileManager>())); }
+            get { return _instance ?? (_instance = new Player(Dependency.Resolve<INAudioWrapper>(), Dependency.Resolve<IFileManager>())); }
         }
 
         /// <summary>

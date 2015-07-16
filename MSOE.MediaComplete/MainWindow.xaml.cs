@@ -56,7 +56,9 @@ namespace MSOE.MediaComplete
         /// <summary>
         /// Private abstraction of the file system
         /// </summary>
-        private readonly IFileManager _fileManager = Dependency.Resolve<IFileManager>();
+        private readonly IFileManager _fileManager;
+
+        private readonly IPolling _polling;
 
         #endregion
 
@@ -67,6 +69,8 @@ namespace MSOE.MediaComplete
         public MainWindow()
         {
             Dependency.BuildAsync();
+            _fileManager = Dependency.Resolve<IFileManager>();
+            _polling = Dependency.Resolve<IPolling>();
             InitializeComponent();
             InitPlaylists();
             InitUi();
@@ -96,7 +100,7 @@ namespace MSOE.MediaComplete
             Logger.SetLogLevel(SettingWrapper.LogLevel);
             Polling.InboxFilesDetected += ImportFromInboxAsync;
             // ReSharper disable once UnusedVariable
-            var tmp = Polling.Instance;  // Run singleton constructor
+            var tmp = _polling;  // Run singleton constructor
             SettingWrapper.RaiseSettingEvent += Resort;
             SettingWrapper.RaiseSettingEvent += InitTreeView;
             Importer.ImportFinished += SortImports;
