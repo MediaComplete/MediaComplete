@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Autofac.Core;
+using MSOE.MediaComplete.Lib.Background;
 using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
 using MSOE.MediaComplete.Lib.Metadata;
@@ -46,6 +47,8 @@ namespace MSOE.MediaComplete.Lib
             {
                 new ResolvedParameter((pi, c) => pi.ParameterType == typeof(IFileManager), (pi, c) => c.Resolve<IFileManager>())
             });
+            var queue = new Queue();
+            builder.RegisterInstance(queue).As<IQueue>();
             _afContainer = builder.Build();
         }
 

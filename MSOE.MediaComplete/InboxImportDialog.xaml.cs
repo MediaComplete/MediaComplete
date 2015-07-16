@@ -16,8 +16,9 @@ namespace MSOE.MediaComplete
     public partial class InboxImportDialog
     {
         private static IEnumerable<SongPath> _files;
+        private readonly IQueue _queue = Dependency.Resolve<IQueue>();
         private static InboxImportDialog _instance;
-        private IPolling _polling = Dependency.Resolve<IPolling>();
+        private readonly IPolling _polling = Dependency.Resolve<IPolling>();
 
         /// <summary>
         /// initializes the component
@@ -67,7 +68,7 @@ namespace MSOE.MediaComplete
             SettingWrapper.ShowInputDialog =!StopShowingCheckBox.IsChecked.GetValueOrDefault(false);
 
             //Do the move
-            Queue.Inst.Add(new Importer(Dependency.Resolve<IFileManager>(), _files, false));
+            _queue.Add(new Importer(Dependency.Resolve<IFileManager>(), _files, false));
 
             _polling.Reset();
             DialogResult = true;

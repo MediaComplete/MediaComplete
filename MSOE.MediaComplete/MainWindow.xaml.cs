@@ -58,7 +58,9 @@ namespace MSOE.MediaComplete
         /// </summary>
         private readonly IFileManager _fileManager;
 
-        private readonly IPolling _polling;
+        private readonly IPolling _polling; 
+        private readonly IQueue _queue;
+
 
         #endregion
 
@@ -71,6 +73,7 @@ namespace MSOE.MediaComplete
             Dependency.BuildAsync();
             _fileManager = Dependency.Resolve<IFileManager>();
             _polling = Dependency.Resolve<IPolling>();
+            _queue = Dependency.Resolve<IQueue>();
             InitializeComponent();
             InitPlaylists();
             InitUi();
@@ -167,7 +170,7 @@ namespace MSOE.MediaComplete
                 using (var scope = Dependency.BeginLifetimeScope())
                 {
                     var importer = scope.Resolve<Importer>(new TypedParameter(typeof(IEnumerable<SongPath>), files), new TypedParameter(typeof(bool), move));
-                    Queue.Inst.Add(importer);
+                    _queue.Add(importer);
                 }
             }
             catch (DependencyResolutionException e)
@@ -217,7 +220,7 @@ namespace MSOE.MediaComplete
             using (var scope = Dependency.BeginLifetimeScope())
             {
                 var importer = scope.Resolve<Importer>(new TypedParameter(typeof(IEnumerable<SongPath>), files), new TypedParameter(typeof(bool), move));
-                Queue.Inst.Add(importer);
+                _queue.Add(importer);
             }
         }
 
@@ -228,7 +231,7 @@ namespace MSOE.MediaComplete
                 using (var scope = Dependency.BeginLifetimeScope())
                 {
                     var sorter = scope.Resolve<Sorter>(new TypedParameter(typeof(IEnumerable<SongPath>), results.NewFiles));
-                    Queue.Inst.Add(sorter);
+                    _queue.Add(sorter);
                 }
             }
         }
@@ -265,7 +268,7 @@ namespace MSOE.MediaComplete
 
                 if (result != MessageBoxResult.Yes) return;
 
-                Queue.Inst.Add(sorter);
+                _queue.Add(sorter);
             }
         }
 
@@ -278,7 +281,7 @@ namespace MSOE.MediaComplete
             using (var scope = Dependency.BeginLifetimeScope())
             {
                 var sorter = scope.Resolve<Sorter>(new TypedParameter(typeof (IEnumerable<SongPath>), files));
-                Queue.Inst.Add(sorter);
+                _queue.Add(sorter);
             }
         }
         #endregion
@@ -295,7 +298,7 @@ namespace MSOE.MediaComplete
             {
                 var files = SelectedSongs().Select(l => l.Data).OfType<LocalSong>().ToList();
                 var id = scope.Resolve<Identifier>(new TypedParameter(typeof(IEnumerable<LocalSong>), files));
-                Queue.Inst.Add(id);
+                _queue.Add(id);
             }
         }
 
@@ -310,7 +313,7 @@ namespace MSOE.MediaComplete
             {
                 var files = SelectedSongs().Select(l => l.Data).OfType<LocalSong>().ToList();
                 var id = scope.Resolve<Identifier>(new TypedParameter(typeof(IEnumerable<SongPath>), files));
-                Queue.Inst.Add(id);
+                _queue.Add(id);
             }
         }
 
@@ -577,7 +580,7 @@ namespace MSOE.MediaComplete
                 using (var scope = Dependency.BeginLifetimeScope())
                 {
                     var importer = scope.Resolve<Importer>(new TypedParameter(typeof(IEnumerable<SongPath>), files), new TypedParameter(typeof(bool), true));
-                    Queue.Inst.Add(importer);
+                    _queue.Add(importer);
                 }
             }
         }
