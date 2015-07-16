@@ -11,19 +11,18 @@ namespace MSOE.MediaComplete.Lib
     /// <summary>
     /// Class used to set up a timed interval to poll a directory for files, and trigger an event when they 
     /// </summary>
-    public class Polling
+    public class Polling : IPolling
     {
         private readonly Timer _timer;
         public double TimeInMinutes { get; set; }
-        private static Polling _instance;
 
         public delegate void InboxFilesHandler(IEnumerable<SongPath> files);
         public static event InboxFilesHandler InboxFilesDetected = delegate {};
 
         /// <summary>
-        /// private constructor to build out a timer object and subscribe to its events
+        /// constructor to build out a timer object and subscribe to its events
         /// </summary>
-        private Polling()
+        public Polling()
         {
             _timer = new Timer();
             _timer.Elapsed += OnTimerFinished;
@@ -44,15 +43,7 @@ namespace MSOE.MediaComplete.Lib
             _timer.Interval = timeInMilliseconds;
             _timer.Enabled = true;
         }
-
-        /// <summary>
-        /// gets the instance of the singleton Polling
-        /// </summary>
-        public static Polling Instance
-        {
-            get { return _instance ?? (_instance = new Polling()); }
-        }
-
+        
         /// <summary>
         /// sets up the new polling interval and change of directory to watch
         /// </summary>
@@ -92,5 +83,13 @@ namespace MSOE.MediaComplete.Lib
                 InboxFilesDetected(fileInfos);
             }
         }
+    }
+
+    public interface IPolling
+    {
+         void Reset();
+         void OnSettingChanged();
+         void Start();
+         double TimeInMinutes { get; set; }
     }
 }

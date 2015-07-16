@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Forms;
+using Autofac;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Logging;
 using MSOE.MediaComplete.Lib.Files;
@@ -26,7 +27,7 @@ namespace MSOE.MediaComplete
         private LayoutType _changedType;
         private bool _layoutHasChanged;
         private readonly List<string> _allDirs;
-        private readonly IFileManager _fileManager;
+        private readonly IFileManager _fileManager = Dependency.Resolve<IFileManager>();
         public Settings()
         {
             InitializeComponent();
@@ -41,7 +42,6 @@ namespace MSOE.MediaComplete
             Logger.SetLogLevel(SettingWrapper.LogLevel);
             MoveOrCopy.IsChecked = SettingWrapper.ShouldRemoveOnImport;
             _allDirs = SettingWrapper.AllDirectories;
-            _fileManager = FileManager.Instance;
             PollingCheckBoxChanged(CheckboxPolling, null);
             if (SettingWrapper.Layout.Equals(_layoutsDict[LayoutType.Pink]))
             {

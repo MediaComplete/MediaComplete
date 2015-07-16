@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Autofac;
 using M3U.NET;
 using MSOE.MediaComplete.Lib.Files;
 
@@ -19,7 +20,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
         /// </summary>
         public const string PlaylistDefaultTitle = "New playlist";
 
-        private static IPlaylistService _service = new PlaylistServiceImpl(FileManager.Instance);
+        private static IPlaylistService _service = new PlaylistServiceImpl(Dependency.Resolve<IFileManager>());
 
         /// <summary>
         /// Provides a way to substitute the implementation for playlist operations. 
@@ -168,7 +169,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
                 GetDirectoryInfo()
                     .EnumerateFiles(Constants.Wildcard, SearchOption.AllDirectories)
                     .Where(f => Constants.PlaylistFileExtensions.Any(e => f.Extension.Equals(e)));
-            var z = y.Select(f => new Playlist(new M3UFile(f)));
+            var z = y.Select(f => new Playlist(Dependency.Resolve<IPlaylistService>(), new M3UFile(f)));
             return z;
 
         }
@@ -195,7 +196,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
                 .FirstOrDefault(f => Path.GetFileNameWithoutExtension(f.Name).Equals(title) &&
                                      Constants.PlaylistFileExtensions.Any(e => f.Extension.Equals(e)));
 
-            return file == null ? null : new Playlist(new M3UFile(file));
+            return file == null ? null : new Playlist(Dependency.Resolve<PlaylistServiceImpl>(), new M3UFile(file));
         }
 
         /// <summary>
@@ -210,7 +211,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
             {
                 throw new IOException("A playlist by that title already exists.");
             }
-            return new Playlist(new M3UFile(new FileInfo(GetDirectoryInfo().FullName + Path.DirectorySeparatorChar + title + DefaultExtension)));
+            return new Playlist(Dependency.Resolve<PlaylistServiceImpl>(), new M3UFile(new FileInfo(GetDirectoryInfo().FullName + Path.DirectorySeparatorChar + title + DefaultExtension)));
         }
 
         /// <summary>

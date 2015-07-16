@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using MSOE.MediaComplete.Lib;
 using System;
+using Autofac;
 using MSOE.MediaComplete.Lib.Background;
 using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
@@ -15,7 +16,9 @@ namespace MSOE.MediaComplete
     public partial class InboxImportDialog
     {
         private static IEnumerable<SongPath> _files;
+        private readonly IQueue _queue = Dependency.Resolve<IQueue>();
         private static InboxImportDialog _instance;
+        private readonly IPolling _polling = Dependency.Resolve<IPolling>();
 
         /// <summary>
         /// initializes the component
@@ -65,10 +68,9 @@ namespace MSOE.MediaComplete
             SettingWrapper.ShowInputDialog =!StopShowingCheckBox.IsChecked.GetValueOrDefault(false);
 
             //Do the move
-            Queue.Inst.Add(new Importer(FileManager.Instance, _files, false));
-            
+            _queue.Add(new Importer(Dependency.Resolve<IFileManager>(), _files, false));
 
-            Polling.Instance.Reset();
+            _polling.Reset();
             DialogResult = true;
         }
 
@@ -80,7 +82,7 @@ namespace MSOE.MediaComplete
         private void CancelButton_OnClick(object sender, RoutedEventArgs e)
         {
             SettingWrapper.IsPolling = !StopShowingCheckBox.IsChecked.GetValueOrDefault((false));
-            Polling.Instance.Reset();
+            _polling.Reset();
             DialogResult = false;
             SettingWrapper.Save();
         }

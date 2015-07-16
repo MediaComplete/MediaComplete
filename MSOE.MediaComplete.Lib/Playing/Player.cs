@@ -1,4 +1,5 @@
 ﻿using System;
+using Autofac;
 using MSOE.MediaComplete.Lib.Files;
 using NAudio.Wave;
 using TagLib;
@@ -26,7 +27,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// </summary>
         public static Player Instance
         {
-            get { return _instance ?? (_instance = new Player(new NAudioWrapper(), FileManager.Instance)); }
+            get { return _instance ?? (_instance = new Player(Dependency.Resolve<INAudioWrapper>(), Dependency.Resolve<IFileManager>())); }
         }
 
         /// <summary>
