@@ -4,6 +4,7 @@ using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Playing;
+using MSOE.MediaComplete.Lib.Playlists;
 using MSOE.MediaComplete.Lib.Sorting;
 
 namespace MSOE.MediaComplete.Lib
@@ -40,6 +41,11 @@ namespace MSOE.MediaComplete.Lib
             builder.RegisterType<NAudioWrapper>().As<INAudioWrapper>();
             var polling = new Polling();
             builder.RegisterInstance(polling).As<IPolling>();
+
+            builder.RegisterType<PlaylistServiceImpl>().WithParameters(new[]
+            {
+                new ResolvedParameter((pi, c) => pi.ParameterType == typeof(IFileManager), (pi, c) => c.Resolve<IFileManager>())
+            });
             _afContainer = builder.Build();
         }
 
