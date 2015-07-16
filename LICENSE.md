@@ -1,3 +1,4 @@
+Copyright 2014 Arjun Shanker, Brian Kramer, & Tyler Evert
 The MIT License (MIT)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
