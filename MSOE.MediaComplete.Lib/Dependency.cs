@@ -52,12 +52,20 @@ namespace MSOE.MediaComplete.Lib
             _afContainer = builder.Build();
         }
 
+        /// <summary>
+        /// Used to get an instance of a dependency that will/should persist for the lifetime of the application. e.g. single instance classes
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public static T Resolve<T>()
         {
             if(_afContainer == null) BuildAsync();
             return _afContainer.Resolve<T>();
         }
-
+        /// <summary>
+        /// Used to get an instance of a dependency with a lifetime. i.e. something that will end during the lifetime of the application
+        /// </summary>
+        /// <returns></returns>
         public static ILifetimeScope BeginLifetimeScope()
         {
             return _afContainer.BeginLifetimeScope();
