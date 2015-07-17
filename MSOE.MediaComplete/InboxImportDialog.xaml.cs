@@ -16,9 +16,9 @@ namespace MSOE.MediaComplete
     public partial class InboxImportDialog
     {
         private static IEnumerable<SongPath> _files;
-        private readonly IQueue _queue = Dependency.Resolve<IQueue>();
+        private readonly IQueue _queue;
         private static InboxImportDialog _instance;
-        private readonly IPolling _polling = Dependency.Resolve<IPolling>();
+        private readonly IPolling _polling;
 
         /// <summary>
         /// initializes the component
@@ -26,6 +26,8 @@ namespace MSOE.MediaComplete
         private InboxImportDialog()
         {
             InitializeComponent();
+            _queue = Dependency.Resolve<IQueue>();
+            _polling = Dependency.Resolve<IPolling>();
         }
 
         /// <summary>

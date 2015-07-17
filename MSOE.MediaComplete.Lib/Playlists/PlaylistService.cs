@@ -136,7 +136,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
     public class PlaylistServiceImpl : IPlaylistService
     {
         private readonly IFileManager _fileManager;
-        internal PlaylistServiceImpl(IFileManager fileManager)
+        public PlaylistServiceImpl(IFileManager fileManager)
         {
             _fileManager = fileManager;
         }

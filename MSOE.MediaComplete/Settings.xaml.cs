@@ -27,10 +27,11 @@ namespace MSOE.MediaComplete
         private LayoutType _changedType;
         private bool _layoutHasChanged;
         private readonly List<string> _allDirs;
-        private readonly IFileManager _fileManager = Dependency.Resolve<IFileManager>();
+        private readonly IFileManager _fileManager;
         public Settings()
         {
             InitializeComponent();
+            _fileManager = Dependency.Resolve<IFileManager>();
             TxtboxSelectedFolder.Text = SettingWrapper.HomeDir.FullPath;
             TxtInboxFolder.Text = SettingWrapper.InboxDir;
             ComboBoxPollingTime.SelectedValue = SettingWrapper.PollingTime.ToString(CultureInfo.InvariantCulture);

@@ -13,7 +13,7 @@ namespace MSOE.MediaComplete.Lib
     public static class Dependency
     {
         private static IContainer _afContainer;
-        
+
         public static async void BuildAsync()
         {
             var builder = new ContainerBuilder();
@@ -43,7 +43,7 @@ namespace MSOE.MediaComplete.Lib
             var polling = new Polling();
             builder.RegisterInstance(polling).As<IPolling>();
 
-            builder.RegisterType<PlaylistServiceImpl>().WithParameters(new[]
+            builder.RegisterType<PlaylistServiceImpl>().As<IPlaylistService>().WithParameters(new[]
             {
                 new ResolvedParameter((pi, c) => pi.ParameterType == typeof(IFileManager), (pi, c) => c.Resolve<IFileManager>())
             });
@@ -59,7 +59,7 @@ namespace MSOE.MediaComplete.Lib
         /// <returns></returns>
         public static T Resolve<T>()
         {
-            if(_afContainer == null) BuildAsync();
+            if (_afContainer == null) BuildAsync();
             return _afContainer.Resolve<T>();
         }
         /// <summary>
