@@ -6,6 +6,8 @@ using MSOE.MediaComplete.Lib.Sorting;
 using System.Collections.Generic;
 using Moq;
 using MSOE.MediaComplete.Lib.Files;
+using MSOE.MediaComplete.Lib.Library;
+using MSOE.MediaComplete.Lib.Library.FileSystem;
 
 namespace MSOE.MediaComplete.Test.Background
 {
@@ -22,7 +24,7 @@ namespace MSOE.MediaComplete.Test.Background
         [TestMethod]
         public void Test_AddImportEmptyQueue_Added()
         {
-            var mock = new Mock<ILibrary>();
+            var mock = new Mock<IFileSystem>();
             var queue = new List<List<Task>>();
             var subject = new Importer(mock.Object, new List<SongPath> { new SongPath("") }, false);
             TaskAdder.ResolveConflicts(subject, queue);
@@ -38,16 +40,17 @@ namespace MSOE.MediaComplete.Test.Background
         [TestMethod]
         public void Test_AddImport_GoesBeforeSortAndIdentify()
         {
-            var mock = new Mock<ILibrary>();
+            var mockfs = new Mock<IFileSystem>();
+            var mockl = new Mock<ILibrary>();
             var queue = new List<List<Task>>
             {
-                new List<Task> {new Sorter(mock.Object, null)},
+                new List<Task> {new Sorter(mockl.Object, null)},
                 new List<Task> {new Identifier(new LocalSong[]{}, null, null, null, null), new Identifier(new LocalSong[]{}, null, null, null, null)},
-                new List<Task> {new Identifier(new LocalSong[]{}, null, null, null, null), new Sorter(mock.Object, null)},
+                new List<Task> {new Identifier(new LocalSong[]{}, null, null, null, null), new Sorter(mockl.Object, null)},
                 new List<Task>()
             };
 
-            var subject = new Importer(mock.Object, new List<SongPath> { new SongPath("") }, false);
+            var subject = new Importer(mockfs.Object, new List<SongPath> { new SongPath("") }, false);
             TaskAdder.ResolveConflicts(subject, queue);
 
             Assert.AreEqual(4, queue.Count, "Queue doesn't have the right number of stages!");
@@ -71,14 +74,14 @@ namespace MSOE.MediaComplete.Test.Background
         [TestMethod]
         public void Test_AddImport_GoesWithOtherImport()
         {
-            var mock = new Mock<ILibrary>();
+            var mockfs = new Mock<IFileSystem>();
             var queue = new List<List<Task>>
             {
-                new List<Task> {new Importer(mock.Object, new List<SongPath>{new SongPath("")}, false)},
+                new List<Task> {new Importer(mockfs.Object, new List<SongPath>{new SongPath("")}, false)},
                 new List<Task> {new Identifier(new LocalSong[]{}, null, null, null, null), new Identifier(new LocalSong[]{}, null, null, null, null)}
             };
 
-            var subject = new Importer(mock.Object, new List<SongPath> { new SongPath("") }, false);
+            var subject = new Importer(mockfs.Object, new List<SongPath> { new SongPath("") }, false);
             TaskAdder.ResolveConflicts(subject, queue);
 
             Assert.AreEqual(2, queue.Count, "Queue doesn't have the right number of stages!");

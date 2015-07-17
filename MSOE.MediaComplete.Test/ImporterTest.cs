@@ -5,6 +5,8 @@ using MSOE.MediaComplete.Lib;
 using Moq;
 using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
+using MSOE.MediaComplete.Lib.Library;
+using MSOE.MediaComplete.Lib.Library.FileSystem;
 using Assert = NUnit.Framework.Assert;
 
 namespace MSOE.MediaComplete.Test
@@ -27,7 +29,7 @@ namespace MSOE.MediaComplete.Test
         public void Constructor_NullFiles()
         {
             // ReSharper disable once ObjectCreationAsStatement
-            new Importer(new Mock<ILibrary>().Object, null, false);
+            new Importer(new Mock<IFileSystem>().Object, null, false);
         }
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
@@ -142,10 +144,10 @@ namespace MSOE.MediaComplete.Test
         }
         #endregion
 
-        private static Mock<ILibrary> SetUpMock()
+        private static Mock<IFileSystem> SetUpMock()
         {
             SettingWrapper.HomeDir = HomeDir;
-            var mock = new Mock<ILibrary>();
+            var mock = new Mock<IFileSystem>();
             var allSongs = new List<SongPath>{
                 new SongPath(SettingWrapper.MusicDir.FullPath+ "song1.mp3"),
                 new SongPath(SettingWrapper.MusicDir.FullPath+ "song2.mp3"),

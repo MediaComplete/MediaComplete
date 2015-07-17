@@ -103,6 +103,26 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
             files.ForEach(x => x.MoveTo(newPath.FullPath + Path.DirectorySeparatorChar + x.Name));
         }
 
+        public void SaveSong(LocalSong file)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool SongExists(SongPath newFile)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void MoveFile(LocalSong source, SongPath dest)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void DeleteSong(LocalSong target)
+        {
+            throw new System.NotImplementedException();
+        }
+
         /// <summary>
         /// Moves a file from the directory of songPath to the directory at newFile. 
         /// This is used in the importer, to move a file that does not exist in our directory into the working directory.
@@ -164,5 +184,10 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
         /// <param name="oldPath">Original directory to move</param>
         /// <param name="newPath">Destination to move directory to</param>
         void MoveDirectory(DirectoryPath oldPath, DirectoryPath newPath);
+
+        void SaveSong(LocalSong file);
+        bool SongExists(SongPath newFile);
+        void MoveFile(LocalSong source, SongPath dest);
+        void DeleteSong(LocalSong target);
     }
 }

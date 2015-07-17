@@ -5,9 +5,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Forms;
+using Autofac;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Logging;
 using MSOE.MediaComplete.Lib.Files;
+using MSOE.MediaComplete.Lib.Library;
+using MSOE.MediaComplete.Lib.Library.FileSystem;
 using MSOE.MediaComplete.Lib.Sorting;
 using ComboBox = System.Windows.Controls.ComboBox;
 
@@ -26,10 +29,14 @@ namespace MSOE.MediaComplete
         private LayoutType _changedType;
         private bool _layoutHasChanged;
         private readonly List<string> _allDirs;
+        private readonly IFileSystem _fileSystem;
         private readonly ILibrary _library;
         public Settings()
         {
+            
             InitializeComponent();
+            _fileSystem = Dependency.Resolve<IFileSystem>();
+            _library = Dependency.Resolve<ILibrary>();
             TxtboxSelectedFolder.Text = SettingWrapper.HomeDir.FullPath;
             TxtInboxFolder.Text = SettingWrapper.InboxDir;
             ComboBoxPollingTime.SelectedValue = SettingWrapper.PollingTime.ToString(CultureInfo.InvariantCulture);
@@ -96,8 +103,8 @@ namespace MSOE.MediaComplete
             if (!_allDirs.Contains(SettingWrapper.HomeDir.FullPath))
             {
                 var tempPath = new DirectoryPath(SettingWrapper.HomeDir.FullPath + "temp"+ new Random().Next());
-                _library.MoveDirectory(SettingWrapper.HomeDir, tempPath);
-                _library.MoveDirectory(tempPath, SettingWrapper.MusicDir);
+                _fileSystem.MoveDirectory(SettingWrapper.HomeDir, tempPath);
+                _fileSystem.MoveDirectory(tempPath, SettingWrapper.MusicDir);
                 _allDirs.Add(SettingWrapper.HomeDir.FullPath);
             }
 
@@ -177,8 +184,8 @@ namespace MSOE.MediaComplete
 
             SettingWrapper.Save();
 
-            if (!_library.DirectoryExists(SettingWrapper.MusicDir))
-                _library.CreateDirectory(SettingWrapper.MusicDir);
+            if (!_fileSystem.DirectoryExists(SettingWrapper.MusicDir))
+                _fileSystem.CreateDirectory(SettingWrapper.MusicDir);
             
             Close();
         }

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 ﻿using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
+using MSOE.MediaComplete.Lib.Library;
+using MSOE.MediaComplete.Lib.Library.FileSystem;
 using MSOE.MediaComplete.Lib.Sorting;
 using MSOE.MediaComplete.Lib.Logging;
 
@@ -37,7 +39,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /// <summary>
         /// Controls how files are accessed and edited
         /// </summary>
-        private readonly ILibrary _library;
+        private readonly IFileSystem _fileSystem;
 
         /// <summary>
         /// The collection of songs to identify
@@ -52,12 +54,12 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /// <param name="identifier">Audio identifer for fingerprinting songs</param>
         /// <param name="metadata">Metadata retreiver for finding additional metadata details.</param>
         /// <param name="library">Controls how files are accessed</param>
-        public Identifier(IEnumerable<LocalSong> files, IAudioReader reader, IAudioIdentifier identifier, IMetadataRetriever metadata, ILibrary library)
+        public Identifier(IEnumerable<LocalSong> files, IAudioReader reader, IAudioIdentifier identifier, IMetadataRetriever metadata, IFileSystem fileSystem)
         {
             _audioReader = reader;
             _metadataRetriever = metadata;
             _audioIdentifier = identifier;
-            _library = library;
+            _fileSystem = fileSystem;
 
             if (files == null)
                 throw new ArgumentNullException("files", "Files must not be null");
@@ -76,7 +78,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
             StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Started",
                 StatusBarHandler.StatusIcon.Working);
 
-            if (!_library.SongExists(file.SongPath))
+            if (!_fileSystem.SongExists(file.SongPath))
             {
                 // TODO (MC-125) Logging
                 StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error-NoException",
@@ -111,7 +113,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
             await _metadataRetriever.GetMetadataAsync(file);
 
             // Save whatever we found
-            _library.SaveSong(file);
+            _fileSystem.SaveSong(file);
         }
 
         #region Task overrides

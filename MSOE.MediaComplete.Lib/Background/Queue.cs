@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using MSOE.MediaComplete.Lib.Background;
 using Sys = System.Threading.Tasks;
 
 namespace MSOE.MediaComplete.Lib.Background
@@ -8,23 +10,14 @@ namespace MSOE.MediaComplete.Lib.Background
     /// Class to manage long-running background operations. Will run tasks in parallel where possible, 
     /// and block otherwise, based on the implemenatation of the tasks passed in. This class is a singleton.
     /// </summary>
-    public class Queue
+    public class Queue : IQueue
     {
-        /// <summary>
-        /// The singleton instance available to callers.
-        /// </summary>
-        public static Queue Inst { get; private set; }
-
         /// <summary>
         /// Private constructor, creates an empty queue.
         /// </summary>
-        private Queue()
+        public Queue()
         {
             _tasks = new List<List<Task>>();
-        }
-        static Queue()
-        {
-            Inst = new Queue();
         }
 
         #region Privates
@@ -113,4 +106,9 @@ namespace MSOE.MediaComplete.Lib.Background
                 t.Message, t.Icon, t.Id, _sessionCount, (t.PercentComplete * 100).ToString("N1"));
         }
     }
+}
+
+public interface IQueue
+{
+    void Add(Task newTask);
 }

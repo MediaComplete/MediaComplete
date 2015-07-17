@@ -17,7 +17,8 @@ namespace MSOE.MediaComplete.Test.Background
         public void Add_Task_CallsResolveConflicts()
         {
             var mock = new MockTask();
-            Queue.Inst.Add(mock);
+            var queue = new Queue();
+            queue.Add(mock);
 
             SpinWait.SpinUntil(() => mock.DoCalled);
         }
@@ -26,10 +27,11 @@ namespace MSOE.MediaComplete.Test.Background
         public void Add_QueueAlreadyRunning_NewTaskRuns()
         {
             var longMock = new MockTask(Delay);
-            Queue.Inst.Add(longMock);
+            var queue = new Queue();
+            queue.Add(longMock);
 
             var secondMock = new MockTask();
-            Queue.Inst.Add(secondMock);
+            queue.Add(secondMock);
 
             Assert.IsFalse(secondMock.DoCalled, "Second mock started too early!");
 

@@ -98,5 +98,31 @@ namespace MSOE.MediaComplete.Lib.Files
         {
             return FullPath.StartsWith(parent.FullPath, StringComparison.Ordinal);
         }
+
+        public int Length
+        {
+            get{return FullPath.Length;}
+        }
+
+        public void Append(string s)
+        {
+            FullPath = FullPath += s;
+        }
+
+        public bool EndsWith(string s)
+        {
+            return FullPath.EndsWith(s, StringComparison.Ordinal);
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as DirectoryPath;
+            return FullPath.Equals(other.FullPath) && GetHashCode().Equals(other.GetHashCode());
+        }
+
+        public override int GetHashCode()
+        {
+            return string.Format("{0}-{1}", FullPath, FullPath.GetHashCode()).GetHashCode();
+        }
     }
 }

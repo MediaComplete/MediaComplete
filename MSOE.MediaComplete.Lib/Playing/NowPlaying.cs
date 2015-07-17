@@ -41,7 +41,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         {
             get
             {
-                var pl = new Playlist(new FakeM3U());
+                var pl = new Playlist(Dependency.Resolve<PlaylistServiceImpl>(), new FakeM3U());
                 pl.Songs.AddRange(_songs);
                 return pl;
             }

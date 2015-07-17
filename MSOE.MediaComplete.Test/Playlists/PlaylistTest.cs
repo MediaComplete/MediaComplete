@@ -4,6 +4,7 @@ using MSOE.MediaComplete.Lib.Playlists;
 using NUnit.Framework;
 using System.Collections.Generic;
 using MSOE.MediaComplete.Lib.Files;
+using MSOE.MediaComplete.Lib.Library;
 using MSOE.MediaComplete.Test.Util;
 
 namespace MSOE.MediaComplete.Test.Playlists
@@ -15,7 +16,14 @@ namespace MSOE.MediaComplete.Test.Playlists
         {
             const string testTitle = "Test title";
             var mock = BuildM3UMock(testTitle, new List<MediaItem>());
-            var subject = new Playlist(mock.Object);
+            var mockManager = new Mock<ILibrary>();
+
+            var song = new LocalSong("id", new SongPath("path"));
+            mockManager.Setup(x => x.GetSong(It.IsAny<MediaItem>())).Returns(song);
+            var service = new PlaylistServiceImpl(mockManager.Object);
+
+
+            var subject = new Playlist(service, mock.Object);
 
             subject.Save();
 
@@ -34,9 +42,8 @@ namespace MSOE.MediaComplete.Test.Playlists
             mockManager.Setup(x => x.GetSong(It.IsAny<MediaItem>())).Returns(song);
             var service = new PlaylistServiceImpl(mockManager.Object);
 
-            PlaylistService.SetService(service);
 
-            var subject = new Playlist(mock.Object);
+            var subject = new Playlist(service, mock.Object);
 
             subject.Save();
 
@@ -49,7 +56,14 @@ namespace MSOE.MediaComplete.Test.Playlists
         {
             const string testTitle = "Test title";
             var mock = BuildM3UMock(testTitle, new List<MediaItem> { BuildMediaItem(), BuildMediaItem() });
-            var subject = new Playlist(mock.Object);
+            var mockManager = new Mock<ILibrary>();
+
+            var song = new LocalSong("id", new SongPath("path"));
+            mockManager.Setup(x => x.GetSong(It.IsAny<MediaItem>())).Returns(song);
+            var service = new PlaylistServiceImpl(mockManager.Object);
+
+
+            var subject = new Playlist(service, mock.Object);
 
             subject.Delete();
 
@@ -68,8 +82,7 @@ namespace MSOE.MediaComplete.Test.Playlists
             mockManager.Setup(x => x.GetSong(It.IsAny<MediaItem>())).Returns(song);
             var service = new PlaylistServiceImpl(mockManager.Object);
 
-            PlaylistService.SetService(service);
-            var subject = new Playlist(mock.Object);
+            var subject = new Playlist(service, mock.Object);
 
             subject.Save();
             subject.Delete();
@@ -88,7 +101,14 @@ namespace MSOE.MediaComplete.Test.Playlists
 
             // ReSharper disable once UseObjectOrCollectionInitializer
             // Disabled since the set operation is the only thing we actually do with it.
-            var subject = new Playlist(mock.Object);
+            var mockManager = new Mock<ILibrary>();
+
+            var song = new LocalSong("id", new SongPath("path"));
+            mockManager.Setup(x => x.GetSong(It.IsAny<MediaItem>())).Returns(song);
+            var service = new PlaylistServiceImpl(mockManager.Object);
+
+
+            var subject = new Playlist(service, mock.Object);
 
             subject.Title = newTitle;
 
@@ -107,8 +127,7 @@ namespace MSOE.MediaComplete.Test.Playlists
             mockManager.Setup(x => x.GetSong(It.IsAny<MediaItem>())).Returns(song);
             var service = new PlaylistServiceImpl(mockManager.Object);
 
-            PlaylistService.SetService(service);
-            var subject = new Playlist(mock.Object);
+            var subject = new Playlist(service, mock.Object);
 
             subject.Save();
             subject.Title = newTitle;

@@ -6,6 +6,7 @@ using System.Linq;
 using MSOE.MediaComplete.Lib.Background;
 using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
+using MSOE.MediaComplete.Lib.Library;
 using MSOE.MediaComplete.Lib.Logging;
 using MSOE.MediaComplete.Lib.Metadata;
 using Sys = System.Threading.Tasks;
@@ -18,10 +19,10 @@ namespace MSOE.MediaComplete.Lib.Sorting
     public class Sorter : Task
     {
         private static ILibrary _library;
-        public List<IAction> Actions { get; private set; }
+        public List<Action.IAction> Actions { get; private set; }
         public int UnsortableCount { get; private set; }
-        public int MoveCount { get { return Actions.Count(a => a is MoveAction); } }
-        public int DupCount { get { return Actions.Count(a => a is DeleteAction); } }
+        public int MoveCount { get { return Actions.Count(a => a is Action.MoveAction); } }
+        public int DupCount { get { return Actions.Count(a => a is Action.DeleteAction); } }
         /// <summary>
         /// The specific files to sort
         /// </summary>
@@ -40,7 +41,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         {
             _library = library;
             Files = files;
-            Actions = new List<IAction>();
+            Actions = new List<Action.IAction>();
             UnsortableCount = 0;
         }
 
@@ -64,14 +65,14 @@ namespace MSOE.MediaComplete.Lib.Sorting
                         {
                             // Delete source, let the older file take precedence.
                             // TODO (MC-29) perhaps we should try comparing audio quality and pick the better one?
-                            Actions.Add(new DeleteAction
+                            Actions.Add(new Action.DeleteAction
                             {
                                 Target = song
                             });
                         }
                         else
                         {
-                            Actions.Add(new MoveAction
+                            Actions.Add(new Action.MoveAction
                             {
                                 Source = song,
                                 Dest = targetPath
@@ -80,7 +81,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                     }
 
                     // If the target path doesn't fulfill the sort settings, bump the counter.
-                    if (targetPath.FullPath.Remove(0, SettingWrapper.MusicDir.FullPath.Length).Split(Path.DirectorySeparatorChar).Count() != SettingWrapper.SortOrder.Count + 1)
+                    if (targetPath.FullPath.Remove(0, SettingWrapper.MusicDir.Length).Split(Path.DirectorySeparatorChar).Count() != SettingWrapper.SortOrder.Count + 1)
                     {
                         UnsortableCount++;
                     }
@@ -212,47 +213,5 @@ namespace MSOE.MediaComplete.Lib.Sorting
         }
         #endregion
 
-        #region Actions
-
-        public interface IAction
-        {
-            void Do();
-        }
-
-        public class MoveAction : IAction
-        {
-            public LocalSong Source { get; set; }
-            public SongPath Dest { get; set; }
-
-            public void Do()
-            {
-                if (Dest== null) // Will happen if something goes wrong in the calculation
-                {
-                    return;
-                }
-
-                if (!_library.DirectoryExists(Dest.Directory)) {
-                    _library.CreateDirectory(Dest.Directory);
-                }
-                _library.MoveFile(Source, Dest);
-            }
-        }
-
-        public class DeleteAction : IAction
-        {
-            public LocalSong Target { get; set; }
-
-            public void Do()
-            {
-                if (Target == null || !_library.FileExists(Target.SongPath)) // Will happen if something goes wrong in the calculation
-                {
-                    return;
-                }
-
-                _library.DeleteSong(Target); // TODO (MC-74) This should be a "recycle" delete. Not implemented yet.
-            }
-        }
-
-        #endregion
     }
 }

@@ -5,6 +5,8 @@ using Moq;
 using MSOE.MediaComplete.Lib.Background;
 using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
+using MSOE.MediaComplete.Lib.Library;
+using MSOE.MediaComplete.Lib.Library.FileSystem;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Sorting;
 
@@ -31,7 +33,7 @@ namespace MSOE.MediaComplete.Test.Background
         [TestMethod]
         public void Test_AddID_GoesBeforeSortButAfterIdentify()
         {
-            var mock = new Mock<ILibrary>();
+            var mock = new Mock<IFileSystem>();
             var queue = new List<List<Task>>
             {
                 new List<Task> {new Importer(mock.Object, new SongPath[]{}, false), new Importer(mock.Object, new SongPath[]{}, false)},
