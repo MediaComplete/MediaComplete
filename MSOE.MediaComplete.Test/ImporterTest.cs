@@ -55,7 +55,7 @@ namespace MSOE.MediaComplete.Test
             };
             var importer = new Importer(manager.Object, files, true);
             importer.Do(1);
-            manager.Verify(x => x.AddFile(It.IsAny<SongPath>(), It.IsAny<SongPath>()), Times.Exactly(3));
+            manager.Verify(x => x.MoveFile(It.IsAny<SongPath>(), It.IsAny<SongPath>()), Times.Exactly(3));
             manager.Verify(x => x.CopyFile(It.IsAny<SongPath>(), It.IsAny<SongPath>()), Times.Never);
             Assert.AreEqual(0, importer.Results.FailCount);
             Assert.AreEqual(3, importer.Results.NewFiles.Count);
@@ -72,7 +72,7 @@ namespace MSOE.MediaComplete.Test
             };
             var importer = new Importer(manager.Object, files, false);
             importer.Do(1);
-            manager.Verify(x => x.AddFile(It.IsAny<SongPath>(), It.IsAny<SongPath>()), Times.Never);
+            manager.Verify(x => x.MoveFile(It.IsAny<SongPath>(), It.IsAny<SongPath>()), Times.Never);
             manager.Verify(x => x.CopyFile(It.IsAny<SongPath>(), It.IsAny<SongPath>()), Times.Exactly(3));
             Assert.AreEqual(0, importer.Results.FailCount);
             Assert.AreEqual(3, importer.Results.NewFiles.Count);
@@ -120,7 +120,7 @@ namespace MSOE.MediaComplete.Test
             };
             var importer = new Importer(manager.Object, files, true);
             importer.Do(1);
-            manager.Verify(x => x.AddFile(It.IsAny<SongPath>(), It.IsAny<SongPath>()), Times.Never);
+            manager.Verify(x => x.MoveFile(It.IsAny<SongPath>(), It.IsAny<SongPath>()), Times.Never);
             manager.Verify(x => x.CopyFile(It.IsAny<SongPath>(), It.IsAny<SongPath>()), Times.Never);
             Assert.AreEqual(0, importer.Results.FailCount);
             Assert.AreEqual(0, importer.Results.NewFiles.Count);
@@ -137,7 +137,7 @@ namespace MSOE.MediaComplete.Test
             };
             var importer = new Importer(manager.Object, files, false);
             importer.Do(1);
-            manager.Verify(x => x.AddFile(It.IsAny<SongPath>(), It.IsAny<SongPath>()), Times.Never);
+            manager.Verify(x => x.MoveFile(It.IsAny<SongPath>(), It.IsAny<SongPath>()), Times.Never);
             manager.Verify(x => x.CopyFile(It.IsAny<SongPath>(), It.IsAny<SongPath>()), Times.Never);
             Assert.AreEqual(0, importer.Results.FailCount);
             Assert.AreEqual(0, importer.Results.NewFiles.Count);

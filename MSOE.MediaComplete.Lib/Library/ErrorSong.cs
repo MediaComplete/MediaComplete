@@ -35,6 +35,10 @@ namespace MSOE.MediaComplete.Lib.Files
         {
             return other is ErrorSong && ((ErrorSong)other).Id.Equals(_id);
         }
+        public override int GetHashCode()
+        {
+            return string.Format("{0}-{1}-{2}-{3}", _id, Title, Artists, Album).GetHashCode();
+        }
 
         #endregion
     }

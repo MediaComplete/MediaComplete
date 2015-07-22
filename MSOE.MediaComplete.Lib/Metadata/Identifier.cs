@@ -113,7 +113,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
             await _metadataRetriever.GetMetadataAsync(file);
 
             // Save whatever we found
-            _fileSystem.SaveSong(file);
+            _fileSystem.SaveFile(file);
         }
 
         #region Task overrides

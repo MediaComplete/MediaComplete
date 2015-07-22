@@ -6,7 +6,7 @@ using System.Linq;
 using MSOE.MediaComplete.Lib.Background;
 using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
-using MSOE.MediaComplete.Lib.Library;
+using MSOE.MediaComplete.Lib.Library.FileSystem;
 using MSOE.MediaComplete.Lib.Logging;
 using MSOE.MediaComplete.Lib.Metadata;
 using Sys = System.Threading.Tasks;
@@ -18,7 +18,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
     /// </summary>
     public class Sorter : Task
     {
-        private static ILibrary _library;
+        private static IFileSystem _fileSystem;
         public List<Action.IAction> Actions { get; private set; }
         public int UnsortableCount { get; private set; }
         public int MoveCount { get { return Actions.Count(a => a is Action.MoveAction); } }
@@ -37,9 +37,9 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// </summary>
         /// <param name="library"></param>
         /// <param name="files"></param>
-        public Sorter(ILibrary library, IEnumerable<SongPath> files)
+        public Sorter(IFileSystem fileSystem, IEnumerable<SongPath> files)
         {
-            _library = library;
+            _fileSystem = fileSystem;
             Files = files;
             Actions = new List<Action.IAction>();
             UnsortableCount = 0;
@@ -52,7 +52,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         {
             await Sys.Task.Run(() =>
             {
-                var songs = _library.GetAllSongs().Where(x => Files.Contains(x.SongPath));
+                var songs = _fileSystem.GetAllSongFiles().Where(x => Files.Contains(x.SongPath));
                 UnsortableCount += Files.Count() - songs.Count();
                 foreach (var song in songs)
                 {
@@ -61,7 +61,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                     // If the current and target paths are different, we know we need to move.
                     if (!sourcePath.Equals(targetPath))
                     {
-                        if (_library.SongExists(targetPath)) // If the file is already there
+                        if (_fileSystem.FileExists(targetPath)) // If the file is already there
                         {
                             // Delete source, let the older file take precedence.
                             // TODO (MC-29) perhaps we should try comparing audio quality and pick the better one?

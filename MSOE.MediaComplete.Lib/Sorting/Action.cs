@@ -44,7 +44,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                     return;
                 }
 
-                _fileSystem.DeleteSong(Target); // TODO (MC-74) This should be a "recycle" delete. Not implemented yet.
+                _fileSystem.DeleteFile(Target); // TODO (MC-74) This should be a "recycle" delete. Not implemented yet.
             }
         }
 

@@ -82,12 +82,12 @@ namespace MSOE.MediaComplete.Lib.Import
                 foreach (var file in _files)
                 {
                     var newFile = new SongPath(SettingWrapper.MusicDir.FullPath + file.Name);
-                    if (_fileSystem.SongExists(newFile)) continue;
+                    if (_fileSystem.FileExists(newFile)) continue;
                     try
                     {
                         if (_isMove)
                         {
-                            _fileSystem.AddFile(file, newFile);
+                            _fileSystem.MoveFile(file, newFile);
                         }
                         else
                         {

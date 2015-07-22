@@ -93,7 +93,7 @@ namespace MSOE.MediaComplete.Test
                 m.IdentifyAsync(It.IsAny<byte[]>(), It.IsAny<LocalSong>()), Times.Exactly(2));
             _metadataRetrieverMock.Verify(m =>
                 m.GetMetadataAsync(It.IsAny<LocalSong>()), Times.Exactly(2));
-            _fileManagerMock.Verify(m => m.SaveSong(It.IsAny<LocalSong>()), Times.Exactly(2));
+            _fileManagerMock.Verify(m => m.SaveFile(It.IsAny<LocalSong>()), Times.Exactly(2));
         }
 
         [TestMethod]
@@ -118,7 +118,7 @@ namespace MSOE.MediaComplete.Test
                 m.IdentifyAsync(It.IsAny<byte[]>(), It.IsAny<LocalSong>()), Times.Exactly(2));
             _metadataRetrieverMock.Verify(m =>
                 m.GetMetadataAsync(It.IsAny<LocalSong>()), Times.Exactly(2));
-            _fileManagerMock.Verify(m => m.SaveSong(It.IsAny<LocalSong>()), Times.Exactly(2));
+            _fileManagerMock.Verify(m => m.SaveFile(It.IsAny<LocalSong>()), Times.Exactly(2));
         }
 
         [TestMethod]
@@ -143,7 +143,7 @@ namespace MSOE.MediaComplete.Test
                 m.IdentifyAsync(It.IsAny<byte[]>(), It.IsAny<LocalSong>()), Times.Once);
             _metadataRetrieverMock.Verify(m =>
                 m.GetMetadataAsync(It.IsAny<LocalSong>()), Times.Never);
-            _fileManagerMock.Verify(m => m.SaveSong(It.IsAny<LocalSong>()), Times.Never);
+            _fileManagerMock.Verify(m => m.SaveFile(It.IsAny<LocalSong>()), Times.Never);
         }
 
         [TestMethod]
@@ -169,7 +169,7 @@ namespace MSOE.MediaComplete.Test
                 m.IdentifyAsync(It.IsAny<byte[]>(), It.IsAny<LocalSong>()), Times.Exactly(2));
             _metadataRetrieverMock.Verify(m =>
                 m.GetMetadataAsync(It.IsAny<LocalSong>()), Times.Once);
-            _fileManagerMock.Verify(m => m.SaveSong(It.IsAny<LocalSong>()), Times.Once);
+            _fileManagerMock.Verify(m => m.SaveFile(It.IsAny<LocalSong>()), Times.Once);
         }
     }
 }
