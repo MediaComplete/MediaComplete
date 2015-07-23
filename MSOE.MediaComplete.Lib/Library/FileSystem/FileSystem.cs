@@ -488,6 +488,11 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
             // Duration is assumed to be fixed
         }
         #endregion
+
+        public IEnumerable<LocalSong> GetAllSongFiles()
+        {
+            return _cachedSongs.Values;
+        }
     }
 
     public interface IFileSystem

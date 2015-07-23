@@ -14,7 +14,7 @@ namespace MSOE.MediaComplete.Lib.Library
 {
     public class Library : ILibrary
     {
-
+        private Dictionary<String, AbstractSong> _cachedSongs;
         /// <summary>
         /// singleton instance of the Filemanager
         /// </summary>
@@ -34,6 +34,7 @@ namespace MSOE.MediaComplete.Lib.Library
         /// <param name="musicDir">Source Directory for populating the dictionarires</param>
         public void Initialize(DirectoryPath musicDir)
         {
+            _cachedSongs = new Dictionary<String, AbstractSong>();
             _fileSystem.Initialize(musicDir);
         }
 
@@ -46,7 +47,7 @@ namespace MSOE.MediaComplete.Lib.Library
         /// Writes the attributes of the song parameter to the TagLib File and updates the stored FileInfo and song
         /// </summary>
         /// <param name="song">file with updated metadata</param>
-        public void SaveSong(LocalSong song)
+        public void SaveSong(AbstractSong song)
         {
             if (!_cachedSongs.ContainsKey(song.Id)) throw new ArgumentException("Song does not exist in cache", "song");
             var file = TagLib.File.Create(song.Path);
@@ -65,7 +66,6 @@ namespace MSOE.MediaComplete.Lib.Library
                 // TODO MC-125 log
                 StatusBarHandler.Instance.ChangeStatusBarMessage("Save-Error", StatusBarHandler.StatusIcon.Error);
             }
-            _cachedFiles[song.Id] = new FileInfo(song.Path);
             _cachedSongs[song.Id] = song;
         }
 
@@ -73,7 +73,7 @@ namespace MSOE.MediaComplete.Lib.Library
         /// Get every song object that exists in the cache
         /// </summary>
         /// <returns>IEnumerable containing every song within the cache</returns>
-        public IEnumerable<LocalSong> GetAllSongs()
+        public IEnumerable<AbstractSong> GetAllSongs()
         {
             return _cachedSongs.Values;
         }
@@ -82,34 +82,36 @@ namespace MSOE.MediaComplete.Lib.Library
         /// Removes a song from the caches, AND THE FILESYSTEM AS WELL. THAT FILE IS GONE NOW. DON'T JUST CALL THERE FOR THE HECK OF IT
         /// </summary>
         /// <param name="deletedSong">the song that needs to be deleted</param>
-        public void DeleteSong(LocalSong deletedSong)
+        public void DeleteSong(AbstractSong deletedSong)
         {
             _fileSystem.DeleteFile(deletedSong);
         }
 
-        /// <summary>
-        /// Get a LocalSong object with a matching SongPath object
-        /// </summary>
-        /// <param name="songPath">SongPath object to compare</param>
-        /// <returns>LocalSong if it exists, null if it doesn't</returns>
-        public LocalSong GetSong(SongPath songPath)
-        {
-            return _cachedSongs.Values.FirstOrDefault(x => x.SongPath.Equals(songPath));
-        }
+        ///// <summary>
+        ///// Get a LocalSong object with a matching SongPath object
+        ///// </summary>
+        ///// <param name="songPath">SongPath object to compare</param>
+        ///// <returns>LocalSong if it exists, null if it doesn't</returns>
+        //public LocalSong GetSong(SongPath songPath)
+        //{
+        //    return _cachedSongs.Values.FirstOrDefault(x => x.SongPath.Equals(songPath));
+        //}
 
         /// <summary>
         /// Returns a LocalSong that has a path that matches the MediaItem's location
         /// </summary>
         /// <param name="mediaItem">MediaItem for which the song is needed</param>
         /// <returns>LocalSong if it exists, null if it doesn't</returns>
-        public AbstractSong GetSong(MediaItem mediaItem)
-        {
-            return _cachedSongs.Values.FirstOrDefault(x => x.SongPath != null && x.Path.Equals(mediaItem.Location));
-        }
+        //public AbstractSong GetSong(MediaItem mediaItem)
+        //{
+        //    return _cachedSongs.Values.FirstOrDefault(x => x.SongPath != null && x.Path.Equals(mediaItem.Location));
+        //}
         #endregion
 
 
-
+        public void SortSong(AbstractSong song)
+        {
+        }
     }
 
     public interface ILibrary
@@ -123,29 +125,30 @@ namespace MSOE.MediaComplete.Lib.Library
         /// Writes the attributes of the song parameter to the TagLib File and updates the stored FileInfo and song
         /// </summary>
         /// <param name="song">file with updated metadata</param>
-        void SaveSong(LocalSong song);
+        void SaveSong(AbstractSong song);
         /// <summary>
         /// Get every song object that exists in the cache
         /// </summary>
         /// <returns>IEnumerable containing every song within the cache</returns>
-        IEnumerable<LocalSong> GetAllSongs();
+        IEnumerable<AbstractSong> GetAllSongs();
         /// <summary>
         /// Removes a song from the caches, AND THE FILESYSTEM AS WELL. THAT FILE IS GONE NOW. DON'T JUST CALL THERE FOR THE HECK OF IT
         /// </summary>
         /// <param name="deletedSong">the song that needs to be deleted</param>
-        void DeleteSong(LocalSong deletedSong);
+        void DeleteSong(AbstractSong deletedSong);
         /// <summary>
         /// Get a LocalSong object with a matching SongPath object
         /// </summary>
         /// <param name="songPath">SongPath object to compare</param>
         /// <returns>LocalSong if it exists, null if it doesn't</returns>
-        LocalSong GetSong(SongPath songPath);
+        //LocalSong GetSong(SongPath songPath);
         /// <summary>
         /// Returns a LocalSong that has a path that matches the MediaItem's location
         /// </summary>
         /// <param name="mediaItem">MediaItem for which the song is needed</param>
         /// <returns>LocalSong if it exists, null if it doesn't</returns>
-        AbstractSong GetSong(MediaItem mediaItem);
+        //AbstractSong GetSong(MediaItem mediaItem);
+        void SortSong(AbstractSong song);
     }
 
 }
