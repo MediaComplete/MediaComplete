@@ -6,6 +6,7 @@ using System.Linq;
 using MSOE.MediaComplete.Lib.Background;
 using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
+using MSOE.MediaComplete.Lib.Logging;
 using MSOE.MediaComplete.Lib.Metadata;
 using Sys = System.Threading.Tasks;
 
@@ -62,7 +63,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                         if (_fileManager.FileExists(targetPath)) // If the file is already there
                         {
                             // Delete source, let the older file take precedence.
-                            // TODO (MC-124) perhaps we should try comparing audio quality and pick the better one?
+                            // TODO (MC-29) perhaps we should try comparing audio quality and pick the better one?
                             Actions.Add(new DeleteAction
                             {
                                 Target = song
@@ -79,7 +80,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                     }
 
                     // If the target path doesn't fulfill the sort settings, bump the counter.
-                    if (targetPath.FullPath.Remove(0, SettingWrapper.MusicDir.FullPath.Length).Split(Path.DirectorySeparatorChar).Count() != SettingWrapper.SortOrder.Count + 1)
+                    if (targetPath.FullPath.Remove(0, SettingWrapper.MusicDir.Length).Split(Path.DirectorySeparatorChar).Count() != SettingWrapper.SortOrder.Count + 1)
                     {
                         UnsortableCount++;
                     }
@@ -102,12 +103,12 @@ namespace MSOE.MediaComplete.Lib.Sorting
             // This breaks the naming.
             for (var x = 0; x < list.Count(); x ++)
             {
-                var metaValue = song.GetAttribute(list[x]);
+                var metaValue = song.GetAttributeStr(list[x]);
                 var useableValue = metaValue ?? "Unknown " + list[x];
                 path += useableValue;
                 path += Path.DirectorySeparatorChar;
             }
-            //TODO MC-260 Rename songs/configure song naming
+            //TODO MC-53 Rename songs/configure song naming
             return new SongPath(SettingWrapper.MusicDir.FullPath + GetValidFileName(path) + song.Name); 
         }
 
@@ -171,6 +172,13 @@ namespace MSOE.MediaComplete.Lib.Sorting
                     Icon = StatusBarHandler.StatusIcon.Success;
                 }
             }
+            catch (TagLib.CorruptFileException e)
+            {
+                Logger.LogException("Taglib found a corrupt file while creating the taglib file.", e);
+                Message = "Sorting-HadError";
+                Icon = StatusBarHandler.StatusIcon.Error;
+                Error = e;
+            }
             catch (Exception e)
             {
                 Message = "Sorting-HadError";
@@ -185,7 +193,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
 
         public override IReadOnlyCollection<Type> InvalidBeforeTypes
         {
-            get { return new List<Type> { typeof(IdentifierTask), typeof(Importer) }.AsReadOnly(); }
+            get { return new List<Type> { typeof(Identifier), typeof(Importer) }.AsReadOnly(); }
         }
 
         public override IReadOnlyCollection<Type> InvalidAfterTypes
@@ -241,7 +249,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                     return;
                 }
 
-                _fileManager.DeleteSong(Target); // TODO (MC-127) This should be a "recycle" delete. Not implemented yet.
+                _fileManager.DeleteSong(Target); // TODO (MC-74) This should be a "recycle" delete. Not implemented yet.
             }
         }
 

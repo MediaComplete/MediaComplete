@@ -1,4 +1,5 @@
 ﻿using System;
+using Autofac;
 using MSOE.MediaComplete.Lib.Files;
 using NAudio.Wave;
 using TagLib;
@@ -26,7 +27,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// </summary>
         public static Player Instance
         {
-            get { return _instance ?? (_instance = new Player(new NAudioWrapper(), FileManager.Instance)); }
+            get { return _instance ?? (_instance = new Player(Dependency.Resolve<INAudioWrapper>(), Dependency.Resolve<IFileManager>())); }
         }
 
         /// <summary>
@@ -59,6 +60,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         public void Play()
         {
             Stop();
+            //TODO refactor so Player doesnt use a reference to NowPlaying MC-23
             var song = NowPlaying.Inst.CurrentSong();
 
             var localSong = song as LocalSong;
@@ -135,6 +137,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         #endregion
 
         #region private methods
+        //TODO refactor so player doesnt use a reference to NowPlaying MC-23
         /// <summary>
         /// passes the event from _waveout to the caller
         /// </summary>
@@ -167,11 +170,24 @@ namespace MSOE.MediaComplete.Lib.Playing
                 if (PlaybackEnded != null) PlaybackEnded(sender, stoppedEventArgs);
                 PlaybackState = PlaybackState.Stopped;
                 OnSongFinishedEvent(-1,-1);
+                PlaylistFinishedEvent();
             }
         }
+        
+        /// <summary>
+        /// event for end of song
+        /// </summary>
+        /// <param name="oldPath"></param>
+        /// <param name="newPath"></param>
         public delegate void SongFinished(int oldPath, int newPath);
+        public event SongFinished SongFinishedEvent = delegate { };
 
-        public event  SongFinished SongFinishedEvent = delegate { };
+        /// <summary>
+        /// event for end of playlist
+        /// TODO fix this and the one from NowPlaying MC-23
+        /// </summary>
+        public delegate void PlaylistFinished();
+        public event PlaylistFinished PlaylistFinishedEvent = delegate { };
         #endregion
 
         protected void OnSongFinishedEvent(int oldIndex , int newIndex )

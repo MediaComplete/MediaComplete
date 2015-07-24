@@ -29,17 +29,18 @@ namespace MSOE.MediaComplete.Test
         [Timeout(40000)]
         public void CheckSubDirectoryPolling()
         {
+            var polling = new Polling();
             _dir = FileHelper.CreateDirectory(DirectoryPath+"/Subdir/Subdirdir");
             _file = FileHelper.CreateFile(_dir, Constants.FileTypes.ValidMp3);
 
             var pass = false;
             SettingWrapper.InboxDir = DirectoryPath;
-            Polling.Instance.TimeInMinutes = 0.0005;
+            polling.TimeInMinutes = 0.0005;
             Polling.InboxFilesDetected += delegate
             {
                 pass = true;
             };
-            Polling.Instance.Start();
+            polling.Start();
 
             while (!pass)
             {
@@ -56,17 +57,18 @@ namespace MSOE.MediaComplete.Test
         [Timeout(40000)]
         public void CheckForSongMp3()
         {
+            var polling = new Polling();
             _dir = FileHelper.CreateDirectory(DirectoryPath);
             _file = FileHelper.CreateFile(_dir, Constants.FileTypes.ValidMp3);
 
             var pass = false;
             SettingWrapper.InboxDir = DirectoryPath;
-            Polling.Instance.TimeInMinutes = 0.0005;
+            polling.TimeInMinutes = 0.0005;
             Polling.InboxFilesDetected += delegate
             {
                 pass = true;
             };
-            Polling.Instance.Start();
+            polling.Start();
 
             while (!pass)
             {
@@ -83,17 +85,18 @@ namespace MSOE.MediaComplete.Test
         [Timeout(40000)]//Milliseconds
         public void CheckForSongWma()
         {
+            var polling = new Polling();
             _dir = FileHelper.CreateDirectory(DirectoryPath);
             _file = FileHelper.CreateFile(_dir, Constants.FileTypes.ValidWma);
 
             var pass = false;
             SettingWrapper.InboxDir = DirectoryPath;
-            Polling.Instance.TimeInMinutes = 0.0005;
+            polling.TimeInMinutes = 0.0005;
             Polling.InboxFilesDetected += delegate
             {
                 pass = true;
             };
-            Polling.Instance.Start();
+            polling.Start();
 
             while (!pass)
             {
@@ -109,18 +112,19 @@ namespace MSOE.MediaComplete.Test
         [TestMethod]
         public void CheckForSongNotMusic()
         {
+            var polling = new Polling();
             _dir = FileHelper.CreateDirectory(DirectoryPath);
             _file = FileHelper.CreateFile(_dir, Constants.FileTypes.NonMusic);
 
             var pass = false;
             SettingWrapper.InboxDir = DirectoryPath;
 
-            Polling.Instance.TimeInMinutes = 0.0005;
+            polling.TimeInMinutes = 0.0005;
             Polling.InboxFilesDetected += delegate
             {
                 pass = true;
             };
-            Polling.Instance.Start();
+            polling.Start();
 
             Thread.Sleep(500);
 

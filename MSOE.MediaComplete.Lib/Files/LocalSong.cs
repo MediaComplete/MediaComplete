@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 
 namespace MSOE.MediaComplete.Lib.Files
 {
@@ -18,11 +17,12 @@ namespace MSOE.MediaComplete.Lib.Files
             _id = id;
             SongPath = songPath;
         }
+
+        /// <summary>
+        /// Unique key value used to look up the song in the FileManager
+        /// </summary>
+        public override string Id { get { return _id; } }
         private readonly string _id;
-        public override string Id
-        {
-            get { return _id; }
-        }
 
         /// <summary>
         /// Checks if the song is a child of the specified directory
@@ -80,11 +80,24 @@ namespace MSOE.MediaComplete.Lib.Files
             return o != null && Path.Equals(o.Path) && Id.Equals(o.Id);
         }
 
+        /// <summary>
+        /// Returns a hash code for this instance.
+        /// Based on the file path, title, artists, and album
+        /// </summary>
+        /// <returns>
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        /// </returns>
         public override int GetHashCode()
         {
-            return string.Format("{0}-{1}-{2}-{3}", Path, Title, Artist, Album).GetHashCode();
+            return string.Format("{0}-{1}-{2}-{3}", Path, Title, Artists, Album).GetHashCode();
         }
 
+        /// <summary>
+        /// Returns the song file name
+        /// </summary>
+        /// <returns>
+        /// A <see cref="String" /> that represents this instance.
+        /// </returns>
         public override string ToString()
         {
             return SongPath.Name;

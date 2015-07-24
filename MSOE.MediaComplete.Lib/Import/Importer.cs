@@ -7,6 +7,7 @@ using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Sorting;
 using Task = MSOE.MediaComplete.Lib.Background.Task;
 using Sys = System.Threading.Tasks;
+using MSOE.MediaComplete.Lib.Background;
 
 namespace MSOE.MediaComplete.Lib.Import
 {
@@ -20,9 +21,21 @@ namespace MSOE.MediaComplete.Lib.Import
         /// sorting, identification, etc. that takes places on new files.
         /// </summary>
         public static event ImportHandler ImportFinished = delegate {};
+
+        /// <summary>
+        /// Delegate definition of a post-import callback function
+        /// </summary>
+        /// <param name="results">The results of the import.</param>
         public delegate void ImportHandler(ImportResults results);
 
+        /// <summary>
+        /// Gets or sets the results object.
+        /// </summary>
+        /// <value>
+        /// The results.
+        /// </value>
         public ImportResults Results { get; set; }
+
         private readonly IEnumerable<SongPath> _files; 
         private readonly IFileManager _fileManager;
         private readonly bool _isMove;
@@ -30,13 +43,13 @@ namespace MSOE.MediaComplete.Lib.Import
         /// <summary>
         /// Constructs an Importer with the given library home directory.
         /// </summary>
-        /// <param name="fileManagers">FileManager used for dependency injection</param>
+        /// <param name="fileManager"></param>
         /// <param name="files"></param>
         /// <param name="isMove"></param>
-        public Importer(IFileManager fileManagers, IEnumerable<SongPath> files, bool isMove)
+        public Importer(IFileManager fileManager, IEnumerable<SongPath> files, bool isMove)
         {
-            if(fileManagers == null || files == null) throw new ArgumentNullException();
-            _fileManager = fileManagers;
+            if(fileManager == null || files == null) throw new ArgumentNullException();
+            _fileManager = fileManager;
             _isMove = isMove;
             if (files.Any(f => f.HasParent(SettingWrapper.MusicDir)))
             {
@@ -139,22 +152,41 @@ namespace MSOE.MediaComplete.Lib.Import
             }
         }
 
+        /// <summary>
+        /// Contains any subclass types that cannot appear before this task in the execution queue.
+        /// Used by <see cref="TaskAdder.ResolveConflicts" /> to re-order the queue after adding this task.
+        /// </summary>
         public override IReadOnlyCollection<Type> InvalidBeforeTypes
         {
             get { return new List<Type>().AsReadOnly(); }
         }
 
+        /// <summary>
+        /// Contains any subclass types that cannot appear after this task in the execution queue.
+        /// Used by <see cref="TaskAdder.ResolveConflicts" /> to re-order the queue after adding this task.
+        /// </summary>
         public override IReadOnlyCollection<Type> InvalidAfterTypes
         {
 
-            get { return new List<Type> { typeof(Sorter), typeof(IdentifierTask) }.AsReadOnly(); }
+            get { return new List<Type> { typeof(Sorter), typeof(Identifier) }.AsReadOnly(); }
         }
 
+        /// <summary>
+        /// Contains any subclass types that cannot appear in the same parallel block in the execution queue.
+        /// Used by <see cref="TaskAdder.ResolveConflicts" /> to re-order the queue after adding this task.
+        /// </summary>
         public override IReadOnlyCollection<Type> InvalidDuringTypes
         {
             get { return new List<Type>().AsReadOnly(); }
         }
 
+        /// <summary>
+        /// Used by subclasses to determine if the task should be removed before adding this one.
+        /// </summary>
+        /// <param name="t">The other task to consider</param>
+        /// <returns>
+        /// true if t should be removed, false otherwise
+        /// </returns>
         public override bool RemoveOther(Task t)
         {
             return false;
@@ -163,11 +195,24 @@ namespace MSOE.MediaComplete.Lib.Import
     }
 
     /// <summary>
-    /// A struct-class containing post-mortem data on an import operation.
+    /// Postmortem data on an import operation.
     /// </summary>
     public class ImportResults
     {
-        public List<SongPath> NewFiles { get; set; } 
+        /// <summary>
+        /// Gets or sets the new files.
+        /// </summary>
+        /// <value>
+        /// The new files.
+        /// </value>
+        public List<SongPath> NewFiles { get; set; }
+
+        /// <summary>
+        /// Gets or sets the fail count.
+        /// </summary>
+        /// <value>
+        /// The fail count.
+        /// </value>
         public int FailCount { get; set; }
     }
 
@@ -176,6 +221,9 @@ namespace MSOE.MediaComplete.Lib.Import
     /// </summary>
     public class InvalidImportException : Exception
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InvalidImportException"/> class.
+        /// </summary>
         public InvalidImportException() : base("Cannot import a file already located in the library directory tree!") { }
     }
 }

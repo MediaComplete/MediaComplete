@@ -2,9 +2,12 @@
 using System.Globalization;
 using System.IO;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Forms;
+using Autofac;
 using MSOE.MediaComplete.Lib;
+using MSOE.MediaComplete.Lib.Logging;
 using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Sorting;
 using ComboBox = System.Windows.Controls.ComboBox;
@@ -12,7 +15,6 @@ using ComboBox = System.Windows.Controls.ComboBox;
 namespace MSOE.MediaComplete
 {
     /// <summary>
-
     /// Interaction logic for Settings.xaml
     /// </summary>
     public partial class Settings
@@ -28,17 +30,19 @@ namespace MSOE.MediaComplete
         private readonly IFileManager _fileManager;
         public Settings()
         {
-
             InitializeComponent();
+            _fileManager = Dependency.Resolve<IFileManager>();
             TxtboxSelectedFolder.Text = SettingWrapper.HomeDir.FullPath;
             TxtInboxFolder.Text = SettingWrapper.InboxDir;
             ComboBoxPollingTime.SelectedValue = SettingWrapper.PollingTime.ToString(CultureInfo.InvariantCulture);
             CheckboxPolling.IsChecked = SettingWrapper.IsPolling;
             CheckboxShowImportDialog.IsChecked = SettingWrapper.ShowInputDialog;
             CheckBoxSorting.IsChecked = SettingWrapper.IsSorting;
+            // TODO MC-1 Commented out until we figure out how to get an installed app logging
+            //CheckBoxInfoLogging.IsChecked = SettingWrapper.LogLevel!=0;
+            Logger.SetLogLevel(SettingWrapper.LogLevel);
             MoveOrCopy.IsChecked = SettingWrapper.ShouldRemoveOnImport;
             _allDirs = SettingWrapper.AllDirectories;
-            _fileManager = FileManager.Instance;
             PollingCheckBoxChanged(CheckboxPolling, null);
             if (SettingWrapper.Layout.Equals(_layoutsDict[LayoutType.Pink]))
             {
@@ -230,5 +234,23 @@ namespace MSOE.MediaComplete
             SettingWrapper.Save();
         }
 
+
+        private void CheckBoxInfoLoggingChanged(object sender, RoutedEventArgs e)
+        {
+            var cb = sender as System.Windows.Controls.CheckBox;
+            if (cb != null && cb.IsChecked == true)
+            {
+                SettingWrapper.LogLevel = (int)Logger.LoggingLevel.Info;
+            }
+            else
+            {
+                SettingWrapper.LogLevel = (int)Logger.LoggingLevel.Error;
+            }
+        }
+
+        private void OpenLogFolder(object sender, RoutedEventArgs e)
+        {
+            Process.Start("explorer.exe", Logger.LogDir);
+        }
     }
 }

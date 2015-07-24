@@ -1,34 +1,27 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using MSOE.MediaComplete.Lib.Background;
 using Sys = System.Threading.Tasks;
 
 namespace MSOE.MediaComplete.Lib.Background
 {
     /// <summary>
     /// Class to manage long-running background operations. Will run tasks in parallel where possible, 
-    /// and block otherwise, based on the implemenatation of the tasks passed in. This class is a singleton.
+    /// and block otherwise, based on the implementation of the tasks passed in. This class is a singleton.
     /// </summary>
-    public class Queue
+    public class Queue : IQueue
     {
-        /// <summary>
-        /// The singleton instance available to callers.
-        /// </summary>
-        public static Queue Inst { get; private set; }
-
         /// <summary>
         /// Private constructor, creates an empty queue.
         /// </summary>
-        private Queue()
+        public Queue()
         {
             _tasks = new List<List<Task>>();
         }
-        static Queue()
-        {
-            Inst = new Queue();
-        }
 
         #region Privates
-        // The queue of jobs, as integer-index enumurables. This allows groups of tasks to be run in parallel
+        // The queue of jobs, as integer-index enumerable. This allows groups of tasks to be run in parallel
         private readonly List<List<Task>> _tasks;
         // The number of tasks currently active (at the last spawn).
         private int _activeCount;
@@ -112,5 +105,18 @@ namespace MSOE.MediaComplete.Lib.Background
             StatusBarHandler.Instance.ChangeStatusBarMessage("[{1}/{2}] {0} ({3}%)",
                 t.Message, t.Icon, t.Id, _sessionCount, (t.PercentComplete * 100).ToString("N1"));
         }
+    }
+
+    /// <summary>
+    /// Service to manage long-running background operations. Will run tasks in parallel where possible, 
+    /// and block otherwise, based on the implementation of the tasks passed in. This class is a singleton.
+    /// </summary>
+    public interface IQueue
+    {
+        /// <summary>
+        /// Adds a new task to the queue. Queued up tasks are shuffled/updated as necessary.
+        /// </summary>
+        /// <param name="newTask">The new task object</param>
+        void Add(Task newTask);
     }
 }

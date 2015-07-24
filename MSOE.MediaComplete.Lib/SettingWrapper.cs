@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
+using MSOE.MediaComplete.Lib.Logging;
 using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Properties;
@@ -33,7 +34,7 @@ namespace MSOE.MediaComplete.Lib
         /// <returns>music directory path</returns>
         public static DirectoryPath MusicDir
         {
-            get { return new DirectoryPath(HomeDir.FullPath + Settings.Default.MusicDir + Path.DirectorySeparatorChar); }
+            get { return new DirectoryPath(Settings.Default.HomeDir + Settings.Default.MusicDir + Path.DirectorySeparatorChar); }
         }
         /// <summary>
         /// Gets the playlist directory from the settings
@@ -41,7 +42,7 @@ namespace MSOE.MediaComplete.Lib
         /// <returns>playlist directory path</returns>
         public static DirectoryPath PlaylistDir
         {
-            get { return new DirectoryPath(HomeDir.FullPath + Settings.Default.PlaylistDir + Path.DirectorySeparatorChar); }
+            get { return new DirectoryPath(Settings.Default.HomeDir  + Settings.Default.PlaylistDir + Path.DirectorySeparatorChar); }
         }
         /// <summary>
         /// gets the inbox directory path
@@ -135,7 +136,17 @@ namespace MSOE.MediaComplete.Lib
         {
             get { return (Settings.Default.AllDirs).Split(';').ToList(); }
             set { Settings.Default.AllDirs = value.Aggregate((x, y) => x + ";" + y); }
-        } 
+        }
+
+        public static int LogLevel
+        {
+            get { return Settings.Default.LogLevel; }
+            set
+            {
+                Settings.Default.LogLevel = value;
+                Logger.SetLogLevel(value);
+            }
+        }
 
         /// <summary>
         /// saves the settings

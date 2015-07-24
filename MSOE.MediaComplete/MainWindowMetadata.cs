@@ -65,8 +65,8 @@ namespace MSOE.MediaComplete
                     foreach (var metaAttribute in Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>().Where(metaAttribute => !finalAttributes.ContainsKey(metaAttribute)))
                     {
                         if (initalAttributes[metaAttribute] == null)
-                            initalAttributes[metaAttribute] = item.Data.GetAttribute(metaAttribute);
-                        else if (!initalAttributes[metaAttribute].Equals(item.Data.GetAttribute(metaAttribute)))
+                            initalAttributes[metaAttribute] = item.Data.GetAttributeStr(metaAttribute);
+                        else if (!initalAttributes[metaAttribute].Equals(item.Data.GetAttributeStr(metaAttribute)))
                         {
                             initalAttributes[metaAttribute] = "-1";
                         }
@@ -171,31 +171,80 @@ namespace MSOE.MediaComplete
                 {
                     if (changedBox.Equals(SongTitle))
                     {
-                        song.Title = changedBox.Text;
+                        song.SetSongTitle(changedBox.Text);
                     }
                     else if (changedBox.Equals(Album))
                     {
-                        song.Album = changedBox.Text;
+                        song.SetAlbum(changedBox.Text);
                     }
                     else if (changedBox.Equals(Artist))
                     {
-                        song.Artist = changedBox.Text;
+                        song.SetArtists(changedBox.Text);
                     }
                     else if (changedBox.Equals(Genre))
                     {
-                        song.Genre = changedBox.Text;
+                        song.SetGenres(changedBox.Text);
                     }
                     else if (changedBox.Equals(Track))
                     {
-                        song.TrackNumber = changedBox.Text;
+                        try
+                        {
+                            song.SetTrackNumber(changedBox.Text);
+                        }
+                        catch (Exception ex)
+                        {
+                            if (ex is FormatException || ex is OverflowException)
+                            {
+                                changedBox.Text = song.GetAttributeStr(MetaAttribute.TrackNumber);
+                                // TODO MC-41 make the user fix it
+                            }
+                            else
+                            {
+                                throw;
+                            }
+                        }
                     }
                     else if (changedBox.Equals(Year))
                     {
-                        song.Year = changedBox.Text;
+                        try
+                        {
+                            song.SetYear(changedBox.Text);
+                        }
+                        catch (Exception ex)
+                        {
+                            if (ex is FormatException || ex is OverflowException)
+                            {
+                                changedBox.Text = song.GetAttributeStr(MetaAttribute.Year);
+                                // TODO MC-41 make the user fix it
+                            }
+                            else
+                            {
+                                throw;
+                            }
+                        }
                     }
                     else if (changedBox.Equals(SuppArtist))
                     {
-                        song.SupportingArtists = changedBox.Text;
+                        song.SetSupportingArtists(changedBox.Text);
+                    }
+                    else if (changedBox.Equals(Rating))
+                    {
+                        try
+                        {
+                            song.SetRating(changedBox.Text);
+                        }
+                        catch (Exception ex)
+                        {
+                            if (ex is FormatException || ex is OverflowException)
+                            {
+                                changedBox.Text = song.GetAttributeStr(MetaAttribute.Rating);
+                                // TODO MC-41 make the user fix it
+                            }
+                            else
+                            {
+                                throw;
+                            }
+                        }
                     }
                 }
                 _fileManager.SaveSong(song as LocalSong);
@@ -215,6 +264,5 @@ namespace MSOE.MediaComplete
             Rating.IsReadOnly = toggle;
             Track.IsReadOnly = toggle;
         }
-
     }
 }

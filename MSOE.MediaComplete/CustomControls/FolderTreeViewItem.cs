@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -25,8 +26,26 @@ namespace MSOE.MediaComplete.CustomControls
         /// <summary>
         /// The folder the current folder is in. 
         /// This value is null if it is the root
+        /// Setting this value will also ensure it is correctly sorted within the new parent.
         /// </summary>
-        public FolderTreeViewItem ParentItem { get; set; }
+        private FolderTreeViewItem _parentItem;
+        public FolderTreeViewItem ParentItem
+        {
+            get { return _parentItem; }
+            set
+            {
+                _parentItem = value;
+                var i = 0;
+                while (i < _parentItem.Children.Count)
+                {
+                    var cmp = String.Compare(_parentItem.Children[i].Header.ToString(), Header.ToString(), StringComparison.Ordinal);
+                    if (cmp >= 0)
+                        break;
+                    i++;
+                }
+                _parentItem.Children.Insert(i, this);
+            }
+        }
 
         /// <summary>
         /// The header content of this tree view item

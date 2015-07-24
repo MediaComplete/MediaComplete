@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using M3U.NET;
+using MSOE.MediaComplete.Lib.Logging;
 using MSOE.MediaComplete.Lib.Files;
 
 namespace MSOE.MediaComplete.Lib.Playlists
@@ -12,6 +13,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
     public class Playlist
     {
         private readonly IM3UFile _file;
+        private readonly IPlaylistService _service;
 
         public List<AbstractSong> Songs { get; private set; }
         
@@ -24,11 +26,13 @@ namespace MSOE.MediaComplete.Lib.Playlists
         /// <summary>
         /// Creates a new playlist based on an underlying M3U file.
         /// </summary>
+        /// <param name="service"></param>
         /// <param name="file">The M3U file</param>
-        public Playlist(IM3UFile file)
+        public Playlist(IPlaylistService service, IM3UFile file)
         {
+            _service = service;
             _file = file;
-            Songs = _file.Files.Select(PlaylistService.Create).ToList();
+            Songs = _file.Files.Select(service.Create).ToList();
         }
 
         /// <summary>
@@ -41,11 +45,11 @@ namespace MSOE.MediaComplete.Lib.Playlists
             {
                 try
                 {
-                    _file.Files.Add(PlaylistService.ToMediaItem(song as LocalSong));
+                    _file.Files.Add(_service.ToMediaItem(song as LocalSong));
                 }
-                catch (FileNotFoundException)
+                catch (FileNotFoundException e)
                 {
-                    // TODO MC-125 log - 
+                    Logger.LogException("File attempting to be added playlist could not be found", e);
                 }
             }
             _file.Save();

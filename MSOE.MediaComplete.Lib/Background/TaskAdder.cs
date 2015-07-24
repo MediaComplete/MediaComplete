@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MSOE.MediaComplete.Lib.Logging;
 
 namespace MSOE.MediaComplete.Lib.Background
 {
@@ -52,7 +53,7 @@ namespace MSOE.MediaComplete.Lib.Background
                 currentQueue.Insert(0, new List<Task> { newTask });   
                 inserted = true;
             }
-            else if (minIndex <= maxIndex) // New group in the middle
+            else if (minIndex <= maxIndex) // Group in the middle
             {
                 foreach (var grp in currentQueue.Where(grp => !grp.Any(t => newTask.InvalidDuringTypes.Contains(t.GetType()))))
                 {
@@ -61,10 +62,15 @@ namespace MSOE.MediaComplete.Lib.Background
                     break;
                 }
             }
+            else if (minIndex == maxIndex + 1) // New group in the middle
+            {
+                currentQueue.Insert(minIndex, new List<Task> { newTask });
+                inserted = true;
+            }
 
             if (!inserted) // Queue cannot accept this task at this time
             {
-                // TODO MC-125 log
+                Logger.LogWarning("The queue cannot accept the task " + newTask + " at this time.");
                 throw new InvalidQueueStateException(newTask);
             }
         }
