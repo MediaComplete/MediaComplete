@@ -22,6 +22,10 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /// Gets the metadata for a song, based on the passed in artist, album, and track title.
         /// </summary>
         /// <param name="file">A song to populate. We assume the title, artist, and album have already been populated</param>
+        /// <returns>
+        /// An awaitable
+        /// </returns>
+        /// <exception cref="System.IO.IOException">Unexpected response from metadata request</exception>
         public async Task GetMetadataAsync(LocalSong file)
         {
             var query = HttpUtility.UrlEncode(String.Format("artist:{0} album:{1} track:{2}", file.Artists.FirstOrDefault(), file.Album, file.Title));

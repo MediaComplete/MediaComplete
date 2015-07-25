@@ -15,8 +15,20 @@ namespace MSOE.MediaComplete.Lib.Playlists
         private readonly IM3UFile _file;
         private readonly IPlaylistService _service;
 
+        /// <summary>
+        /// Gets the songs contained in this playlist
+        /// </summary>
+        /// <value>
+        /// The songs.
+        /// </value>
         public List<AbstractSong> Songs { get; private set; }
-        
+
+        /// <summary>
+        /// Gets or sets the title of this playlist
+        /// </summary>
+        /// <value>
+        /// The title.
+        /// </value>
         public string Title
         {
             get { return _file.Name; }
@@ -26,7 +38,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
         /// <summary>
         /// Creates a new playlist based on an underlying M3U file.
         /// </summary>
-        /// <param name="service"></param>
+        /// <param name="service">The playlist service to use</param>
         /// <param name="file">The M3U file</param>
         public Playlist(IPlaylistService service, IM3UFile file)
         {

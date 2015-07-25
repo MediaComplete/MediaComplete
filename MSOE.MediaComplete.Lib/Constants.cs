@@ -13,7 +13,10 @@ namespace MSOE.MediaComplete.Lib
         /// Used to separate human readable file filters from their regex counterparts when opening a dialog
         /// </summary>
 	    public const string FileDialogFilterStringSeparator = "|";
-        
+
+        /// <summary>
+        /// Provides shorthand access to Path.DirectorySeparatorChar as a string
+        /// </summary>
         public static readonly string PathSeparator = Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture);
 
         /// <summary>
@@ -22,12 +25,12 @@ namespace MSOE.MediaComplete.Lib
         public const string Mp3FileExtension = ".mp3";
 
         /// <summary>
-        /// extension for wma files
+        /// extension for WMA files
         /// </summary>
         public const string WmaFileExtension = ".wma";
 
         /// <summary>
-        /// extension for wav files
+        /// extension for WAV files
         /// </summary>
         public const string WavFileExtension = ".wav";
 
@@ -43,7 +46,7 @@ namespace MSOE.MediaComplete.Lib
         {
             Mp3FileExtension, 
             WmaFileExtension, 
-            //WavFileExtension TODO: for when supporting wav files
+            //WavFileExtension TODO: for when supporting WAV files
         };
 
         /// <summary>

@@ -10,6 +10,9 @@ using TaglibFile = TagLib.File;
 
 namespace MSOE.MediaComplete.Lib.Files
 {
+    /// <summary>
+    /// Provides controlled access to the file system.
+    /// </summary>
     public class FileManager : IFileManager
     {
         /// <summary>
@@ -18,20 +21,20 @@ namespace MSOE.MediaComplete.Lib.Files
         private readonly Dictionary<string, LocalSong> _cachedSongs;
 
         /// <summary>
-        /// Dictionary of id, fileinfo pairs.
+        /// Dictionary of id, <see cref="FileInfo"/> pairs.
         /// </summary>
         private readonly Dictionary<string, FileInfo> _cachedFiles;
 
         /// <summary>
-        /// Filewatcher; monitors the library for changes
+        /// Windows file watcher; monitors the library for changes
         /// </summary>
         private FileSystemWatcher _watcher;
-
+        
         /// <summary>
-        /// singleton instance of the Filemanager
+        /// singleton instance of the <see cref="FileManager"/>
         /// </summary>
-        private static FileManager _instance;
         public static IFileManager Instance { get { return _instance ?? (_instance = new FileManager()); } }
+        private static FileManager _instance;
 
         private FileManager()
         {
@@ -43,7 +46,7 @@ namespace MSOE.MediaComplete.Lib.Files
         /// <summary>
         /// Rebuilds the dictionaries using the parameter as the source. 
         /// </summary>
-        /// <param name="musicDir">Source Directory for populating the dictionarires</param>
+        /// <param name="musicDir">Source Directory for populating the dictionaries</param>
         public void Initialize(DirectoryPath musicDir)
         {
             _cachedFiles.Clear();
@@ -87,7 +90,7 @@ namespace MSOE.MediaComplete.Lib.Files
         /// Create a folder at a specified location.
         /// Used by Sorter and to initialize music/playlist folders where necessary
         /// </summary>
-        /// <param name="directory">Destination location to create the folder, including foldername</param>
+        /// <param name="directory">Destination location to create the folder, including the folder name</param>
         public void CreateDirectory(DirectoryPath directory)
         {
             Directory.CreateDirectory(directory.FullPath);
@@ -104,7 +107,7 @@ namespace MSOE.MediaComplete.Lib.Files
             return Directory.Exists(directory.FullPath);
         }
 
-        // TODO MC-35 keep directories and files that aren't music, so they can be managed in-app
+        // TODO MC-35 keep directories and files that aren't music, so they can be managed in-application
         /// <summary>
         /// Verifies if the specified directory has no child directories or music files.
         /// 
@@ -175,8 +178,8 @@ namespace MSOE.MediaComplete.Lib.Files
         /// Moves a file from the directory of songPath to the directory at newFile. 
         /// This is used in the importer, to move a file that does not exist in our directory into the working directory.
         /// </summary>
-        /// <param name="songPath"></param>
-        /// <param name="newFile"></param>
+        /// <param name="songPath">Where to add the file from</param>
+        /// <param name="newFile">The new file name</param>
         public void AddFile(SongPath songPath, SongPath newFile)
         {
             File.Move(songPath.FullPath, newFile.FullPath);
@@ -269,10 +272,10 @@ namespace MSOE.MediaComplete.Lib.Files
         }
 
         /// <summary>
-        /// Returns a LocalSong that has a path that matches the MediaItem's location
+        /// Returns a <see cref="LocalSong"/> that has a path that matches the <see cref="MediaItem"/>'s location
         /// </summary>
-        /// <param name="mediaItem">MediaItem for which the song is needed</param>
-        /// <returns>LocalSong if it exists, null if it doesn't</returns>
+        /// <param name="mediaItem"><see cref="MediaItem"/> for which the song is needed</param>
+        /// <returns><see cref="LocalSong"/> if it exists, null if it doesn't</returns>
         public AbstractSong GetSong(MediaItem mediaItem)
         {
             return _cachedSongs.Values.FirstOrDefault(x => x.SongPath != null && x.Path.Equals(mediaItem.Location));
@@ -294,7 +297,7 @@ namespace MSOE.MediaComplete.Lib.Files
         /// Helper function for adding new songs to the dictionaries
         /// </summary>
         /// <param name="id">unique ID of the song to be saved</param>
-        /// <param name="file">The Fileinfo object of the file to be saved</param>
+        /// <param name="file">The <see cref="FileInfo"/> object of the file to be saved</param>
         private void AddFileToCache(string id, FileInfo file)
         {
             var newFile = GetNewLocalSong(id, file);
@@ -308,7 +311,7 @@ namespace MSOE.MediaComplete.Lib.Files
         /// the new LocalSong object.
         /// </summary>
         /// <param name="id">unique ID of the file to be saved</param>
-        /// <param name="file">fileinfo object that needs to be saved</param>
+        /// <param name="file"><see cref="FileInfo"/> object that needs to be saved</param>
         /// <returns></returns>
         private static LocalSong GetNewLocalSong(string id, FileSystemInfo file)
         {
@@ -397,10 +400,10 @@ namespace MSOE.MediaComplete.Lib.Files
 
         #region FileWatcher and Events
         /// <summary>
-        /// Updates cached song as a result of a Rename event triggered by the filewatcher.
+        /// Updates cached song as a result of a Rename event triggered by the system file watcher.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">The object sender</param>
+        /// <param name="e">The details of the rename</param>
         public void RenamedFile(object sender, RenamedEventArgs e)
         {
             var retEnum = new List<Tuple<LocalSong, LocalSong>>();
@@ -433,10 +436,10 @@ namespace MSOE.MediaComplete.Lib.Files
         }
 
         /// <summary>
-        /// Updates cached song as a result of a 'changed' event being triggered by the filewatcher.
+        /// Updates cached song as a result of a 'changed' event being triggered by the system file watcher.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The details from the file system</param>
         public void ChangedFile(object sender, FileSystemEventArgs e)
         {
             var retEnum = new List<LocalSong>();
@@ -470,7 +473,8 @@ namespace MSOE.MediaComplete.Lib.Files
                 }
                 catch (DirectoryNotFoundException)
                 {
-                    //This can happen if a directory is deleted. It will trigger a delete event AND a changed event, amd this will cause an exception.
+                    // This can happen if a directory is deleted. 
+                    // It will trigger a delete event AND a changed event, and this will cause an exception.
                 }
             }
             else if (File.Exists(e.FullPath))
@@ -487,10 +491,10 @@ namespace MSOE.MediaComplete.Lib.Files
         }
 
         /// <summary>
-        /// Updates cached song as a result of a 'deleted' event being triggered by the filewatcher.
+        /// Updates cached song as a result of a 'deleted' event being triggered by the system file watcher.
         /// </summary>
-        /// <param name="sender"/>
-        /// <param name="e"/>
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The details from the file system</param>
         public void DeletedFile(object sender, FileSystemEventArgs e)
         {
             var retEnum = new List<LocalSong>();
@@ -516,10 +520,10 @@ namespace MSOE.MediaComplete.Lib.Files
         }
 
         /// <summary>
-        /// Updates cached song as a result of a 'created' event being triggered by the filewatcher.
+        /// Updates cached song as a result of a 'created' event being triggered by the system file watcher.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The details from the file system</param>
         public void CreatedFile(object sender, FileSystemEventArgs e)
         {
             var retEnum = new List<LocalSong>();
@@ -544,25 +548,34 @@ namespace MSOE.MediaComplete.Lib.Files
             SongCreated(retEnum);
         }
 
-
+        /// <summary>
+        /// Occurs when a song is renamed or moved
+        /// </summary>
         public event SongRenamedHandler SongRenamed = delegate { };
+        /// <summary>
+        /// Occurs when a song is modified
+        /// </summary>
         public event SongUpdatedHandler SongChanged = delegate { };
+        /// <summary>
+        /// Occurs when a song is created
+        /// </summary>
         public event SongUpdatedHandler SongCreated = delegate { };
+        /// <summary>
+        /// Occurs whenever a song is deleted
+        /// </summary>
         public event SongUpdatedHandler SongDeleted = delegate { };
-        
-
-        public delegate void SongUpdatedHandler(IEnumerable<LocalSong> songs);
-        public delegate void SongRenamedHandler(IEnumerable<Tuple<LocalSong, LocalSong>> songs);
         #endregion
-
     }
 
+    /// <summary>
+    /// Service for governing access to the file system.
+    /// </summary>
     public interface IFileManager
     {
         /// <summary>
         /// Rebuilds the dictionaries using the parameter as the source. 
         /// </summary>
-        /// <param name="directory">Source Directory for populating the dictionarires</param>
+        /// <param name="directory">Source Directory for populating the dictionaries</param>
         void Initialize(DirectoryPath directory);
         /// <summary>
         /// used to migrate an entire directories files and folders to a new location.
@@ -611,7 +624,7 @@ namespace MSOE.MediaComplete.Lib.Files
         /// Create a folder at a specified location.
         /// Used by Sorter and to initialize music/playlist folders where necessary
         /// </summary>
-        /// <param name="directory">Destination location to create the folder, including foldername</param>
+        /// <param name="directory">Destination location to create the folder, including the folder name</param>
         void CreateDirectory(DirectoryPath directory);
         /// <summary>
         /// Writes the attributes of the song parameter to the TagLib File and updates the stored FileInfo and song
@@ -619,11 +632,11 @@ namespace MSOE.MediaComplete.Lib.Files
         /// <param name="song">file with updated metadata</param>
         void SaveSong(LocalSong song);
         /// <summary>
-        /// Moves a file from the directory of songPath to the directory at newFile. 
+        /// Moves a file from the directory of songPath to the directory at newFile.
         /// This is used in the importer, to move a file that does not exist in our directory into the working directory.
         /// </summary>
-        /// <param name="songPath"></param>
-        /// <param name="newFile"></param>
+        /// <param name="songPath">The old file.</param>
+        /// <param name="newFile">The new file.</param>
         void AddFile(SongPath songPath, SongPath newFile);
         /// <summary>
         /// Get every song object that exists in the cache
@@ -648,10 +661,36 @@ namespace MSOE.MediaComplete.Lib.Files
         /// <returns>LocalSong if it exists, null if it doesn't</returns>
         AbstractSong GetSong(MediaItem mediaItem);
 
-        event FileManager.SongRenamedHandler SongRenamed;
-        event FileManager.SongUpdatedHandler SongChanged;
-        event FileManager.SongUpdatedHandler SongCreated;
-        event FileManager.SongUpdatedHandler SongDeleted;
+        /// <summary>
+        /// Occurs when a song is renamed or moved
+        /// </summary>
+        event SongRenamedHandler SongRenamed;
+
+        /// <summary>
+        /// Occurs when a song is modified
+        /// </summary>
+        event SongUpdatedHandler SongChanged;
+
+        /// <summary>
+        /// Occurs when a song is created
+        /// </summary>
+        event SongUpdatedHandler SongCreated;
+
+        /// <summary>
+        /// Occurs whenever a song is deleted
+        /// </summary>
+        event SongUpdatedHandler SongDeleted;
     }
 
+    /// <summary>
+    /// Delegate definition for handling changes to song files
+    /// </summary>
+    /// <param name="songs">The updated songs.</param>
+    public delegate void SongUpdatedHandler(IEnumerable<LocalSong> songs);
+
+    /// <summary>
+    /// Delegate definition for handling songs that have been moved/renamed
+    /// </summary>
+    /// <param name="songs">The moved/renamed songs.</param>
+    public delegate void SongRenamedHandler(IEnumerable<Tuple<LocalSong, LocalSong>> songs);
 }

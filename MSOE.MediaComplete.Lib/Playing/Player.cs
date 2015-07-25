@@ -60,7 +60,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         public void Play()
         {
             Stop();
-            //TODO refactor so Player doesnt use a reference to NowPlaying MC-23
+            //TODO refactor so Player doesn't use a reference to NowPlaying MC-23
             var song = NowPlaying.Inst.CurrentSong();
 
             var localSong = song as LocalSong;
@@ -103,7 +103,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// <summary>
         /// calls the NAudioWrapper seek function
         /// </summary>
-        /// <param name="timeToSeekTo"></param>
+        /// <param name="timeToSeekTo">The time to seek to</param>
         public void Seek(TimeSpan timeToSeekTo)
         {
             _nAudioWrapper.Seek(timeToSeekTo);
@@ -122,7 +122,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// <summary> 
         /// changes the volume of a currently playing song
         /// </summary>
-        /// <param name="newValue"></param>
+        /// <param name="newValue">The new volume level</param>
         public void ChangeVolume(double newValue)
         {
             if (PlaybackState != PlaybackState.Stopped)
@@ -137,12 +137,12 @@ namespace MSOE.MediaComplete.Lib.Playing
         #endregion
 
         #region private methods
-        //TODO refactor so player doesnt use a reference to NowPlaying MC-23
+        //TODO refactor so player doesn't use a reference to NowPlaying MC-23
         /// <summary>
         /// passes the event from _waveout to the caller
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="stoppedEventArgs"></param>
+        /// <param name="sender">The event sender</param>
+        /// <param name="stoppedEventArgs">The details of the stop</param>
         private void WaveOutOnPlaybackStopped(object sender, StoppedEventArgs stoppedEventArgs)
         {
             var oldIndex = NowPlaying.Inst.Index;
@@ -180,6 +180,10 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// <param name="oldPath"></param>
         /// <param name="newPath"></param>
         public delegate void SongFinished(int oldPath, int newPath);
+
+        /// <summary>
+        /// Occurs when the current song ends
+        /// </summary>
         public event SongFinished SongFinishedEvent = delegate { };
 
         /// <summary>
@@ -187,9 +191,18 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// TODO fix this and the one from NowPlaying MC-23
         /// </summary>
         public delegate void PlaylistFinished();
+
+        /// <summary>
+        /// Occurs when the full playlist has ended
+        /// </summary>
         public event PlaylistFinished PlaylistFinishedEvent = delegate { };
         #endregion
 
+        /// <summary>
+        /// Called when the currently playing song ends
+        /// </summary>
+        /// <param name="oldIndex">The old currently playing index.</param>
+        /// <param name="newIndex">The new currently playing index.</param>
         protected void OnSongFinishedEvent(int oldIndex , int newIndex )
         {
             SongFinishedEvent(oldIndex, newIndex);

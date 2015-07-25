@@ -15,10 +15,12 @@ namespace MSOE.MediaComplete.Lib.Playing
         private WaveOut _waveOut;
 
         /// <summary>
-        /// returns the proper wavestream based on the given filetype
+        /// returns the proper wavestream based on the given file-type
         /// </summary>
-        /// <param name="file"></param>
-        /// <returns></returns>
+        /// <param name="file">The file.</param>
+        /// <returns>An audio wavestream</returns>
+        /// <exception cref="System.ArgumentNullException">If the file is null</exception>
+        /// <exception cref="TagLib.CorruptFileException">If the specified file is corrupted</exception>
         private static WaveStream GetWaveStream(FileSystemInfo file)
         {
             if(file == null) throw new ArgumentNullException("file");
@@ -41,9 +43,9 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// sets up the wrapper to play the given file
         /// required before each song to get it to begin playing
         /// </summary>
-        /// <param name="localSong"></param>
-        /// <param name="handler"></param>
-        /// <param name="currentVolume"></param>
+        /// <param name="localSong">The song file</param>
+        /// <param name="handler">The callback for when the song events</param>
+        /// <param name="currentVolume">The current volume</param>
         public void Setup(LocalSong localSong, EventHandler<StoppedEventArgs> handler, double currentVolume)
         {
             _waveOut = new WaveOut();
@@ -56,7 +58,9 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// <summary>
         /// Plays the file
         /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// A state confirmation
+        /// </returns>
         public PlaybackState Play()
         {
             if (_waveOut == null) return PlaybackState.Stopped;
@@ -67,7 +71,9 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// <summary>
         /// Pauses the file
         /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// A state confirmation
+        /// </returns>
         public PlaybackState Pause()
         {
             if (_waveOut == null) return PlaybackState.Stopped;
@@ -78,7 +84,9 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// <summary>
         /// stops playback and requires the setup to be called on the next song
         /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// A state confirmation
+        /// </returns>
         public PlaybackState Stop()
         {
             if (_waveOut != null)
@@ -98,8 +106,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// <summary>
         /// seeks to the given time within the song (from the beginning)
         /// </summary>
-        /// <param name="timeToSeekTo"></param>
-        /// <returns></returns>
+        /// <param name="timeToSeekTo">The time to seek to.</param>
         public void Seek(TimeSpan timeToSeekTo)
         {
             if (_waveOut == null || _waveStream == null) return;
@@ -124,7 +131,11 @@ namespace MSOE.MediaComplete.Lib.Playing
         {
             get { return _waveStream != null ? _waveStream.CurrentTime : TimeSpan.FromMilliseconds(0); }
         }
-        
+
+        /// <summary>
+        /// Changes the volume.
+        /// </summary>
+        /// <param name="sliderVolume">The slider volume.</param>
         public void ChangeVolume(double sliderVolume)
         {
             if (_waveOut != null)

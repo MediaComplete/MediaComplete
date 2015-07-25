@@ -10,12 +10,19 @@ namespace MSOE.MediaComplete.Lib.Background
     /// </summary>
     public abstract class Task
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Task"/> class.
+        /// </summary>
         protected Task()
         {
             Lock = new SemaphoreSlim(1, 1);
             Lock.Wait();
         }
 
+        /// <summary>
+        /// Delegate definition for the <see cref="Update"/> event.
+        /// </summary>
+        /// <param name="data">The task itself, for accessing relevant information</param>
         public delegate void UpdateHandler(Task data);
         
         /// <summary>
@@ -26,6 +33,7 @@ namespace MSOE.MediaComplete.Lib.Background
         /// <summary>
         /// Called by the task when it has a new status, so logs, status bar, etc. can be updated by the queue.
         /// </summary>
+        /// <param name="data">The data (the <see cref="Task"/> itself)</param>
         protected void TriggerUpdate(Task data)
         {
             Update(data);
@@ -39,6 +47,7 @@ namespace MSOE.MediaComplete.Lib.Background
         /// <summary>
         /// Called by the task when it has completed.
         /// </summary>
+        /// <param name="data">The data (the <see cref="Task"/> itself)</param>
         protected void TriggerDone(Task data)
         {
             data.PercentComplete = 1;
@@ -48,7 +57,7 @@ namespace MSOE.MediaComplete.Lib.Background
         }
 
         /// <summary>
-        /// Readonly semaphore. Locks on construction, and releases when "Do" 
+        /// Read-only semaphore. Locks on construction, and releases when "Do" 
         /// completes (successfully or unsuccessfully)
         /// </summary>
         public SemaphoreSlim Lock { get; private set; }
@@ -101,7 +110,7 @@ namespace MSOE.MediaComplete.Lib.Background
         /// Performs the action of this task, asynchronously. 
         /// </summary>
         /// <param name="i">The index of this task, as assigned by the queue when it's started</param>
-        /// <returns>An async Task</returns>
+        /// <returns>An asynchronous Task</returns>
         public abstract void Do(int i);
 
 #endregion

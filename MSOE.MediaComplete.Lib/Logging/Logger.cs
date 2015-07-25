@@ -93,6 +93,10 @@ namespace MSOE.MediaComplete.Lib.Logging
                 Log.Fatal(message);
         }
 
+        /// <summary>
+        /// Sets the log level.
+        /// </summary>
+        /// <param name="logLevel">The log level.</param>
         public static void SetLogLevel(int logLevel)
         {
             var level = Level.Error;
@@ -116,11 +120,28 @@ namespace MSOE.MediaComplete.Lib.Logging
         /// </summary>
         public enum LoggingLevel
         {
-            Error=0,
-            Info=1,
-            Debug=314
+            /// <summary>
+            /// Prints only error-level messages
+            /// </summary>
+            Error = 0,
+
+            /// <summary>
+            /// Prints errors, warnings, and informational messages
+            /// </summary>
+            Info = 1,
+
+            /// <summary>
+            /// Prints everything
+            /// </summary>
+            Debug = 314
         }
 
+        /// <summary>
+        /// Gets the log directory
+        /// </summary>
+        /// <value>
+        /// The log directory.
+        /// </value>
         public static string LogDir
         {
             get

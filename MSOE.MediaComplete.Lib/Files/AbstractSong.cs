@@ -63,10 +63,10 @@ namespace MSOE.MediaComplete.Lib.Files
         #region Special getters and setters
 
         /// <summary>
-        /// This function returns a property based on the metaattribute enum. This is used where 
+        /// This function returns a property based on the meta attribute enumeration. This is used where 
         /// multiple, dynamically determined attributes need to be returned. Otherwise, specific property calls can be made.
         /// </summary>
-        /// <param name="attribute">MetaAttribute enum used to get the specific MetaData property from the object</param>
+        /// <param name="attribute">MetaAttribute enumeration used to get the specific MetaData property from the object</param>
         /// <returns>string value of the appropriate Attribute, or null</returns>
         public object GetAttribute(MetaAttribute attribute)
         {
@@ -96,7 +96,7 @@ namespace MSOE.MediaComplete.Lib.Files
         }
 
         /// <summary>
-        /// Retreive the specified metadata as a string.
+        /// Retrieve the specified metadata as a string.
         /// </summary>
         /// <param name="type">The type of metadata</param>
         /// <returns>A string representation of value</returns>
@@ -214,7 +214,7 @@ namespace MSOE.MediaComplete.Lib.Files
         #endregion
 
         /// <summary>
-        /// Enforces an equality check on all subsongs.
+        /// Enforces an equality check on all songs.
         /// </summary>
         /// <param name="other">Another object to compare to</param>
         /// <returns>True if this is logically equivalent to other, false otherwise</returns>
