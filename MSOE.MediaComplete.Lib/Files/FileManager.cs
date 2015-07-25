@@ -402,8 +402,8 @@ namespace MSOE.MediaComplete.Lib.Files
         /// <summary>
         /// Updates cached song as a result of a Rename event triggered by the system file watcher.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">The object sender</param>
+        /// <param name="e">The details of the rename</param>
         public void RenamedFile(object sender, RenamedEventArgs e)
         {
             var retEnum = new List<Tuple<LocalSong, LocalSong>>();
@@ -632,11 +632,11 @@ namespace MSOE.MediaComplete.Lib.Files
         /// <param name="song">file with updated metadata</param>
         void SaveSong(LocalSong song);
         /// <summary>
-        /// Moves a file from the directory of songPath to the directory at newFile. 
+        /// Moves a file from the directory of songPath to the directory at newFile.
         /// This is used in the importer, to move a file that does not exist in our directory into the working directory.
         /// </summary>
-        /// <param name="songPath"></param>
-        /// <param name="newFile"></param>
+        /// <param name="songPath">The old file.</param>
+        /// <param name="newFile">The new file.</param>
         void AddFile(SongPath songPath, SongPath newFile);
         /// <summary>
         /// Get every song object that exists in the cache

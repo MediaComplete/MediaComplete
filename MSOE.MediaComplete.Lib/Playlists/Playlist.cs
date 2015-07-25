@@ -38,7 +38,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
         /// <summary>
         /// Creates a new playlist based on an underlying M3U file.
         /// </summary>
-        /// <param name="service"></param>
+        /// <param name="service">The playlist service to use</param>
         /// <param name="file">The M3U file</param>
         public Playlist(IPlaylistService service, IM3UFile file)
         {

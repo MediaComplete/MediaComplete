@@ -103,7 +103,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// <summary>
         /// calls the NAudioWrapper seek function
         /// </summary>
-        /// <param name="timeToSeekTo"></param>
+        /// <param name="timeToSeekTo">The time to seek to</param>
         public void Seek(TimeSpan timeToSeekTo)
         {
             _nAudioWrapper.Seek(timeToSeekTo);
@@ -122,7 +122,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// <summary> 
         /// changes the volume of a currently playing song
         /// </summary>
-        /// <param name="newValue"></param>
+        /// <param name="newValue">The new volume level</param>
         public void ChangeVolume(double newValue)
         {
             if (PlaybackState != PlaybackState.Stopped)
@@ -141,8 +141,8 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// <summary>
         /// passes the event from _waveout to the caller
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="stoppedEventArgs"></param>
+        /// <param name="sender">The event sender</param>
+        /// <param name="stoppedEventArgs">The details of the stop</param>
         private void WaveOutOnPlaybackStopped(object sender, StoppedEventArgs stoppedEventArgs)
         {
             var oldIndex = NowPlaying.Inst.Index;

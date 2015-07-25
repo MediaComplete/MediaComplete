@@ -43,9 +43,9 @@ namespace MSOE.MediaComplete.Lib.Import
         /// <summary>
         /// Constructs an Importer with the given library home directory.
         /// </summary>
-        /// <param name="fileManager"></param>
-        /// <param name="files"></param>
-        /// <param name="isMove"></param>
+        /// <param name="fileManager">The file manager to use</param>
+        /// <param name="files">The files to import</param>
+        /// <param name="isMove">Toggles cut vs. copy behavior</param>
         public Importer(IFileManager fileManager, IEnumerable<SongPath> files, bool isMove)
         {
             if(fileManager == null || files == null) throw new ArgumentNullException();

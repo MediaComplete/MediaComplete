@@ -16,7 +16,7 @@ namespace MSOE.MediaComplete.Lib.Files
         /// <summary>
         /// Constructor requires a string. There is no purpose for this object without that string
         /// </summary>
-        /// <param name="path"></param>
+        /// <param name="path">The string path to the song</param>
         public SongPath(string path)
         {
             FullPath = path;
@@ -51,22 +51,26 @@ namespace MSOE.MediaComplete.Lib.Files
         {
             return FullPath.StartsWith(parent.FullPath, StringComparison.Ordinal);
         }
-        
+
         /// <summary>
         /// Compares the current path to another's path
         /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
+        /// <param name="obj">The object to compare with the current object.</param>
+        /// <returns>
+        /// true if the specified object  is equal to the current object; otherwise, false.
+        /// </returns>
         public override bool Equals(Object obj)
         {
             var otherSong = obj as SongPath;
             return otherSong != null && otherSong.FullPath.Equals(FullPath);
         }
-        
+
         /// <summary>
-        /// Generates a unique hash-code for the <see cref="SongPath"/> object, for comparison purposes
+        /// Generates a unique hash-code for the <see cref="SongPath" /> object, for comparison purposes
         /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        /// </returns>
         public override int GetHashCode()
         {
             return string.Format("{0}-{1}", FullPath, Name).GetHashCode();

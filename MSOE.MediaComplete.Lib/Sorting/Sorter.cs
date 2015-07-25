@@ -76,6 +76,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <summary>
         /// Private function to determine what movements need to occur to put the library in order
         /// </summary>
+        /// <returns>An awaitable task</returns>
         public async Sys.Task CalculateActionsAsync()
         {
             await Sys.Task.Run(() =>
@@ -145,7 +146,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// Fix up a file name so it becomes usable
         /// </summary>
         /// <param name="path">The path.</param>
-        /// <returns></returns>
+        /// <returns>A valid filename string</returns>
         public static string GetValidFileName(string path)
         {
             //special chars not allowed in filename 
