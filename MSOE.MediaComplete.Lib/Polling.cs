@@ -13,11 +13,26 @@ namespace MSOE.MediaComplete.Lib
     /// </summary>
     public class Polling : IPolling
     {
-        private readonly Timer _timer;
+        /// <summary>
+        /// Delegate definition for handling discover files
+        /// </summary>
+        /// <param name="files">The new files.</param>
+        public delegate void InboxFilesHandler(IEnumerable<SongPath> files);
+
+        /// <summary>
+        /// Occurs when files are detected
+        /// </summary>
+        public static event InboxFilesHandler InboxFilesDetected = delegate { };
+
+        /// <summary>
+        /// Gets or sets the polling interval in minutes.
+        /// </summary>
+        /// <value>
+        /// The time in minutes.
+        /// </value>
         public double TimeInMinutes { get; set; }
 
-        public delegate void InboxFilesHandler(IEnumerable<SongPath> files);
-        public static event InboxFilesHandler InboxFilesDetected = delegate {};
+        private readonly Timer _timer;
 
         /// <summary>
         /// constructor to build out a timer object and subscribe to its events
@@ -60,7 +75,7 @@ namespace MSOE.MediaComplete.Lib
         /// </summary>
         public void Reset()
         {
-            _timer.Interval = _timer.Interval;//resarts the interval now with the same interval as before
+            _timer.Interval = _timer.Interval; // restarts the interval now with the same interval as before
         }
 
         /// <summary>
@@ -85,11 +100,32 @@ namespace MSOE.MediaComplete.Lib
         }
     }
 
+    /// <summary>
+    /// Interface for a file polling service
+    /// </summary>
     public interface IPolling
     {
-         void Reset();
-         void OnSettingChanged();
-         void Start();
-         double TimeInMinutes { get; set; }
+        /// <summary>
+        /// Resets the instance
+        /// </summary>
+        void Reset();
+
+        /// <summary>
+        /// Method to call when this instance should check for new polling settings
+        /// </summary>
+        void OnSettingChanged();
+
+        /// <summary>
+        /// Start polling
+        /// </summary>
+        void Start();
+
+        /// <summary>
+        /// Gets or sets the polling interval in minutes.
+        /// </summary>
+        /// <value>
+        /// The time in minutes.
+        /// </value>
+        double TimeInMinutes { get; set; }
     }
 }

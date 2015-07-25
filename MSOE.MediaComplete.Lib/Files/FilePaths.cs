@@ -86,7 +86,7 @@ namespace MSOE.MediaComplete.Lib.Files
         /// <summary>
         /// Constructor requires a string. There is no purpose for this object without that string
         /// </summary>
-        /// <param name="path"></param>
+        /// <param name="path">The string path of the directory</param>
         public DirectoryPath(string path)
         {
             if (path.EndsWith(Path.DirectorySeparatorChar.ToString()))

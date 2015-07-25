@@ -33,6 +33,7 @@ namespace MSOE.MediaComplete.Lib.Background
         /// <summary>
         /// Called by the task when it has a new status, so logs, status bar, etc. can be updated by the queue.
         /// </summary>
+        /// <param name="data">The data (the <see cref="Task"/> itself)</param>
         protected void TriggerUpdate(Task data)
         {
             Update(data);
@@ -46,6 +47,7 @@ namespace MSOE.MediaComplete.Lib.Background
         /// <summary>
         /// Called by the task when it has completed.
         /// </summary>
+        /// <param name="data">The data (the <see cref="Task"/> itself)</param>
         protected void TriggerDone(Task data)
         {
             data.PercentComplete = 1;

@@ -178,8 +178,8 @@ namespace MSOE.MediaComplete.Lib.Files
         /// Moves a file from the directory of songPath to the directory at newFile. 
         /// This is used in the importer, to move a file that does not exist in our directory into the working directory.
         /// </summary>
-        /// <param name="songPath"></param>
-        /// <param name="newFile"></param>
+        /// <param name="songPath">Where to add the file from</param>
+        /// <param name="newFile">The new file name</param>
         public void AddFile(SongPath songPath, SongPath newFile)
         {
             File.Move(songPath.FullPath, newFile.FullPath);
@@ -272,10 +272,10 @@ namespace MSOE.MediaComplete.Lib.Files
         }
 
         /// <summary>
-        /// Returns a LocalSong that has a path that matches the MediaItem's location
+        /// Returns a <see cref="LocalSong"/> that has a path that matches the <see cref="MediaItem"/>'s location
         /// </summary>
-        /// <param name="mediaItem">MediaItem for which the song is needed</param>
-        /// <returns>LocalSong if it exists, null if it doesn't</returns>
+        /// <param name="mediaItem"><see cref="MediaItem"/> for which the song is needed</param>
+        /// <returns><see cref="LocalSong"/> if it exists, null if it doesn't</returns>
         public AbstractSong GetSong(MediaItem mediaItem)
         {
             return _cachedSongs.Values.FirstOrDefault(x => x.SongPath != null && x.Path.Equals(mediaItem.Location));
@@ -438,8 +438,8 @@ namespace MSOE.MediaComplete.Lib.Files
         /// <summary>
         /// Updates cached song as a result of a 'changed' event being triggered by the system file watcher.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The details from the file system</param>
         public void ChangedFile(object sender, FileSystemEventArgs e)
         {
             var retEnum = new List<LocalSong>();
@@ -493,8 +493,8 @@ namespace MSOE.MediaComplete.Lib.Files
         /// <summary>
         /// Updates cached song as a result of a 'deleted' event being triggered by the system file watcher.
         /// </summary>
-        /// <param name="sender"/>
-        /// <param name="e"/>
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The details from the file system</param>
         public void DeletedFile(object sender, FileSystemEventArgs e)
         {
             var retEnum = new List<LocalSong>();
@@ -522,8 +522,8 @@ namespace MSOE.MediaComplete.Lib.Files
         /// <summary>
         /// Updates cached song as a result of a 'created' event being triggered by the system file watcher.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The details from the file system</param>
         public void CreatedFile(object sender, FileSystemEventArgs e)
         {
             var retEnum = new List<LocalSong>();

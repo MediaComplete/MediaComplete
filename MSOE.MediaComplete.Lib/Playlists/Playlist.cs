@@ -15,8 +15,20 @@ namespace MSOE.MediaComplete.Lib.Playlists
         private readonly IM3UFile _file;
         private readonly IPlaylistService _service;
 
+        /// <summary>
+        /// Gets the songs contained in this playlist
+        /// </summary>
+        /// <value>
+        /// The songs.
+        /// </value>
         public List<AbstractSong> Songs { get; private set; }
-        
+
+        /// <summary>
+        /// Gets or sets the title of this playlist
+        /// </summary>
+        /// <value>
+        /// The title.
+        /// </value>
         public string Title
         {
             get { return _file.Name; }

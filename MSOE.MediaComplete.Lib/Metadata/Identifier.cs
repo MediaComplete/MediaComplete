@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-﻿using MSOE.MediaComplete.Lib.Files;
+using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
 using MSOE.MediaComplete.Lib.Sorting;
 using MSOE.MediaComplete.Lib.Logging;
@@ -30,7 +30,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
         private readonly IAudioIdentifier _audioIdentifier;
 
         /// <summary>
-        /// Controls where additional metadata is retreived from after identifying a song.
+        /// Controls where additional metadata is retrieved from after identifying a song.
         /// </summary>
         private IMetadataRetriever _metadataRetriever;
 
@@ -47,10 +47,10 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /// <summary>
         /// Use the specified services for identification.
         /// </summary>
-        /// <param name="files">The files to indentify</param>
+        /// <param name="files">The files to identify</param>
         /// <param name="reader">Audio reader for parsing in audio data</param>
-        /// <param name="identifier">Audio identifer for fingerprinting songs</param>
-        /// <param name="metadata">Metadata retreiver for finding additional metadata details.</param>
+        /// <param name="identifier">Audio identifier for fingerprinting songs</param>
+        /// <param name="metadata">Metadata retriever for finding additional metadata details.</param>
         /// <param name="fileManager">Controls how files are accessed</param>
         public Identifier(IEnumerable<LocalSong> files, IAudioReader reader, IAudioIdentifier identifier, IMetadataRetriever metadata, IFileManager fileManager)
         {
@@ -147,7 +147,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
                             Logger.LogException("Automatic music identification error", x);
                             Message = "MusicIdentification-Warning-RateLimit";
                             Icon = StatusBarHandler.StatusIcon.Warning;
-                            // TODO MC-76 Any other ID tasks in the queue should be cancelled somehow
+                            // TODO MC-76 Any other ID tasks in the queue should be canceled somehow
                             TriggerUpdate(this);
                             stop = true;
                         }
@@ -181,16 +181,28 @@ namespace MSOE.MediaComplete.Lib.Metadata
             TriggerDone(this);
         }
 
+        /// <summary>
+        /// Contains any subclass types that cannot appear before this task in the execution queue.
+        /// Used by <see cref="MSOE.MediaComplete.Lib.Background.TaskAdder.ResolveConflicts" /> to re-order the queue after adding this task.
+        /// </summary>
         public override IReadOnlyCollection<Type> InvalidBeforeTypes
         {
             get { return new List<Type> { typeof(Importer) }.AsReadOnly(); }
         }
 
+        /// <summary>
+        /// Contains any subclass types that cannot appear after this task in the execution queue.
+        /// Used by <see cref="MSOE.MediaComplete.Lib.Background.TaskAdder.ResolveConflicts" /> to re-order the queue after adding this task.
+        /// </summary>
         public override IReadOnlyCollection<Type> InvalidAfterTypes
         {
             get { return new List<Type> { typeof(Sorter) }.AsReadOnly(); }
         }
 
+        /// <summary>
+        /// Contains any subclass types that cannot appear in the same parallel block in the execution queue.
+        /// Used by <see cref="MSOE.MediaComplete.Lib.Background.TaskAdder.ResolveConflicts" /> to re-order the queue after adding this task.
+        /// </summary>
         public override IReadOnlyCollection<Type> InvalidDuringTypes
         {
             get { return new List<Type>().AsReadOnly(); }

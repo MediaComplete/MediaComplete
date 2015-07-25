@@ -124,7 +124,11 @@ namespace MSOE.MediaComplete.Lib.Playing
         {
             get { return _waveStream != null ? _waveStream.CurrentTime : TimeSpan.FromMilliseconds(0); }
         }
-        
+
+        /// <summary>
+        /// Changes the volume.
+        /// </summary>
+        /// <param name="sliderVolume">The slider volume.</param>
         public void ChangeVolume(double sliderVolume)
         {
             if (_waveOut != null)
