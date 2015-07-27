@@ -10,7 +10,6 @@ using System.Linq;
 using System.Text;
 using Lucene.Net.Search;
 using System.Collections.Generic;
-using System;
 
 namespace MSOE.MediaComplete.Search.Lucene
 {

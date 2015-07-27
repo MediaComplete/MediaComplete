@@ -1,11 +1,6 @@
 ﻿using Autofac;
-using Autofac.Core;
 using MSOE.MediaComplete.Search.Lucene;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MSOE.MediaComplete.Search.Music;
 
 namespace MSOE.MediaComplete.Search
 {
@@ -24,6 +19,7 @@ namespace MSOE.MediaComplete.Search
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<LuceneIndex>().As<IIndex>();
+            builder.RegisterType<FileMusicSearcher>().As<IMusicIndex>();
             _afContainer = builder.Build();
         }
 
