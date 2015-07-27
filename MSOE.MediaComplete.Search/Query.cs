@@ -1,4 +1,6 @@
-﻿namespace MSOE.MediaComplete.Search
+﻿using System.Collections.Generic;
+
+namespace MSOE.MediaComplete.Search
 {
     /// <summary>
     /// Represents a search query
@@ -6,11 +8,11 @@
     public class Query
     {
         /// <summary>
-        /// The simple text representation.
+        /// Contains key-value pairs of field names and values to search for.
         /// </summary>
         /// <value>
         /// The text.
         /// </value>
-        public string Text { get; set; }
+        public Dictionary<string, string> FieldQueries { get; set; }
     }
 }

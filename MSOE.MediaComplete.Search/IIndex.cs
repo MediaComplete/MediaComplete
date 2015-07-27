@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 namespace MSOE.MediaComplete.Search
 {
     /// <summary>
-    /// Service providing access to a search index. Index may be searched, or modified
+    /// Service providing access to a search index. Index may be searched, or modified.
     /// </summary>
     public interface IIndex
     {
         /// <summary>
-        /// Gets or sets the index location. This may not be used in all implementations.
+        /// Gets or sets the index location. This may not be used in all implementations, and 
+        /// will almost definitely not be thread-safe.
         /// </summary>
         /// <value>
         /// The index location.
@@ -31,6 +32,13 @@ namespace MSOE.MediaComplete.Search
         /// </summary>
         /// <param name="entries">The entries.</param>
         void UpdateEntries(params Entry[] entries);
+
+        /// <summary>
+        /// Removes the entries from the search index, by ID.
+        /// Since the ID is the only thing used here, the other fields need not be filled out.
+        /// </summary>
+        /// <param name="entries">The entries.</param>
+        void RemoveEntries(params Entry[] entries);
 
         /// <summary>
         /// Clears the entire index. Useful for when the entire index needs to rebuilt.
