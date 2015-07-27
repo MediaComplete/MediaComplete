@@ -75,6 +75,7 @@
     <Compile Include="Entry.cs" />
     <Compile Include="IIndex.cs" />
     <Compile Include="Lucene\LuceneIndex.cs" />
+    <Compile Include="Music\FileMusicSearcher.cs" />
     <Compile Include="Music\IMusicSearcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query.cs" />
