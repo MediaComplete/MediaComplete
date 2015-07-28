@@ -20,9 +20,17 @@ namespace MSOE.MediaComplete.Lib.Sorting
     {
         private static IFileSystem _fileSystem;
         public List<Action.IAction> Actions { get; private set; }
+
+        /// <summary>
+        /// Gets the number of un-sortable files
+        /// </summary>
+        /// <value>
+        /// The un-sortable count.
+        /// </value>
         public int UnsortableCount { get; private set; }
         public int MoveCount { get { return Actions.Count(a => a is Action.MoveAction); } }
         public int DupCount { get { return Actions.Count(a => a is Action.DeleteAction); } }
+
         /// <summary>
         /// The specific files to sort
         /// </summary>
@@ -48,6 +56,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <summary>
         /// Private function to determine what movements need to occur to put the library in order
         /// </summary>
+        /// <returns>An awaitable task</returns>
         public async Sys.Task CalculateActionsAsync()
         {
             await Sys.Task.Run(() =>
@@ -99,8 +108,8 @@ namespace MSOE.MediaComplete.Lib.Sorting
         {
             var path = "";
             // This is using an indexed for loop for a reason.
-            // A foreach loop creates an enumerator. every time it's iterated, it advances to the next value. 
-            // Therefore on the first runthrough, enumerator.current returns the second element of the list.
+            // A for-each loop creates an enumerator. every time it's iterated, it advances to the next value. 
+            // Therefore on the first run through, enumerator.current returns the second element of the list.
             // This breaks the naming.
             for (var x = 0; x < list.Count(); x ++)
             {
@@ -113,6 +122,11 @@ namespace MSOE.MediaComplete.Lib.Sorting
             return new SongPath(SettingWrapper.MusicDir.FullPath + GetValidFileName(path) + song.Name); 
         }
 
+        /// <summary>
+        /// Fix up a file name so it becomes usable
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>A valid filename string</returns>
         public static string GetValidFileName(string path)
         {
             //special chars not allowed in filename 
@@ -124,6 +138,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
             return path;
         }
         #region Task Overrides
+
         /// <summary>
         /// Performs the sort, calculating the necessary actions first, if necessary.
         /// </summary>
@@ -192,21 +207,40 @@ namespace MSOE.MediaComplete.Lib.Sorting
             }
         }
 
+        /// <summary>
+        /// Contains any subclass types that cannot appear before this task in the execution queue.
+        /// Used by <see cref="TaskAdder.ResolveConflicts" /> to re-order the queue after adding this task.
+        /// </summary>
         public override IReadOnlyCollection<Type> InvalidBeforeTypes
         {
             get { return new List<Type> { typeof(Identifier), typeof(Importer) }.AsReadOnly(); }
         }
 
+        /// <summary>
+        /// Contains any subclass types that cannot appear after this task in the execution queue.
+        /// Used by <see cref="TaskAdder.ResolveConflicts" /> to re-order the queue after adding this task.
+        /// </summary>
         public override IReadOnlyCollection<Type> InvalidAfterTypes
         {
             get { return new List<Type>().AsReadOnly(); }
         }
 
+        /// <summary>
+        /// Contains any subclass types that cannot appear in the same parallel block in the execution queue.
+        /// Used by <see cref="TaskAdder.ResolveConflicts" /> to re-order the queue after adding this task.
+        /// </summary>
         public override IReadOnlyCollection<Type> InvalidDuringTypes
         {
             get { return new List<Type>().AsReadOnly(); }
         }
 
+        /// <summary>
+        /// Removes any other sorters in the queue
+        /// </summary>
+        /// <param name="t">The other task to consider</param>
+        /// <returns>
+        /// true if t should be removed, false otherwise
+        /// </returns>
         public override bool RemoveOther(Task t)
         {
             return t is Sorter;

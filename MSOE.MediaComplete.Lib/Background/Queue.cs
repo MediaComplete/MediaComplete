@@ -8,7 +8,7 @@ namespace MSOE.MediaComplete.Lib.Background
 {
     /// <summary>
     /// Class to manage long-running background operations. Will run tasks in parallel where possible, 
-    /// and block otherwise, based on the implemenatation of the tasks passed in. This class is a singleton.
+    /// and block otherwise, based on the implementation of the tasks passed in. This class is a singleton.
     /// </summary>
     public class Queue : IQueue
     {
@@ -21,7 +21,7 @@ namespace MSOE.MediaComplete.Lib.Background
         }
 
         #region Privates
-        // The queue of jobs, as integer-index enumurables. This allows groups of tasks to be run in parallel
+        // The queue of jobs, as integer-index enumerable. This allows groups of tasks to be run in parallel
         private readonly List<List<Task>> _tasks;
         // The number of tasks currently active (at the last spawn).
         private int _activeCount;
@@ -106,9 +106,17 @@ namespace MSOE.MediaComplete.Lib.Background
                 t.Message, t.Icon, t.Id, _sessionCount, (t.PercentComplete * 100).ToString("N1"));
         }
     }
-}
 
-public interface IQueue
-{
-    void Add(Task newTask);
+    /// <summary>
+    /// Service to manage long-running background operations. Will run tasks in parallel where possible, 
+    /// and block otherwise, based on the implementation of the tasks passed in. This class is a singleton.
+    /// </summary>
+    public interface IQueue
+    {
+        /// <summary>
+        /// Adds a new task to the queue. Queued up tasks are shuffled/updated as necessary.
+        /// </summary>
+        /// <param name="newTask">The new task object</param>
+        void Add(Task newTask);
+    }
 }

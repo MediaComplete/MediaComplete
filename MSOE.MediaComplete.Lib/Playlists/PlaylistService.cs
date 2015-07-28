@@ -80,11 +80,21 @@ namespace MSOE.MediaComplete.Lib.Playlists
             return _service.CreatePlaylist();
         }
 
+        /// <summary>
+        /// Converts a local song to a playlist's media item
+        /// </summary>
+        /// <param name="song">The song.</param>
+        /// <returns>A media item that can be saved in a playlist</returns>
         public static MediaItem ToMediaItem(LocalSong song)
         {
             return _service.ToMediaItem(song);
         }
 
+        /// <summary>
+        /// Creates a song object for a playlist's media item
+        /// </summary>
+        /// <param name="mediaItem">The media item.</param>
+        /// <returns>A song</returns>
         public static AbstractSong Create(MediaItem mediaItem)
         {
             return _service.Create(mediaItem);
@@ -93,6 +103,9 @@ namespace MSOE.MediaComplete.Lib.Playlists
     #endregion
 
     #region Interface
+    /// <summary>
+    /// A service for accessing and manipulating playlists
+    /// </summary>
     public interface IPlaylistService
     {
         /// <summary>
@@ -128,12 +141,26 @@ namespace MSOE.MediaComplete.Lib.Playlists
         /// <returns>The new Playlist object</returns>
         Playlist CreatePlaylist();
 
+        /// <summary>
+        /// Creates a song object for a playlist's media item
+        /// </summary>
+        /// <param name="mediaItem">The media item.</param>
+        /// <returns>A song</returns>
         AbstractSong Create(MediaItem mediaItem);
+
+        /// <summary>
+        /// Converts a local song to a playlist's media item
+        /// </summary>
+        /// <param name="song">The song.</param>
+        /// <returns>A media item that can be saved in a playlist</returns>
         MediaItem ToMediaItem(LocalSong song);
     }
     #endregion
 
     #region File implementation
+    /// <summary>
+    /// Local file implementation of a playlist service
+    /// </summary>
     public class PlaylistServiceImpl : IPlaylistService
     {
         private readonly ILibrary _library;
@@ -142,7 +169,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
             _library = library;
         }
 
-        // TODO rewrite class to use mockable injectable File service. Also write tests at this time - see PlaylistsTest.cs
+        // TODO rewrite class to use mock-able injectable File service. Also write tests at this time - see PlaylistsTest.cs
 
         private static readonly string DefaultExtension = Constants.PlaylistFileExtensions.First();
 
@@ -170,7 +197,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
                 GetDirectoryInfo()
                     .EnumerateFiles(Constants.Wildcard, SearchOption.AllDirectories)
                     .Where(f => Constants.PlaylistFileExtensions.Any(e => f.Extension.Equals(e)));
-            var z = y.Select(f => new Playlist(Dependency.Resolve<IPlaylistService>(), new M3UFile(f)));
+            var z = y.Select(f => new Playlist(this, new M3UFile(f)));
             return z;
 
         }
@@ -232,8 +259,11 @@ namespace MSOE.MediaComplete.Lib.Playlists
         /// <summary>
         /// Converts this LocalSong to a MediaItem so it can be serialized to a playlist.
         /// </summary>
-        /// <returns>A new media item</returns>
-        public  MediaItem ToMediaItem(LocalSong song)
+        /// <param name="song">The song.</param>
+        /// <returns>
+        /// A new media item
+        /// </returns>
+        public MediaItem ToMediaItem(LocalSong song)
         {
             return new MediaItem
             {
@@ -247,8 +277,17 @@ namespace MSOE.MediaComplete.Lib.Playlists
         {
             // MP3/WMA file regex
             {@".*\.[" + Constants.MusicFileExtensions.Aggregate((x, y) => x + "|" + y) + "]", typeof (LocalSong)}
-            // Future - youtube URLs regex
+            // Future - YouTube URLs regex
         };
+
+        /// <summary>
+        /// Creates a song object for a playlist's media item
+        /// </summary>
+        /// <param name="mediaItem">The media item.</param>
+        /// <returns>
+        /// A song
+        /// </returns>
+        /// <exception cref="FormatException">Occurs when a media item cannot be handled by this library</exception>
         public AbstractSong Create(MediaItem mediaItem)
         {
             if (TypeDictionary.Select(regex => new Regex(regex.Key).Matches(mediaItem.Location).Count).Any(hits => hits > 0))

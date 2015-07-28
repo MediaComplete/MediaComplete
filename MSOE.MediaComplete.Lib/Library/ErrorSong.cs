@@ -26,11 +26,21 @@ namespace MSOE.MediaComplete.Lib.Files
         #region AbstractSong overrides
 
         private readonly string _id;
+        /// <summary>
+        /// Unique key value used to look up the song in the FileManager
+        /// </summary>
         public override string Id
         {
             get { return _id; }
         }
 
+        /// <summary>
+        /// Compares songs by Id
+        /// </summary>
+        /// <param name="other">The <see cref="Object" /> to compare with this instance.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="Object" /> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
         public override bool Equals(object other)
         {
             return other is ErrorSong && ((ErrorSong)other).Id.Equals(_id);

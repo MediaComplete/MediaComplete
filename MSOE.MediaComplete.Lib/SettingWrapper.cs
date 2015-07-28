@@ -11,11 +11,18 @@ using MSOE.MediaComplete.Lib.Properties;
 namespace MSOE.MediaComplete.Lib
 {
     /// <summary>
-    /// Used to wrap the settings object and encapsulate its use, while allowing ats access in both the Lib project and the UI project
+    /// Used to wrap the settings object and encapsulate its use, while allowing access in both the Lib project and the UI project
     /// </summary>
     public static class SettingWrapper
     {
+        /// <summary>
+        /// Occurs when settings are changed.
+        /// </summary>
         public static event SettingsChangedListener RaiseSettingEvent = delegate {};
+
+        /// <summary>
+        /// Delegate for handling changed settings
+        /// </summary>
         public delegate void SettingsChangedListener();
 
         /// <summary>
@@ -105,6 +112,12 @@ namespace MSOE.MediaComplete.Lib
             set { Settings.Default.IsSorting = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the look and feel of the application
+        /// </summary>
+        /// <value>
+        /// The layout.
+        /// </value>
         public static string Layout
         {
             get { return Settings.Default.Layout; }
@@ -132,12 +145,24 @@ namespace MSOE.MediaComplete.Lib
             
         }
 
+        /// <summary>
+        /// Gets or sets all home directories.
+        /// </summary>
+        /// <value>
+        /// All directories.
+        /// </value>
         public static List<string> AllDirectories
         {
             get { return (Settings.Default.AllDirs).Split(';').ToList(); }
             set { Settings.Default.AllDirs = value.Aggregate((x, y) => x + ";" + y); }
         }
 
+        /// <summary>
+        /// Gets or sets the log level.
+        /// </summary>
+        /// <value>
+        /// The log level.
+        /// </value>
         public static int LogLevel
         {
             get { return Settings.Default.LogLevel; }

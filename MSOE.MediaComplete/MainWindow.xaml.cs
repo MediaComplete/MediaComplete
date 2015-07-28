@@ -25,6 +25,7 @@ using NAudio.Wave;
 using Action = System.Action;
 using Queue = MSOE.MediaComplete.Lib.Background.Queue;
 using WinForms = System.Windows.Forms;
+using MSOE.MediaComplete.Lib.Background;
 
 namespace MSOE.MediaComplete
 {

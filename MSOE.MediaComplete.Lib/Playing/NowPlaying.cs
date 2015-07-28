@@ -9,7 +9,7 @@ namespace MSOE.MediaComplete.Lib.Playing
 {
     /// <summary>
     /// Represents the Now Playing queue of the application. The Player draws on this for songs, 
-    /// and it can be displayed and edited on the frontend as a playlist
+    /// and it can be displayed and edited on the front-end as a playlist
     /// </summary>
     public class NowPlaying
     {
@@ -35,7 +35,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         public int Index { get; private set; }
 
         /// <summary>
-        /// Readonly view of the play queue, as a playlist.
+        /// Read-only view of the play queue, as a playlist.
         /// </summary>
         public Playlist Playlist
         {
@@ -54,8 +54,11 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// TODO fix this and the one in Player MC-23
         /// </summary>
         public delegate void PlaylistEndedHandler();
-        public event PlaylistEndedHandler PlaylistEnded = delegate { };
 
+        /// <summary>
+        /// Occurs when the currently playing queue runs out
+        /// </summary>
+        public event PlaylistEndedHandler PlaylistEnded = delegate { };
 
         #endregion
 
@@ -144,6 +147,13 @@ namespace MSOE.MediaComplete.Lib.Playing
             return _songs[Index];
         }
 
+        /// <summary>
+        /// Inserts songs in the play queue at the specified index
+        /// </summary>
+        /// <param name="insertIndex">Index of the insert.</param>
+        /// <param name="songs">The new songs.</param>
+        /// <exception cref="System.ArgumentNullException">If the songs are null</exception>
+        /// <exception cref="System.IndexOutOfRangeException">If the index points outside of the current play queue</exception>
         public void InsertRange(int insertIndex, IEnumerable<AbstractSong> songs)
         {
             if(songs==null) throw new ArgumentNullException();
@@ -282,7 +292,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         }
 
         /// <summary>
-        /// Move the first occurance of the given song to the target index.
+        /// Move the first occurrence of the given song to the target index.
         /// </summary>
         /// <param name="song">The song to move.</param>
         /// <param name="newIndex">The new index.</param>
