@@ -49,24 +49,8 @@ namespace MSOE.MediaComplete.Lib.Library
         /// <param name="song">file with updated metadata</param>
         public void SaveSong(AbstractSong song)
         {
-            if (!_cachedSongs.ContainsKey(song.Id)) throw new ArgumentException("Song does not exist in cache", "song");
-            var file = TagLib.File.Create(song.Path);
-
-            foreach (var attribute in Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>().ToList()
-                .Where(x => file.GetAttribute(x) == null || !file.GetAttribute(x).Equals(song.GetAttribute(x))))
-            {
-                file.SetAttribute(attribute, song.GetAttribute(attribute));
-            }
-            try
-            {
-                file.Save(); //TODO: MC-4 add catch for save when editing a file while it is playing
-            }
-            catch (UnauthorizedAccessException)
-            {
-                // TODO MC-125 log
-                StatusBarHandler.Instance.ChangeStatusBarMessage("Save-Error", StatusBarHandler.StatusIcon.Error);
-            }
-            _cachedSongs[song.Id] = song;
+            if (song is LocalSong)
+                _fileSystem.SaveFile(song as LocalSong);
         }
 
         /// <summary>
@@ -84,28 +68,29 @@ namespace MSOE.MediaComplete.Lib.Library
         /// <param name="deletedSong">the song that needs to be deleted</param>
         public void DeleteSong(AbstractSong deletedSong)
         {
-            _fileSystem.DeleteFile(deletedSong);
+            if(deletedSong is LocalSong)
+                _fileSystem.DeleteFile(deletedSong as LocalSong);
         }
 
-        ///// <summary>
-        ///// Get a LocalSong object with a matching SongPath object
-        ///// </summary>
-        ///// <param name="songPath">SongPath object to compare</param>
-        ///// <returns>LocalSong if it exists, null if it doesn't</returns>
-        //public LocalSong GetSong(SongPath songPath)
-        //{
-        //    return _cachedSongs.Values.FirstOrDefault(x => x.SongPath.Equals(songPath));
-        //}
+        // <summary>
+        // Get a LocalSong object with a matching SongPath object
+        // </summary>
+        // <param name="songPath">SongPath object to compare</param>
+        // <returns>LocalSong if it exists, null if it doesn't</returns>
+        public AbstractSong GetSong(SongPath songPath)
+        {
+            return _fileSystem.GetSong(songPath);
+        }
 
-        /// <summary>
-        /// Returns a LocalSong that has a path that matches the MediaItem's location
-        /// </summary>
-        /// <param name="mediaItem">MediaItem for which the song is needed</param>
-        /// <returns>LocalSong if it exists, null if it doesn't</returns>
-        //public AbstractSong GetSong(MediaItem mediaItem)
-        //{
-        //    return _cachedSongs.Values.FirstOrDefault(x => x.SongPath != null && x.Path.Equals(mediaItem.Location));
-        //}
+        // <summary>
+        // Returns a LocalSong that has a path that matches the MediaItem's location
+        // </summary>
+        // <param name="mediaItem">MediaItem for which the song is needed</param>
+        // <returns>LocalSong if it exists, null if it doesn't</returns>
+        public AbstractSong GetSong(MediaItem mediaItem)
+        {
+            return _fileSystem.GetSong(mediaItem);
+        }
         #endregion
 
 
@@ -141,13 +126,13 @@ namespace MSOE.MediaComplete.Lib.Library
         /// </summary>
         /// <param name="songPath">SongPath object to compare</param>
         /// <returns>LocalSong if it exists, null if it doesn't</returns>
-        //LocalSong GetSong(SongPath songPath);
+        AbstractSong GetSong(SongPath songPath);
         /// <summary>
         /// Returns a LocalSong that has a path that matches the MediaItem's location
         /// </summary>
         /// <param name="mediaItem">MediaItem for which the song is needed</param>
         /// <returns>LocalSong if it exists, null if it doesn't</returns>
-        //AbstractSong GetSong(MediaItem mediaItem);
+        AbstractSong GetSong(MediaItem mediaItem);
         void SortSong(AbstractSong song);
     }
 

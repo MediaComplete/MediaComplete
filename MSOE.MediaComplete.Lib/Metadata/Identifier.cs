@@ -78,7 +78,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
             StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Started",
                 StatusBarHandler.StatusIcon.Working);
 
-            if (!_fileSystem.SongExists(file.SongPath))
+            if (!_fileSystem.FileExists(file.SongPath))
             {
                 // TODO (MC-125) Logging
                 StatusBarHandler.Instance.ChangeStatusBarMessage("MusicIdentification-Error-NoException",

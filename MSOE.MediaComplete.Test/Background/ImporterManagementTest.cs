@@ -41,7 +41,7 @@ namespace MSOE.MediaComplete.Test.Background
         public void Test_AddImport_GoesBeforeSortAndIdentify()
         {
             var mockfs = new Mock<IFileSystem>();
-            var mockl = new Mock<ILibrary>();
+            var mockl = new Mock<IFileSystem>();
             var queue = new List<List<Task>>
             {
                 new List<Task> {new Sorter(mockl.Object, null)},

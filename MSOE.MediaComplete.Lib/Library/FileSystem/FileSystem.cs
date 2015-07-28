@@ -155,15 +155,36 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
             files.ForEach(x => x.MoveTo(newPath.FullPath + Path.DirectorySeparatorChar + x.Name));
         }
 
-        public void SaveFile(LocalSong file)
+        public void SaveFile(LocalSong song)
         {
-            throw new System.NotImplementedException();
-        }
+            if (!_cachedSongs.ContainsKey(song.Id)) throw new ArgumentException("Song does not exist in cache", "song");
+            var file = TagLib.File.Create(song.Path);
 
+            foreach (var attribute in Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>().ToList()
+                .Where(x => file.GetAttribute(x) == null || !file.GetAttribute(x).Equals(song.GetAttribute(x))))
+            {
+                file.SetAttribute(attribute, song.GetAttribute(attribute));
+            }
+            try
+            {
+                file.Save(); //TODO: MC-4 add catch for save when editing a file while it is playing
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // TODO MC-125 log
+                StatusBarHandler.Instance.ChangeStatusBarMessage("Save-Error", StatusBarHandler.StatusIcon.Error);
+            }
+            _cachedSongs[song.Id] = song;
+        }
         public void MoveFile(LocalSong source, SongPath dest)
         {
-            throw new System.NotImplementedException();
+            File.Move(source.Path, dest.FullPath);
         }
+        public void MoveFile(SongPath source, SongPath dest)
+        {
+            File.Move(source.FullPath, dest.FullPath);
+        }
+
 
         public void DeleteFile(LocalSong deletedSong)
         {
@@ -358,7 +379,15 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
             }
             SongCreated(retEnum);
         }
+        public LocalSong GetSong(SongPath songPath)
+        {
+            return _cachedSongs.Values.FirstOrDefault(x => x.SongPath.Equals(songPath));
+        }
 
+        public LocalSong GetSong(MediaItem mediaItem)
+        {
+            return _cachedSongs.Values.FirstOrDefault(x => x.SongPath != null && x.Path.Equals(mediaItem.Location));
+        }
 
         public event SongRenamedHandler SongRenamed = delegate { };
         public event SongUpdatedHandler SongChanged = delegate { };
@@ -540,6 +569,7 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
 
         void SaveFile(LocalSong file);
         void MoveFile(LocalSong source, SongPath dest);
+        void MoveFile(SongPath source, SongPath dest);
         void DeleteFile(LocalSong deletedSong);
 
         event FileSystem.SongRenamedHandler SongRenamed;
@@ -549,5 +579,8 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
 
         IEnumerable<LocalSong> GetAllSongFiles(); 
         IEnumerable<FileInfo> Initialize(DirectoryPath musicDir);
+
+        LocalSong GetSong(SongPath songPath);
+        LocalSong GetSong(MediaItem mediaItem);
     }
 }

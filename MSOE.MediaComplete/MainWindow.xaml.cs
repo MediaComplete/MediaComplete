@@ -138,10 +138,10 @@ namespace MSOE.MediaComplete
             SongCreated(_library.GetAllSongs()); 
 
             // Subscribe to file system updates
-            _library.SongChanged += SongChanged;
-            _library.SongCreated += SongCreated;
-            _library.SongDeleted += SongDeleted;
-            _library.SongRenamed += SongRenamed;
+            _fileSystem.SongChanged += SongChanged;
+            _fileSystem.SongCreated += SongCreated;
+            _fileSystem.SongDeleted += SongDeleted;
+            _fileSystem.SongRenamed += SongRenamed;
         }
         #endregion
 
@@ -251,7 +251,7 @@ namespace MSOE.MediaComplete
         {
             using (var scope = Dependency.BeginLifetimeScope())
             {
-                var files = _library.GetAllSongs().Select(x => x.SongPath);
+                var files = _library.GetAllSongs().Where(y => y is LocalSong).Select(x => (x as LocalSong).SongPath);
                 var sorter = scope.Resolve<Sorter>(new TypedParameter(typeof(IEnumerable<SongPath>), files));
 
                 await sorter.CalculateActionsAsync();
@@ -280,7 +280,7 @@ namespace MSOE.MediaComplete
         {
             if (!SortHelper.GetSorting()) return;
 
-            var files = _library.GetAllSongs().Select(x => x.SongPath);
+            var files = _library.GetAllSongs().Where(y => y is LocalSong).Select(x => (x as LocalSong).SongPath);
 
             using (var scope = Dependency.BeginLifetimeScope())
             {
@@ -337,7 +337,7 @@ namespace MSOE.MediaComplete
         /// Removes songs from the list
         /// </summary>
         /// <param name="songs">The songs to remove</param>
-        private void SongDeleted(IEnumerable<LocalSong> songs)
+        private void SongDeleted(IEnumerable<AbstractSong> songs)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -359,13 +359,13 @@ namespace MSOE.MediaComplete
         /// Adds new songs into the list.
         /// </summary>
         /// <param name="songs">The new songs</param>
-        private void SongCreated(IEnumerable<LocalSong> songs)
+        private void SongCreated(IEnumerable<AbstractSong> songs)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
                 foreach (var song in songs)
                 {
-                    var parent = AddFolderTreeViewItems(song.SongPath.Directory);
+                    var parent = AddFolderTreeViewItems((song as LocalSong).SongPath.Directory);
                     ((ObservableCollection<SongListItem>)Songs.Source).Add(new SongListItem { Content = song.Name, ParentItem = parent, Data = song });
                 }
             });

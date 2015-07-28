@@ -219,5 +219,7 @@ namespace MSOE.MediaComplete.Lib.Files
         /// <param name="other">Another object to compare to</param>
         /// <returns>True if this is logically equivalent to other, false otherwise</returns>
         public new abstract bool Equals(object other);
+
+        public object Name { get; set; }
     }
 }
