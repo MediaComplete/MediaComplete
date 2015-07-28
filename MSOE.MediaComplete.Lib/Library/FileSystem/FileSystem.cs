@@ -105,6 +105,7 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
         /// <returns>false if the directory contains additional directories or files</returns>
         public bool DirectoryEmpty(DirectoryPath directory)
         {
+            if (!Directory.Exists(directory.FullPath)) return true;
             var hasDirs = Directory.EnumerateDirectories(directory.FullPath).Any();
             var hasMusic = new DirectoryInfo(directory.FullPath).EnumerateFiles().GetMusicFiles().Any();
             return hasDirs || hasMusic;
@@ -209,6 +210,7 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
 
         private static void ScrubEmptyDirectories(DirectoryPath directory)
         {
+            if (!Directory.Exists(directory.FullPath)) return;
             var rootInfo = new DirectoryInfo(directory.FullPath);
             foreach (var child in rootInfo.EnumerateDirectories("*", SearchOption.AllDirectories))
             {

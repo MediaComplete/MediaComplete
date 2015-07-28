@@ -14,7 +14,6 @@ namespace MSOE.MediaComplete.Lib.Library
 {
     public class Library : ILibrary
     {
-        private Dictionary<String, AbstractSong> _cachedSongs;
         /// <summary>
         /// singleton instance of the Filemanager
         /// </summary>
@@ -34,7 +33,6 @@ namespace MSOE.MediaComplete.Lib.Library
         /// <param name="musicDir">Source Directory for populating the dictionarires</param>
         public void Initialize(DirectoryPath musicDir)
         {
-            _cachedSongs = new Dictionary<String, AbstractSong>();
             _fileSystem.Initialize(musicDir);
         }
 
@@ -59,7 +57,7 @@ namespace MSOE.MediaComplete.Lib.Library
         /// <returns>IEnumerable containing every song within the cache</returns>
         public IEnumerable<AbstractSong> GetAllSongs()
         {
-            return _cachedSongs.Values;
+            return _fileSystem.GetAllSongFiles();
         }
 
         /// <summary>

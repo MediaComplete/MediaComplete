@@ -56,7 +56,7 @@ namespace MSOE.MediaComplete.Lib
             builder.RegisterType<PlaylistServiceImpl>().As<IPlaylistService>().WithParameters(new[]
             {
                 new ResolvedParameter((pi, c) => pi.ParameterType == typeof(ILibrary), (pi, c) => c.Resolve<ILibrary>())
-            });
+            }).SingleInstance();
             var queue = new Queue();
             builder.RegisterInstance(queue).As<IQueue>();
             _afContainer = builder.Build();

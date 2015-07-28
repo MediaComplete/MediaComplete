@@ -16,6 +16,7 @@ namespace MSOE.MediaComplete.Lib.Files
         {
             _id = id;
             SongPath = songPath;
+            Name = songPath.Name;
         }
 
         /// <summary>
@@ -50,13 +51,6 @@ namespace MSOE.MediaComplete.Lib.Files
         public string Path
         {
             get { return SongPath.FullPath; }
-        }
-        /// <summary>
-        /// Returns the filename of the song
-        /// </summary>
-        public string Name
-        {
-            get { return SongPath.Name; }
         }
         /// <summary>
         /// Used to get the string path value. This is a carryover from an old implementation and will likely be deleted soon.
