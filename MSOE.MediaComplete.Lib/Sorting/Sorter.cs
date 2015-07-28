@@ -10,6 +10,7 @@ using MSOE.MediaComplete.Lib.Library.FileSystem;
 using MSOE.MediaComplete.Lib.Logging;
 using MSOE.MediaComplete.Lib.Metadata;
 using Sys = System.Threading.Tasks;
+using MSOE.MediaComplete.Lib.Sorting;
 
 namespace MSOE.MediaComplete.Lib.Sorting
 {
@@ -19,7 +20,10 @@ namespace MSOE.MediaComplete.Lib.Sorting
     public class Sorter : Task
     {
         private static IFileSystem _fileSystem;
-        public List<Action.IAction> Actions { get; private set; }
+        /// <summary>
+        /// All of the actions that the sorter needs to do
+        /// </summary>
+        public List<IAction> Actions { get; private set; }
 
         /// <summary>
         /// Gets the number of un-sortable files
@@ -28,8 +32,14 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// The un-sortable count.
         /// </value>
         public int UnsortableCount { get; private set; }
-        public int MoveCount { get { return Actions.Count(a => a is Action.MoveAction); } }
-        public int DupCount { get { return Actions.Count(a => a is Action.DeleteAction); } }
+        /// <summary>
+        /// The number of files that have been moved
+        /// </summary>
+        public int MoveCount { get { return Actions.Count(a => a is MoveAction); } }
+        /// <summary>
+        /// The number of files that are duplicated, and have therefore been deleted
+        /// </summary>
+        public int DupCount { get { return Actions.Count(a => a is DeleteAction); } }
 
         /// <summary>
         /// The specific files to sort
@@ -43,13 +53,13 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <see cref="Actions">MoveActions</see> can be accessed directly after to anticipate the
         /// magnitude and specifics of the move.
         /// </summary>
-        /// <param name="library"></param>
+        /// <param name="fileSystem"></param>
         /// <param name="files"></param>
         public Sorter(IFileSystem fileSystem, IEnumerable<SongPath> files)
         {
             _fileSystem = fileSystem;
             Files = files;
-            Actions = new List<Action.IAction>();
+            Actions = new List<IAction>();
             UnsortableCount = 0;
         }
 
@@ -74,14 +84,14 @@ namespace MSOE.MediaComplete.Lib.Sorting
                         {
                             // Delete source, let the older file take precedence.
                             // TODO (MC-29) perhaps we should try comparing audio quality and pick the better one?
-                            Actions.Add(new Action.DeleteAction
+                            Actions.Add(new DeleteAction
                             {
                                 Target = song
                             });
                         }
                         else
                         {
-                            Actions.Add(new Action.MoveAction
+                            Actions.Add(new MoveAction
                             {
                                 Source = song,
                                 Dest = targetPath

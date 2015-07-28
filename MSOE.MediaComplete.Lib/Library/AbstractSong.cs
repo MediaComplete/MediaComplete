@@ -220,6 +220,9 @@ namespace MSOE.MediaComplete.Lib.Files
         /// <returns>True if this is logically equivalent to other, false otherwise</returns>
         public new abstract bool Equals(object other);
 
-        public object Name { get; set; }
+        /// <summary>
+        /// This is the name of the song
+        /// </summary>
+        public String Name { get; set; }
     }
 }

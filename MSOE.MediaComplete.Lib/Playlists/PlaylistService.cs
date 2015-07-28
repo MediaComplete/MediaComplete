@@ -164,6 +164,10 @@ namespace MSOE.MediaComplete.Lib.Playlists
     public class PlaylistServiceImpl : IPlaylistService
     {
         private readonly ILibrary _library;
+        /// <summary>
+        /// public constructor used by the dependency injection class
+        /// </summary>
+        /// <param name="library"></param>
         public PlaylistServiceImpl(ILibrary library)
         {
             _library = library;

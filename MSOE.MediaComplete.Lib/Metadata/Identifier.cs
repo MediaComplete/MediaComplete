@@ -53,7 +53,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
         /// <param name="reader">Audio reader for parsing in audio data</param>
         /// <param name="identifier">Audio identifier for fingerprinting songs</param>
         /// <param name="metadata">Metadata retriever for finding additional metadata details.</param>
-        /// <param name="library">Controls how files are accessed</param>
+        /// <param name="fileSystem">Controls how files are accessed</param>
         public Identifier(IEnumerable<LocalSong> files, IAudioReader reader, IAudioIdentifier identifier, IMetadataRetriever metadata, IFileSystem fileSystem)
         {
             _audioReader = reader;

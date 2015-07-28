@@ -11,6 +11,9 @@ using TaglibFile = TagLib.File;
 
 namespace MSOE.MediaComplete.Lib.Library.FileSystem
 {
+    /// <summary>
+    /// The representation of the Data Source provided from the File System
+    /// </summary>
     public class FileSystem : IFileSystem
     {
 
@@ -29,6 +32,10 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
         private FileSystemWatcher _watcher;
         
         private static FileSystem _instance;
+
+        /// <summary>
+        /// Returns the instance of the filesystem
+        /// </summary>
         public static IFileSystem Instance { get { return _instance ?? (_instance = new FileSystem()); } }
 
         private FileSystem()
@@ -36,6 +43,12 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
             _cachedFiles = new Dictionary<string, FileInfo>();
             _cachedSongs = new Dictionary<string, LocalSong>();
         }
+
+        /// <summary>
+        /// Initializes the locally stored data source based on a directory
+        /// </summary>
+        /// <param name="musicDir"></param>
+        /// <returns></returns>
         public IEnumerable<FileInfo> Initialize(DirectoryPath musicDir)
         {
             _cachedFiles.Clear();
@@ -62,6 +75,7 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
             _watcher.EnableRaisingEvents = true;
             return files;
         }
+   
         /// <summary>
         /// Copies a file between two specified paths. 
         /// This is currently only used in the Importer
@@ -156,6 +170,10 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
             files.ForEach(x => x.MoveTo(newPath.FullPath + Path.DirectorySeparatorChar + x.Name));
         }
 
+        /// <summary>
+        /// writes a local song object to a filesystem object
+        /// </summary>
+        /// <param name="song"></param>
         public void SaveFile(LocalSong song)
         {
             if (!_cachedSongs.ContainsKey(song.Id)) throw new ArgumentException("Song does not exist in cache", "song");
@@ -177,16 +195,31 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
             }
             _cachedSongs[song.Id] = song;
         }
+        
+        /// <summary>
+        /// Moves a file from a source song to a new location
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="dest"></param>
         public void MoveFile(LocalSong source, SongPath dest)
         {
             File.Move(source.Path, dest.FullPath);
         }
+
+        /// <summary>
+        /// Moves a file from a source path to a new location
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="dest"></param>
         public void MoveFile(SongPath source, SongPath dest)
         {
             File.Move(source.FullPath, dest.FullPath);
         }
 
-
+        /// <summary>
+        /// Delete a file from the local File System
+        /// </summary>
+        /// <param name="deletedSong"></param>
         public void DeleteFile(LocalSong deletedSong)
         {
             var sourceDir = deletedSong.SongPath.Directory;
@@ -382,16 +415,30 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
             }
             SongCreated(retEnum);
         }
+
+        /// <summary>
+        /// Returns a local song object based on a song's path
+        /// </summary>
+        /// <param name="songPath"></param>
+        /// <returns></returns>
         public LocalSong GetSong(SongPath songPath)
         {
             return _cachedSongs.Values.FirstOrDefault(x => x.SongPath.Equals(songPath));
         }
 
+        /// <summary>
+        /// Returns a local song object based on a playlist's media item
+        /// </summary>
+        /// <param name="mediaItem"></param>
+        /// <returns></returns>
         public LocalSong GetSong(MediaItem mediaItem)
         {
             return _cachedSongs.Values.FirstOrDefault(x => x.SongPath != null && x.Path.Equals(mediaItem.Location));
         }
 
+        /// <summary>
+        /// Occurs when a song is renamed
+        /// </summary>
         public event SongRenamedHandler SongRenamed = delegate { };
         /// <summary>
         /// Occurs when a song is modified
@@ -405,14 +452,7 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
         /// Occurs whenever a song is deleted
         /// </summary>
         public event SongUpdatedHandler SongDeleted = delegate { };
-        public bool SongExists(SongPath newFile)
-        {
-            throw new NotImplementedException();
-        }
 
-
-        public delegate void SongUpdatedHandler(IEnumerable<LocalSong> songs);
-        public delegate void SongRenamedHandler(IEnumerable<Tuple<LocalSong, LocalSong>> songs);
         #endregion
         #region Data Helpers
         /// <summary>
@@ -530,12 +570,19 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
         }
         #endregion
 
+        /// <summary>
+        /// Return all locally stored song files
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<LocalSong> GetAllSongFiles()
         {
             return _cachedSongs.Values;
         }
     }
 
+    /// <summary>
+    /// Interface for the datasource represented by the local file system
+    /// </summary>
     public interface IFileSystem
     {
         /// <summary>
@@ -578,21 +625,70 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
         /// <param name="oldPath">Original directory to move</param>
         /// <param name="newPath">Destination to move directory to</param>
         void MoveDirectory(DirectoryPath oldPath, DirectoryPath newPath);
-
+        /// <summary>
+        /// writes a local song object to a filesystem object
+        /// </summary>
+        /// <param name="file"></param>
         void SaveFile(LocalSong file);
+        /// <summary>
+        /// Moves a file from a source song to a new location
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="dest"></param>
         void MoveFile(LocalSong source, SongPath dest);
+        /// <summary>
+        /// Moves a file from a source path to a new location
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="dest"></param>
         void MoveFile(SongPath source, SongPath dest);
+        /// <summary>
+        /// Delete a file from the local File System
+        /// </summary>
+        /// <param name="deletedSong"></param>
         void DeleteFile(LocalSong deletedSong);
 
-        event FileSystem.SongRenamedHandler SongRenamed;
-        event FileSystem.SongUpdatedHandler SongChanged;
-        event FileSystem.SongUpdatedHandler SongCreated;
-        event FileSystem.SongUpdatedHandler SongDeleted;
+        /// <summary>
+        /// Occurs when a song is renamed
+        /// </summary>
+        event SongRenamedHandler SongRenamed;
+        /// <summary>
+        /// Occurs when a song is changed
+        /// </summary>
+        event SongUpdatedHandler SongChanged;
+        /// <summary>
+        /// Occurs when a song is created
+        /// </summary>
+        event SongUpdatedHandler SongCreated;
+        /// <summary>
+        /// Occurs whenever a song is deleted
+        /// </summary>
+        event SongUpdatedHandler SongDeleted;
 
-        IEnumerable<LocalSong> GetAllSongFiles(); 
+
+        /// <summary>
+        /// Return all locally stored song files
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<LocalSong> GetAllSongFiles();
+        /// <summary>
+        /// Initializes the locally stored data source based on a directory
+        /// </summary>
+        /// <param name="musicDir"></param>
+        /// <returns></returns>
         IEnumerable<FileInfo> Initialize(DirectoryPath musicDir);
 
+        /// <summary>
+        /// Returns a local song object based on a song's path
+        /// </summary>
+        /// <param name="songPath"></param>
+        /// <returns></returns>
         LocalSong GetSong(SongPath songPath);
+        /// <summary>
+        /// Returns a local song object based on a playlist's mediaitem
+        /// </summary>
+        /// <param name="mediaItem"></param>
+        /// <returns></returns>
         LocalSong GetSong(MediaItem mediaItem);
     }
     /// <summary>

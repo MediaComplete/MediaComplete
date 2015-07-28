@@ -45,6 +45,11 @@ namespace MSOE.MediaComplete.Lib.Files
         {
             return other is ErrorSong && ((ErrorSong)other).Id.Equals(_id);
         }
+
+        /// <summary>
+        /// Unique value defined by object in order to hash
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
             return string.Format("{0}-{1}-{2}-{3}", _id, Title, Artists, Album).GetHashCode();

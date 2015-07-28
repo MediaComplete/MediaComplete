@@ -12,12 +12,18 @@ using TaglibFile = TagLib.File;
 
 namespace MSOE.MediaComplete.Lib.Library
 {
+    /// <summary>
+    /// The collection of abstractsongs, from every datasource
+    /// </summary>
     public class Library : ILibrary
     {
         /// <summary>
         /// singleton instance of the Filemanager
         /// </summary>
         private static Library _instance;
+        /// <summary>
+        /// The publicly acessible variable for the Library instance
+        /// </summary>
         public static ILibrary Instance { get { return _instance ?? (_instance = new Library(FileSystem.FileSystem.Instance)); } }
         private IFileSystem _fileSystem;
 
@@ -70,33 +76,31 @@ namespace MSOE.MediaComplete.Lib.Library
                 _fileSystem.DeleteFile(deletedSong as LocalSong);
         }
 
-        // <summary>
-        // Get a LocalSong object with a matching SongPath object
-        // </summary>
-        // <param name="songPath">SongPath object to compare</param>
-        // <returns>LocalSong if it exists, null if it doesn't</returns>
+        /// <summary>
+        /// Get a LocalSong object with a matching SongPath object
+        /// </summary>
+        /// <param name="songPath">SongPath object to compare</param>
+        /// <returns>LocalSong if it exists, null if it doesn't</returns>
         public AbstractSong GetSong(SongPath songPath)
         {
             return _fileSystem.GetSong(songPath);
         }
 
-        // <summary>
-        // Returns a LocalSong that has a path that matches the MediaItem's location
-        // </summary>
-        // <param name="mediaItem">MediaItem for which the song is needed</param>
-        // <returns>LocalSong if it exists, null if it doesn't</returns>
+        /// <summary>
+        /// Returns a LocalSong that has a path that matches the MediaItem's location
+        /// </summary>
+        /// <param name="mediaItem">MediaItem for which the song is needed</param>
+        /// <returns>AbstractSong if it exists, null if it doesn't</returns>
         public AbstractSong GetSong(MediaItem mediaItem)
         {
             return _fileSystem.GetSong(mediaItem);
         }
         #endregion
-
-
-        public void SortSong(AbstractSong song)
-        {
-        }
     }
 
+    /// <summary>
+    /// interface for the collection of abstractsongs, from every datasource
+    /// </summary>
     public interface ILibrary
     {
         /// <summary>
@@ -131,7 +135,6 @@ namespace MSOE.MediaComplete.Lib.Library
         /// <param name="mediaItem">MediaItem for which the song is needed</param>
         /// <returns>LocalSong if it exists, null if it doesn't</returns>
         AbstractSong GetSong(MediaItem mediaItem);
-        void SortSong(AbstractSong song);
     }
 
 }
