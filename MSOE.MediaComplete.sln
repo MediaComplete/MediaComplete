@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSOE.MediaComplete", "MSOE.MediaComplete\MSOE.MediaComplete.csproj", "{A0884657-5FDE-459B-BACC-94B19AF58401}"
 EndProject
@@ -23,6 +23,8 @@ Project("{6141683F-8A12-4E36-9623-2EB02B2C2303}") = "Installer", "Installer\Inst
 	EndProjectSection
 EndProject
 Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "Documentation", "Documentation\Documentation.shfbproj", "{852EFEF8-0451-4749-A03F-DABEB285B189}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Updater", "Updater\Updater.csproj", "{355443B8-478B-4A9D-A88C-8896BC369EE9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -118,6 +120,26 @@ Global
 		{852EFEF8-0451-4749-A03F-DABEB285B189}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
 		{852EFEF8-0451-4749-A03F-DABEB285B189}.SingleImage|Any CPU.Build.0 = Release|Any CPU
 		{852EFEF8-0451-4749-A03F-DABEB285B189}.SingleImage|x86.ActiveCfg = Release|Any CPU
+		{355443B8-478B-4A9D-A88C-8896BC369EE9}.CD_ROM|Any CPU.ActiveCfg = Release|Any CPU
+		{355443B8-478B-4A9D-A88C-8896BC369EE9}.CD_ROM|Any CPU.Build.0 = Release|Any CPU
+		{355443B8-478B-4A9D-A88C-8896BC369EE9}.CD_ROM|x86.ActiveCfg = Release|Any CPU
+		{355443B8-478B-4A9D-A88C-8896BC369EE9}.CD_ROM|x86.Build.0 = Release|Any CPU
+		{355443B8-478B-4A9D-A88C-8896BC369EE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{355443B8-478B-4A9D-A88C-8896BC369EE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{355443B8-478B-4A9D-A88C-8896BC369EE9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{355443B8-478B-4A9D-A88C-8896BC369EE9}.Debug|x86.Build.0 = Debug|Any CPU
+		{355443B8-478B-4A9D-A88C-8896BC369EE9}.DVD-5|Any CPU.ActiveCfg = Debug|Any CPU
+		{355443B8-478B-4A9D-A88C-8896BC369EE9}.DVD-5|Any CPU.Build.0 = Debug|Any CPU
+		{355443B8-478B-4A9D-A88C-8896BC369EE9}.DVD-5|x86.ActiveCfg = Debug|Any CPU
+		{355443B8-478B-4A9D-A88C-8896BC369EE9}.DVD-5|x86.Build.0 = Debug|Any CPU
+		{355443B8-478B-4A9D-A88C-8896BC369EE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{355443B8-478B-4A9D-A88C-8896BC369EE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{355443B8-478B-4A9D-A88C-8896BC369EE9}.Release|x86.ActiveCfg = Release|Any CPU
+		{355443B8-478B-4A9D-A88C-8896BC369EE9}.Release|x86.Build.0 = Release|Any CPU
+		{355443B8-478B-4A9D-A88C-8896BC369EE9}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
+		{355443B8-478B-4A9D-A88C-8896BC369EE9}.SingleImage|Any CPU.Build.0 = Release|Any CPU
+		{355443B8-478B-4A9D-A88C-8896BC369EE9}.SingleImage|x86.ActiveCfg = Release|Any CPU
+		{355443B8-478B-4A9D-A88C-8896BC369EE9}.SingleImage|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
