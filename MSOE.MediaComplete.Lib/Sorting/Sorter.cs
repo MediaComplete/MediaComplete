@@ -71,7 +71,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         {
             await Sys.Task.Run(() =>
             {
-                var songs = _fileSystem.GetAllSongFiles().Where(x => Files.Contains(x.SongPath));
+                var songs = _fileSystem.GetAllSongs().Cast<LocalSong>().Where(x => Files.Contains(x.SongPath));
                 UnsortableCount += Files.Count() - songs.Count();
                 foreach (var song in songs)
                 {

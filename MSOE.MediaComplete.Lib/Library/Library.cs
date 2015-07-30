@@ -54,7 +54,7 @@ namespace MSOE.MediaComplete.Lib.Library
         public void SaveSong(AbstractSong song)
         {
             if (song is LocalSong)
-                _fileSystem.SaveFile(song as LocalSong);
+                _fileSystem.SaveSong(song as LocalSong);
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace MSOE.MediaComplete.Lib.Library
         /// <returns>IEnumerable containing every song within the cache</returns>
         public IEnumerable<AbstractSong> GetAllSongs()
         {
-            return _fileSystem.GetAllSongFiles();
+            return _fileSystem.GetAllSongs();
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace MSOE.MediaComplete.Lib.Library
         public void DeleteSong(AbstractSong deletedSong)
         {
             if(deletedSong is LocalSong)
-                _fileSystem.DeleteFile(deletedSong as LocalSong);
+                _fileSystem.DeleteSong(deletedSong as LocalSong);
         }
 
         /// <summary>

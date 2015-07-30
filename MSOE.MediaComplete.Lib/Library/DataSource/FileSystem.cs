@@ -8,6 +8,7 @@ using MSOE.MediaComplete.Lib.Metadata;
 using TagLib;
 using File = System.IO.File;
 using TaglibFile = TagLib.File;
+using MSOE.MediaComplete.Lib.Library.DataSource;
 
 namespace MSOE.MediaComplete.Lib.Library.FileSystem
 {
@@ -174,15 +175,16 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
         /// writes a local song object to a filesystem object
         /// </summary>
         /// <param name="song"></param>
-        public void SaveFile(LocalSong song)
+        public void SaveSong(AbstractSong song)
         {
-            if (!_cachedSongs.ContainsKey(song.Id)) throw new ArgumentException("Song does not exist in cache", "song");
-            var file = TagLib.File.Create(song.Path);
+            var lsong = (song as LocalSong);
+            if (!_cachedSongs.ContainsKey(lsong.Id)) throw new ArgumentException("Song does not exist in cache", "song");
+            var file = TagLib.File.Create(lsong.Path);
 
             foreach (var attribute in Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>().ToList()
-                .Where(x => file.GetAttribute(x) == null || !file.GetAttribute(x).Equals(song.GetAttribute(x))))
+                .Where(x => file.GetAttribute(x) == null || !file.GetAttribute(x).Equals(lsong.GetAttribute(x))))
             {
-                file.SetAttribute(attribute, song.GetAttribute(attribute));
+                file.SetAttribute(attribute, lsong.GetAttribute(attribute));
             }
             try
             {
@@ -193,7 +195,7 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
                 // TODO MC-125 log
                 StatusBarHandler.Instance.ChangeStatusBarMessage("Save-Error", StatusBarHandler.StatusIcon.Error);
             }
-            _cachedSongs[song.Id] = song;
+            _cachedSongs[lsong.Id] = lsong;
         }
         
         /// <summary>
@@ -220,13 +222,14 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
         /// Delete a file from the local File System
         /// </summary>
         /// <param name="deletedSong"></param>
-        public void DeleteFile(LocalSong deletedSong)
+        public void DeleteSong(AbstractSong deletedSong)
         {
-            var sourceDir = deletedSong.SongPath.Directory;
-            _cachedSongs.Remove(deletedSong.Id);
-            if (deletedSong.Path.Equals(_cachedFiles[deletedSong.Id].FullName) && File.Exists(deletedSong.Path))
-                File.Delete(deletedSong.Path);
-            _cachedFiles.Remove(deletedSong.Id);
+            var song = (deletedSong as LocalSong);
+            var sourceDir = song.SongPath.Directory;
+            _cachedSongs.Remove(song.Id);
+            if (song.Path.Equals(_cachedFiles[song.Id].FullName) && File.Exists(song.Path))
+                File.Delete(song.Path);
+            _cachedFiles.Remove(song.Id);
             ScrubEmptyDirectories(sourceDir);
         }
 
@@ -266,6 +269,7 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
             }
         }
         #region FileWatcher and Events
+
         /// <summary>
         /// Updates cached song as a result of a Rename event triggered by the system file watcher.
         /// </summary>
@@ -372,7 +376,7 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
             {
                 var key = firstOrDefault.Id;
                 retEnum.Add(_cachedSongs[key]);
-                DeleteFile(_cachedSongs[key]);
+                DeleteSong(_cachedSongs[key]);
             }
             else
             {
@@ -380,7 +384,7 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
                 foreach (var key in keys)
                 {
                     retEnum.Add(_cachedSongs[key]);
-                    DeleteFile(_cachedSongs[key]);
+                    DeleteSong(_cachedSongs[key]);
                 }
             }
             SongDeleted(retEnum);
@@ -550,6 +554,7 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
             }
             return false;
         }
+  
         /// <summary>
         /// Used to update the attributes of the TagLibFile associated with the AbstractSong
         /// </summary>
@@ -574,7 +579,7 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
         /// Return all locally stored song files
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<LocalSong> GetAllSongFiles()
+        public IEnumerable<AbstractSong> GetAllSongs()
         {
             return _cachedSongs.Values;
         }
@@ -583,7 +588,7 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
     /// <summary>
     /// Interface for the datasource represented by the local file system
     /// </summary>
-    public interface IFileSystem
+    public interface IFileSystem : IDataSource
     {
         /// <summary>
         /// Copies a file between two specified paths. 
@@ -626,11 +631,6 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
         /// <param name="newPath">Destination to move directory to</param>
         void MoveDirectory(DirectoryPath oldPath, DirectoryPath newPath);
         /// <summary>
-        /// writes a local song object to a filesystem object
-        /// </summary>
-        /// <param name="file"></param>
-        void SaveFile(LocalSong file);
-        /// <summary>
         /// Moves a file from a source song to a new location
         /// </summary>
         /// <param name="source"></param>
@@ -642,11 +642,6 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
         /// <param name="source"></param>
         /// <param name="dest"></param>
         void MoveFile(SongPath source, SongPath dest);
-        /// <summary>
-        /// Delete a file from the local File System
-        /// </summary>
-        /// <param name="deletedSong"></param>
-        void DeleteFile(LocalSong deletedSong);
 
         /// <summary>
         /// Occurs when a song is renamed
@@ -666,11 +661,6 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
         event SongUpdatedHandler SongDeleted;
 
 
-        /// <summary>
-        /// Return all locally stored song files
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<LocalSong> GetAllSongFiles();
         /// <summary>
         /// Initializes the locally stored data source based on a directory
         /// </summary>
