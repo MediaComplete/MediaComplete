@@ -7,6 +7,7 @@ using Autofac;
 using MSOE.MediaComplete.Lib.Background;
 using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
+using MSOE.MediaComplete.Lib.Library.FileSystem;
 
 namespace MSOE.MediaComplete
 {
@@ -70,7 +71,7 @@ namespace MSOE.MediaComplete
             SettingWrapper.ShowInputDialog =!StopShowingCheckBox.IsChecked.GetValueOrDefault(false);
 
             //Do the move
-            _queue.Add(new Importer(Dependency.Resolve<IFileManager>(), _files, false));
+            _queue.Add(new Importer(Dependency.Resolve<IFileSystem>(), _files, false));
 
             _polling.Reset();
             DialogResult = true;

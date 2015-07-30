@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using Autofac;
 using M3U.NET;
 using MSOE.MediaComplete.Lib.Files;
+using MSOE.MediaComplete.Lib.Library;
 
 namespace MSOE.MediaComplete.Lib.Playlists
 {
@@ -20,7 +21,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
         /// </summary>
         public const string PlaylistDefaultTitle = "New playlist";
 
-        private static IPlaylistService _service = new PlaylistServiceImpl(Dependency.Resolve<IFileManager>());
+        private static IPlaylistService _service = new PlaylistServiceImpl(Dependency.Resolve<ILibrary>());
 
         /// <summary>
         /// Provides a way to substitute the implementation for playlist operations. 
@@ -162,15 +163,14 @@ namespace MSOE.MediaComplete.Lib.Playlists
     /// </summary>
     public class PlaylistServiceImpl : IPlaylistService
     {
-        private readonly IFileManager _fileManager;
-
+        private readonly ILibrary _library;
         /// <summary>
-        /// Initializes a new instance of the <see cref="PlaylistServiceImpl"/> class.
+        /// public constructor used by the dependency injection class
         /// </summary>
-        /// <param name="fileManager">The file manager.</param>
-        public PlaylistServiceImpl(IFileManager fileManager)
+        /// <param name="library"></param>
+        public PlaylistServiceImpl(ILibrary library)
         {
-            _fileManager = fileManager;
+            _library = library;
         }
 
         // TODO rewrite class to use mock-able injectable File service. Also write tests at this time - see PlaylistsTest.cs
@@ -201,7 +201,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
                 GetDirectoryInfo()
                     .EnumerateFiles(Constants.Wildcard, SearchOption.AllDirectories)
                     .Where(f => Constants.PlaylistFileExtensions.Any(e => f.Extension.Equals(e)));
-            var z = y.Select(f => new Playlist(Dependency.Resolve<IPlaylistService>(), new M3UFile(f)));
+            var z = y.Select(f => new Playlist(this, new M3UFile(f)));
             return z;
 
         }
@@ -228,7 +228,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
                 .FirstOrDefault(f => Path.GetFileNameWithoutExtension(f.Name).Equals(title) &&
                                      Constants.PlaylistFileExtensions.Any(e => f.Extension.Equals(e)));
 
-            return file == null ? null : new Playlist(Dependency.Resolve<PlaylistServiceImpl>(), new M3UFile(file));
+            return file == null ? null : new Playlist(Dependency.Resolve<IPlaylistService>(), new M3UFile(file));
         }
 
         /// <summary>
@@ -243,7 +243,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
             {
                 throw new IOException("A playlist by that title already exists.");
             }
-            return new Playlist(Dependency.Resolve<PlaylistServiceImpl>(), new M3UFile(new FileInfo(GetDirectoryInfo().FullName + Path.DirectorySeparatorChar + title + DefaultExtension)));
+            return new Playlist(Dependency.Resolve<IPlaylistService>(), new M3UFile(new FileInfo(GetDirectoryInfo().FullName + Path.DirectorySeparatorChar + title + DefaultExtension)));
         }
 
         /// <summary>
@@ -296,7 +296,7 @@ namespace MSOE.MediaComplete.Lib.Playlists
         {
             if (TypeDictionary.Select(regex => new Regex(regex.Key).Matches(mediaItem.Location).Count).Any(hits => hits > 0))
             {
-                return _fileManager.GetSong(mediaItem) ?? new ErrorSong(null){ Title = mediaItem.Inf };
+                return _library.GetSong(mediaItem) ?? new ErrorSong(null){ Title = mediaItem.Inf };
             }
 
             throw new FormatException(String.Format("{0} does not match any known song types", mediaItem.Location));

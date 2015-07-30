@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using log4net.Filter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using MSOE.MediaComplete.Lib.Background;
 using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
+using MSOE.MediaComplete.Lib.Library;
+using MSOE.MediaComplete.Lib.Library.FileSystem;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Sorting;
 
@@ -24,7 +27,7 @@ namespace MSOE.MediaComplete.Test.Background
         {
 
             var queue = new List<List<Task>>();
-            var subject = new Sorter(new Mock<IFileManager>().Object, null);
+            var subject = new Sorter(new Mock<IFileSystem>().Object, null);
             TaskAdder.ResolveConflicts(subject, queue);
 
             Assert.AreEqual(1, queue.Count, "Queue doesn't have the right number of stages!");
@@ -38,13 +41,13 @@ namespace MSOE.MediaComplete.Test.Background
         [TestMethod]
         public void Test_AddSorter_GoesAfterImportAndIdentify()
         {
-            var mock = new Mock<IFileManager>();
+            var mock = new Mock<IFileSystem>();
             var list = new List<SongPath> { new SongPath("string") };
             var queue = new List<List<Task>>
             {
                 new List<Task> {new Importer(mock.Object, list, false)},
                 new List<Task> {new Identifier(new LocalSong[]{}, null, null, null, null), new Identifier(new LocalSong[]{}, null, null, null, null)},
-                new List<Task> {new Identifier(new LocalSong[]{}, null, null, null, null), new Importer(new Mock<IFileManager>().Object, list, false)},
+                new List<Task> {new Identifier(new LocalSong[]{}, null, null, null, null), new Importer(new Mock<IFileSystem>().Object, list, false)},
                 new List<Task>()
             };
 
@@ -70,14 +73,14 @@ namespace MSOE.MediaComplete.Test.Background
         [TestMethod]
         public void Test_AddSorter_RemovesSortAndGoesLast()
         {
-            var mock = new Mock<IFileManager>();
+            var mock = new Mock<IFileSystem>();
             var list = new List<SongPath> { new SongPath("string") };
             var queue = new List<List<Task>>
             {
                 new List<Task> {new Importer(mock.Object, list, false)},
                 new List<Task> {new Identifier(new LocalSong[]{}, null, null, null, null), new Identifier(new LocalSong[]{}, null, null, null, null)},
                 new List<Task> {new Sorter(null, null)},
-                new List<Task> {new Identifier(new LocalSong[]{}, null, null, null, null), new Importer(new Mock<IFileManager>().Object, list, false)}
+                new List<Task> {new Identifier(new LocalSong[]{}, null, null, null, null), new Importer(new Mock<IFileSystem>().Object, list, false)}
             };
 
             TaskAdder.ResolveConflicts(new Sorter(null, null), queue);

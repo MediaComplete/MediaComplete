@@ -9,6 +9,8 @@ using Autofac;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Logging;
 using MSOE.MediaComplete.Lib.Files;
+using MSOE.MediaComplete.Lib.Library;
+using MSOE.MediaComplete.Lib.Library.FileSystem;
 using MSOE.MediaComplete.Lib.Sorting;
 using ComboBox = System.Windows.Controls.ComboBox;
 
@@ -27,11 +29,14 @@ namespace MSOE.MediaComplete
         private LayoutType _changedType;
         private bool _layoutHasChanged;
         private readonly List<string> _allDirs;
-        private readonly IFileManager _fileManager;
+        private readonly IFileSystem _fileSystem;
+        private readonly ILibrary _library;
         public Settings()
         {
+            
             InitializeComponent();
-            _fileManager = Dependency.Resolve<IFileManager>();
+            _fileSystem = Dependency.Resolve<IFileSystem>();
+            _library = Dependency.Resolve<ILibrary>();
             TxtboxSelectedFolder.Text = SettingWrapper.HomeDir.FullPath;
             TxtInboxFolder.Text = SettingWrapper.InboxDir;
             ComboBoxPollingTime.SelectedValue = SettingWrapper.PollingTime.ToString(CultureInfo.InvariantCulture);
@@ -43,6 +48,7 @@ namespace MSOE.MediaComplete
             Logger.SetLogLevel(SettingWrapper.LogLevel);
             MoveOrCopy.IsChecked = SettingWrapper.ShouldRemoveOnImport;
             _allDirs = SettingWrapper.AllDirectories;
+            _library = Library.Instance;
             PollingCheckBoxChanged(CheckboxPolling, null);
             if (SettingWrapper.Layout.Equals(_layoutsDict[LayoutType.Pink]))
             {
@@ -97,8 +103,8 @@ namespace MSOE.MediaComplete
             if (!_allDirs.Contains(SettingWrapper.HomeDir.FullPath))
             {
                 var tempPath = new DirectoryPath(SettingWrapper.HomeDir.FullPath + "temp"+ new Random().Next());
-                _fileManager.MoveDirectory(SettingWrapper.HomeDir, tempPath);
-                _fileManager.MoveDirectory(tempPath, SettingWrapper.MusicDir);
+                _fileSystem.MoveDirectory(SettingWrapper.HomeDir, tempPath);
+                _fileSystem.MoveDirectory(tempPath, SettingWrapper.MusicDir);
                 _allDirs.Add(SettingWrapper.HomeDir.FullPath);
             }
 
@@ -178,8 +184,8 @@ namespace MSOE.MediaComplete
 
             SettingWrapper.Save();
 
-            if (!_fileManager.DirectoryExists(SettingWrapper.MusicDir))
-                _fileManager.CreateDirectory(SettingWrapper.MusicDir);
+            if (!_fileSystem.DirectoryExists(SettingWrapper.MusicDir))
+                _fileSystem.CreateDirectory(SettingWrapper.MusicDir);
             
             Close();
         }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using MSOE.MediaComplete.Lib.Files;
+using MSOE.MediaComplete.Lib.Library;
+using MSOE.MediaComplete.Lib.Library.FileSystem;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Sorting;
 using Task = MSOE.MediaComplete.Lib.Background.Task;
@@ -35,21 +37,20 @@ namespace MSOE.MediaComplete.Lib.Import
         /// The results.
         /// </value>
         public ImportResults Results { get; set; }
-
-        private readonly IEnumerable<SongPath> _files; 
-        private readonly IFileManager _fileManager;
+        private readonly IEnumerable<SongPath> _files;
+        private readonly IFileSystem _fileSystem;
         private readonly bool _isMove;
 
         /// <summary>
         /// Constructs an Importer with the given library home directory.
         /// </summary>
-        /// <param name="fileManager">The file manager to use</param>
+        /// <param name="fileSystem">The file manager to use</param>
         /// <param name="files">The files to import</param>
         /// <param name="isMove">Toggles cut vs. copy behavior</param>
-        public Importer(IFileManager fileManager, IEnumerable<SongPath> files, bool isMove)
+        public Importer(IFileSystem fileSystem, IEnumerable<SongPath> files, bool isMove)
         {
-            if(fileManager == null || files == null) throw new ArgumentNullException();
-            _fileManager = fileManager;
+            if (fileSystem == null || files == null) throw new ArgumentNullException();
+            _fileSystem = fileSystem;
             _isMove = isMove;
             if (files.Any(f => f.HasParent(SettingWrapper.MusicDir)))
             {
@@ -92,16 +93,16 @@ namespace MSOE.MediaComplete.Lib.Import
                 foreach (var file in _files)
                 {
                     var newFile = new SongPath(SettingWrapper.MusicDir.FullPath + file.Name);
-                    if (_fileManager.FileExists(newFile)) continue;
+                    if (_fileSystem.FileExists(newFile)) continue;
                     try
                     {
                         if (_isMove)
-                        {   
-                            _fileManager.AddFile(file, newFile);
+                        {
+                            _fileSystem.MoveFile(file, newFile);
                         }
                         else
                         {
-                            _fileManager.CopyFile(file, newFile);
+                            _fileSystem.CopyFile(file, newFile);
                         }
                         results.NewFiles.Add(newFile);
                     }

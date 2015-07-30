@@ -4,6 +4,7 @@ using MSOE.MediaComplete.Lib.Playlists;
 using NUnit.Framework;
 using System.Collections.Generic;
 using MSOE.MediaComplete.Lib.Files;
+using MSOE.MediaComplete.Lib.Library;
 using MSOE.MediaComplete.Test.Util;
 
 namespace MSOE.MediaComplete.Test.Playlists
@@ -15,7 +16,7 @@ namespace MSOE.MediaComplete.Test.Playlists
         {
             const string testTitle = "Test title";
             var mock = BuildM3UMock(testTitle, new List<MediaItem>());
-            var mockManager = new Mock<IFileManager>();
+            var mockManager = new Mock<ILibrary>();
 
             var song = new LocalSong("id", new SongPath("path"));
             mockManager.Setup(x => x.GetSong(It.IsAny<MediaItem>())).Returns(song);
@@ -35,7 +36,7 @@ namespace MSOE.MediaComplete.Test.Playlists
         {
             const string testTitle = "Test title";
             var mock = BuildM3UMock(testTitle, new List<MediaItem> { BuildMediaItem(), BuildMediaItem1() });
-            var mockManager = new Mock<IFileManager>();
+            var mockManager = new Mock<ILibrary>();
 
             var song = new LocalSong("id", new SongPath("path"));
             mockManager.Setup(x => x.GetSong(It.IsAny<MediaItem>())).Returns(song);
@@ -55,7 +56,7 @@ namespace MSOE.MediaComplete.Test.Playlists
         {
             const string testTitle = "Test title";
             var mock = BuildM3UMock(testTitle, new List<MediaItem> { BuildMediaItem(), BuildMediaItem() });
-            var mockManager = new Mock<IFileManager>();
+            var mockManager = new Mock<ILibrary>();
 
             var song = new LocalSong("id", new SongPath("path"));
             mockManager.Setup(x => x.GetSong(It.IsAny<MediaItem>())).Returns(song);
@@ -75,7 +76,7 @@ namespace MSOE.MediaComplete.Test.Playlists
         {
             const string testTitle = "Test title";
             var mock = BuildM3UMock(testTitle, new List<MediaItem> { BuildMediaItem(), BuildMediaItem1() });
-            var mockManager = new Mock<IFileManager>();
+            var mockManager = new Mock<ILibrary>();
 
             var song = new LocalSong("id", new SongPath("path"));
             mockManager.Setup(x => x.GetSong(It.IsAny<MediaItem>())).Returns(song);
@@ -100,7 +101,7 @@ namespace MSOE.MediaComplete.Test.Playlists
 
             // ReSharper disable once UseObjectOrCollectionInitializer
             // Disabled since the set operation is the only thing we actually do with it.
-            var mockManager = new Mock<IFileManager>();
+            var mockManager = new Mock<ILibrary>();
 
             var song = new LocalSong("id", new SongPath("path"));
             mockManager.Setup(x => x.GetSong(It.IsAny<MediaItem>())).Returns(song);
@@ -121,7 +122,7 @@ namespace MSOE.MediaComplete.Test.Playlists
             const string newTitle = "New title";
             var mock = BuildM3UMock(testTitle, new List<MediaItem> { BuildMediaItem(), BuildMediaItem1() });
 
-            var mockManager = new Mock<IFileManager>();
+            var mockManager = new Mock<ILibrary>();
             var song = new LocalSong("id", new SongPath("path"));
             mockManager.Setup(x => x.GetSong(It.IsAny<MediaItem>())).Returns(song);
             var service = new PlaylistServiceImpl(mockManager.Object);

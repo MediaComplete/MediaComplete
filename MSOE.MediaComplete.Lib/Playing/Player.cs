@@ -1,6 +1,7 @@
 ﻿using System;
 using Autofac;
 using MSOE.MediaComplete.Lib.Files;
+using MSOE.MediaComplete.Lib.Library;
 using NAudio.Wave;
 using TagLib;
 
@@ -27,16 +28,16 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// </summary>
         public static Player Instance
         {
-            get { return _instance ?? (_instance = new Player(Dependency.Resolve<INAudioWrapper>(), Dependency.Resolve<IFileManager>())); }
+            get { return _instance ?? (_instance = new Player(Dependency.Resolve<INAudioWrapper>(), Dependency.Resolve<ILibrary>())); }
         }
 
         /// <summary>
         /// private constructor to prevent creation of more than one Player instance
         /// </summary>
-        internal Player(INAudioWrapper nAudioWrapper, IFileManager fileManager)
+        internal Player(INAudioWrapper nAudioWrapper, ILibrary library)
         {
             _nAudioWrapper = nAudioWrapper;
-            _fileManager = fileManager;
+            _library = library;
         }
         #endregion
 
@@ -46,7 +47,7 @@ namespace MSOE.MediaComplete.Lib.Playing
         /// </summary>
         private readonly INAudioWrapper _nAudioWrapper;
 
-        private readonly IFileManager _fileManager;
+        private readonly ILibrary _library;
         /// <summary>
         /// the state of the player
         /// </summary>

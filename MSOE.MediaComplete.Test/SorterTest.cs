@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Files;
+using MSOE.MediaComplete.Lib.Library.FileSystem;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Sorting;
 
@@ -147,7 +148,7 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(3, sorter.MoveCount);
             sorter.Do(1);
             manager.Verify(x => x.MoveFile(It.IsAny<LocalSong>(), It.IsAny<SongPath>()), Times.Exactly(3));
-            manager.Verify(x => x.DeleteSong(It.IsAny<LocalSong>()), Times.Never);
+            manager.Verify(x => x.DeleteSong(It.IsAny<AbstractSong>()), Times.Never);
         }
 
         [TestMethod]
@@ -167,7 +168,7 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(0, sorter.MoveCount);
             sorter.Do(1);
             manager.Verify(x => x.MoveFile(It.IsAny<LocalSong>(), It.IsAny<SongPath>()), Times.Never);
-            manager.Verify(x => x.DeleteSong(It.IsAny<LocalSong>()), Times.Exactly(3));
+            manager.Verify(x => x.DeleteSong(It.IsAny<AbstractSong>()), Times.Exactly(3));
         }
 
         [TestMethod]
@@ -188,7 +189,7 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(2, sorter.MoveCount);
             sorter.Do(1);
             manager.Verify(x => x.MoveFile(It.IsAny<LocalSong>(), It.IsAny<SongPath>()), Times.Exactly(2));
-            manager.Verify(x => x.DeleteSong(It.IsAny<LocalSong>()), Times.Exactly(1));
+            manager.Verify(x => x.DeleteSong(It.IsAny<AbstractSong>()), Times.Exactly(1));
         }
 
         [TestMethod]
@@ -208,7 +209,7 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(0, sorter.MoveCount);
             sorter.Do(1);
             manager.Verify(x => x.MoveFile(It.IsAny<LocalSong>(), It.IsAny<SongPath>()), Times.Never);
-            manager.Verify(x => x.DeleteSong(It.IsAny<LocalSong>()), Times.Never);
+            manager.Verify(x => x.DeleteSong(It.IsAny<AbstractSong>()), Times.Never);
         }
         [TestMethod]
         public void Do_MoveDupAndInvalid()
@@ -228,7 +229,7 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(1, sorter.MoveCount);
             sorter.Do(1);
             manager.Verify(x => x.MoveFile(It.IsAny<LocalSong>(), It.IsAny<SongPath>()), Times.Exactly(1));
-            manager.Verify(x => x.DeleteSong(It.IsAny<LocalSong>()), Times.Exactly(1));
+            manager.Verify(x => x.DeleteSong(It.IsAny<AbstractSong>()), Times.Exactly(1));
         }
 
         [TestMethod]
@@ -253,7 +254,7 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(0, sorter.MoveCount);
             sorter.Do(1);
             manager.Verify(x => x.MoveFile(It.IsAny<LocalSong>(), It.IsAny<SongPath>()), Times.Exactly(0));
-            manager.Verify(x => x.DeleteSong(It.IsAny<LocalSong>()), Times.Exactly(0));
+            manager.Verify(x => x.DeleteSong(It.IsAny<AbstractSong>()), Times.Exactly(0));
         }
         #endregion
 
@@ -349,11 +350,11 @@ namespace MSOE.MediaComplete.Test
 
         #endregion
         
-        private static Mock<IFileManager> SetUpMock()
+        private static Mock<IFileSystem> SetUpMock()
         {
             SettingWrapper.SortOrder = SortOrder;
             SettingWrapper.HomeDir = HomeDir;
-            var mock = new Mock<IFileManager>();
+            var mock = new Mock<IFileSystem>();
             var allSongs = new List<LocalSong>{
                 new LocalSong("id1", new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
                             "AlbumName"+Path.DirectorySeparatorChar +"song1.mp3"))

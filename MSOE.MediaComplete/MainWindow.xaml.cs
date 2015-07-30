@@ -14,12 +14,15 @@ using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
+using MSOE.MediaComplete.Lib.Library;
+using MSOE.MediaComplete.Lib.Library.FileSystem;
 using MSOE.MediaComplete.Lib.Logging;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Playing;
 using MSOE.MediaComplete.Lib.Playlists;
 using MSOE.MediaComplete.Lib.Sorting;
 using NAudio.Wave;
+using Action = System.Action;
 using Queue = MSOE.MediaComplete.Lib.Background.Queue;
 using WinForms = System.Windows.Forms;
 using MSOE.MediaComplete.Lib.Background;
@@ -57,8 +60,9 @@ namespace MSOE.MediaComplete
         /// <summary>
         /// Private abstraction of the file system
         /// </summary>
-        private readonly IFileManager _fileManager;
+        private readonly ILibrary _library = Library.Instance;
 
+        private readonly IFileSystem _fileSystem;
         private readonly IPolling _polling; 
         private readonly IQueue _queue;
 
@@ -72,7 +76,7 @@ namespace MSOE.MediaComplete
         public MainWindow()
         {
             Dependency.BuildAsync();
-            _fileManager = Dependency.Resolve<IFileManager>();
+            _fileSystem = Dependency.Resolve<IFileSystem>();
             _polling = Dependency.Resolve<IPolling>();
             _queue = Dependency.Resolve<IQueue>();
             InitializeComponent();
@@ -120,7 +124,7 @@ namespace MSOE.MediaComplete
         /// </summary>
         private void InitTreeView()
         {
-            _fileManager.Initialize(SettingWrapper.MusicDir);
+            _library.Initialize(SettingWrapper.MusicDir);
             InitFolderView();
             ((ObservableCollection<SongListItem>)Songs.Source).Clear();
             // Set the library sorter
@@ -132,13 +136,13 @@ namespace MSOE.MediaComplete
             Songs.Filter += LibrarySongFilter;
 
             // Initial population
-            SongCreated(_fileManager.GetAllSongs()); 
+            SongCreated(_library.GetAllSongs()); 
 
             // Subscribe to file system updates
-            _fileManager.SongChanged += SongChanged;
-            _fileManager.SongCreated += SongCreated;
-            _fileManager.SongDeleted += SongDeleted;
-            _fileManager.SongRenamed += SongRenamed;
+            _fileSystem.SongChanged += SongChanged;
+            _fileSystem.SongCreated += SongCreated;
+            _fileSystem.SongDeleted += SongDeleted;
+            _fileSystem.SongRenamed += SongRenamed;
         }
         #endregion
 
@@ -248,7 +252,7 @@ namespace MSOE.MediaComplete
         {
             using (var scope = Dependency.BeginLifetimeScope())
             {
-                var files = _fileManager.GetAllSongs().Select(x => x.SongPath);
+                var files = _library.GetAllSongs().Where(y => y is LocalSong).Select(x => (x as LocalSong).SongPath);
                 var sorter = scope.Resolve<Sorter>(new TypedParameter(typeof(IEnumerable<SongPath>), files));
 
                 await sorter.CalculateActionsAsync();
@@ -277,7 +281,7 @@ namespace MSOE.MediaComplete
         {
             if (!SortHelper.GetSorting()) return;
 
-            var files = _fileManager.GetAllSongs().Select(x => x.SongPath);
+            var files = _library.GetAllSongs().Where(y => y is LocalSong).Select(x => (x as LocalSong).SongPath);
 
             using (var scope = Dependency.BeginLifetimeScope())
             {
@@ -334,7 +338,7 @@ namespace MSOE.MediaComplete
         /// Removes songs from the list
         /// </summary>
         /// <param name="songs">The songs to remove</param>
-        private void SongDeleted(IEnumerable<LocalSong> songs)
+        private void SongDeleted(IEnumerable<AbstractSong> songs)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -343,7 +347,7 @@ namespace MSOE.MediaComplete
                     ((ObservableCollection<SongListItem>)Songs.Source).Remove(song);
                     // Roll up the empty folders
                     var parent = song.ParentItem;
-                    while (_fileManager.DirectoryEmpty(new DirectoryPath(parent.GetPath())) && parent.ParentItem != null)
+                    while (_fileSystem.DirectoryEmpty(new DirectoryPath(parent.GetPath())) && parent.ParentItem != null)
                     {
                         parent.ParentItem.Children.Remove(parent);
                         parent = parent.ParentItem;
@@ -356,13 +360,13 @@ namespace MSOE.MediaComplete
         /// Adds new songs into the list.
         /// </summary>
         /// <param name="songs">The new songs</param>
-        private void SongCreated(IEnumerable<LocalSong> songs)
+        private void SongCreated(IEnumerable<AbstractSong> songs)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
                 foreach (var song in songs)
                 {
-                    var parent = AddFolderTreeViewItems(song.SongPath.Directory);
+                    var parent = AddFolderTreeViewItems((song as LocalSong).SongPath.Directory);
                     ((ObservableCollection<SongListItem>)Songs.Source).Add(new SongListItem { Content = song.Name, ParentItem = parent, Data = song });
                 }
             });

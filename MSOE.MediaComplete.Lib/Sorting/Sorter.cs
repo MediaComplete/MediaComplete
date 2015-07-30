@@ -6,9 +6,11 @@ using System.Linq;
 using MSOE.MediaComplete.Lib.Background;
 using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
+using MSOE.MediaComplete.Lib.Library.FileSystem;
 using MSOE.MediaComplete.Lib.Logging;
 using MSOE.MediaComplete.Lib.Metadata;
 using Sys = System.Threading.Tasks;
+using MSOE.MediaComplete.Lib.Sorting;
 
 namespace MSOE.MediaComplete.Lib.Sorting
 {
@@ -17,12 +19,10 @@ namespace MSOE.MediaComplete.Lib.Sorting
     /// </summary>
     public class Sorter : Task
     {
+        private static IFileSystem _fileSystem;
         /// <summary>
-        /// Gets the planned actions.
+        /// All of the actions that the sorter needs to do
         /// </summary>
-        /// <value>
-        /// The actions.
-        /// </value>
         public List<IAction> Actions { get; private set; }
 
         /// <summary>
@@ -32,24 +32,14 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// The un-sortable count.
         /// </value>
         public int UnsortableCount { get; private set; }
-
         /// <summary>
-        /// Gets the number of files that will be moved
+        /// The number of files that have been moved
         /// </summary>
-        /// <value>
-        /// The move count.
-        /// </value>
         public int MoveCount { get { return Actions.Count(a => a is MoveAction); } }
-
         /// <summary>
-        /// Gets the number of duplicate files found (which will be deleted)
+        /// The number of files that are duplicated, and have therefore been deleted
         /// </summary>
-        /// <value>
-        /// The duplicate count.
-        /// </value>
         public int DupCount { get { return Actions.Count(a => a is DeleteAction); } }
-
-        private static IFileManager _fileManager;
 
         /// <summary>
         /// The specific files to sort
@@ -63,11 +53,11 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <see cref="Actions">MoveActions</see> can be accessed directly after to anticipate the
         /// magnitude and specifics of the move.
         /// </summary>
-        /// <param name="fileManager"></param>
+        /// <param name="fileSystem"></param>
         /// <param name="files"></param>
-        public Sorter(IFileManager fileManager, IEnumerable<SongPath> files)
+        public Sorter(IFileSystem fileSystem, IEnumerable<SongPath> files)
         {
-            _fileManager = fileManager;
+            _fileSystem = fileSystem;
             Files = files;
             Actions = new List<IAction>();
             UnsortableCount = 0;
@@ -81,7 +71,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         {
             await Sys.Task.Run(() =>
             {
-                var songs = _fileManager.GetAllSongs().Where(x => Files.Contains(x.SongPath));
+                var songs = _fileSystem.GetAllSongs().Cast<LocalSong>().Where(x => Files.Contains(x.SongPath));
                 UnsortableCount += Files.Count() - songs.Count();
                 foreach (var song in songs)
                 {
@@ -90,7 +80,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
                     // If the current and target paths are different, we know we need to move.
                     if (!sourcePath.Equals(targetPath))
                     {
-                        if (_fileManager.FileExists(targetPath)) // If the file is already there
+                        if (_fileSystem.FileExists(targetPath)) // If the file is already there
                         {
                             // Delete source, let the older file take precedence.
                             // TODO (MC-29) perhaps we should try comparing audio quality and pick the better one?
@@ -267,84 +257,5 @@ namespace MSOE.MediaComplete.Lib.Sorting
         }
         #endregion
 
-        #region Actions
-
-        /// <summary>
-        /// Interface describing a potential file operation the sorter is planning
-        /// </summary>
-        public interface IAction
-        {
-            /// <summary>
-            /// Executes the operation
-            /// </summary>
-            void Do();
-        }
-
-        /// <summary>
-        /// Represents a planned file move operation
-        /// </summary>
-        public class MoveAction : IAction
-        {
-            /// <summary>
-            /// Gets or sets the source file
-            /// </summary>
-            /// <value>
-            /// The source.
-            /// </value>
-            public LocalSong Source { get; set; }
-
-            /// <summary>
-            /// Gets or sets the destination file
-            /// </summary>
-            /// <value>
-            /// The destination
-            /// </value>
-            public SongPath Dest { get; set; }
-
-            /// <summary>
-            /// Moves the file
-            /// </summary>
-            public void Do()
-            {
-                if (Dest== null) // Will happen if something goes wrong in the calculation
-                {
-                    return;
-                }
-
-                if (!_fileManager.DirectoryExists(Dest.Directory)) {
-                    _fileManager.CreateDirectory(Dest.Directory);
-                }
-                _fileManager.MoveFile(Source, Dest);
-            }
-        }
-
-        /// <summary>
-        /// Represents a planned file deletion
-        /// </summary>
-        public class DeleteAction : IAction
-        {
-            /// <summary>
-            /// Gets or sets the file to be deleted
-            /// </summary>
-            /// <value>
-            /// The target.
-            /// </value>
-            public LocalSong Target { get; set; }
-
-            /// <summary>
-            /// Deletes the file
-            /// </summary>
-            public void Do()
-            {
-                if (Target == null || !_fileManager.FileExists(Target.SongPath)) // Will happen if something goes wrong in the calculation
-                {
-                    return;
-                }
-
-                _fileManager.DeleteSong(Target); // TODO (MC-74) This should be a "recycle" delete. Not implemented yet.
-            }
-        }
-
-        #endregion
     }
 }

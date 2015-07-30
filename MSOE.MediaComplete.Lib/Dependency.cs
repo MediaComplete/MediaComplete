@@ -1,13 +1,13 @@
 ﻿using Autofac;
 using Autofac.Core;
 using MSOE.MediaComplete.Lib.Background;
-using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
+using MSOE.MediaComplete.Lib.Library;
+using MSOE.MediaComplete.Lib.Library.FileSystem;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Playing;
 using MSOE.MediaComplete.Lib.Playlists;
 using MSOE.MediaComplete.Lib.Sorting;
-
 namespace MSOE.MediaComplete.Lib
 {
     /// <summary>
@@ -24,9 +24,12 @@ namespace MSOE.MediaComplete.Lib
         public static async void BuildAsync()
         {
             var builder = new ContainerBuilder();
-            var fileManager = FileManager.Instance;
-            fileManager.Initialize(SettingWrapper.MusicDir);
-            builder.RegisterInstance(fileManager).ExternallyOwned().As<IFileManager>();
+            var fs = FileSystem.Instance;
+            builder.RegisterInstance(fs).ExternallyOwned().As<IFileSystem>();
+            
+            var library = Library.Library.Instance;
+            library.Initialize(SettingWrapper.MusicDir);
+            builder.RegisterInstance(library).ExternallyOwned().As<ILibrary>();
             builder.RegisterInstance(StatusBarHandler.Instance);
             builder.RegisterType<FfmpegAudioReader>().As<IAudioReader>();
             builder.RegisterType<DoresoIdentifier>().As<IAudioIdentifier>();
@@ -36,15 +39,15 @@ namespace MSOE.MediaComplete.Lib
                 new ResolvedParameter((pi, c) => pi.ParameterType == typeof(IAudioReader), (pi, c) => c.Resolve<IAudioReader>()),
                 new ResolvedParameter((pi, c) => pi.ParameterType == typeof(IAudioIdentifier), (pi, c) => c.Resolve<IAudioIdentifier>()),
                 new ResolvedParameter((pi, c) => pi.ParameterType == typeof(IMetadataRetriever), (pi, c) => c.Resolve<IMetadataRetriever>()),
-                new ResolvedParameter((pi, c) => pi.ParameterType == typeof(IFileManager), (pi, c) => c.Resolve<IFileManager>())
+                new ResolvedParameter((pi, c) => pi.ParameterType == typeof(ILibrary), (pi, c) => c.Resolve<ILibrary>())
             });
             builder.RegisterType<Sorter>().WithParameters(new[]
             {
-                new ResolvedParameter((pi, c) => pi.ParameterType == typeof(IFileManager), (pi, c) => c.Resolve<IFileManager>())
+                new ResolvedParameter((pi, c) => pi.ParameterType == typeof(ILibrary), (pi, c) => c.Resolve<ILibrary>())
             });
             builder.RegisterType<Importer>().WithParameters(new[]
             {
-                new ResolvedParameter((pi, c) => pi.ParameterType == typeof(IFileManager), (pi, c) => c.Resolve<IFileManager>())
+                new ResolvedParameter((pi, c) => pi.ParameterType == typeof(ILibrary), (pi, c) => c.Resolve<ILibrary>())
             });
             builder.RegisterType<NAudioWrapper>().As<INAudioWrapper>();
             var polling = new Polling();
@@ -52,8 +55,8 @@ namespace MSOE.MediaComplete.Lib
 
             builder.RegisterType<PlaylistServiceImpl>().As<IPlaylistService>().WithParameters(new[]
             {
-                new ResolvedParameter((pi, c) => pi.ParameterType == typeof(IFileManager), (pi, c) => c.Resolve<IFileManager>())
-            });
+                new ResolvedParameter((pi, c) => pi.ParameterType == typeof(ILibrary), (pi, c) => c.Resolve<ILibrary>())
+            }).SingleInstance();
             var queue = new Queue();
             builder.RegisterInstance(queue).As<IQueue>();
             _afContainer = builder.Build();
