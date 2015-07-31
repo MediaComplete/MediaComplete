@@ -81,7 +81,7 @@ namespace MSOE.MediaComplete
             InitPlaylists();
             InitUi();
             InitEvents();
-            InitTreeView();
+            InitTreeViewAsync();
             InitPlayer();
         }
 
@@ -108,7 +108,7 @@ namespace MSOE.MediaComplete
             // ReSharper disable once UnusedVariable
             var tmp = _polling;  // Run singleton constructor
             SettingWrapper.RaiseSettingEvent += Resort;
-            SettingWrapper.RaiseSettingEvent += InitTreeView;
+            SettingWrapper.RaiseSettingEvent += InitTreeViewAsync;
             Importer.ImportFinished += SortImports;
             Importer.ImportFinished += FailedImport;
         }
@@ -120,9 +120,9 @@ namespace MSOE.MediaComplete
         /// <summary>
         /// Setup the song library
         /// </summary>
-        private void InitTreeView()
+        private async void InitTreeViewAsync()
         {
-            _library.Initialize(SettingWrapper.MusicDir);
+            await _library.InitializeAsync(SettingWrapper.MusicDir);
             InitFolderView();
             ((ObservableCollection<SongListItem>)Songs.Source).Clear();
             // Set the library sorter
@@ -250,7 +250,11 @@ namespace MSOE.MediaComplete
         {
             using (var scope = Dependency.BeginLifetimeScope())
             {
-                var files = _library.GetAllSongs().Where(y => y is LocalSong).Select(x => (x as LocalSong).SongPath);
+                var files = _library.GetAllSongs().Where(y => y is LocalSong).Select(x =>
+                {
+                    var localSong = x as LocalSong;
+                    return localSong != null ? localSong.SongPath : null;
+                });
                 var sorter = scope.Resolve<Sorter>(new TypedParameter(typeof(IEnumerable<SongPath>), files));
 
                 await sorter.CalculateActionsAsync();
@@ -279,7 +283,11 @@ namespace MSOE.MediaComplete
         {
             if (!SortHelper.GetSorting()) return;
 
-            var files = _library.GetAllSongs().Where(y => y is LocalSong).Select(x => (x as LocalSong).SongPath);
+            var files = _library.GetAllSongs().Where(y => y is LocalSong).Select(x =>
+            {
+                var localSong = x as LocalSong;
+                return localSong != null ? localSong.SongPath : null;
+            });
 
             using (var scope = Dependency.BeginLifetimeScope())
             {
@@ -364,8 +372,12 @@ namespace MSOE.MediaComplete
             {
                 foreach (var song in songs)
                 {
-                    var parent = AddFolderTreeViewItems((song as LocalSong).SongPath.Directory);
-                    ((ObservableCollection<SongListItem>)Songs.Source).Add(new SongListItem { Content = song.Name, ParentItem = parent, Data = song });
+                    var localSong = song as LocalSong;
+                    if (localSong != null)
+                    {
+                        var parent = AddFolderTreeViewItems(localSong.SongPath.Directory);
+                        ((ObservableCollection<SongListItem>)Songs.Source).Add(new SongListItem { Content = song.Name, ParentItem = parent, Data = song });
+                    }
                 }
             });
         }
