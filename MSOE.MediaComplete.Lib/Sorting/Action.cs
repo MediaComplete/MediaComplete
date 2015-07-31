@@ -1,5 +1,4 @@
-﻿using MSOE.MediaComplete.Lib.Files;
-using MSOE.MediaComplete.Lib.Library.FileSystem;
+﻿using MSOE.MediaComplete.Lib.Library.DataSource;
 
 namespace MSOE.MediaComplete.Lib.Sorting
 {
@@ -19,7 +18,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
     /// </summary>
     public class MoveAction : IAction
     {
-        private static readonly IFileSystem _fileSystem = Dependency.Resolve<IFileSystem>();
+        private static readonly IFileSystem FileSystem = Dependency.Resolve<IFileSystem>();
         /// <summary>
         /// The source file to move
         /// </summary>
@@ -39,11 +38,11 @@ namespace MSOE.MediaComplete.Lib.Sorting
                 return;
             }
 
-            if (!_fileSystem.DirectoryExists(Dest.Directory))
+            if (!FileSystem.DirectoryExists(Dest.Directory))
             {
-                _fileSystem.CreateDirectory(Dest.Directory);
+                FileSystem.CreateDirectory(Dest.Directory);
             }
-            _fileSystem.MoveFile(Source, Dest);
+            FileSystem.MoveFile(Source, Dest);
         }
     }
 
@@ -52,7 +51,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
     /// </summary>
     public class DeleteAction : IAction
     {
-        private static readonly IFileSystem _fileSystem = Dependency.Resolve<IFileSystem>();
+        private static readonly IFileSystem FileSystem = Dependency.Resolve<IFileSystem>();
         /// <summary>
         /// the file to be deleted
         /// </summary>
@@ -63,12 +62,12 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// </summary>
         public void Do()
         {
-            if (Target == null || !_fileSystem.FileExists(Target.SongPath)) // Will happen if something goes wrong in the calculation
+            if (Target == null || !FileSystem.FileExists(Target.SongPath)) // Will happen if something goes wrong in the calculation
             {
                 return;
             }
 
-            _fileSystem.DeleteSong(Target); // TODO (MC-74) This should be a "recycle" delete. Not implemented yet.
+            FileSystem.DeleteSong(Target); // TODO (MC-74) This should be a "recycle" delete. Not implemented yet.
         }
     }
 }

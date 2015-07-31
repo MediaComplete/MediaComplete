@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
-using MSOE.MediaComplete.Lib.Library;
-using MSOE.MediaComplete.Lib.Library.FileSystem;
+using MSOE.MediaComplete.Lib.Library.DataSource;
 using MSOE.MediaComplete.Lib.Sorting;
 using MSOE.MediaComplete.Lib.Logging;
 

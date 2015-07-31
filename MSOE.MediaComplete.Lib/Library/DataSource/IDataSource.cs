@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MSOE.MediaComplete.Lib.Files;
+﻿using System.Collections.Generic;
 
 namespace MSOE.MediaComplete.Lib.Library.DataSource
 {

@@ -5,8 +5,8 @@ using MSOE.MediaComplete.Lib.Playing;
 using NAudio.Wave;
 using Ploeh.AutoFixture;
 using TagLib;
-using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Library;
+using MSOE.MediaComplete.Lib.Library.DataSource;
 
 namespace MSOE.MediaComplete.Test.Playing
 {

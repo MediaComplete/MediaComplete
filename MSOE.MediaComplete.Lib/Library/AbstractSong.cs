@@ -4,7 +4,7 @@ using System.Linq;
 using MSOE.MediaComplete.Lib.Metadata;
 using TagLib;
 
-namespace MSOE.MediaComplete.Lib.Files
+namespace MSOE.MediaComplete.Lib.Library
 {
     /// <summary>
     /// Base class for Songs in the library. Subclasses provide implementations for local files and remotely streamed music

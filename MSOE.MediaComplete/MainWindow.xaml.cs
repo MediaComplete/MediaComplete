@@ -12,10 +12,8 @@ using Autofac;
 using Autofac.Core;
 using MSOE.MediaComplete.CustomControls;
 using MSOE.MediaComplete.Lib;
-using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
 using MSOE.MediaComplete.Lib.Library;
-using MSOE.MediaComplete.Lib.Library.FileSystem;
 using MSOE.MediaComplete.Lib.Logging;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Playing;
@@ -23,9 +21,9 @@ using MSOE.MediaComplete.Lib.Playlists;
 using MSOE.MediaComplete.Lib.Sorting;
 using NAudio.Wave;
 using Action = System.Action;
-using Queue = MSOE.MediaComplete.Lib.Background.Queue;
 using WinForms = System.Windows.Forms;
 using MSOE.MediaComplete.Lib.Background;
+using MSOE.MediaComplete.Lib.Library.DataSource;
 
 namespace MSOE.MediaComplete
 {
@@ -43,7 +41,7 @@ namespace MSOE.MediaComplete
         {
             get { return _rootLibItem; } 
         }
-        private FolderTreeViewItem _rootLibItem = new FolderTreeViewItem { Header = SettingWrapper.MusicDir, IsSelected = true };
+        private readonly FolderTreeViewItem _rootLibItem = new FolderTreeViewItem { Header = SettingWrapper.MusicDir, IsSelected = true };
 
         /// <summary>
         /// Contains the songs in the middle view. Filtered based on what's happening in the left pane.

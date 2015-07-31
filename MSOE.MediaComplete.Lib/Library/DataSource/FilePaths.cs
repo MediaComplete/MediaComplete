@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace MSOE.MediaComplete.Lib.Files
+namespace MSOE.MediaComplete.Lib.Library.DataSource
 {
     /// <summary>
     /// Manages a file path to a song file
@@ -93,10 +93,10 @@ namespace MSOE.MediaComplete.Lib.Files
         /// <param name="path">The string path of the directory</param>
         public DirectoryPath(string path)
         {
-            if (path.EndsWith(Path.DirectorySeparatorChar.ToString()))
+            if (path.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
                 FullPath = path;
             else
-                FullPath = path += Path.DirectorySeparatorChar;
+                FullPath = path + Path.DirectorySeparatorChar;
         }
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace MSOE.MediaComplete.Lib.Files
         public override bool Equals(object obj)
         {
             var other = obj as DirectoryPath;
-            return FullPath.Equals(other.FullPath) && GetHashCode().Equals(other.GetHashCode());
+            return other != null && (FullPath.Equals(other.FullPath) && GetHashCode().Equals(other.GetHashCode()));
         }
 
         /// <summary>

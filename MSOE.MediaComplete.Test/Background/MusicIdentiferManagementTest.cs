@@ -3,10 +3,8 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using MSOE.MediaComplete.Lib.Background;
-using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
-using MSOE.MediaComplete.Lib.Library;
-using MSOE.MediaComplete.Lib.Library.FileSystem;
+using MSOE.MediaComplete.Lib.Library.DataSource;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Sorting;
 

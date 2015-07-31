@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using MSOE.MediaComplete.Lib;
-using MSOE.MediaComplete.Lib.Files;
+using MSOE.MediaComplete.Lib.Library.DataSource;
 using MSOE.MediaComplete.Lib.Metadata;
 using TagLib;
 using TextBox = System.Windows.Controls.TextBox;

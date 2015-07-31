@@ -108,7 +108,7 @@
     <Compile Include="Playing\NAudioWrapper.cs" />
     <Compile Include="LayoutType.cs" />
     <Compile Include="Playing\Player.cs" />
-    <Compile Include="Settings.cs" />
+    <Compile Include="Properties\Settings.cs" />
     <Compile Include="Sorting\Action.cs" />
     <Compile Include="Sorting\SortHelper.cs" />
     <Compile Include="StatusBarHandler.cs" />

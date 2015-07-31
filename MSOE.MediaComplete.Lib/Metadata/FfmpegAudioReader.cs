@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
-using MSOE.MediaComplete.Lib.Files;
+using MSOE.MediaComplete.Lib.Library.DataSource;
 
 namespace MSOE.MediaComplete.Lib.Metadata
 {

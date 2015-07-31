@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using MSOE.MediaComplete.Lib.Background;
 using Sys = System.Threading.Tasks;
 
 namespace MSOE.MediaComplete.Lib.Background

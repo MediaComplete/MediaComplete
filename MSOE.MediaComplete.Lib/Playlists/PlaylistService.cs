@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Autofac;
 using M3U.NET;
-using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Library;
+using MSOE.MediaComplete.Lib.Library.DataSource;
 
 namespace MSOE.MediaComplete.Lib.Playlists
 {

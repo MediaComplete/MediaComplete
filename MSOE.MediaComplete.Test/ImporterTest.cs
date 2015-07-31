@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib;
 using Moq;
-using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
-using MSOE.MediaComplete.Lib.Library;
-using MSOE.MediaComplete.Lib.Library.FileSystem;
+using MSOE.MediaComplete.Lib.Library.DataSource;
 using Assert = NUnit.Framework.Assert;
 
 namespace MSOE.MediaComplete.Test

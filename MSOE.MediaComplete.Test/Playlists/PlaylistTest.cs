@@ -3,8 +3,8 @@ using Moq;
 using MSOE.MediaComplete.Lib.Playlists;
 using NUnit.Framework;
 using System.Collections.Generic;
-using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Library;
+using MSOE.MediaComplete.Lib.Library.DataSource;
 using MSOE.MediaComplete.Test.Util;
 
 namespace MSOE.MediaComplete.Test.Playlists

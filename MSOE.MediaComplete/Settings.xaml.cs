@@ -5,12 +5,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Forms;
-using Autofac;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Logging;
-using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Library;
-using MSOE.MediaComplete.Lib.Library.FileSystem;
+using MSOE.MediaComplete.Lib.Library.DataSource;
 using MSOE.MediaComplete.Lib.Sorting;
 using ComboBox = System.Windows.Controls.ComboBox;
 
@@ -241,7 +239,7 @@ namespace MSOE.MediaComplete
         }
 
 
-        private void CheckBoxInfoLoggingChanged(object sender, RoutedEventArgs e)
+        private void CheckBoxInfoLoggingChanged(object sender)
         {
             var cb = sender as System.Windows.Controls.CheckBox;
             if (cb != null && cb.IsChecked == true)
@@ -254,7 +252,7 @@ namespace MSOE.MediaComplete
             }
         }
 
-        private void OpenLogFolder(object sender, RoutedEventArgs e)
+        private void OpenLogFolder()
         {
             Process.Start("explorer.exe", Logger.LogDir);
         }

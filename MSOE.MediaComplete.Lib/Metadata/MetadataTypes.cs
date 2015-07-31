@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MSOE.MediaComplete.Lib.Files;
+using MSOE.MediaComplete.Lib.Library.DataSource;
 using TagLib;
 
 namespace MSOE.MediaComplete.Lib.Metadata

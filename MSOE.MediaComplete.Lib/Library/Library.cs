@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.Collections.Generic;
 using M3U.NET;
-using MSOE.MediaComplete.Lib.Files;
-using MSOE.MediaComplete.Lib.Metadata;
-using MSOE.MediaComplete.Lib.Library.FileSystem;
-using TagLib;
-using File = System.IO.File;
+using MSOE.MediaComplete.Lib.Library.DataSource;
 using TaglibFile = TagLib.File;
 
 namespace MSOE.MediaComplete.Lib.Library
@@ -24,8 +17,8 @@ namespace MSOE.MediaComplete.Lib.Library
         /// <summary>
         /// The publicly acessible variable for the Library instance
         /// </summary>
-        public static ILibrary Instance { get { return _instance ?? (_instance = new Library(FileSystem.FileSystem.Instance)); } }
-        private IFileSystem _fileSystem;
+        public static ILibrary Instance { get { return _instance ?? (_instance = new Library(FileSystem.Instance)); } }
+        private readonly IFileSystem _fileSystem;
 
         private Library(IFileSystem fileSystem)
         {
@@ -53,8 +46,9 @@ namespace MSOE.MediaComplete.Lib.Library
         /// <param name="song">file with updated metadata</param>
         public void SaveSong(AbstractSong song)
         {
-            if (song is LocalSong)
-                _fileSystem.SaveSong(song as LocalSong);
+            var file = song as LocalSong;
+            if (file != null)
+                _fileSystem.SaveSong(file);
         }
 
         /// <summary>
@@ -72,8 +66,9 @@ namespace MSOE.MediaComplete.Lib.Library
         /// <param name="deletedSong">the song that needs to be deleted</param>
         public void DeleteSong(AbstractSong deletedSong)
         {
-            if(deletedSong is LocalSong)
-                _fileSystem.DeleteSong(deletedSong as LocalSong);
+            var song = deletedSong as LocalSong;
+            if(song != null)
+                _fileSystem.DeleteSong(song);
         }
 
         /// <summary>

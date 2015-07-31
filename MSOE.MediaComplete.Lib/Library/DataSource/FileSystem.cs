@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using M3U.NET;
-using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Metadata;
 using TagLib;
 using File = System.IO.File;
 using TaglibFile = TagLib.File;
-using MSOE.MediaComplete.Lib.Library.DataSource;
 
-namespace MSOE.MediaComplete.Lib.Library.FileSystem
+namespace MSOE.MediaComplete.Lib.Library.DataSource
 {
     /// <summary>
     /// The representation of the Data Source provided from the File System
@@ -50,7 +48,7 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
         /// </summary>
         /// <param name="musicDir"></param>
         /// <returns></returns>
-        public IEnumerable<FileInfo> Initialize(DirectoryPath musicDir)
+        public void Initialize(DirectoryPath musicDir)
         {
             _cachedFiles.Clear();
             _cachedSongs.Clear();
@@ -74,7 +72,6 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
             _watcher.Deleted += DeletedFile;
 
             _watcher.EnableRaisingEvents = true;
-            return files;
         }
    
         /// <summary>
@@ -665,8 +662,7 @@ namespace MSOE.MediaComplete.Lib.Library.FileSystem
         /// Initializes the locally stored data source based on a directory
         /// </summary>
         /// <param name="musicDir"></param>
-        /// <returns></returns>
-        IEnumerable<FileInfo> Initialize(DirectoryPath musicDir);
+        void Initialize(DirectoryPath musicDir);
 
         /// <summary>
         /// Returns a local song object based on a song's path

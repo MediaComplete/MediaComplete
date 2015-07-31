@@ -3,11 +3,9 @@ using System.Linq;
 using System.Windows;
 using MSOE.MediaComplete.Lib;
 using System;
-using Autofac;
 using MSOE.MediaComplete.Lib.Background;
-using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
-using MSOE.MediaComplete.Lib.Library.FileSystem;
+using MSOE.MediaComplete.Lib.Library.DataSource;
 
 namespace MSOE.MediaComplete
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MSOE.MediaComplete.Lib.Files
+namespace MSOE.MediaComplete.Lib.Library
 {
     /// <summary>
     /// Represents a song in the error state. The original song (which maybe null) is available via the Source property.

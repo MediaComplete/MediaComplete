@@ -4,13 +4,12 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using MSOE.MediaComplete.Lib.Background;
-using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Import;
-using MSOE.MediaComplete.Lib.Library.FileSystem;
+using MSOE.MediaComplete.Lib.Library;
+using MSOE.MediaComplete.Lib.Library.DataSource;
 using MSOE.MediaComplete.Lib.Logging;
 using MSOE.MediaComplete.Lib.Metadata;
 using Sys = System.Threading.Tasks;
-using MSOE.MediaComplete.Lib.Sorting;
 
 namespace MSOE.MediaComplete.Lib.Sorting
 {
@@ -114,7 +113,7 @@ namespace MSOE.MediaComplete.Lib.Sorting
         /// <param name="song">The source file to analyze</param>
         /// <param name="list">The sort-order of meta attributes</param>
         /// <returns>A new FileInfo describing where the source file should be moved to</returns>
-        private static SongPath GetNewLocation(LocalSong song, IReadOnlyList<MetaAttribute> list)
+        private static SongPath GetNewLocation(AbstractSong song, IReadOnlyList<MetaAttribute> list)
         {
             var path = "";
             // This is using an indexed for loop for a reason.

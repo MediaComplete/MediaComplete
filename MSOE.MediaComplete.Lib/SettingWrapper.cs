@@ -4,7 +4,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using MSOE.MediaComplete.Lib.Logging;
-using MSOE.MediaComplete.Lib.Files;
+using MSOE.MediaComplete.Lib.Library.DataSource;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Properties;
 

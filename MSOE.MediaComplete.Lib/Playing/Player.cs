@@ -1,7 +1,6 @@
 ﻿using System;
-using Autofac;
-using MSOE.MediaComplete.Lib.Files;
 using MSOE.MediaComplete.Lib.Library;
+using MSOE.MediaComplete.Lib.Library.DataSource;
 using NAudio.Wave;
 using TagLib;
 

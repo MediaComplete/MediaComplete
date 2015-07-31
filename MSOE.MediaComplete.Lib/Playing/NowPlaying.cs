@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using M3U.NET;
+using MSOE.MediaComplete.Lib.Library;
 using MSOE.MediaComplete.Lib.Playlists;
-using MSOE.MediaComplete.Lib.Files;
 
 namespace MSOE.MediaComplete.Lib.Playing
 {

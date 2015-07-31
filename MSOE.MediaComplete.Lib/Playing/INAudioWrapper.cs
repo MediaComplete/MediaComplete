@@ -1,5 +1,5 @@
 ﻿using System;
-using MSOE.MediaComplete.Lib.Files;
+using MSOE.MediaComplete.Lib.Library.DataSource;
 using NAudio.Wave;
 
 namespace MSOE.MediaComplete.Lib.Playing
