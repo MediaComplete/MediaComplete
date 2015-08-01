@@ -2,6 +2,7 @@
 using M3U.NET;
 using MSOE.MediaComplete.Lib.Library.DataSource;
 using TaglibFile = TagLib.File;
+using System.Threading.Tasks;
 
 namespace MSOE.MediaComplete.Lib.Library
 {
@@ -23,16 +24,16 @@ namespace MSOE.MediaComplete.Lib.Library
         private Library(IFileSystem fileSystem)
         {
             _fileSystem = fileSystem;
-            Initialize(SettingWrapper.MusicDir);
+            InitializeAsync(SettingWrapper.MusicDir).Wait();
         }
 
         /// <summary>
         /// Rebuilds the dictionaries using the parameter as the source. 
         /// </summary>
         /// <param name="musicDir">Source Directory for populating the dictionarires</param>
-        public void Initialize(DirectoryPath musicDir)
+        public async Task InitializeAsync(DirectoryPath musicDir)
         {
-            _fileSystem.Initialize(musicDir);
+            await _fileSystem.InitializeAsync(musicDir);
         }
 
         #region File Operations
@@ -102,7 +103,7 @@ namespace MSOE.MediaComplete.Lib.Library
         /// Rebuilds the dictionaries using the parameter as the source. 
         /// </summary>
         /// <param name="directory">Source Directory for populating the dictionarires</param>
-        void Initialize(DirectoryPath directory);
+        Task InitializeAsync(DirectoryPath directory);
         /// <summary>
         /// Writes the attributes of the song parameter to the TagLib File and updates the stored FileInfo and song
         /// </summary>
