@@ -4,11 +4,11 @@ Media Complete is a desktop application for Windows that quickly and easily allo
 
 ###Release 0.1.1
 
-*Bug fix: Application should no longer crash when files or folders are modified from outside of the application, while the application is running
-*Bug fix: Fixed a graphical bug when double clicking the currently playing song in the now playing list
-*Bug fix: Changing directories now updates the UI with the new library's songs
-*Bug fix: Pressing play with no song selected now plays the first song in the song list, and adds all visible songs to the now playing list
-*Improvements were made to the code base to hopefully allow for easier accessibility
+* Bug fix: Application should no longer crash when files or folders are modified from outside of the application, while the application is running
+* Bug fix: Fixed a graphical bug when double clicking the currently playing song in the now playing list
+* Bug fix: Changing directories now updates the UI with the new library's songs
+* Bug fix: Pressing play with no song selected now plays the first song in the song list, and adds all visible songs to the now playing list
+* Improvements were made to the code base to hopefully allow for easier accessibility
 
 ###What can I do with Media Complete?
 
