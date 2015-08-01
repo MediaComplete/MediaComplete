@@ -52,6 +52,12 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         {
             _cachedFiles.Clear();
             _cachedSongs.Clear();
+
+            if (!DirectoryExists((musicDir)))
+            {
+                CreateDirectory(musicDir);
+            }
+
             var files = new DirectoryInfo(musicDir.FullPath).GetFiles("*", SearchOption.AllDirectories).GetMusicFiles();
             foreach (var fileInfo in files)
             {
