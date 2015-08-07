@@ -345,7 +345,7 @@ namespace MSOE.MediaComplete
                     ((ObservableCollection<SongListItem>)Songs.Source).Remove(song);
                     // Roll up the empty folders
                     var parent = song.ParentItem;
-                    while (_fileSystem.DirectoryEmpty(new DirectoryPath(parent.GetPath())) && parent.ParentItem != null)
+                    while (_fileSystem.DirectoryEmpty(new DirectoryPath(parent.GetPath())) && parent.ParentItem != null && !parent.Children.Any())
                     {
                         parent.ParentItem.Children.Remove(parent);
                         parent = parent.ParentItem;

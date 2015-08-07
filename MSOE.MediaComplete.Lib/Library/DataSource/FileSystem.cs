@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using M3U.NET;
 using MSOE.MediaComplete.Lib.Metadata;
 using TagLib;
@@ -31,7 +32,7 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         private FileSystemWatcher _watcher;
         
         private static FileSystem _instance;
-
+        
         /// <summary>
         /// Returns the instance of the file system
         /// </summary>
@@ -66,6 +67,7 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
                 NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
                 IncludeSubdirectories = true
             };
+            _watcher.InternalBufferSize = 32768;
             _watcher.Renamed += RenamedFile;
             _watcher.Changed += ChangedFile;
             _watcher.Created += CreatedFile;
@@ -119,7 +121,7 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         {
             if (!Directory.Exists(directory.FullPath)) return true;
             var dirInfo = new DirectoryInfo(directory.FullPath);
-            if ((dirInfo.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly) return true;
+            if ((dirInfo.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly) return false;
             var hasDirs = Directory.EnumerateDirectories(directory.FullPath).Any();
             var hasMusic = new DirectoryInfo(directory.FullPath).EnumerateFiles().GetMusicFiles().Any();
             return hasDirs || hasMusic;
