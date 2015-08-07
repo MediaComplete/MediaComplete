@@ -501,20 +501,25 @@ namespace MSOE.MediaComplete
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void FolderTree_OnSelectionChanged(object sender, EventArgs e)
+        private void FolderTree_OnMouseUp(object sender, EventArgs e)
         {
             if (!IsLoaded)
                 return;
 
-            FormCheck();
-            if (FolderTree.SelectedItems != null)
+            FormCheck(); 
+            var newItems = new List<FolderTreeViewItem>();
+            newItems.AddRange(FolderTree.SelectedItems.Cast<FolderTreeViewItem>());
+            if (FolderTree.SelectedItems != null && FolderTree.SelectedItems.Count >= 0 && !_oldSelectedItems.SequenceEqual(newItems))
             {
+                _oldSelectedItems = newItems;
                 RootLibraryFolderItem.IsSelected = FolderTree.SelectedItems.Count == 0;
                 Songs.View.Refresh();
             }
             ClearDetailPane();
         }
 
+
+        private List<FolderTreeViewItem> _oldSelectedItems = new List<FolderTreeViewItem>();
         /// <summary>
         /// Updates the metadata form based on the song list selection
         /// </summary>
