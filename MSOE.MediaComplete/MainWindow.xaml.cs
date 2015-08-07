@@ -507,7 +507,7 @@ namespace MSOE.MediaComplete
                 return;
 
             FormCheck();
-            if (FolderTree.SelectedItems != null)
+            if (FolderTree.SelectedItems!= null && FolderTree.SelectedItems.Count > 0)
             {
                 RootLibraryFolderItem.IsSelected = FolderTree.SelectedItems.Count == 0;
                 Songs.View.Refresh();
