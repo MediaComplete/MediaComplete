@@ -509,8 +509,7 @@ namespace MSOE.MediaComplete
             FormCheck(); 
             var newItems = new List<FolderTreeViewItem>();
             newItems.AddRange(FolderTree.SelectedItems.Cast<FolderTreeViewItem>());
-            if (FolderTree.SelectedItems != null &&
-                (FolderTree.SelectedItems.Count >= 0 && !_oldSelectedItems.SequenceEqual(newItems)))
+            if (FolderTree.SelectedItems != null && FolderTree.SelectedItems.Count >= 0 && !_oldSelectedItems.SequenceEqual(newItems))
             {
                 _oldSelectedItems = newItems;
                 RootLibraryFolderItem.IsSelected = FolderTree.SelectedItems.Count == 0;
