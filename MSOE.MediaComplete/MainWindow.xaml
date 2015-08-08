@@ -60,7 +60,7 @@
                 <TabItem Header="Library" x:Name="LibraryTab">
                     <controls:MultiSelectTreeView x:Name="FolderTree" DataContext="{Binding RootLibraryFolderItem}"
                                                   ItemsSource="{Binding Children}" Style="{StaticResource MultiSelectTreeViewCustom}"
-                                                  SelectionChanged="FolderTree_OnSelectionChanged">
+                                                  MouseUp="FolderTree_OnMouseUp" MouseDoubleClick="FolderTree_DoubleClick">
                         <controls:MultiSelectTreeView.ItemContainerStyle>
                             <Style TargetType="{x:Type controls:MultiSelectTreeViewItem}"
                                    BasedOn="{StaticResource MultiSelectTreeViewItemCustom}">

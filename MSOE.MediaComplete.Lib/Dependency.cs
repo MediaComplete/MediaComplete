@@ -28,7 +28,7 @@ namespace MSOE.MediaComplete.Lib
             builder.RegisterInstance(fs).ExternallyOwned().As<IFileSystem>();
             
             var library = Library.Library.Instance;
-            library.Initialize(SettingWrapper.MusicDir);
+            await library.InitializeAsync(SettingWrapper.MusicDir);
             builder.RegisterInstance(library).ExternallyOwned().As<ILibrary>();
             builder.RegisterInstance(StatusBarHandler.Instance);
             builder.RegisterType<FfmpegAudioReader>().As<IAudioReader>();

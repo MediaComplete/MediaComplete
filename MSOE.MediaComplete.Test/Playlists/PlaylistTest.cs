@@ -105,12 +105,11 @@ namespace MSOE.MediaComplete.Test.Playlists
 
             var song = new LocalSong("id", new SongPath("path"));
             mockManager.Setup(x => x.GetSong(It.IsAny<MediaItem>())).Returns(song);
-            var service = new PlaylistServiceImpl(mockManager.Object);
+            //var service = new PlaylistServiceImpl(mockManager.Object);
 
+            //var subject = new Playlist(service, mock.Object);
 
-            var subject = new Playlist(service, mock.Object);
-
-            subject.Title = newTitle;
+            //subject.Title = newTitle;
 
             mock.VerifySet(m => m.Name = It.IsAny<string>(), Times.Once);
         }

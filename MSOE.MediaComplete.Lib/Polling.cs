@@ -109,23 +109,5 @@ namespace MSOE.MediaComplete.Lib
         /// Resets the instance
         /// </summary>
         void Reset();
-
-        /// <summary>
-        /// Method to call when this instance should check for new polling settings
-        /// </summary>
-        void OnSettingChanged();
-
-        /// <summary>
-        /// Start polling
-        /// </summary>
-        void Start();
-
-        /// <summary>
-        /// Gets or sets the polling interval in minutes.
-        /// </summary>
-        /// <value>
-        /// The time in minutes.
-        /// </value>
-        double TimeInMinutes { get; set; }
     }
 }

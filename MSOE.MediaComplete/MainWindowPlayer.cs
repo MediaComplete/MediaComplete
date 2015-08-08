@@ -389,6 +389,17 @@ namespace MSOE.MediaComplete
             }
         }
 
+        private void FolderTree_DoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (FolderTree.SelectedItems.Count > 0)
+            {
+
+                NowPlaying.Inst.Clear();
+                AddAllSongsToNowPlaying();
+                Play();
+            }
+        }
+
         /// <summary>
         /// Play songs on double click
         /// </summary>

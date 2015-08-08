@@ -8,6 +8,7 @@ using MSOE.MediaComplete.Lib.Metadata;
 using TagLib;
 using File = System.IO.File;
 using TaglibFile = TagLib.File;
+using System.Threading.Tasks;
 
 namespace MSOE.MediaComplete.Lib.Library.DataSource
 {
@@ -49,10 +50,16 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         /// </summary>
         /// <param name="musicDir"></param>
         /// <returns></returns>
-        public void Initialize(DirectoryPath musicDir)
+        public async Task InitializeAsync(DirectoryPath musicDir)
         {
             _cachedFiles.Clear();
             _cachedSongs.Clear();
+
+            if (!DirectoryExists((musicDir)))
+            {
+                CreateDirectory(musicDir);
+            }
+
             var files = new DirectoryInfo(musicDir.FullPath).GetFiles("*", SearchOption.AllDirectories).GetMusicFiles();
             foreach (var fileInfo in files)
             {
@@ -229,15 +236,13 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         public void DeleteSong(AbstractSong deletedSong)
         {
             var song = (deletedSong as LocalSong);
-            if (song != null)
-            {
-                var sourceDir = song.SongPath.Directory;
-                _cachedSongs.Remove(song.Id);
-                if (song.Path.Equals(_cachedFiles[song.Id].FullName) && File.Exists(song.Path))
-                    File.Delete(song.Path);
-                _cachedFiles.Remove(song.Id);
-                ScrubEmptyDirectories(sourceDir);
-            }
+            if (song == null) return;
+            var sourceDir = song.SongPath.Directory;
+            _cachedSongs.Remove(song.Id);
+            if (song.Path.Equals(_cachedFiles[song.Id].FullName) && File.Exists(song.Path))
+                File.Delete(song.Path);
+            _cachedFiles.Remove(song.Id);
+            ScrubEmptyDirectories(sourceDir);
         }
 
         /// <summary>
@@ -683,7 +688,7 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         /// Initializes the locally stored data source based on a directory
         /// </summary>
         /// <param name="musicDir"></param>
-        void Initialize(DirectoryPath musicDir);
+        Task InitializeAsync(DirectoryPath musicDir);
 
         /// <summary>
         /// Returns a local song object based on a song's path

@@ -31,7 +31,27 @@ namespace MSOE.MediaComplete.Lib
         /// <returns>home directory path</returns>
         public static DirectoryPath HomeDir
         {
-            get { return new DirectoryPath(Settings.Default.HomeDir); }
+            get
+            {
+                // If null or if it has been deleted, fall back on previous HomeDirs (AllDirs). Otherwise, create a new one under the user's music dir.
+                if (Settings.Default.HomeDir == null || !Directory.Exists(Settings.Default.HomeDir))
+                {
+                    Settings.Default.HomeDir = AllDirectories.FirstOrDefault(Directory.Exists);
+                    if (Settings.Default.HomeDir == null)
+                    {
+                        Settings.Default.HomeDir = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic)
+                                                + Path.DirectorySeparatorChar + "Media Complete";
+                        Directory.CreateDirectory(Settings.Default.HomeDir);
+                    }
+
+                    if (!Settings.Default.HomeDir.EndsWith(Path.DirectorySeparatorChar + "", StringComparison.Ordinal))
+                    {
+                        Settings.Default.HomeDir += Path.DirectorySeparatorChar;
+                    }
+                    Settings.Default.Save();
+                }
+                return new DirectoryPath(Settings.Default.HomeDir);
+            }
             set { Settings.Default.HomeDir = value.FullPath; }
         }
 
@@ -41,7 +61,7 @@ namespace MSOE.MediaComplete.Lib
         /// <returns>music directory path</returns>
         public static DirectoryPath MusicDir
         {
-            get { return new DirectoryPath(Settings.Default.HomeDir + Settings.Default.MusicDir + Path.DirectorySeparatorChar); }
+            get { return new DirectoryPath(HomeDir.FullPath + Settings.Default.MusicDir + Path.DirectorySeparatorChar); }
         }
         /// <summary>
         /// Gets the playlist directory from the settings
@@ -49,7 +69,7 @@ namespace MSOE.MediaComplete.Lib
         /// <returns>playlist directory path</returns>
         public static DirectoryPath PlaylistDir
         {
-            get { return new DirectoryPath(Settings.Default.HomeDir  + Settings.Default.PlaylistDir + Path.DirectorySeparatorChar); }
+            get { return new DirectoryPath(HomeDir.FullPath + Settings.Default.PlaylistDir + Path.DirectorySeparatorChar); }
         }
         /// <summary>
         /// gets the inbox directory path
