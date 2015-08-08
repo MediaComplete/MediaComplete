@@ -225,7 +225,7 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         /// <param name="dest"></param>
         public void MoveFile(SongPath source, SongPath dest)
         {
-            if(!FileExists(source))
+            if(FileExists(source))
                 File.Move(source.FullPath, dest.FullPath);
         }
 
