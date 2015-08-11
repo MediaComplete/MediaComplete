@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
 using MSOE.MediaComplete.Lib;
@@ -100,6 +101,12 @@ namespace MSOE.MediaComplete
 
             if (!_allDirs.Contains(SettingWrapper.HomeDir.FullPath))
             {
+                // if you select the parent directory of a directory you've already visited, then we remove the child reference in our stored list
+                var withParent = _allDirs.Where(x => x.StartsWith(SettingWrapper.HomeDir.FullPath, StringComparison.Ordinal));
+                foreach (var parent in withParent)
+                {
+                    _allDirs.Remove(parent);
+                }
                 var tempPath = new DirectoryPath(SettingWrapper.HomeDir.FullPath + "temp"+ new Random().Next());
                 _fileSystem.MoveDirectory(SettingWrapper.HomeDir, tempPath);
                 _fileSystem.MoveDirectory(tempPath, SettingWrapper.MusicDir);

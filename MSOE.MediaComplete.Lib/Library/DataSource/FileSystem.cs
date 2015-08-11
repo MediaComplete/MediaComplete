@@ -7,7 +7,6 @@ using MSOE.MediaComplete.Lib.Metadata;
 using TagLib;
 using File = System.IO.File;
 using TaglibFile = TagLib.File;
-using System.Threading.Tasks;
 
 namespace MSOE.MediaComplete.Lib.Library.DataSource
 {
@@ -30,11 +29,16 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         /// Windows file watcher; monitors the library for changes
         /// </summary>
         private FileSystemWatcher _watcher;
-        
-        private static FileSystem _instance;
 
         /// <summary>
-        /// Returns the instance of the filesystem
+        /// FileSystemWatcher buffer was overflowing for large sort operations. This is used to extend the buffer size
+        /// </summary>
+        private const int BufferSize = 32768;
+
+        private static FileSystem _instance;
+        
+        /// <summary>
+        /// Returns the instance of the file system
         /// </summary>
         public static IFileSystem Instance { get { return _instance ?? (_instance = new FileSystem()); } }
 
@@ -49,7 +53,7 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         /// </summary>
         /// <param name="musicDir"></param>
         /// <returns></returns>
-        public async Task InitializeAsync(DirectoryPath musicDir)
+        public void Initialize(DirectoryPath musicDir)
         {
             _cachedFiles.Clear();
             _cachedSongs.Clear();
@@ -73,6 +77,7 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
                 NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
                 IncludeSubdirectories = true
             };
+            _watcher.InternalBufferSize = BufferSize;
             _watcher.Renamed += RenamedFile;
             _watcher.Changed += ChangedFile;
             _watcher.Created += CreatedFile;
@@ -125,6 +130,8 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         public bool DirectoryEmpty(DirectoryPath directory)
         {
             if (!Directory.Exists(directory.FullPath)) return true;
+            var dirInfo = new DirectoryInfo(directory.FullPath);
+            if ((dirInfo.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly) return false;
             var hasDirs = Directory.EnumerateDirectories(directory.FullPath).Any();
             var hasMusic = new DirectoryInfo(directory.FullPath).EnumerateFiles().GetMusicFiles().Any();
             return hasDirs || hasMusic;
@@ -176,14 +183,14 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         }
 
         /// <summary>
-        /// writes a local song object to a filesystem object
+        /// writes a local song object to a file system object
         /// </summary>
         /// <param name="song"></param>
         public void SaveSong(AbstractSong song)
         {
             var lsong = (song as LocalSong);
-            if (lsong == null) return;
-            if (!_cachedSongs.ContainsKey(lsong.Id)) throw new ArgumentException("Song does not exist in cache", "song");
+            if (lsong == null || !_cachedSongs.ContainsKey(lsong.Id)) 
+                throw new ArgumentException("Song does not exist in cache", "song");
             var file = TagLib.File.Create(lsong.Path);
 
             foreach (var attribute in Enum.GetValues(typeof(MetaAttribute)).Cast<MetaAttribute>().ToList()
@@ -210,7 +217,8 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         /// <param name="dest"></param>
         public void MoveFile(LocalSong source, SongPath dest)
         {
-            File.Move(source.Path, dest.FullPath);
+            if (FileExists(source.SongPath))
+                File.Move(source.Path, dest.FullPath);
         }
 
         /// <summary>
@@ -220,7 +228,8 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         /// <param name="dest"></param>
         public void MoveFile(SongPath source, SongPath dest)
         {
-            File.Move(source.FullPath, dest.FullPath);
+            if(FileExists(source))
+                File.Move(source.FullPath, dest.FullPath);
         }
 
         /// <summary>
@@ -479,7 +488,7 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         /// Helper function for adding new songs to the dictionaries
         /// </summary>
         /// <param name="id">unique ID of the song to be saved</param>
-        /// <param name="file">The Fileinfo object of the file to be saved</param>
+        /// <param name="file">The FileInfo object of the file to be saved</param>
         private void AddFileToCache(string id, FileInfo file)
         {
             var newFile = GetNewLocalSong(id, file);
@@ -493,7 +502,7 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         /// the new LocalSong object.
         /// </summary>
         /// <param name="id">unique ID of the file to be saved</param>
-        /// <param name="file">fileinfo object that needs to be saved</param>
+        /// <param name="file">FileInfo object that needs to be saved</param>
         /// <returns></returns>
         private static LocalSong GetNewLocalSong(string id, FileSystemInfo file)
         {
@@ -553,6 +562,7 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
             {
                 return true;
             }
+            catch (UnauthorizedAccessException){}
             finally
             {
                 if (stream != null)
@@ -567,17 +577,23 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         /// <param name="song"></param>
         private void UpdateFile(LocalSong song)
         {
-            var tagFile = TaglibFile.Create(song.Path);
-
-            var tag = tagFile.Tag;
-            _cachedSongs[song.Id].Title = tag.Title;
-            _cachedSongs[song.Id].Artists = tag.AlbumArtists;
-            _cachedSongs[song.Id].Album = tag.Album;
-            _cachedSongs[song.Id].Genres = tag.Genres;
-            _cachedSongs[song.Id].Year = tag.Year;
-            _cachedSongs[song.Id].TrackNumber = tag.Track;
-            _cachedSongs[song.Id].SupportingArtists = tag.Performers;
-            // Duration is assumed to be fixed
+            //Catch blocks do nothing. Sometimes this function is called on a file that has already been moved
+            //This happens if create & delete events happen AND a changed happens. Therefore, this does not have to execute
+            try
+            {
+                var tagFile = TaglibFile.Create(song.Path);
+                var tag = tagFile.Tag;
+                _cachedSongs[song.Id].Title = tag.Title;
+                _cachedSongs[song.Id].Artists = tag.AlbumArtists;
+                _cachedSongs[song.Id].Album = tag.Album;
+                _cachedSongs[song.Id].Genres = tag.Genres;
+                _cachedSongs[song.Id].Year = tag.Year;
+                _cachedSongs[song.Id].TrackNumber = tag.Track;
+                _cachedSongs[song.Id].SupportingArtists = tag.Performers;
+                // Duration is assumed to be fixed
+            }
+            catch (FileNotFoundException) {}
+            catch (UnauthorizedAccessException) {}
         }
         #endregion
 
@@ -592,7 +608,7 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
     }
 
     /// <summary>
-    /// Interface for the datasource represented by the local file system
+    /// Interface for the data source represented by the local file system
     /// </summary>
     public interface IFileSystem : IDataSource
     {
@@ -607,7 +623,7 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         /// Create a folder at a specified location.
         /// Used by Sorter and to initialize music/playlist folders where necessary
         /// </summary>
-        /// <param name="directory">Destination location to create the folder, including foldername</param>
+        /// <param name="directory">Destination location to create the folder, including folder name</param>
         void CreateDirectory(DirectoryPath directory);
         /// <summary>
         /// Verifies if the specified directory exists.
@@ -671,7 +687,7 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         /// Initializes the locally stored data source based on a directory
         /// </summary>
         /// <param name="musicDir"></param>
-        Task InitializeAsync(DirectoryPath musicDir);
+        void Initialize(DirectoryPath musicDir);
 
         /// <summary>
         /// Returns a local song object based on a song's path
@@ -680,7 +696,7 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         /// <returns></returns>
         LocalSong GetSong(SongPath songPath);
         /// <summary>
-        /// Returns a local song object based on a playlist's mediaitem
+        /// Returns a local song object based on a playlist's MediaItem
         /// </summary>
         /// <param name="mediaItem"></param>
         /// <returns></returns>
