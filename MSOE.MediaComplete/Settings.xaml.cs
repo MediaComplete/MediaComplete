@@ -101,6 +101,7 @@ namespace MSOE.MediaComplete
 
             if (!_allDirs.Contains(SettingWrapper.HomeDir.FullPath))
             {
+                // if you select the parent directory of a directory you've already visited, then we remove the child reference in our stored list
                 var withParent = _allDirs.Where(x => x.StartsWith(SettingWrapper.HomeDir.FullPath, StringComparison.Ordinal));
                 foreach (var parent in withParent)
                 {
