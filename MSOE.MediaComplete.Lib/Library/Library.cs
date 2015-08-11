@@ -24,16 +24,16 @@ namespace MSOE.MediaComplete.Lib.Library
         private Library(IFileSystem fileSystem)
         {
             _fileSystem = fileSystem;
-            InitializeAsync(SettingWrapper.MusicDir).Wait();
+            Initialize(SettingWrapper.MusicDir);
         }
 
         /// <summary>
         /// Rebuilds the dictionaries using the parameter as the source. 
         /// </summary>
         /// <param name="musicDir">Source Directory for populating the dictionarires</param>
-        public async Task InitializeAsync(DirectoryPath musicDir)
+        public void Initialize(DirectoryPath musicDir)
         {
-            await _fileSystem.InitializeAsync(musicDir);
+            _fileSystem.Initialize(musicDir);
         }
 
         #region File Operations
@@ -103,7 +103,7 @@ namespace MSOE.MediaComplete.Lib.Library
         /// Rebuilds the dictionaries using the parameter as the source. 
         /// </summary>
         /// <param name="directory">Source Directory for populating the dictionarires</param>
-        Task InitializeAsync(DirectoryPath directory);
+        void Initialize(DirectoryPath directory);
         /// <summary>
         /// Writes the attributes of the song parameter to the TagLib File and updates the stored FileInfo and song
         /// </summary>

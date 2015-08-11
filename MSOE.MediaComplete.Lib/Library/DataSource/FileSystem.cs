@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using M3U.NET;
 using MSOE.MediaComplete.Lib.Metadata;
 using TagLib;
 using File = System.IO.File;
 using TaglibFile = TagLib.File;
-using System.Threading.Tasks;
 
 namespace MSOE.MediaComplete.Lib.Library.DataSource
 {
@@ -31,7 +29,12 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         /// Windows file watcher; monitors the library for changes
         /// </summary>
         private FileSystemWatcher _watcher;
-        
+
+        /// <summary>
+        /// FileSystemWatcher buffer was overflowing for large sort operations. This is used to extend the buffer size
+        /// </summary>
+        private const int BufferSize = 32768;
+
         private static FileSystem _instance;
         
         /// <summary>
@@ -50,7 +53,7 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         /// </summary>
         /// <param name="musicDir"></param>
         /// <returns></returns>
-        public async Task InitializeAsync(DirectoryPath musicDir)
+        public void Initialize(DirectoryPath musicDir)
         {
             _cachedFiles.Clear();
             _cachedSongs.Clear();
@@ -74,7 +77,7 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
                 NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
                 IncludeSubdirectories = true
             };
-            _watcher.InternalBufferSize = 32768;
+            _watcher.InternalBufferSize = BufferSize;
             _watcher.Renamed += RenamedFile;
             _watcher.Changed += ChangedFile;
             _watcher.Created += CreatedFile;
@@ -574,6 +577,8 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         /// <param name="song"></param>
         private void UpdateFile(LocalSong song)
         {
+            //Catch blocks do nothing. Sometimes this function is called on a file that has already been moved
+            //This happens if create & delete events happen AND a changed happens. Therefore, this does not have to execute
             try
             {
                 var tagFile = TaglibFile.Create(song.Path);
@@ -587,14 +592,8 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
                 _cachedSongs[song.Id].SupportingArtists = tag.Performers;
                 // Duration is assumed to be fixed
             }
-            catch (FileNotFoundException)
-            {
-
-            }
-            catch (UnauthorizedAccessException)
-            {
-                
-            }
+            catch (FileNotFoundException) {}
+            catch (UnauthorizedAccessException) {}
         }
         #endregion
 
@@ -688,7 +687,7 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         /// Initializes the locally stored data source based on a directory
         /// </summary>
         /// <param name="musicDir"></param>
-        Task InitializeAsync(DirectoryPath musicDir);
+        void Initialize(DirectoryPath musicDir);
 
         /// <summary>
         /// Returns a local song object based on a song's path

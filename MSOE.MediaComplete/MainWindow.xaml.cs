@@ -81,7 +81,7 @@ namespace MSOE.MediaComplete
             InitPlaylists();
             InitUi();
             InitEvents();
-            InitTreeViewAsync();
+            InitTreeView();
             InitPlayer();
         }
 
@@ -108,7 +108,7 @@ namespace MSOE.MediaComplete
             // ReSharper disable once UnusedVariable
             var tmp = _polling;  // Run singleton constructor
             SettingWrapper.RaiseSettingEvent += Resort;
-            SettingWrapper.RaiseSettingEvent += InitTreeViewAsync;
+            SettingWrapper.RaiseSettingEvent += InitTreeView;
             Importer.ImportFinished += SortImports;
             Importer.ImportFinished += FailedImport;
         }
@@ -120,9 +120,9 @@ namespace MSOE.MediaComplete
         /// <summary>
         /// Setup the song library
         /// </summary>
-        private async void InitTreeViewAsync()
+        private void InitTreeView()
         {
-            await _library.InitializeAsync(SettingWrapper.MusicDir);
+            _library.Initialize(SettingWrapper.MusicDir);
             InitFolderView();
             ((ObservableCollection<SongListItem>)Songs.Source).Clear();
             // Set the library sorter
