@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Timers;
 using M3U.NET;
 using MSOE.MediaComplete.Lib.Metadata;
 using TagLib;
 using File = System.IO.File;
 using TaglibFile = TagLib.File;
+using Timer = System.Timers.Timer;
 
 namespace MSOE.MediaComplete.Lib.Library.DataSource
 {
@@ -41,6 +44,9 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         /// Returns the instance of the file system
         /// </summary>
         public static IFileSystem Instance { get { return _instance ?? (_instance = new FileSystem()); } }
+
+        public double Interval { get; set; }
+        private Timer _timer;
 
         private FileSystem()
         {
@@ -84,8 +90,25 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
             _watcher.Deleted += DeletedFile;
 
             _watcher.EnableRaisingEvents = true;
+
+            Interval = 30;
+            _timer = new Timer();
+            _timer.Elapsed += OnTimerFinished;
         }
    
+        private void OnTimerFinished(object sender, EventArgs eventArgs)
+        {
+            _timer.Stop();
+            EventsFinished();
+        }
+
+        private void SetTimer()
+        {
+            _timer.Stop();
+            _timer.Interval = 1000 * 60 * Interval;
+            _timer.Start();
+        }
+
         /// <summary>
         /// Copies a file between two specified paths. 
         /// This is currently only used in the Importer
@@ -472,6 +495,8 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         /// </summary>
         public event SongUpdatedHandler SongDeleted = delegate { };
 
+        public event TimerFinished EventsFinished = delegate { }; 
+
         #endregion
         #region Data Helpers
         /// <summary>
@@ -682,6 +707,8 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         /// </summary>
         event SongUpdatedHandler SongDeleted;
 
+        event TimerFinished EventsFinished;
+
 
         /// <summary>
         /// Initializes the locally stored data source based on a directory
@@ -713,4 +740,6 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
     /// </summary>
     /// <param name="songs">The moved/renamed songs.</param>
     public delegate void SongRenamedHandler(IEnumerable<Tuple<LocalSong, LocalSong>> songs);
+
+    public delegate void TimerFinished();
 }
