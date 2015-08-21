@@ -114,33 +114,36 @@ namespace MSOE.MediaComplete
         }
         private void InitFolderView()
         {
-            _rootLibItem.Children.Clear();
-            _rootLibItem.Header = SettingWrapper.MusicDir;
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                _rootLibItem.Children.Clear();
+                _rootLibItem.Header = SettingWrapper.MusicDir;
+            });
         }
         /// <summary>
         /// Setup the song library
         /// </summary>
         private void InitTreeView()
         {
-            _library.Initialize(SettingWrapper.MusicDir);
-            InitFolderView();
-            ((ObservableCollection<SongListItem>)Songs.Source).Clear();
-            // Set the library sorter
-            var songsView = Songs.View as ListCollectionView;
-            if (songsView != null)
-                songsView.CustomSort = new PathSorter();
+            Application.Current.Dispatcher.Invoke(() => 
+            {
+                _library.Initialize(SettingWrapper.MusicDir);
+                InitFolderView();
+                ((ObservableCollection<SongListItem>)Songs.Source).Clear();
+                // Set the library sorter
+                var songsView = Songs.View as ListCollectionView;
+                if (songsView != null)
+                    songsView.CustomSort = new PathSorter();
 
-            // Set the library filter
-            Songs.Filter += LibrarySongFilter;
+                // Set the library filter
+                Songs.Filter += LibrarySongFilter;
 
-            // Initial population
-            SongCreated(_library.GetAllSongs()); 
+                // Initial population
+                SongCreated(_library.GetAllSongs()); 
 
-            // Subscribe to file system updates
-            _fileSystem.SongChanged += SongChanged;
-            _fileSystem.SongCreated += SongCreated;
-            _fileSystem.SongDeleted += SongDeleted;
-            _fileSystem.SongRenamed += SongRenamed;
+                // Subscribe to file system updates
+                _fileSystem.EventsFinished += InitTreeView;
+            });
         }
         #endregion
 
@@ -331,36 +334,6 @@ namespace MSOE.MediaComplete
         #endregion
 
         #region UI Refresh
-        /// <summary>
-        /// Updates the song items in the list. Just calls rename since both need to remove and re-add
-        /// </summary>
-        /// <param name="songs">The updated songs</param>
-        private void SongChanged(IEnumerable<LocalSong> songs)
-        {
-            SongRenamed(songs.Select(s => new Tuple<LocalSong, LocalSong>(s, s)));
-        }
-
-        /// <summary>
-        /// Removes songs from the list
-        /// </summary>
-        /// <param name="songs">The songs to remove</param>
-        private void SongDeleted(IEnumerable<AbstractSong> songs)
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                foreach (var song in songs.Select(song => ((ObservableCollection<SongListItem>)Songs.Source).FirstOrDefault(x => x.Data.Id.Equals(song.Id))).Where(song => song != null))
-                {
-                    ((ObservableCollection<SongListItem>)Songs.Source).Remove(song);
-                    // Roll up the empty folders
-                    var parent = song.ParentItem;
-                    while (_fileSystem.DirectoryEmpty(new DirectoryPath(parent.GetPath())) && parent.ParentItem != null && !parent.Children.Any())
-                    {
-                        parent.ParentItem.Children.Remove(parent);
-                        parent = parent.ParentItem;
-                    }
-                }
-            });
-        }
 
         /// <summary>
         /// Adds new songs into the list.
@@ -380,16 +353,6 @@ namespace MSOE.MediaComplete
                     }
                 }
             });
-        }
-
-        /// <summary>
-        /// Adds and removes the song so it's place in the list is updated.
-        /// </summary>
-        /// <param name="songs">A tuple of old and new songs (may contain data edits)</param>
-        private void SongRenamed(IEnumerable<Tuple<LocalSong, LocalSong>> songs)
-        {
-            SongDeleted(songs.Select(t => t.Item1));
-            SongCreated(songs.Select(t => t.Item2));
         }
 
         /// <summary>

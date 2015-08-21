@@ -85,27 +85,50 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
             };
             _watcher.InternalBufferSize = BufferSize;
             _watcher.Renamed += RenamedFile;
+            SongRenamed += SetTimer;
             _watcher.Changed += ChangedFile;
+            SongChanged += SetTimer;
             _watcher.Created += CreatedFile;
+            SongCreated += SetTimer;
             _watcher.Deleted += DeletedFile;
+            SongDeleted += SetTimer;
 
             _watcher.EnableRaisingEvents = true;
 
-            Interval = 30;
+            Interval = 100;
+            TimerInit();
+        }
+
+        private void TimerInit()
+        {
             _timer = new Timer();
             _timer.Elapsed += OnTimerFinished;
+            
         }
-   
+
+        private void SetTimer(IEnumerable<Tuple<LocalSong, LocalSong>> songs)
+        {
+            SetTimer();
+        }
+
+        private void SetTimer(IEnumerable<LocalSong> songs)
+        {
+            SetTimer();
+        }
+        
         private void OnTimerFinished(object sender, EventArgs eventArgs)
         {
             _timer.Stop();
+            TimerInit();
             EventsFinished();
         }
+
+        private int x = 0;
 
         private void SetTimer()
         {
             _timer.Stop();
-            _timer.Interval = 1000 * 60 * Interval;
+            _timer.Interval = 60 * Interval;
             _timer.Start();
         }
 
@@ -376,7 +399,8 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
                             {
                                 var key = Guid.NewGuid().ToString();
                                 AddFileToCache(key, file.FullName);
-                                retEnum.Add(_cachedSongs[key]);
+                                if(_cachedSongs.ContainsKey(key))
+                                    retEnum.Add(_cachedSongs[key]);
                             }
                         }
                     }
@@ -557,14 +581,13 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
                     Year = tag.Year,
                     TrackNumber = tag.Track,
                     SupportingArtists = tag.Performers,
-                    Duration = (int?)tagFile.Properties.Duration.TotalSeconds
+                    Duration = (int?) tagFile.Properties.Duration.TotalSeconds
                 };
             }
             catch (CorruptFileException)
             {
                 return new LocalSong(id, new SongPath(path));
             }
-
         }
 
         /// <summary>
@@ -606,6 +629,7 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
             //This happens if create & delete events happen AND a changed happens. Therefore, this does not have to execute
             try
             {
+                if (!_cachedSongs.ContainsKey(song.Id)) return;
                 var tagFile = TaglibFile.Create(song.Path);
                 var tag = tagFile.Tag;
                 _cachedSongs[song.Id].Title = tag.Title;
