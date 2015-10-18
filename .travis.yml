@@ -1,7 +1,7 @@
 language: csharp
 solution: MSOE.MediaComplete.sln
 install:
-  - nuget MSOE.MediaComplete.sln
+  - nuget restore MSOE.MediaComplete.sln
   - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 script:
   - xbuild /p:Configuration=Debug MSOE.MediaComplete.sln
