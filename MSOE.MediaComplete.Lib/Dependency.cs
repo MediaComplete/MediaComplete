@@ -8,6 +8,8 @@ using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Playing;
 using MSOE.MediaComplete.Lib.Playlists;
 using MSOE.MediaComplete.Lib.Sorting;
+using IContainer = Autofac.IContainer;
+
 namespace MSOE.MediaComplete.Lib
 {
     /// <summary>
