@@ -16,14 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{B54025
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{6141683F-8A12-4E36-9623-2EB02B2C2303}") = "Installer", "Installer\Installer.isproj", "{445D0DD6-1FEB-4C20-9ED5-D8C525181204}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A0884657-5FDE-459B-BACC-94B19AF58401} = {A0884657-5FDE-459B-BACC-94B19AF58401}
-		{9FC3A1A0-F81A-45BA-A8EB-1F4A10F0D3F1} = {9FC3A1A0-F81A-45BA-A8EB-1F4A10F0D3F1}
-	EndProjectSection
-EndProject
-Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "Documentation", "Documentation\Documentation.shfbproj", "{852EFEF8-0451-4749-A03F-DABEB285B189}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CD_ROM|Any CPU = CD_ROM|Any CPU
