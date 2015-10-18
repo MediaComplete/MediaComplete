@@ -22,7 +22,7 @@ namespace MSOE.MediaComplete.Test
             StatusBarHandler.Instance.RaiseStatusBarEvent += HandleStatusBarChangeEvent;
             StatusBarHandler.Instance.ChangeStatusBarMessage(testMessage, testIcon);
 
-            Assert.AreEqual(testMessage + "blah", _message);
+            Assert.AreEqual(testMessage, _message);
             Assert.AreEqual(testIcon, _icon);
 
             while (_count < 2)
