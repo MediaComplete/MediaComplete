@@ -15,21 +15,21 @@ namespace MSOE.MediaComplete.Test
 
         #region Constructor
         [Test]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.ExpectedException(typeof(ArgumentNullException))]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void Constructor_NullEverything()
         {
             // ReSharper disable once ObjectCreationAsStatement
             new Importer(null, null, false);
         }
         [Test]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.ExpectedException(typeof(ArgumentNullException))]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void Constructor_NullFiles()
         {
             // ReSharper disable once ObjectCreationAsStatement
             new Importer(new Mock<IFileSystem>().Object, null, false);
         }
         [Test]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.ExpectedException(typeof(ArgumentNullException))]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void Constructor_NullFileManager()
         {
             // ReSharper disable once ObjectCreationAsStatement
@@ -76,7 +76,7 @@ namespace MSOE.MediaComplete.Test
         }
 
         [Test]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.ExpectedException(typeof(InvalidImportException))]
+        [ExpectedException(typeof(InvalidImportException))]
         public void Do_MoveFromWithinDir()
         {
             var manager = SetUpMock();
@@ -91,7 +91,7 @@ namespace MSOE.MediaComplete.Test
         }
 
         [Test]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.ExpectedException(typeof(InvalidImportException))]
+        [ExpectedException(typeof(InvalidImportException))]
         public void Do_CopyFromWithinDir()
         {
             var manager = SetUpMock();

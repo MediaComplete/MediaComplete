@@ -12,7 +12,7 @@ using NUnit.Framework;
 namespace MSOE.MediaComplete.Test
 {
     [TestFixture]
-    [Microsoft.VisualStudio.TestTools.UnitTesting.Ignore]
+    [Ignore]
     public class SorterTest
     {
         private static readonly List<MetaAttribute> SortOrder = new List<MetaAttribute>

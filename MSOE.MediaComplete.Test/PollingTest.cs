@@ -26,7 +26,7 @@ namespace MSOE.MediaComplete.Test
         /// tests that polling works in sub-directories
         /// </summary>
         [Test]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.Timeout(40000)]
+        [Timeout(40000)]
         public void CheckSubDirectoryPolling()
         {
             var polling = new Polling();
@@ -54,7 +54,7 @@ namespace MSOE.MediaComplete.Test
         /// tests that it calls the delegate
         /// </summary>
         [Test]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.Timeout(40000)]
+        [Timeout(40000)]
         public void CheckForSongMp3()
         {
             var polling = new Polling();
@@ -82,7 +82,7 @@ namespace MSOE.MediaComplete.Test
         /// tests that it calls the delegate
         /// </summary>
         [Test]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.Timeout(40000)]//Milliseconds
+        [Timeout(40000)]//Milliseconds
         public void CheckForSongWma()
         {
             var polling = new Polling();

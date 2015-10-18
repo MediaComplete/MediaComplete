@@ -106,7 +106,7 @@ namespace MSOE.MediaComplete.Test.Playing
         }
 
         [Test]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.ExpectedException(typeof(CorruptFileException))]
+        [ExpectedException(typeof(CorruptFileException))]
         public void Play_InvalidFileInfo_ThrowsCorruptFileException()
         {
             var mockNAudioWrapper = new Mock<INAudioWrapper>();
