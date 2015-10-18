@@ -147,10 +147,6 @@
       <Project>{9fc3a1a0-f81a-45ba-a8eb-1f4a10f0d3f1}</Project>
       <Name>MSOE.MediaComplete.Lib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MSOE.MediaComplete\MSOE.MediaComplete.csproj">
-      <Project>{a0884657-5fde-459b-bacc-94b19af58401}</Project>
-      <Name>MSOE.MediaComplete</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Choose>
