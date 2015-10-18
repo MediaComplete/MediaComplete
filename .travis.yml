@@ -1,2 +1,4 @@
 language: csharp
 solution: MSOE.MediaComplete.sln
+script:
+  - xbuild /p:VbcToolExe=vbnc.exe MSOE.MediaComplete.sln
