@@ -1,7 +1,11 @@
 language: csharp
 solution: MSOE.MediaComplete.sln
+install:
+  - nuget MSOE.MediaComplete.sln
+  - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 script:
   - xbuild /p:Configuration=Debug MSOE.MediaComplete.sln
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe MSOE.MediaComplete.Test/bin/x86/Debug/MSOE.MediaComplete.Test.dll
 before_install:
   - sudo apt-get install nunit-console
 before_script:
