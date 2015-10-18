@@ -5,7 +5,7 @@ install:
   - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 script:
   - xbuild /p:Configuration=Debug MSOE.MediaComplete.sln
-  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe MSOE.MediaComplete.Test/bin/x86/Debug/MSOE.MediaComplete.Test.dll
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./MyPoject.Tests/bin/Release/MyProject.Tests.dll
 before_install:
   - sudo apt-get install nunit-console
 before_script:
