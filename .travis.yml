@@ -1,8 +1,10 @@
 language: csharp
 solution: MSOE.MediaComplete.sln
+script:
+  - xbuild /p:Configuration=Debug MSOE.MediaComplete.sln
 before_install:
   - sudo apt-get install nunit-console
 before_script:
   - nuget restore MSOE.MediaComplete.sln
 after_script:
-  - nunit-console Tests/bin/Release/Tests.dll
+  - nunit-console Tests/bin/Debug/Tests.dll
