@@ -1,9 +1,7 @@
 ﻿using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Test.Util;
 using NUnit.Framework;
-using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 using Constants = MSOE.MediaComplete.Test.Util.Constants;
 using File = TagLib.File;
 
@@ -38,7 +36,7 @@ namespace MSOE.MediaComplete.Test
         #endregion
 
         #region Initialization
-        [TestInitialize]
+        [SetUp]
         public void Initialize()
         {
             _homeDir = FileHelper.CreateDirectory("MetadataExtensionsTestHomeDir");
@@ -48,7 +46,7 @@ namespace MSOE.MediaComplete.Test
             _wmaFile = File.Create(FileHelper.CreateFile(_homeDir, Constants.FileTypes.ValidWma).FullName); 
         }
 
-        [TestCleanup]
+        [TearDown]
         public void TearDown()
         {
             Directory.Delete(_homeDir.FullName, true);
