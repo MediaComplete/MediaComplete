@@ -38,7 +38,7 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(3, sorter.Actions.Count());
             Assert.AreEqual(0, sorter.DupCount);
             Assert.AreEqual(0, sorter.UnsortableCount);
-            Assert.AreEqual(3, sorter.MoveCount);
+            Assert.AreEqual(2, sorter.MoveCount);
         }
 
         [Test]
@@ -82,7 +82,7 @@ namespace MSOE.MediaComplete.Test
             var manager = SetUpMock();
             var songs = new List<SongPath>{
                 new SongPath("song99.mp3"),
-                new SongPath("song100.mp3"), 
+                new SongPath("song100.mp3"),
                 new SongPath("song101.mp3")};
             var sorter = new Sorter(manager.Object, songs);
             sorter.CalculateActionsAsync().Wait();
@@ -115,11 +115,11 @@ namespace MSOE.MediaComplete.Test
         {
             var manager = SetUpMock();
             var songs = new List<SongPath>{
-                new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
+                new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar +
                 "AlbumName"+Path.DirectorySeparatorChar +"song1.mp3"),
-                new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
+                new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar +
                 "AlbumName"+Path.DirectorySeparatorChar +"song2.mp3"),
-                new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
+                new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar +
                 "AlbumName"+Path.DirectorySeparatorChar +"song3.mp3")};
             var sorter = new Sorter(manager.Object, songs);
             sorter.CalculateActionsAsync().Wait();
@@ -199,7 +199,7 @@ namespace MSOE.MediaComplete.Test
             var manager = SetUpMock();
             var songs = new List<SongPath>{
                 new SongPath("song99.mp3"),
-                new SongPath("song100.mp3"), 
+                new SongPath("song100.mp3"),
                 new SongPath("song101.mp3")};
             var sorter = new Sorter(manager.Object, songs);
             sorter.CalculateActionsAsync().Wait();
@@ -238,11 +238,11 @@ namespace MSOE.MediaComplete.Test
         {
             var manager = SetUpMock();
             var songs = new List<SongPath>{
-                new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
+                new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar +
                 "AlbumName"+Path.DirectorySeparatorChar +"song1.mp3"),
-                new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
+                new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar +
                 "AlbumName"+Path.DirectorySeparatorChar +"song2.mp3"),
-                new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
+                new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar +
                 "AlbumName"+Path.DirectorySeparatorChar +"song3.mp3")};
             var sorter = new Sorter(manager.Object, songs);
 
@@ -309,7 +309,7 @@ namespace MSOE.MediaComplete.Test
             var manager = SetUpMock();
             var songs = new List<SongPath>{
                 new SongPath("song99.mp3"),
-                new SongPath("song100.mp3"), 
+                new SongPath("song100.mp3"),
                 new SongPath("song101.mp3")};
             var sorter = new Sorter(manager.Object, songs);
             sorter.Do(1);
@@ -336,11 +336,11 @@ namespace MSOE.MediaComplete.Test
         {
             var manager = SetUpMock();
             var songs = new List<SongPath>{
-                new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
+                new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar +
                 "AlbumName"+Path.DirectorySeparatorChar +"song1.mp3"),
-                new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
+                new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar +
                 "AlbumName"+Path.DirectorySeparatorChar +"song2.mp3"),
-                new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
+                new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar +
                 "AlbumName"+Path.DirectorySeparatorChar +"song3.mp3")};
             var sorter = new Sorter(manager.Object, songs);
             sorter.Do(1);
@@ -350,26 +350,26 @@ namespace MSOE.MediaComplete.Test
 
 
         #endregion
-        
+
         private static Mock<IFileSystem> SetUpMock()
         {
             SettingWrapper.SortOrder = SortOrder;
             SettingWrapper.HomeDir = HomeDir;
             var mock = new Mock<IFileSystem>();
             var allSongs = new List<LocalSong>{
-                new LocalSong("id1", new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
+                new LocalSong("id1", new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar +
                             "AlbumName"+Path.DirectorySeparatorChar +"song1.mp3"))
                 {
                     Artists = new [] { "ArtistName" },
                     Album = "AlbumName"
                 },
-                new LocalSong("id2", new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
+                new LocalSong("id2", new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar +
                             "AlbumName"+Path.DirectorySeparatorChar +"song2.mp3"))
                 {
                     Artists = new [] { "ArtistName" },
                     Album = "AlbumName"
                 },
-                new LocalSong("id3", new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
+                new LocalSong("id3", new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar +
                             "AlbumName"+Path.DirectorySeparatorChar +"song3.mp3"))
                 {
                     Artists = new [] { "ArtistName" },
@@ -395,19 +395,19 @@ namespace MSOE.MediaComplete.Test
                     Artists = new [] { "ArtistName" },
                     Album = "AlbumName"
                 },
-                new LocalSong("id8", new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
+                new LocalSong("id8", new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar +
                             "AlbumName"+Path.DirectorySeparatorChar +"song8.mp3"))
                 {
                     Artists = new [] { "ArtistName" },
                     Album = "AlbumName"
                 },
-                new LocalSong("id9", new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
+                new LocalSong("id9", new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar +
                             "AlbumName"+Path.DirectorySeparatorChar +"song9.mp3"))
                 {
                     Artists = new [] { "ArtistName" },
                     Album = "AlbumName"
                 },
-                new LocalSong("id10", new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar + 
+                new LocalSong("id10", new SongPath(SettingWrapper.MusicDir.FullPath+"ArtistName"+Path.DirectorySeparatorChar +
                             "AlbumName"+Path.DirectorySeparatorChar +"song10.mp3"))
                 {
                     Artists = new [] { "ArtistName" },
@@ -434,6 +434,6 @@ namespace MSOE.MediaComplete.Test
             return mock;
         }
 
-        
+
     }
 }
