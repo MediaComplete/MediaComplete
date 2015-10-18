@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using MSOE.MediaComplete.Lib.Background;
 using MSOE.MediaComplete.Lib.Import;
 using MSOE.MediaComplete.Lib.Library.DataSource;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Sorting;
+using NUnit.Framework;
 
 namespace MSOE.MediaComplete.Test.Background
 {
@@ -13,13 +13,13 @@ namespace MSOE.MediaComplete.Test.Background
     /// Tests for Sorter. Note that these tests focus on the behavior of 
     /// ResolveConflicts, since the "Do" method is already largely tested by SortingTest
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class SorterManagementTest
     {
         /// <summary>
         /// Test that an empty queue correctly accepts a SortingTask
         /// </summary>
-        [TestMethod]
+        [Test]
         public void Test_AddSorterEmptyQueue_Added()
         {
 
@@ -35,7 +35,7 @@ namespace MSOE.MediaComplete.Test.Background
         /// <summary>
         /// Test that a sorter will correctly insert itself after existing Imports and Identifies
         /// </summary>
-        [TestMethod]
+        [Test]
         public void Test_AddSorter_GoesAfterImportAndIdentify()
         {
             var mock = new Mock<IFileSystem>();
@@ -53,13 +53,13 @@ namespace MSOE.MediaComplete.Test.Background
 
             Assert.AreEqual(4, queue.Count, "Queue doesn't have the right number of stages!");
             Assert.AreEqual(1, queue[0].Count, "Stage 1 isn't the same size!");
-            Assert.IsInstanceOfType(queue[0][0], typeof(Importer), "Stage 1 doesn't have an ImportTask!");
+            Assert.IsInstanceOf(typeof(Importer), queue[0][0], "Stage 1 doesn't have an ImportTask!");
             Assert.AreEqual(2, queue[1].Count, "Stage 2 isn't the same size!");
-            Assert.IsInstanceOfType(queue[1][0], typeof(Identifier), "Stage 2 task 1 isn't an IdentifierTask!");
-            Assert.IsInstanceOfType(queue[1][1], typeof(Identifier), "Stage 2 task 2 isn't an IdentifierTask!");
+            Assert.IsInstanceOf(typeof(Identifier), queue[1][0], "Stage 2 task 1 isn't an IdentifierTask!");
+            Assert.IsInstanceOf(typeof(Identifier), queue[1][1], "Stage 2 task 2 isn't an IdentifierTask!");
             Assert.AreEqual(2, queue[2].Count, "Stage 3 isn't the same size!");
-            Assert.IsInstanceOfType(queue[2][0], typeof(Identifier), "Stage 3 task 1 isn't an IdentifierTask!");
-            Assert.IsInstanceOfType(queue[2][1], typeof(Importer), "Stage 3 task 2 isn't an ImportTask!");
+            Assert.IsInstanceOf(typeof(Identifier), queue[2][0], "Stage 3 task 1 isn't an IdentifierTask!");
+            Assert.IsInstanceOf(typeof(Importer), queue[2][1], "Stage 3 task 2 isn't an ImportTask!");
             Assert.AreEqual(1, queue[3].Count, "Stage 4 doesn't have the new task!");
             Assert.AreSame(subject, queue[3][0], "Stage 4 doesn't have the subject task!");
         }
@@ -67,7 +67,7 @@ namespace MSOE.MediaComplete.Test.Background
         /// <summary>
         /// Test that a sorter will remove other sorts
         /// </summary>
-        [TestMethod]
+        [Test]
         public void Test_AddSorter_RemovesSortAndGoesLast()
         {
             var mock = new Mock<IFileSystem>();
@@ -84,13 +84,13 @@ namespace MSOE.MediaComplete.Test.Background
 
             Assert.AreEqual(4, queue.Count, "Queue doesn't have the right number of stages!");
             Assert.AreEqual(1, queue[0].Count, "Stage 1 isn't the same size!");
-            Assert.IsInstanceOfType(queue[0][0], typeof(Importer), "Stage 1 doesn't have an ImportTask!");
+            Assert.IsInstanceOf(typeof(Importer), queue[0][0], "Stage 1 doesn't have an ImportTask!");
             Assert.AreEqual(2, queue[1].Count, "Stage 2 isn't the same size!");
-            Assert.IsInstanceOfType(queue[1][0], typeof(Identifier), "Stage 2 task 1 isn't an IdentifierTask!");
-            Assert.IsInstanceOfType(queue[1][1], typeof(Identifier), "Stage 2 task 2 isn't an IdentifierTask!");
+            Assert.IsInstanceOf(typeof(Identifier), queue[1][0], "Stage 2 task 1 isn't an IdentifierTask!");
+            Assert.IsInstanceOf(typeof(Identifier), queue[1][1], "Stage 2 task 2 isn't an IdentifierTask!");
             Assert.AreEqual(2, queue[2].Count, "Stage 3 isn't the same size!");
-            Assert.IsInstanceOfType(queue[2][0], typeof(Identifier), "Stage 3 task 1 isn't an IdentifierTask!");
-            Assert.IsInstanceOfType(queue[2][1], typeof(Importer), "Stage 3 task 2 isn't an ImportTask!");
+            Assert.IsInstanceOf(typeof(Identifier), queue[2][0], "Stage 3 task 1 isn't an IdentifierTask!");
+            Assert.IsInstanceOf(typeof(Importer), queue[2][1], "Stage 3 task 2 isn't an ImportTask!");
             Assert.AreEqual(1, queue[3].Count, "Stage 4 doesn't have the new task!");
         }
     }

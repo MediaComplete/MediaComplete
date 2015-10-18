@@ -1,16 +1,16 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MSOE.MediaComplete.Lib;
+﻿using MSOE.MediaComplete.Lib;
+using NUnit.Framework;
 
 namespace MSOE.MediaComplete.Test
 {
-    [TestClass]
+    [TestFixture]
     public class StatusBarTest
     {
         private string _message;
         private StatusBarHandler.StatusIcon _icon = StatusBarHandler.StatusIcon.None;
         private int _count;
 
-        [TestMethod, Timeout(30000)]
+        [Test, Timeout(30000)]
         public void RaiseStatusBarEvent_StatusMessage_ValidStatusMessage()
         {
             const string testMessage = "Test is successful";

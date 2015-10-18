@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using MSOE.MediaComplete.Lib.Metadata;
 using System.Threading.Tasks;
 using MSOE.MediaComplete.Lib.Library.DataSource;
+using NUnit.Framework;
 
 namespace MSOE.MediaComplete.Test
 {
-    [TestClass]
+    [TestFixture]
     public class MusicIdentifierTest
     {
         private Mock<IFileSystem> _fileManagerMock;
@@ -16,7 +16,7 @@ namespace MSOE.MediaComplete.Test
         private Mock<IAudioIdentifier> _audioIdentifierMock;
         private Mock<IMetadataRetriever> _metadataRetrieverMock;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             _fileManagerMock = new Mock<IFileSystem>();
@@ -49,7 +49,7 @@ namespace MSOE.MediaComplete.Test
                 });
         }
 
-        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        [Test, ExpectedException(typeof(ArgumentNullException))]
         public void Identify_NullList_ThrowsException()
         {
             // ReSharper disable once ObjectCreationAsStatement
@@ -57,7 +57,7 @@ namespace MSOE.MediaComplete.Test
                 _metadataRetrieverMock.Object, _fileManagerMock.Object);
         }
 
-        [TestMethod]
+        [Test]
         public void Identify_EmptyList_DoesNothing()
         {
             var subject = new Identifier(new List<LocalSong>(), _audioReaderMock.Object, _audioIdentifierMock.Object,
@@ -73,7 +73,7 @@ namespace MSOE.MediaComplete.Test
         }
 
 
-        [TestMethod]
+        [Test]
         public void Identify_NullSong_Skip()
         {
             var song1 = new LocalSong("id1", new SongPath("path1"));
@@ -94,7 +94,7 @@ namespace MSOE.MediaComplete.Test
             _fileManagerMock.Verify(m => m.SaveSong(It.IsAny<LocalSong>()), Times.Exactly(2));
         }
 
-        [TestMethod]
+        [Test]
         public void Identify_SongDoesNotExist_Skip()
         {
             var song1 = new LocalSong("id1", new SongPath("path1"));
@@ -119,7 +119,7 @@ namespace MSOE.MediaComplete.Test
             _fileManagerMock.Verify(m => m.SaveSong(It.IsAny<LocalSong>()), Times.Exactly(2));
         }
 
-        [TestMethod]
+        [Test]
         public void Identify_UnknownSong_NoMetaRetrieval()
         {
             var song1 = new LocalSong("id1", new SongPath("path1"));
@@ -144,7 +144,7 @@ namespace MSOE.MediaComplete.Test
             _fileManagerMock.Verify(m => m.SaveSong(It.IsAny<LocalSong>()), Times.Never);
         }
 
-        [TestMethod]
+        [Test]
         public void Identify_IdentifierOverrun_CutShort()
         {
             var song1 = new LocalSong("id1", new SongPath("path1"));

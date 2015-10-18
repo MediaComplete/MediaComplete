@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using MSOE.MediaComplete.Lib.Background;
 using MSOE.MediaComplete.Lib.Import;
 using MSOE.MediaComplete.Lib.Library.DataSource;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Sorting;
+using NUnit.Framework;
 
 namespace MSOE.MediaComplete.Test.Background
 {
-    [TestClass]
+    [TestFixture]
     public class MusicIdentiferManagementTest
     {
-        [TestMethod]
+        [Test]
         public void Test_AddIDEmptyQueue_Added()
         {
             var queue = new List<List<Task>>();
@@ -28,7 +28,7 @@ namespace MSOE.MediaComplete.Test.Background
         /// <summary>
         /// Test that an ID will correctly insert itself after imports, but before sorts
         /// </summary>
-        [TestMethod]
+        [Test]
         public void Test_AddID_GoesBeforeSortButAfterIdentify()
         {
             var mock = new Mock<IFileSystem>();
@@ -45,20 +45,20 @@ namespace MSOE.MediaComplete.Test.Background
             Assert.AreEqual(4, queue.Count, "Queue doesn't have the right number of stages!");
 
             Assert.AreEqual(2, queue[0].Count, "Stage 1 isn't the same size!");
-            Assert.IsInstanceOfType(queue[0][0], typeof(Importer), "Stage 1 doesn't have an ImportTask!");
-            Assert.IsInstanceOfType(queue[0][1], typeof(Importer), "Stage 1 doesn't have an ImportTask!");
+            Assert.IsInstanceOf(typeof(Importer), queue[0][0], "Stage 1 doesn't have an ImportTask!");
+            Assert.IsInstanceOf(typeof(Importer), queue[0][1], "Stage 1 doesn't have an ImportTask!");
             Assert.AreEqual(1, queue[1].Count, "Stage 2 isn't the same size!");
-            Assert.IsInstanceOfType(queue[1][0], typeof(Importer), "Stage 2 doesn't have an ImportTask!");
+            Assert.IsInstanceOf(typeof(Importer), queue[1][0], "Stage 2 doesn't have an ImportTask!");
             Assert.AreEqual(1, queue[2].Count, "Stage 3 isn't the same size!");
             Assert.AreSame(subject, queue[2][0], "Stage 3 doesn't have the subject!");
             Assert.AreEqual(1, queue[2].Count, "Stage 3 isn't the same size!");
-            Assert.IsInstanceOfType(queue[3][0], typeof(Sorter), "Stage 4 doesn't have a SortingTask!");
+            Assert.IsInstanceOf(typeof(Sorter), queue[3][0], "Stage 4 doesn't have a SortingTask!");
         }
 
         /// <summary>
         /// Test that an ID task will remove duplicates and run in the same stage as another ID.
         /// </summary>
-        [TestMethod]
+        [Test]
         public void Test_AddID_GoesWithOtherID()
         {
             var song1 = new LocalSong("id1", new SongPath("path1"));
@@ -75,7 +75,7 @@ namespace MSOE.MediaComplete.Test.Background
             Assert.AreEqual(1, queue.Count, "Queue doesn't have the right number of stages!");
 
             Assert.AreEqual(2, queue[0].Count, "Stage 1 doesn't have the new task!");
-            Assert.IsInstanceOfType(queue[0][0], typeof(Identifier), "Stage 1 doesn't have the old ID task!");
+            Assert.IsInstanceOf(typeof(Identifier), queue[0][0], "Stage 1 doesn't have the old ID task!");
             Assert.AreSame(subject, queue[0][1], "Stage 1 doesn't have the subject task!");
 
             Assert.AreEqual(2, ((Identifier)queue[0][0]).Files.Count(), "First ID task doesn't have the right number of files!");

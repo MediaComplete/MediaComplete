@@ -1,13 +1,13 @@
 ﻿using System.IO;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Test.Util;
+using NUnit.Framework;
 using Constants = MSOE.MediaComplete.Test.Util.Constants;
 
 namespace MSOE.MediaComplete.Test
 {
-    [TestClass]
+    [TestFixture]
     public class PollingTest
     {
         private static FileInfo _file;
@@ -17,7 +17,7 @@ namespace MSOE.MediaComplete.Test
         /// <summary>
         /// deletes the file and directory if they still exist
         /// </summary>
-        [TestCleanup]
+        [TearDown]
         public void After()
         {
             Directory.Delete(_dir.FullName, true);
@@ -25,8 +25,8 @@ namespace MSOE.MediaComplete.Test
         /// <summary>
         /// tests that polling works in sub-directories
         /// </summary>
-        [TestMethod]
-        [Timeout(40000)]
+        [Test]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.Timeout(40000)]
         public void CheckSubDirectoryPolling()
         {
             var polling = new Polling();
@@ -53,8 +53,8 @@ namespace MSOE.MediaComplete.Test
         /// <summary>
         /// tests that it calls the delegate
         /// </summary>
-        [TestMethod]
-        [Timeout(40000)]
+        [Test]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.Timeout(40000)]
         public void CheckForSongMp3()
         {
             var polling = new Polling();
@@ -81,8 +81,8 @@ namespace MSOE.MediaComplete.Test
         /// <summary>
         /// tests that it calls the delegate
         /// </summary>
-        [TestMethod]
-        [Timeout(40000)]//Milliseconds
+        [Test]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.Timeout(40000)]//Milliseconds
         public void CheckForSongWma()
         {
             var polling = new Polling();
@@ -109,7 +109,7 @@ namespace MSOE.MediaComplete.Test
         /// <summary>
         /// tests that it calls the delegate
         /// </summary>
-        [TestMethod]
+        [Test]
         public void CheckForSongNotMusic()
         {
             var polling = new Polling();

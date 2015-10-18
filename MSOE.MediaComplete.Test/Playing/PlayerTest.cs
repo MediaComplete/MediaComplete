@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using MSOE.MediaComplete.Lib.Playing;
 using NAudio.Wave;
@@ -7,19 +6,20 @@ using Ploeh.AutoFixture;
 using TagLib;
 using MSOE.MediaComplete.Lib.Library;
 using MSOE.MediaComplete.Lib.Library.DataSource;
+using NUnit.Framework;
 
 namespace MSOE.MediaComplete.Test.Playing
 {
-    [TestClass]
+    [TestFixture]
     public class PlayerTest
     {
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             NowPlaying.Inst.Clear();
         }
 
-        [TestMethod]
+        [Test]
         public void StateChanges_HappyPath()
         {
             var mockNAudioWrapper = new Mock<INAudioWrapper>();
@@ -52,7 +52,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.AreEqual(PlaybackState.Stopped, player.PlaybackState);
         }
 
-        [TestMethod]
+        [Test]
         public void StateChanges_WeirdPath()
         {
             var mockNAudioWrapper = new Mock<INAudioWrapper>();
@@ -105,8 +105,8 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.AreEqual(PlaybackState.Paused, player.PlaybackState);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(CorruptFileException))]
+        [Test]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.ExpectedException(typeof(CorruptFileException))]
         public void Play_InvalidFileInfo_ThrowsCorruptFileException()
         {
             var mockNAudioWrapper = new Mock<INAudioWrapper>();

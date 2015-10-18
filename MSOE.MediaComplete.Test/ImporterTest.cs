@@ -1,36 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib;
 using Moq;
 using MSOE.MediaComplete.Lib.Import;
 using MSOE.MediaComplete.Lib.Library.DataSource;
-using Assert = NUnit.Framework.Assert;
+using NUnit.Framework;
 
 namespace MSOE.MediaComplete.Test
 {
-    [TestClass]
+    [TestFixture]
     public class ImporterTest
     {
         private static readonly DirectoryPath HomeDir = new DirectoryPath("homedir");
 
         #region Constructor
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [Test]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.ExpectedException(typeof(ArgumentNullException))]
         public void Constructor_NullEverything()
         {
             // ReSharper disable once ObjectCreationAsStatement
             new Importer(null, null, false);
         }
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [Test]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.ExpectedException(typeof(ArgumentNullException))]
         public void Constructor_NullFiles()
         {
             // ReSharper disable once ObjectCreationAsStatement
             new Importer(new Mock<IFileSystem>().Object, null, false);
         }
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [Test]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.ExpectedException(typeof(ArgumentNullException))]
         public void Constructor_NullFileManager()
         {
             // ReSharper disable once ObjectCreationAsStatement
@@ -41,7 +40,7 @@ namespace MSOE.MediaComplete.Test
         #endregion
         
         #region Do
-        [TestMethod]
+        [Test]
         public void Do_MoveOnly()
         {
             var manager = SetUpMock();
@@ -58,7 +57,7 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(0, importer.Results.FailCount);
             Assert.AreEqual(3, importer.Results.NewFiles.Count);
         }
-        [TestMethod]
+        [Test]
         public void Do_CopyOnly()
         {
             var manager = SetUpMock();
@@ -76,8 +75,8 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(3, importer.Results.NewFiles.Count);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(InvalidImportException))]
+        [Test]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.ExpectedException(typeof(InvalidImportException))]
         public void Do_MoveFromWithinDir()
         {
             var manager = SetUpMock();
@@ -91,8 +90,8 @@ namespace MSOE.MediaComplete.Test
             new Importer(manager.Object, files, true);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(InvalidImportException))]
+        [Test]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.ExpectedException(typeof(InvalidImportException))]
         public void Do_CopyFromWithinDir()
         {
             var manager = SetUpMock();
@@ -106,7 +105,7 @@ namespace MSOE.MediaComplete.Test
             new Importer(manager.Object, files, false);
         }
 
-        [TestMethod]
+        [Test]
         public void Do_MoveAlreadyExists()
         {
             var manager = SetUpMock();
@@ -123,7 +122,7 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(0, importer.Results.FailCount);
             Assert.AreEqual(0, importer.Results.NewFiles.Count);
         }
-        [TestMethod]
+        [Test]
         public void Do_CopyAlreadyExists()
         {
             var manager = SetUpMock();

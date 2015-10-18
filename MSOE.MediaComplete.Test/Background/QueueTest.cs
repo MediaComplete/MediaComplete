@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Threading;
 using Sys = System.Threading.Tasks;
 using MSOE.MediaComplete.Lib.Background;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace MSOE.MediaComplete.Test.Background
 {
-    [TestClass]
+    [TestFixture]
     public class QueueTest
     {
         private const int Timeout = 30000;
         private const int Delay = 20000;
 
-        [TestMethod, Timeout(Timeout)]
+        [Test, Timeout(Timeout)]
         public void Add_Task_CallsResolveConflicts()
         {
             var mock = new MockTask();
@@ -23,7 +23,7 @@ namespace MSOE.MediaComplete.Test.Background
             SpinWait.SpinUntil(() => mock.DoCalled);
         }
 
-        [TestMethod, Timeout(Timeout)]
+        [Test, Timeout(Timeout)]
         public void Add_QueueAlreadyRunning_NewTaskRuns()
         {
             var longMock = new MockTask(Delay);

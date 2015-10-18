@@ -2,12 +2,14 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Test.Util;
+using NUnit.Framework;
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 using Constants = MSOE.MediaComplete.Test.Util.Constants;
 using File = TagLib.File;
 
 namespace MSOE.MediaComplete.Test
 {
-    [TestClass]
+    [TestFixture]
     public class MetadataExtensionsTest
     {
         #region Files
@@ -54,37 +56,37 @@ namespace MSOE.MediaComplete.Test
         #endregion
 
         #region MP3 Getters
-        [TestMethod]
+        [Test]
         public void GetYear_ValidMp3_ShouldReturnYear()
         {
             Assert.AreEqual(ValidYear, _mp3File.GetAttribute(MetaAttribute.Year));
         }
-        [TestMethod]
+        [Test]
         public void GetTrack_ValidMp3_ShouldReturnTrack()
         {
             Assert.AreEqual(ValidTrack, _mp3File.GetAttribute(MetaAttribute.TrackNumber));
         }
-        [TestMethod]
+        [Test]
         public void GetTitle_ValidMp3_ShouldReturnTitle()
         {
             Assert.AreEqual(ValidTitle, _mp3File.GetAttribute(MetaAttribute.SongTitle));
         }
-        [TestMethod]
+        [Test]
         public void GetAlbum_ValidMp3_ShouldReturnAlbum()
         {
             Assert.AreEqual(ValidAlbum, _mp3File.GetAttribute(MetaAttribute.Album));
         }
-        [TestMethod]
+        [Test]
         public void GetArtist_ValidMp3_ShouldReturnArtist()
         {
             Assert.AreEqual(ValidArtist, ((string[])_mp3File.GetAttribute(MetaAttribute.Artist))[0]);
         }
-        [TestMethod]
+        [Test]
         public void GetSupportingArtist_ValidMp3_ShouldReturnSuppArtist()
         {
             Assert.AreEqual(ValidSupportingArtist, ((string[])_mp3File.GetAttribute(MetaAttribute.SupportingArtist))[0]);
         }
-        [TestMethod]
+        [Test]
         public void GetGenre_ValidMp3_ShouldReturnGenre()
         {
             Assert.AreEqual(ValidGenre, ((string[])_mp3File.GetAttribute(MetaAttribute.Genre))[0]);
@@ -92,7 +94,7 @@ namespace MSOE.MediaComplete.Test
         #endregion
 
         #region MP3 Setters
-        [TestMethod]
+        [Test]
         public void SetYear_BlankMp3_ShouldChangeYear()
         {
             _blankMp3File.SetAttribute(MetaAttribute.Year, ValidYear);
@@ -100,7 +102,7 @@ namespace MSOE.MediaComplete.Test
             _blankMp3File.SetAttribute(MetaAttribute.Year, BadYear);
             Assert.AreEqual(BadYear, _blankMp3File.GetAttribute(MetaAttribute.Year));
         }
-        [TestMethod]
+        [Test]
         public void SetTrack_BlankMp3_ShouldChangeTrack()
         {
             _blankMp3File.SetAttribute(MetaAttribute.TrackNumber, ValidTrack);
@@ -108,7 +110,7 @@ namespace MSOE.MediaComplete.Test
             _blankMp3File.SetAttribute(MetaAttribute.TrackNumber, BadTrack);
             Assert.AreEqual(BadTrack, _blankMp3File.GetAttribute(MetaAttribute.TrackNumber));
         }
-        [TestMethod]
+        [Test]
         public void SetTitle_BlankMp3_ShouldChangeTitle()
         {
             _blankMp3File.SetAttribute(MetaAttribute.SongTitle, ValidTitle);
@@ -116,7 +118,7 @@ namespace MSOE.MediaComplete.Test
             _blankMp3File.SetAttribute(MetaAttribute.SongTitle, BadTitle);
             Assert.AreEqual(BadTitle, _blankMp3File.GetAttribute(MetaAttribute.SongTitle));
         }
-        [TestMethod]
+        [Test]
         public void SetAlbum_BlankMp3_ShouldChangeAlbum()
         {
             _blankMp3File.SetAttribute(MetaAttribute.Album, ValidAlbum);
@@ -124,7 +126,7 @@ namespace MSOE.MediaComplete.Test
             _blankMp3File.SetAttribute(MetaAttribute.Album, BadAlbum);
             Assert.AreEqual(BadAlbum, _blankMp3File.GetAttribute(MetaAttribute.Album));
         }
-        [TestMethod]
+        [Test]
         public void SetArtist_BlankMp3_ShouldChangeArtist()
         {
             _blankMp3File.SetAttribute(MetaAttribute.Artist, new []{ ValidArtist });
@@ -132,7 +134,7 @@ namespace MSOE.MediaComplete.Test
             _blankMp3File.SetAttribute(MetaAttribute.Artist, new []{ BadArtist });
             Assert.AreEqual(BadArtist, ((string[])_blankMp3File.GetAttribute(MetaAttribute.Artist))[0]);
         }
-        [TestMethod]
+        [Test]
         public void SetSupportingArtist_BlankMp3_ShouldChangeSuppArtist()
         {
             _blankMp3File.SetAttribute(MetaAttribute.SupportingArtist, new []{ ValidSupportingArtist });
@@ -140,7 +142,7 @@ namespace MSOE.MediaComplete.Test
             _blankMp3File.SetAttribute(MetaAttribute.SupportingArtist, new []{ BadSupportingArtist });
             Assert.AreEqual(BadSupportingArtist, ((string[])_blankMp3File.GetAttribute(MetaAttribute.SupportingArtist))[0]);
         }
-        [TestMethod]
+        [Test]
         public void SetGenre_BlankMp3_ShouldChangeGenre()
         {
             _blankMp3File.SetAttribute(MetaAttribute.Genre, new []{ ValidGenre });
@@ -151,37 +153,37 @@ namespace MSOE.MediaComplete.Test
         #endregion
 
         #region WMA Getters
-        [TestMethod]
+        [Test]
         public void GetYear_ValidWma_ShouldReturnYear()
         {
             Assert.AreEqual(ValidYear, _wmaFile.GetAttribute(MetaAttribute.Year));
         }
-        [TestMethod]
+        [Test]
         public void GetTrack_ValidWma_ShouldReturnTrack()
         {
             Assert.AreEqual(ValidTrack, _wmaFile.GetAttribute(MetaAttribute.TrackNumber));
         }
-        [TestMethod]
+        [Test]
         public void GetTitle_ValidWma_ShouldReturnTitle()
         {
             Assert.AreEqual(ValidTitle, _wmaFile.GetAttribute(MetaAttribute.SongTitle));
         }
-        [TestMethod]
+        [Test]
         public void GetAlbum_ValidWma_ShouldReturnAlbum()
         {
             Assert.AreEqual(ValidAlbum, _wmaFile.GetAttribute(MetaAttribute.Album));
         }
-        [TestMethod]
+        [Test]
         public void GetArtist_ValidWma_ShouldReturnArtist()
         {
             Assert.AreEqual(ValidArtist, ((string[])_wmaFile.GetAttribute(MetaAttribute.Artist))[0]);
         }
-        [TestMethod]
+        [Test]
         public void GetSupportingArtist_ValidWma_ShouldReturnSuppArtist()
         {
             Assert.AreEqual(ValidSupportingArtist, ((string[])_wmaFile.GetAttribute(MetaAttribute.SupportingArtist))[0]);
         }
-        [TestMethod]
+        [Test]
         public void GetGenre_ValidWma_ShouldReturnGenre()
         {
             Assert.AreEqual(ValidGenre, ((string[])_wmaFile.GetAttribute(MetaAttribute.Genre))[0]);
@@ -189,7 +191,7 @@ namespace MSOE.MediaComplete.Test
         #endregion
 
         #region WMA Setters
-        [TestMethod]
+        [Test]
         public void SetYear_BlankWma_ShouldChangeYear()
         {
             _blankWmaFile.SetAttribute(MetaAttribute.Year, ValidYear);
@@ -197,7 +199,7 @@ namespace MSOE.MediaComplete.Test
             _blankWmaFile.SetAttribute(MetaAttribute.Year, BadYear);
             Assert.AreEqual(BadYear, _blankWmaFile.GetAttribute(MetaAttribute.Year));
         }
-        [TestMethod]
+        [Test]
         public void SetTrack_BlankWma_ShouldChangeTrack()
         {
             _blankWmaFile.SetAttribute(MetaAttribute.TrackNumber, ValidTrack);
@@ -205,7 +207,7 @@ namespace MSOE.MediaComplete.Test
             _blankWmaFile.SetAttribute(MetaAttribute.TrackNumber, BadTrack);
             Assert.AreEqual(BadTrack, _blankWmaFile.GetAttribute(MetaAttribute.TrackNumber));
         }
-        [TestMethod]
+        [Test]
         public void SetTitle_BlankWma_ShouldChangeTitle()
         {
             _blankWmaFile.SetAttribute(MetaAttribute.SongTitle, ValidTitle);
@@ -213,7 +215,7 @@ namespace MSOE.MediaComplete.Test
             _blankWmaFile.SetAttribute(MetaAttribute.SongTitle, BadTitle);
             Assert.AreEqual(BadTitle, _blankWmaFile.GetAttribute(MetaAttribute.SongTitle));
         }
-        [TestMethod]
+        [Test]
         public void SetAlbum_BlankWma_ShouldChangeAlbum()
         {
             _blankWmaFile.SetAttribute(MetaAttribute.Album, ValidAlbum);
@@ -221,7 +223,7 @@ namespace MSOE.MediaComplete.Test
             _blankWmaFile.SetAttribute(MetaAttribute.Album, BadAlbum);
             Assert.AreEqual(BadAlbum, _blankWmaFile.GetAttribute(MetaAttribute.Album));
         }
-        [TestMethod]
+        [Test]
         public void SetArtist_BlankWma_ShouldChangeArtist()
         {
             _blankWmaFile.SetAttribute(MetaAttribute.Artist, new[] { ValidArtist });
@@ -229,7 +231,7 @@ namespace MSOE.MediaComplete.Test
             _blankWmaFile.SetAttribute(MetaAttribute.Artist, new[] { BadArtist });
             Assert.AreEqual(BadArtist, ((string[])_blankWmaFile.GetAttribute(MetaAttribute.Artist))[0]);
         }
-        [TestMethod]
+        [Test]
         public void SetSupportingArtist_BlankWma_ShouldChangeSuppArtist()
         {
             _blankWmaFile.SetAttribute(MetaAttribute.SupportingArtist, new[] { ValidSupportingArtist });
@@ -237,7 +239,7 @@ namespace MSOE.MediaComplete.Test
             _blankWmaFile.SetAttribute(MetaAttribute.SupportingArtist, new[] { BadSupportingArtist });
             Assert.AreEqual(BadSupportingArtist, ((string[])_blankWmaFile.GetAttribute(MetaAttribute.SupportingArtist))[0]);
         }
-        [TestMethod]
+        [Test]
         public void SetGenre_BlankWma_ShouldChangeGenre()
         {
             _blankWmaFile.SetAttribute(MetaAttribute.Genre, new[] { ValidGenre });

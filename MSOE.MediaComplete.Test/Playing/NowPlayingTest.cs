@@ -1,30 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MSOE.MediaComplete.Lib.Library;
 using MSOE.MediaComplete.Lib.Playing;
 using MSOE.MediaComplete.Lib.Library.DataSource;
+using NUnit.Framework;
 
 namespace MSOE.MediaComplete.Test.Playing
 {
-    [TestClass]
+    [TestFixture]
     [Ignore]
     public class NowPlayingTest
     {
-        [TestInitialize]
+        [SetUp]
         public void Init()
         {
             NowPlaying.Inst.Clear();
         }
 
         #region JumpTo(AbstractSong)
-        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void JumpTo_NullArgument_ThrowsException()
         {
             NowPlaying.Inst.JumpTo(null);
         }
 
-        [TestMethod]
+        [Test]
         public void JumpTo_ArgumentNotInQueue_ReturnsFalseIndexUnchanged()
         {
             NowPlaying.Inst.Add(new List<AbstractSong>
@@ -39,7 +40,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.AreEqual(initialIndex, NowPlaying.Inst.Index, "Index should not have moved.");
         }
 
-        [TestMethod]
+        [Test]
         public void JumpTo_ArgumentIsPresent_ChangesIndex()
         {
             var id = Guid.NewGuid().ToString();
@@ -60,19 +61,19 @@ namespace MSOE.MediaComplete.Test.Playing
         #endregion
 
         #region JumpTo(int)
-        [TestMethod, ExpectedException(typeof(IndexOutOfRangeException))]
+        [Test, ExpectedException(typeof(IndexOutOfRangeException))]
         public void JumpTo_NegativeArgument_Exception()
         {
             NowPlaying.Inst.JumpTo(-1);
         }
 
-        [TestMethod, ExpectedException(typeof(IndexOutOfRangeException))]
+        [Test, ExpectedException(typeof(IndexOutOfRangeException))]
         public void JumpTo_ArgumentBiggerThanQueue_Exception()
         {
             NowPlaying.Inst.JumpTo(0);
         }
 
-        [TestMethod]
+        [Test]
         public void JumpTo_ArgumentOK_IndexChanges()
         {
             var targetSong = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("notrealfile2")));
@@ -90,7 +91,7 @@ namespace MSOE.MediaComplete.Test.Playing
         #endregion
 
         #region NextSong()
-        [TestMethod]
+        [Test]
         public void NextSong_EmptyQueue_ReturnsNull()
         {
             var song = NowPlaying.Inst.NextSong();
@@ -99,7 +100,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.AreEqual(-1, NowPlaying.Inst.Index);
         }
 
-        [TestMethod]
+        [Test]
         public void NextSong_EndOfQueue_ReturnsNull()
         {
             NowPlaying.Inst.Add(new List<AbstractSong>
@@ -114,7 +115,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should wrap to be 0.");
         }
 
-        [TestMethod]
+        [Test]
         public void NextSong_BeginningOfQueue_ReturnsNextIndexChanges()
         {
             var targetSong = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("notrealfile2")));
@@ -133,7 +134,7 @@ namespace MSOE.MediaComplete.Test.Playing
         #endregion NextSong()
 
         #region PreviousSong()
-        [TestMethod]
+        [Test]
         public void PreviousSong_EmptyQueue_ReturnsNull()
         {
             var song = NowPlaying.Inst.PreviousSong();
@@ -142,7 +143,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.AreEqual(-1, NowPlaying.Inst.Index, "Index should still be -1.");
         }
 
-        [TestMethod]
+        [Test]
         public void PreviousSong_BeginningOfQueue_ReturnsNull()
         {
             NowPlaying.Inst.Add(new List<AbstractSong>
@@ -156,7 +157,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.AreEqual(1, NowPlaying.Inst.Index, "Index should wrap to be 1.");
         }
 
-        [TestMethod]
+        [Test]
         public void PreviousSong_EndOfQueue_ReturnsPreviousIndexChanges()
         {
             var targetSong = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("notrealfile2")));
@@ -176,7 +177,7 @@ namespace MSOE.MediaComplete.Test.Playing
         #endregion
 
         #region CurrentSong()
-        [TestMethod]
+        [Test]
         public void CurrentSong_QueueEmpty_ReturnsNull()
         {
             var song = NowPlaying.Inst.CurrentSong();
@@ -184,7 +185,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.IsNull(song, "Should not have conjured a song");
         }
 
-        [TestMethod]
+        [Test]
         public void CurrentSong_QueueNotEmpty_ReturnsSongAtIndex()
         {
             var targetSong = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("notrealfile2")));
@@ -200,7 +201,7 @@ namespace MSOE.MediaComplete.Test.Playing
         #endregion
 
         #region HasNextSong()
-        [TestMethod]
+        [Test]
         public void HasNextSong_AddSimple()
         {
             Assert.IsFalse(NowPlaying.Inst.HasNextSong());
@@ -213,7 +214,7 @@ namespace MSOE.MediaComplete.Test.Playing
             NowPlaying.Inst.PreviousSong();
             Assert.IsTrue(NowPlaying.Inst.HasNextSong());
         }
-        [TestMethod]
+        [Test]
         public void HasNextSong_Move()
         {
             var song = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("firstsong")));
@@ -229,7 +230,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.IsTrue(NowPlaying.Inst.HasNextSong());
         }
 
-        [TestMethod]
+        [Test]
         public void HasNextSong_ClearRemove()
         {
             Assert.IsFalse(NowPlaying.Inst.HasNextSong());
@@ -246,7 +247,7 @@ namespace MSOE.MediaComplete.Test.Playing
 
         #region Add(AbstractSong)
 
-        [TestMethod]
+        [Test]
         [Ignore]
         public void Add_EmptyQueue_HasOneSong()
         {
@@ -256,7 +257,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should have advanced to 0.");
         }
 
-        [TestMethod]
+        [Test]
         [Ignore]
         public void Add_PopulatedQueue_AddedToEnd()
         {
@@ -269,7 +270,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should have advanced to 0.");
         }
 
-        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        [Test, ExpectedException(typeof(ArgumentNullException))]
         public void Add_NullSong_Exception()
         {
             NowPlaying.Inst.Add((AbstractSong)null);
@@ -279,7 +280,7 @@ namespace MSOE.MediaComplete.Test.Playing
 
         #region Add(IEnumerable<AbstractSong>)
 
-        [TestMethod]
+        [Test]
         [Ignore]
         public void Add_EmptyQueue_HasTwoSongs()
         {
@@ -295,7 +296,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should have advanced to 0.");
         }
 
-        [TestMethod]
+        [Test]
         [Ignore]
         public void Add_EmptyList_NoSongsAdded()
         {
@@ -305,7 +306,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.AreEqual(-1, NowPlaying.Inst.Index, "Index should have remained at -1.");
         }
 
-        [TestMethod]
+        [Test]
         [Ignore]
         public void Add_PopulatedQueue_SongsAtEnd()
         {
@@ -323,7 +324,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should have advanced to 0.");
         }
 
-        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        [Test, ExpectedException(typeof(ArgumentNullException))]
         public void Add_NullList_Exception()
         {
             NowPlaying.Inst.Add((IEnumerable<AbstractSong>)null);
@@ -333,27 +334,27 @@ namespace MSOE.MediaComplete.Test.Playing
 
         #region Remove(int index)
 
-        [TestMethod, ExpectedException(typeof(IndexOutOfRangeException))]
+        [Test, ExpectedException(typeof(IndexOutOfRangeException))]
         public void Remove_EmptyList_Exception()
         {
             NowPlaying.Inst.Remove(0);
         }
 
-        [TestMethod, ExpectedException(typeof(IndexOutOfRangeException))]
+        [Test, ExpectedException(typeof(IndexOutOfRangeException))]
         public void Remove_NegativeArg_Exception()
         {
             NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong"))));
             NowPlaying.Inst.Remove(-1);
         }
 
-        [TestMethod, ExpectedException(typeof(IndexOutOfRangeException))]
+        [Test, ExpectedException(typeof(IndexOutOfRangeException))]
         public void Remove_TooLargeArg_Exception()
         {
             NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong"))));
             NowPlaying.Inst.Remove(1);
         }
 
-        [TestMethod]
+        [Test]
         public void Remove_ValidArg_QueueEmpty()
         {
             NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong"))));
@@ -363,7 +364,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.AreEqual(-1, NowPlaying.Inst.Index, "Index should have shrunk to -1.");
         }
 
-        [TestMethod]
+        [Test]
         public void Remove_ValidArg_QueueShrink()
         {
             NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong"))));
@@ -378,13 +379,13 @@ namespace MSOE.MediaComplete.Test.Playing
 
         #region Remove(AbstractSong)
 
-        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        [Test, ExpectedException(typeof(ArgumentNullException))]
         public void Remove_NullSong_ThrowsException()
         {
             NowPlaying.Inst.Remove((AbstractSong)null);
         }
 
-        [TestMethod]
+        [Test]
         public void Remove_SongNotFound_ReturnsFalseAndQueueIntact()
         {
             NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1"))));
@@ -396,7 +397,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should have advanced to 0.");
         }
 
-        [TestMethod]
+        [Test]
         public void Remove_QueueEmpty_ReturnsFalse()
         {
             var ret = NowPlaying.Inst.Remove(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong2"))));
@@ -405,7 +406,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.AreEqual(-1, NowPlaying.Inst.Index, "Index should have remained at -1.");
         }
 
-        [TestMethod]
+        [Test]
         public void Remove_SongFound_ReturnsTrueAndQueueEmptied()
         {
             var id = Guid.NewGuid().ToString();
@@ -418,7 +419,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.AreEqual(-1, NowPlaying.Inst.Index, "Index should have shrunk to -1.");
         }
 
-        [TestMethod]
+        [Test]
         public void Remove_SongFound_ReturnsTrueAndSongRemoved()
         {
             var id = Guid.NewGuid().ToString();
@@ -436,13 +437,13 @@ namespace MSOE.MediaComplete.Test.Playing
 
         #region Remove(IEnumerable<AbstractSong>)
 
-        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        [Test, ExpectedException(typeof(ArgumentNullException))]
         public void Remove_NullList_Exception()
         {
             NowPlaying.Inst.Remove((IEnumerable<AbstractSong>)null);
         }
 
-        [TestMethod]
+        [Test]
         public void Remove_EmptyQueue_NothingHappens()
         {
             NowPlaying.Inst.Remove(new List<AbstractSong>
@@ -455,7 +456,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.AreEqual(-1, NowPlaying.Inst.Index, "Index should have remained at -1.");
         }
 
-        [TestMethod]
+        [Test]
         public void Remove_EmptyList_NothingHappens()
         {
             var targetSong = new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong1")));
@@ -467,7 +468,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should have advanced to 0.");
         }
 
-        [TestMethod]
+        [Test]
         public void Remove_SomeExistSomeDoNot_FoundSongsRemoved()
         {
             var targetSong = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong3")));
@@ -489,7 +490,7 @@ namespace MSOE.MediaComplete.Test.Playing
 
         #region Clear()
 
-        [TestMethod]
+        [Test]
         [Ignore]
         public void Clear_QueueEmpty_NothingHappens()
         {
@@ -499,7 +500,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.AreEqual(-1, NowPlaying.Inst.Index, "Index should have shrunk to -1.");
         }
 
-        [TestMethod]
+        [Test]
         public void Clear_QueuePopulated_QueueEmptied()
         {
             NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1"))));
@@ -515,35 +516,35 @@ namespace MSOE.MediaComplete.Test.Playing
 
         #region Move(int, int)
 
-        [TestMethod, ExpectedException(typeof(IndexOutOfRangeException))]
+        [Test, ExpectedException(typeof(IndexOutOfRangeException))]
         public void Move_NewIndexNegative_Exception()
         {
             NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong1"))));
             NowPlaying.Inst.Move(0, -1);
         }
 
-        [TestMethod, ExpectedException(typeof(IndexOutOfRangeException))]
+        [Test, ExpectedException(typeof(IndexOutOfRangeException))]
         public void Move_OldIndexNegative_Exception()
         {
             NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong1"))));
             NowPlaying.Inst.Move(-1, 0);
         }
 
-        [TestMethod, ExpectedException(typeof(IndexOutOfRangeException))]
+        [Test, ExpectedException(typeof(IndexOutOfRangeException))]
         public void Move_NewIndexTooBig_Exception()
         {
             NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong1"))));
             NowPlaying.Inst.Move(0, 1);
         }
 
-        [TestMethod, ExpectedException(typeof(IndexOutOfRangeException))]
+        [Test, ExpectedException(typeof(IndexOutOfRangeException))]
         public void Move_OldIndexTooBig_Exception()
         {
             NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong1"))));
             NowPlaying.Inst.Move(1, 0);
         }
 
-        [TestMethod]
+        [Test]
         public void Move_OldIndexEqualsNewIndex_NoChange()
         {
             NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1"))));
@@ -559,7 +560,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should have advanced to 0.");
         }
 
-        [TestMethod]
+        [Test]
         public void Move_OldIndexLargerThanNewIndex_MoveBackwards()
         {
             NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1"))));
@@ -574,7 +575,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should have advanced to 0.");
         }
 
-        [TestMethod]
+        [Test]
         public void Move_OldIndexSmallerThanNewIndex_MoveForwardsAndIndexUpdates()
         {
             var targetSong = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1")));
@@ -593,14 +594,14 @@ namespace MSOE.MediaComplete.Test.Playing
 
         #region Move(AbstractSong, int)
 
-        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        [Test, ExpectedException(typeof(ArgumentNullException))]
         public void Move_SongIsNull_Exception()
         {
             NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong1"))));
             NowPlaying.Inst.Move(null, 0);
         }
 
-        [TestMethod, ExpectedException(typeof(IndexOutOfRangeException))]
+        [Test, ExpectedException(typeof(IndexOutOfRangeException))]
         public void Move_IndexIsNegative_Exception()
         {
             var targetSong = new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong1")));
@@ -608,7 +609,7 @@ namespace MSOE.MediaComplete.Test.Playing
             NowPlaying.Inst.Move(targetSong, -1);
         }
 
-        [TestMethod, ExpectedException(typeof(IndexOutOfRangeException))]
+        [Test, ExpectedException(typeof(IndexOutOfRangeException))]
         public void Move_IndexIsTooBig_Exception()
         {
             var targetSong = new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong1")));
@@ -616,7 +617,7 @@ namespace MSOE.MediaComplete.Test.Playing
             NowPlaying.Inst.Move(targetSong, 1);
         }
 
-        [TestMethod]
+        [Test]
         public void Move_SongNotFound_ReturnsFalseAndNoChange()
         {
             NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1"))));
@@ -629,7 +630,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should have advanced to 0.");
         }
 
-        [TestMethod]
+        [Test]
         public void Move_SongAlreadyAtIndex_StaysStill()
         {
             NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1"))));
@@ -645,7 +646,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should have advanced to 0.");
         }
 
-        [TestMethod]
+        [Test]
         public void Move_SongAheadOfIndex_MovesBack()
         {
             NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1"))));
@@ -661,7 +662,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.AreEqual(0, NowPlaying.Inst.Index, "Index should have advanced to 0.");
         }
 
-        [TestMethod]
+        [Test]
         public void Move_SongBehindIndex_MovesForwardAndIndexUpdates()
         {
             var targetSong = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1")));
@@ -680,7 +681,7 @@ namespace MSOE.MediaComplete.Test.Playing
         #endregion
 
 
-        [TestMethod]
+        [Test]
         public void InsertSingle()
         {
             var secondSong = new LocalSong(Guid.NewGuid().ToString(), new SongPath(("newSong")));
@@ -699,7 +700,7 @@ namespace MSOE.MediaComplete.Test.Playing
         }
 
 
-        [TestMethod]
+        [Test]
         public void InsertMany()
         {
             var secondSong = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("newSong")));
@@ -739,13 +740,13 @@ namespace MSOE.MediaComplete.Test.Playing
                 Assert.Fail("localSong should not be null");
         }
 
-        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        [Test, ExpectedException(typeof(ArgumentNullException))]
         public void InsertNull()
         {
             NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(), new SongPath(("fakesong3"))));
             NowPlaying.Inst.InsertRange(1, null);
         }
-        [TestMethod, ExpectedException(typeof(IndexOutOfRangeException))]
+        [Test, ExpectedException(typeof(IndexOutOfRangeException))]
         public void InsertIndexTooBig()
         {
             var secondSong = new SongPath("newSong");
@@ -756,7 +757,7 @@ namespace MSOE.MediaComplete.Test.Playing
             Assert.IsTrue(NowPlaying.Inst.SongCount() == 3);
             NowPlaying.Inst.InsertRange(8, list);
         }
-        [TestMethod, ExpectedException(typeof(IndexOutOfRangeException))]
+        [Test, ExpectedException(typeof(IndexOutOfRangeException))]
         public void InsertIndexTooSmall()
         {
             var secondSong = new SongPath("newSong");

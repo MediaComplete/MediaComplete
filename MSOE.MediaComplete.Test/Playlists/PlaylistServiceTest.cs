@@ -2,6 +2,7 @@
 
 namespace MSOE.MediaComplete.Test.Playlists
 {
+    [TestFixture]
     [Ignore]
     public class PlaylistServiceTest
     {

@@ -9,6 +9,7 @@ using MSOE.MediaComplete.Test.Util;
 
 namespace MSOE.MediaComplete.Test.Playlists
 {
+    [TestFixture]
     public class PlaylistTest
     {
         [Test]

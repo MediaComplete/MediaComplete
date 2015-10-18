@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using MSOE.MediaComplete.Lib;
 using MSOE.MediaComplete.Lib.Library;
 using MSOE.MediaComplete.Lib.Library.DataSource;
 using MSOE.MediaComplete.Lib.Metadata;
 using MSOE.MediaComplete.Lib.Sorting;
+using NUnit.Framework;
 
 namespace MSOE.MediaComplete.Test
 {
-    [TestClass]
-    [Ignore]
+    [TestFixture]
+    [Microsoft.VisualStudio.TestTools.UnitTesting.Ignore]
     public class SorterTest
     {
         private static readonly List<MetaAttribute> SortOrder = new List<MetaAttribute>
@@ -24,7 +24,7 @@ namespace MSOE.MediaComplete.Test
 
         #region CalculateActions
 
-        [TestMethod]
+        [Test]
         public void CalculateActions_MovesOnly()
         {
             var manager = SetUpMock();
@@ -41,7 +41,7 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(3, sorter.MoveCount);
         }
 
-        [TestMethod]
+        [Test]
         public void CalculateActions_DuplicateOnly()
         {
             var manager = SetUpMock();
@@ -58,7 +58,7 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(0, sorter.MoveCount);
         }
 
-        [TestMethod]
+        [Test]
         public void CalculateActions_MoveAndDuplicate()
         {
             var manager = SetUpMock();
@@ -76,7 +76,7 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(2, sorter.MoveCount);
         }
 
-        [TestMethod]
+        [Test]
         public void CalculateActions_NoValidFiles()
         {
             var manager = SetUpMock();
@@ -92,7 +92,7 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(3, sorter.UnsortableCount);
             Assert.AreEqual(0, sorter.MoveCount);
         }
-        [TestMethod]
+        [Test]
         public void CalculateActions_MoveDupAndInvalid()
         {
             var manager = SetUpMock();
@@ -110,7 +110,7 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(1, sorter.MoveCount);
         }
 
-        [TestMethod]
+        [Test]
         public void CalculateActions_AlreadySorted()
         {
             var manager = SetUpMock();
@@ -132,7 +132,7 @@ namespace MSOE.MediaComplete.Test
         #endregion
 
         #region Do
-        [TestMethod]
+        [Test]
         public void Do_MovesOnly()
         {
             var manager = SetUpMock();
@@ -152,7 +152,7 @@ namespace MSOE.MediaComplete.Test
             manager.Verify(x => x.DeleteSong(It.IsAny<AbstractSong>()), Times.Never);
         }
 
-        [TestMethod]
+        [Test]
         public void Do_DuplicateOnly()
         {
             var manager = SetUpMock();
@@ -172,7 +172,7 @@ namespace MSOE.MediaComplete.Test
             manager.Verify(x => x.DeleteSong(It.IsAny<AbstractSong>()), Times.Exactly(0));
         }
 
-        [TestMethod]
+        [Test]
         public void Do_MoveAndDuplicate()
         {
             var manager = SetUpMock();
@@ -193,7 +193,7 @@ namespace MSOE.MediaComplete.Test
             manager.Verify(x => x.DeleteSong(It.IsAny<AbstractSong>()), Times.Exactly(0));
         }
 
-        [TestMethod]
+        [Test]
         public void Do_NoValidFiles()
         {
             var manager = SetUpMock();
@@ -212,7 +212,7 @@ namespace MSOE.MediaComplete.Test
             manager.Verify(x => x.MoveFile(It.IsAny<LocalSong>(), It.IsAny<SongPath>()), Times.Never);
             manager.Verify(x => x.DeleteSong(It.IsAny<AbstractSong>()), Times.Never);
         }
-        [TestMethod]
+        [Test]
         public void Do_MoveDupAndInvalid()
         {
             var manager = SetUpMock();
@@ -233,7 +233,7 @@ namespace MSOE.MediaComplete.Test
             manager.Verify(x => x.DeleteSong(It.IsAny<AbstractSong>()), Times.Exactly(0));
         }
 
-        [TestMethod]
+        [Test]
         public void Do_AlreadySorted()
         {
             var manager = SetUpMock();
@@ -260,7 +260,7 @@ namespace MSOE.MediaComplete.Test
         #endregion
 
         #region DoNoCalculate
-        [TestMethod]
+        [Test]
         public void DoNoCalculate_MovesOnly()
         {
             var manager = SetUpMock();
@@ -274,7 +274,7 @@ namespace MSOE.MediaComplete.Test
             manager.Verify(x => x.DeleteSong(It.IsAny<LocalSong>()), Times.Never);
         }
 
-        [TestMethod]
+        [Test]
         public void DoNoCalculate_DuplicateOnly()
         {
             var manager = SetUpMock();
@@ -288,7 +288,7 @@ namespace MSOE.MediaComplete.Test
             manager.Verify(x => x.DeleteSong(It.IsAny<LocalSong>()), Times.Exactly(0));
         }
 
-        [TestMethod]
+        [Test]
         public void DoNoCalculate_MoveAndDuplicate()
         {
             var manager = SetUpMock();
@@ -303,7 +303,7 @@ namespace MSOE.MediaComplete.Test
             manager.Verify(x => x.DeleteSong(It.IsAny<LocalSong>()), Times.Exactly(0));
         }
 
-        [TestMethod]
+        [Test]
         public void DoNoCalculate_NoValidFiles()
         {
             var manager = SetUpMock();
@@ -316,7 +316,7 @@ namespace MSOE.MediaComplete.Test
             manager.Verify(x => x.MoveFile(It.IsAny<LocalSong>(), It.IsAny<SongPath>()), Times.Never);
             manager.Verify(x => x.DeleteSong(It.IsAny<LocalSong>()), Times.Never);
         }
-        [TestMethod]
+        [Test]
         public void DoNoCalculate_MoveDupAndInvalid()
         {
             var manager = SetUpMock();
@@ -331,7 +331,7 @@ namespace MSOE.MediaComplete.Test
             manager.Verify(x => x.DeleteSong(It.IsAny<LocalSong>()), Times.Exactly(0));
         }
 
-        [TestMethod]
+        [Test]
         public void DoNoCalculate_AlreadySorted()
         {
             var manager = SetUpMock();
