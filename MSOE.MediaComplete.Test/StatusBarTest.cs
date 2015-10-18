@@ -18,11 +18,11 @@ namespace MSOE.MediaComplete.Test
             const string clearMessage = null;
             const StatusBarHandler.StatusIcon clearIcon = StatusBarHandler.StatusIcon.None;
             StatusBarHandler.Instance.Interval = .1;
-            
+
             StatusBarHandler.Instance.RaiseStatusBarEvent += HandleStatusBarChangeEvent;
             StatusBarHandler.Instance.ChangeStatusBarMessage(testMessage, testIcon);
 
-            Assert.AreEqual(testMessage, _message);
+            Assert.AreEqual(testMessage + "blah", _message);
             Assert.AreEqual(testIcon, _icon);
 
             while (_count < 2)

@@ -38,7 +38,7 @@ namespace MSOE.MediaComplete.Test
             Assert.AreEqual(3, sorter.Actions.Count());
             Assert.AreEqual(0, sorter.DupCount);
             Assert.AreEqual(0, sorter.UnsortableCount);
-            Assert.AreEqual(2, sorter.MoveCount);
+            Assert.AreEqual(3, sorter.MoveCount);
         }
 
         [Test]
