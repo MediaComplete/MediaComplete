@@ -7,4 +7,4 @@ before_install:
 before_script:
   - nuget restore MSOE.MediaComplete.sln
 after_script:
-  - nunit-console Tests/bin/Debug/Tests.dll
+  - nunit-console MSOE.MediaComplete.Test/bin/x86/Debug/MSOE.MediaComplete.Test.dll
