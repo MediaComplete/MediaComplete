@@ -4,7 +4,7 @@ install:
   - nuget restore MSOE.MediaComplete.sln
   - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 script:
-  - mono .nuget/nuget.exe restore)
+  - mono .nuget/nuget.exe restore
   - xbuild /p:Configuration=Debug MSOE.MediaComplete.sln
   - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./MSOE.MediaComplete.Lib/bin/x86/Debug/MSOE.MediaComplete.Lib.dll
 before_install:
