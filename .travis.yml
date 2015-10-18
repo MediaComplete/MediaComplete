@@ -9,3 +9,9 @@ script:
   - xbuild /p:Configuration=Debug /p:Platform=x86 MSOE.MediaComplete.Lib/MSOE.MediaComplete.Lib.csproj
   - xbuild /p:Configuration=Debug /p:Platform=x86 MSOE.MediaComplete.Test/MSOE.MediaComplete.Test.csproj
   - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./MSOE.MediaComplete.Test/bin/x86/Debug/MSOE.MediaComplete.Test.dll
+notifications:
+  email:
+    recipients:
+      - rjnshanker@gmail.com
+    on_success: always
+    on_failure: always
