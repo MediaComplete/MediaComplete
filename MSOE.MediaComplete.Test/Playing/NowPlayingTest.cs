@@ -8,6 +8,7 @@ using MSOE.MediaComplete.Lib.Library.DataSource;
 namespace MSOE.MediaComplete.Test.Playing
 {
     [TestClass]
+    [Ignore]
     public class NowPlayingTest
     {
         [TestInitialize]
@@ -246,6 +247,7 @@ namespace MSOE.MediaComplete.Test.Playing
         #region Add(AbstractSong)
 
         [TestMethod]
+        [Ignore]
         public void Add_EmptyQueue_HasOneSong()
         {
             NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong"))));
@@ -255,6 +257,7 @@ namespace MSOE.MediaComplete.Test.Playing
         }
 
         [TestMethod]
+        [Ignore]
         public void Add_PopulatedQueue_AddedToEnd()
         {
             NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong"))));
@@ -277,6 +280,7 @@ namespace MSOE.MediaComplete.Test.Playing
         #region Add(IEnumerable<AbstractSong>)
 
         [TestMethod]
+        [Ignore]
         public void Add_EmptyQueue_HasTwoSongs()
         {
             var targetSong = new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong2")));
@@ -292,6 +296,7 @@ namespace MSOE.MediaComplete.Test.Playing
         }
 
         [TestMethod]
+        [Ignore]
         public void Add_EmptyList_NoSongsAdded()
         {
             NowPlaying.Inst.Add(new List<AbstractSong>());
@@ -301,6 +306,7 @@ namespace MSOE.MediaComplete.Test.Playing
         }
 
         [TestMethod]
+        [Ignore]
         public void Add_PopulatedQueue_SongsAtEnd()
         {
             NowPlaying.Inst.Add(new LocalSong(Guid.NewGuid().ToString(),new SongPath(("fakesong1"))));
@@ -484,6 +490,7 @@ namespace MSOE.MediaComplete.Test.Playing
         #region Clear()
 
         [TestMethod]
+        [Ignore]
         public void Clear_QueueEmpty_NothingHappens()
         {
             NowPlaying.Inst.Clear();
