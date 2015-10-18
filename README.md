@@ -1,7 +1,7 @@
 # MediaComplete #
 
 [![Join the chat at https://gitter.im/MediaComplete/MediaComplete](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/MediaComplete/MediaComplete?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-![Travis.CI](https://travis-ci.org/MediaComplete/MediaComplete.svg?branch=development)
+[![Build Status](https://travis-ci.org/MediaComplete/MediaComplete.svg?branch=development)](https://travis-ci.org/MediaComplete/MediaComplete)
 
 Media Complete is a desktop application for Windows that quickly and easily allows you to manage a library of music. It can be downloaded at [**mediacomplete.github.io**](http://mediacomplete.github.io).
 
