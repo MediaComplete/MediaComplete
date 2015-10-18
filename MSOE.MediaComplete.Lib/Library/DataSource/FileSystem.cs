@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Timers;
 using M3U.NET;
 using MSOE.MediaComplete.Lib.Metadata;
 using TagLib;
 using File = System.IO.File;
 using TaglibFile = TagLib.File;
+using Timer = System.Timers.Timer;
 
 namespace MSOE.MediaComplete.Lib.Library.DataSource
 {
@@ -41,6 +44,9 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         /// Returns the instance of the file system
         /// </summary>
         public static IFileSystem Instance { get { return _instance ?? (_instance = new FileSystem()); } }
+
+        public double Interval { get; set; }
+        private Timer _timer;
 
         private FileSystem()
         {
@@ -79,13 +85,53 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
             };
             _watcher.InternalBufferSize = BufferSize;
             _watcher.Renamed += RenamedFile;
+            SongRenamed += SetTimer;
             _watcher.Changed += ChangedFile;
+            SongChanged += SetTimer;
             _watcher.Created += CreatedFile;
+            SongCreated += SetTimer;
             _watcher.Deleted += DeletedFile;
+            SongDeleted += SetTimer;
 
             _watcher.EnableRaisingEvents = true;
+
+            Interval = 100;
+            TimerInit();
         }
-   
+
+        private void TimerInit()
+        {
+            _timer = new Timer();
+            _timer.Elapsed += OnTimerFinished;
+            
+        }
+
+        private void SetTimer(IEnumerable<Tuple<LocalSong, LocalSong>> songs)
+        {
+            SetTimer();
+        }
+
+        private void SetTimer(IEnumerable<LocalSong> songs)
+        {
+            SetTimer();
+        }
+        
+        private void OnTimerFinished(object sender, EventArgs eventArgs)
+        {
+            _timer.Stop();
+            TimerInit();
+            EventsFinished();
+        }
+
+        private int x = 0;
+
+        private void SetTimer()
+        {
+            _timer.Stop();
+            _timer.Interval = 60 * Interval;
+            _timer.Start();
+        }
+
         /// <summary>
         /// Copies a file between two specified paths. 
         /// This is currently only used in the Importer
@@ -353,7 +399,8 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
                             {
                                 var key = Guid.NewGuid().ToString();
                                 AddFileToCache(key, file.FullName);
-                                retEnum.Add(_cachedSongs[key]);
+                                if(_cachedSongs.ContainsKey(key))
+                                    retEnum.Add(_cachedSongs[key]);
                             }
                         }
                     }
@@ -472,6 +519,8 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         /// </summary>
         public event SongUpdatedHandler SongDeleted = delegate { };
 
+        public event TimerFinished EventsFinished = delegate { }; 
+
         #endregion
         #region Data Helpers
         /// <summary>
@@ -532,14 +581,13 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
                     Year = tag.Year,
                     TrackNumber = tag.Track,
                     SupportingArtists = tag.Performers,
-                    Duration = (int?)tagFile.Properties.Duration.TotalSeconds
+                    Duration = (int?) tagFile.Properties.Duration.TotalSeconds
                 };
             }
             catch (CorruptFileException)
             {
                 return new LocalSong(id, new SongPath(path));
             }
-
         }
 
         /// <summary>
@@ -581,6 +629,7 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
             //This happens if create & delete events happen AND a changed happens. Therefore, this does not have to execute
             try
             {
+                if (!_cachedSongs.ContainsKey(song.Id)) return;
                 var tagFile = TaglibFile.Create(song.Path);
                 var tag = tagFile.Tag;
                 _cachedSongs[song.Id].Title = tag.Title;
@@ -682,6 +731,8 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
         /// </summary>
         event SongUpdatedHandler SongDeleted;
 
+        event TimerFinished EventsFinished;
+
 
         /// <summary>
         /// Initializes the locally stored data source based on a directory
@@ -713,4 +764,6 @@ namespace MSOE.MediaComplete.Lib.Library.DataSource
     /// </summary>
     /// <param name="songs">The moved/renamed songs.</param>
     public delegate void SongRenamedHandler(IEnumerable<Tuple<LocalSong, LocalSong>> songs);
+
+    public delegate void TimerFinished();
 }
