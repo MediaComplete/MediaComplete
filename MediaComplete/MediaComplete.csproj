@@ -236,16 +236,6 @@
     <Resource Include="README.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MediaComplete.Lib\MediaComplete.Lib.csproj">
-      <Project>{9fc3a1a0-f81a-45ba-a8eb-1f4a10f0d3f1}</Project>
-      <Name>MediaComplete.Lib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MediaComplete.Lib\MediaComplete.Lib.csproj">
-      <Project>{9fc3a1a0-f81a-45ba-a8eb-1f4a10f0d3f1}</Project>
-      <Name>MediaComplete.Lib</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Error.png" />
     <Resource Include="Resources\Information.png" />
     <Resource Include="Resources\Success.png" />
@@ -268,12 +258,6 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MediaComplete.Lib\MediaComplete.Lib.csproj">
-      <Project>{9fc3a1a0-f81a-45ba-a8eb-1f4a10f0d3f1}</Project>
-      <Name>MediaComplete.Lib</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\logo_small.ico" />
