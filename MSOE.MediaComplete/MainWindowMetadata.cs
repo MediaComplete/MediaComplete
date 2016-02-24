@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using MSOE.MediaComplete.Lib;
-using MSOE.MediaComplete.Lib.Library.DataSource;
-using MSOE.MediaComplete.Lib.Metadata;
+using MediaComplete.Lib;
+using MediaComplete.Lib.Library.DataSource;
+using MediaComplete.Lib.Metadata;
 using TagLib;
 using TextBox = System.Windows.Controls.TextBox;
 
-namespace MSOE.MediaComplete
+namespace MediaComplete
 {
     public partial class MainWindow
     {

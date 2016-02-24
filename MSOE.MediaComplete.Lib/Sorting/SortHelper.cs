@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using MSOE.MediaComplete.Lib.Metadata;
+using MediaComplete.Lib.Metadata;
 
-namespace MSOE.MediaComplete.Lib.Sorting
+namespace MediaComplete.Lib.Sorting
 {
     /// <summary>
     /// Helper class to assist with control of the Sort Order option and whether to Sort

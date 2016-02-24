@@ -3,10 +3,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using MSOE.MediaComplete.Lib;
-using consts = MSOE.MediaComplete.Lib.Constants;
+using MediaComplete.Lib;
+using consts = MediaComplete.Lib.Constants;
 
-namespace MSOE.MediaComplete.CustomControls
+namespace MediaComplete.CustomControls
 {
     public class FolderTreeViewItem : INotifyPropertyChanged
     {

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MSOE.MediaComplete.Lib.Logging;
+using MediaComplete.Lib.Logging;
 
-namespace MSOE.MediaComplete.Lib.Background
+namespace MediaComplete.Lib.Background
 {
     /// <summary>
     /// Handles the resolution of potential conflicts between various tasks.

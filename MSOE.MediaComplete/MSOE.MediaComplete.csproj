@@ -7,7 +7,7 @@
     <ProjectGuid>{A0884657-5FDE-459B-BACC-94B19AF58401}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MSOE.MediaComplete</RootNamespace>
+    <RootNamespace>MediaComplete</RootNamespace>
     <AssemblyName>MSOE.MediaComplete</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

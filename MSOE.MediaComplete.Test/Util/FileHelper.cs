@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace MSOE.MediaComplete.Test.Util
+namespace MediaComplete.Test.Util
 {
     /// <summary>
     /// This class contains helper methods for managing test files.

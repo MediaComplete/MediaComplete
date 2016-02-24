@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using MSOE.MediaComplete.Lib.Background;
-using MSOE.MediaComplete.Lib.Import;
-using MSOE.MediaComplete.Lib.Library;
-using MSOE.MediaComplete.Lib.Library.DataSource;
-using MSOE.MediaComplete.Lib.Logging;
-using MSOE.MediaComplete.Lib.Metadata;
+using MediaComplete.Lib.Background;
+using MediaComplete.Lib.Import;
+using MediaComplete.Lib.Library;
+using MediaComplete.Lib.Library.DataSource;
+using MediaComplete.Lib.Logging;
+using MediaComplete.Lib.Metadata;
 using Sys = System.Threading.Tasks;
 
-namespace MSOE.MediaComplete.Lib.Sorting
+namespace MediaComplete.Lib.Sorting
 {
     /// <summary>
     /// Provides the implementation for sorting the library of music files by metadata

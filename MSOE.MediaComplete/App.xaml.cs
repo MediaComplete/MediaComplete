@@ -1,4 +1,4 @@
-﻿namespace MSOE.MediaComplete
+﻿namespace MediaComplete
 {
     /// <summary>
     ///     Interaction logic for App.xaml

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using M3U.NET;
-using MSOE.MediaComplete.Lib.Library.DataSource;
+using MediaComplete.Lib.Library.DataSource;
 using TaglibFile = TagLib.File;
 using System.Threading.Tasks;
 
-namespace MSOE.MediaComplete.Lib.Library
+namespace MediaComplete.Lib.Library
 {
     /// <summary>
     /// The collection of abstractsongs, from every datasource

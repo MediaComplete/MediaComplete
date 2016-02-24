@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace MSOE.MediaComplete.Lib.Metadata
+namespace MediaComplete.Lib.Metadata
 {
 	/// <summary>
 	/// An enumeration representing the ID3 metadata values we care about.

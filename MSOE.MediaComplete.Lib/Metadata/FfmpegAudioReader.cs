@@ -2,9 +2,9 @@
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
-using MSOE.MediaComplete.Lib.Library.DataSource;
+using MediaComplete.Lib.Library.DataSource;
 
-namespace MSOE.MediaComplete.Lib.Metadata
+namespace MediaComplete.Lib.Metadata
 {
     /// <summary>
     /// Parse audio data by spawning an Fffmpeg process.

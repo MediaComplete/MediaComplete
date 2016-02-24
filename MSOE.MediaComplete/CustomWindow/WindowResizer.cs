@@ -7,7 +7,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 
-namespace MSOE.MediaComplete.CustomWindow
+namespace MediaComplete.CustomWindow
 {
     /// <summary>
     /// Class which manages resizing of borderless windows.

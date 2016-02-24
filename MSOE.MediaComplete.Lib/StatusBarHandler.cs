@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Timers;
 
-namespace MSOE.MediaComplete.Lib
+namespace MediaComplete.Lib
 {
     /// <summary>
     /// Routes messages from the library to the UI.

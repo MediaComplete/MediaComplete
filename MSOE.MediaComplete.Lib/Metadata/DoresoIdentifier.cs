@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
-using MSOE.MediaComplete.Lib.Library.DataSource;
-using MSOE.MediaComplete.Lib.Util;
+using MediaComplete.Lib.Library.DataSource;
+using MediaComplete.Lib.Util;
 using Newtonsoft.Json.Linq;
 
-namespace MSOE.MediaComplete.Lib.Metadata
+namespace MediaComplete.Lib.Metadata
 {
     /// <summary>
     /// Uses Doreso to identify the song. Doreso returns the song title, album, and artist.

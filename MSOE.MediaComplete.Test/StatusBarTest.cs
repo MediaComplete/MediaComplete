@@ -1,7 +1,7 @@
-﻿using MSOE.MediaComplete.Lib;
+﻿using MediaComplete.Lib;
 using NUnit.Framework;
 
-namespace MSOE.MediaComplete.Test
+namespace MediaComplete.Test
 {
     [TestFixture]
     public class StatusBarTest

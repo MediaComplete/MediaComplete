@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using MSOE.MediaComplete.Lib;
+using MediaComplete.Lib;
 using System;
-using MSOE.MediaComplete.Lib.Background;
-using MSOE.MediaComplete.Lib.Import;
-using MSOE.MediaComplete.Lib.Library.DataSource;
+using MediaComplete.Lib.Background;
+using MediaComplete.Lib.Import;
+using MediaComplete.Lib.Library.DataSource;
 
-namespace MSOE.MediaComplete
+namespace MediaComplete
 {
     /// <summary>
     /// Interaction logic for InboxImportDialog.xaml

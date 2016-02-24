@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace MSOE.MediaComplete
+namespace MediaComplete
 {
     public class VolumeConverter:IValueConverter
     {

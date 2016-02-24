@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using MSOE.MediaComplete.Lib;
+using MediaComplete.Lib;
 using Moq;
-using MSOE.MediaComplete.Lib.Import;
-using MSOE.MediaComplete.Lib.Library.DataSource;
+using MediaComplete.Lib.Import;
+using MediaComplete.Lib.Library.DataSource;
 using NUnit.Framework;
 
-namespace MSOE.MediaComplete.Test
+namespace MediaComplete.Test
 {
     [TestFixture]
     public class ImporterTest

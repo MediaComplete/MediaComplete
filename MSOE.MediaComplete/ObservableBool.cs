@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace MSOE.MediaComplete
+namespace MediaComplete
 {
     /// <summary>
     /// Observable boolean for property bindings.

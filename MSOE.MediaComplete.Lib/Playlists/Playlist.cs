@@ -2,11 +2,11 @@
 using System.IO;
 using System.Linq;
 using M3U.NET;
-using MSOE.MediaComplete.Lib.Library;
-using MSOE.MediaComplete.Lib.Logging;
-using MSOE.MediaComplete.Lib.Library.DataSource;
+using MediaComplete.Lib.Library;
+using MediaComplete.Lib.Logging;
+using MediaComplete.Lib.Library.DataSource;
 
-namespace MSOE.MediaComplete.Lib.Playlists
+namespace MediaComplete.Lib.Playlists
 {
     /// <summary>
     /// Represents a playlist. Mutations can be made by manipulating the Songs property.

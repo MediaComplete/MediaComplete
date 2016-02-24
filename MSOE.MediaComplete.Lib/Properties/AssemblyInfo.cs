@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("MSOE.MediaComplete.Lib")]
-[assembly: InternalsVisibleTo("MSOE.MediaComplete.Test")]
+[assembly: AssemblyTitle("MediaComplete.Lib")]
+[assembly: InternalsVisibleTo("MediaComplete.Test")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("MSOE.MediaComplete.Lib")]
+[assembly: AssemblyProduct("MediaComplete.Lib")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

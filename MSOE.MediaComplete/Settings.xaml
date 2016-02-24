@@ -1,7 +1,7 @@
-﻿<customWindow:BaseWindow x:Class="MSOE.MediaComplete.Settings"
+﻿<customWindow:BaseWindow x:Class="MediaComplete.Settings"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:customWindow="clr-namespace:MSOE.MediaComplete.CustomWindow"
+        xmlns:customWindow="clr-namespace:MediaComplete.CustomWindow"
         Title="Settings" Height="372" Width="522" Icon="Resources/logo_small.ico"
         AllowResize="False" AllowMaximize="False">
     <customWindow:BaseWindow.Resources>

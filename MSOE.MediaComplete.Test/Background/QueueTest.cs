@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Threading;
 using Sys = System.Threading.Tasks;
-using MSOE.MediaComplete.Lib.Background;
+using MediaComplete.Lib.Background;
 using NUnit.Framework;
 
-namespace MSOE.MediaComplete.Test.Background
+namespace MediaComplete.Test.Background
 {
     [TestFixture]
     public class QueueTest

@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Windows;
 using TinyWebServer;
 
-namespace MSOE.MediaComplete.CustomControls
+namespace MediaComplete.CustomControls
 {
     /// <summary>
     /// Interaction logic for BackgroundYoutubePlayer.xaml

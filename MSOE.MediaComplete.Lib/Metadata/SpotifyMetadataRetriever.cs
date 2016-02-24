@@ -6,13 +6,13 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using MSOE.MediaComplete.Lib.Library;
-using MSOE.MediaComplete.Lib.Library.DataSource;
-using MSOE.MediaComplete.Lib.Util;
+using MediaComplete.Lib.Library;
+using MediaComplete.Lib.Library.DataSource;
+using MediaComplete.Lib.Util;
 using Newtonsoft.Json.Linq;
 using TagLib;
 
-namespace MSOE.MediaComplete.Lib.Metadata
+namespace MediaComplete.Lib.Metadata
 {
     /// <summary>
     /// Retrieves additional metadata by using the Spotify web API.

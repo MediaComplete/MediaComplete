@@ -9,7 +9,7 @@ using TagLib.Id3v2;
 using File = TagLib.File;
 using Tag = TagLib.Id3v2.Tag;
 
-namespace MSOE.MediaComplete.Lib.Metadata
+namespace MediaComplete.Lib.Metadata
 {
     /// <summary>
     /// Contains various extension methods for meta data related operations

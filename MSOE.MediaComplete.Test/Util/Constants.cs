@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace MSOE.MediaComplete.Test.Util
+namespace MediaComplete.Test.Util
 {
     /// <summary>
     /// Test related constant values

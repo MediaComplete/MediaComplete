@@ -6,7 +6,7 @@
     <ProjectGuid>{EA95E81C-E2DB-4E00-80A5-219653E9411E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MSOE.MediaComplete.Test</RootNamespace>
+    <RootNamespace>MediaComplete.Test</RootNamespace>
     <AssemblyName>MSOE.MediaComplete.Test</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

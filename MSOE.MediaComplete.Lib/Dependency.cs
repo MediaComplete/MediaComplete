@@ -1,16 +1,16 @@
 ﻿using Autofac;
 using Autofac.Core;
-using MSOE.MediaComplete.Lib.Background;
-using MSOE.MediaComplete.Lib.Import;
-using MSOE.MediaComplete.Lib.Library;
-using MSOE.MediaComplete.Lib.Library.DataSource;
-using MSOE.MediaComplete.Lib.Metadata;
-using MSOE.MediaComplete.Lib.Playing;
-using MSOE.MediaComplete.Lib.Playlists;
-using MSOE.MediaComplete.Lib.Sorting;
+using MediaComplete.Lib.Background;
+using MediaComplete.Lib.Import;
+using MediaComplete.Lib.Library;
+using MediaComplete.Lib.Library.DataSource;
+using MediaComplete.Lib.Metadata;
+using MediaComplete.Lib.Playing;
+using MediaComplete.Lib.Playlists;
+using MediaComplete.Lib.Sorting;
 using IContainer = Autofac.IContainer;
 
-namespace MSOE.MediaComplete.Lib
+namespace MediaComplete.Lib
 {
     /// <summary>
     /// Manages dependency injection throughout the application. 

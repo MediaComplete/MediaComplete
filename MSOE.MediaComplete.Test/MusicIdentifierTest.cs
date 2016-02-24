@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using Moq;
-using MSOE.MediaComplete.Lib.Metadata;
+using MediaComplete.Lib.Metadata;
 using System.Threading.Tasks;
-using MSOE.MediaComplete.Lib.Library.DataSource;
+using MediaComplete.Lib.Library.DataSource;
 using NUnit.Framework;
 
-namespace MSOE.MediaComplete.Test
+namespace MediaComplete.Test
 {
     [TestFixture]
     public class MusicIdentifierTest

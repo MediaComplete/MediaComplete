@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using MSOE.MediaComplete.Lib.Metadata;
-using MSOE.MediaComplete.Lib.Sorting;
-using Task = MSOE.MediaComplete.Lib.Background.Task;
+using MediaComplete.Lib.Metadata;
+using MediaComplete.Lib.Sorting;
+using Task = MediaComplete.Lib.Background.Task;
 using Sys = System.Threading.Tasks;
-using MSOE.MediaComplete.Lib.Background;
-using MSOE.MediaComplete.Lib.Library.DataSource;
+using MediaComplete.Lib.Background;
+using MediaComplete.Lib.Library.DataSource;
 
-namespace MSOE.MediaComplete.Lib.Import
+namespace MediaComplete.Lib.Import
 {
     /// <summary>
     /// Provides methods for adding new files into the application's library.

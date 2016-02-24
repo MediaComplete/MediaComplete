@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using M3U.NET;
-using MSOE.MediaComplete.Lib.Metadata;
+using MediaComplete.Lib.Metadata;
 using TagLib;
 using File = System.IO.File;
 using TaglibFile = TagLib.File;
 
-namespace MSOE.MediaComplete.Lib.Library.DataSource
+namespace MediaComplete.Lib.Library.DataSource
 {
     /// <summary>
     /// The representation of the Data Source provided from the File System

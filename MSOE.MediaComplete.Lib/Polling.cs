@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Timers;
-using MSOE.MediaComplete.Lib.Library.DataSource;
-using MSOE.MediaComplete.Lib.Metadata;
+using MediaComplete.Lib.Library.DataSource;
+using MediaComplete.Lib.Metadata;
 
-namespace MSOE.MediaComplete.Lib
+namespace MediaComplete.Lib
 {
     /// <summary>
     /// Class used to set up a timed interval to poll a directory for files, and trigger an event when they 

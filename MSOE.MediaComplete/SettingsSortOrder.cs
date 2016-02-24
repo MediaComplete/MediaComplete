@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
-using MSOE.MediaComplete.Lib.Metadata;
-using MSOE.MediaComplete.Lib.Sorting;
+using MediaComplete.Lib.Metadata;
+using MediaComplete.Lib.Sorting;
 using Button = System.Windows.Controls.Button;
 using ComboBox = System.Windows.Controls.ComboBox;
 using Label = System.Windows.Controls.Label;
 using Orientation = System.Windows.Controls.Orientation;
 
-namespace MSOE.MediaComplete
+namespace MediaComplete
 {
     /// <summary>
     /// Interaction logic for Settings.xaml

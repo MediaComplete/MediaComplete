@@ -6,7 +6,7 @@ using log4net.Appender;
 using log4net.Config;
 using log4net.Core;
 
-namespace MSOE.MediaComplete.Lib.Logging
+namespace MediaComplete.Lib.Logging
 {
     /// <summary>
     /// All logs are written to both the console and rolling file appender defined in <see>MediaCompleteLog4Net.config</see> file.

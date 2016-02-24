@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Sys = System.Threading.Tasks;
 
-namespace MSOE.MediaComplete.Lib.Background
+namespace MediaComplete.Lib.Background
 {
     /// <summary>
     /// This abstract class represents a background queue task. 

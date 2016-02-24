@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
-namespace MSOE.MediaComplete.CustomWindow
+namespace MediaComplete.CustomWindow
 {
     /// <summary>
     /// Native Windows API methods and interfaces.

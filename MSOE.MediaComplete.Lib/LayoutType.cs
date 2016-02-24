@@ -1,4 +1,4 @@
-﻿namespace MSOE.MediaComplete.Lib
+﻿namespace MediaComplete.Lib
 {
     /// <summary>
     /// An enumeration representing the valid layout selections

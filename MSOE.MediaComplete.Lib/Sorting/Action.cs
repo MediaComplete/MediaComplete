@@ -1,6 +1,6 @@
-﻿using MSOE.MediaComplete.Lib.Library.DataSource;
+﻿using MediaComplete.Lib.Library.DataSource;
 
-namespace MSOE.MediaComplete.Lib.Sorting
+namespace MediaComplete.Lib.Sorting
 {
     /// <summary>
     /// Interface for actions, performed by the sorter

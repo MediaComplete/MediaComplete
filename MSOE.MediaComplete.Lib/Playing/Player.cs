@@ -1,10 +1,10 @@
 ﻿using System;
-using MSOE.MediaComplete.Lib.Library;
-using MSOE.MediaComplete.Lib.Library.DataSource;
+using MediaComplete.Lib.Library;
+using MediaComplete.Lib.Library.DataSource;
 using NAudio.Wave;
 using TagLib;
 
-namespace MSOE.MediaComplete.Lib.Playing
+namespace MediaComplete.Lib.Playing
 {
     /// <summary>
     /// implementation of the IPlayer interface utilizing NAudio

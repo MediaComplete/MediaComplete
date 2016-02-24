@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MSOE.MediaComplete.Lib.Library.DataSource
+namespace MediaComplete.Lib.Library.DataSource
 {
     /// <summary>
     /// Implementation of AbstractSong for local files. This is used for MP3 and WMA files.

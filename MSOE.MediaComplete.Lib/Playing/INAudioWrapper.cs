@@ -1,8 +1,8 @@
 ﻿using System;
-using MSOE.MediaComplete.Lib.Library.DataSource;
+using MediaComplete.Lib.Library.DataSource;
 using NAudio.Wave;
 
-namespace MSOE.MediaComplete.Lib.Playing
+namespace MediaComplete.Lib.Playing
 {
     /// <summary>
     /// Interface for an audio player library

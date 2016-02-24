@@ -2,7 +2,7 @@
 using System.Linq;
 using Sys = System.Threading.Tasks;
 
-namespace MSOE.MediaComplete.Lib.Background
+namespace MediaComplete.Lib.Background
 {
     /// <summary>
     /// Class to manage long-running background operations. Will run tasks in parallel where possible, 

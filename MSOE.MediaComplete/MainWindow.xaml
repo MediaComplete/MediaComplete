@@ -3,9 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:customWindow="clr-namespace:MSOE.MediaComplete.CustomWindow"
+        xmlns:customWindow="clr-namespace:MediaComplete.CustomWindow"
         xmlns:controls="clr-namespace:System.Windows.Controls;assembly=MultiSelectTreeView"
-        mc:Ignorable="d" x:Class="MSOE.MediaComplete.MainWindow"
+        mc:Ignorable="d" x:Class="MediaComplete.MainWindow"
         Title="Media Complete" MinHeight="425" MinWidth="613" Icon="Resources/logo_small.ico"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
         <Window.Resources>

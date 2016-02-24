@@ -1,14 +1,14 @@
 ﻿using System;
 using Moq;
-using MSOE.MediaComplete.Lib.Playing;
+using MediaComplete.Lib.Playing;
 using NAudio.Wave;
 using Ploeh.AutoFixture;
 using TagLib;
-using MSOE.MediaComplete.Lib.Library;
-using MSOE.MediaComplete.Lib.Library.DataSource;
+using MediaComplete.Lib.Library;
+using MediaComplete.Lib.Library.DataSource;
 using NUnit.Framework;
 
-namespace MSOE.MediaComplete.Test.Playing
+namespace MediaComplete.Test.Playing
 {
     [TestFixture]
     public class PlayerTest

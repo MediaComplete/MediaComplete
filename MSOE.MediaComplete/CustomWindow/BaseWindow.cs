@@ -6,7 +6,7 @@ using System.Windows.Input;
 using SysInterop = System.Windows.Interop;
 using System.Windows.Shapes;
 
-namespace MSOE.MediaComplete.CustomWindow
+namespace MediaComplete.CustomWindow
 {
     public class BaseWindow : Window
     {

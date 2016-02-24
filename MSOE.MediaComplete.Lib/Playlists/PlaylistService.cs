@@ -4,10 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using M3U.NET;
-using MSOE.MediaComplete.Lib.Library;
-using MSOE.MediaComplete.Lib.Library.DataSource;
+using MediaComplete.Lib.Library;
+using MediaComplete.Lib.Library.DataSource;
 
-namespace MSOE.MediaComplete.Lib.Playlists
+namespace MediaComplete.Lib.Playlists
 {
     #region Static Interface
     /// <summary>

@@ -10,22 +10,22 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using Autofac;
 using Autofac.Core;
-using MSOE.MediaComplete.CustomControls;
-using MSOE.MediaComplete.Lib;
-using MSOE.MediaComplete.Lib.Import;
-using MSOE.MediaComplete.Lib.Library;
-using MSOE.MediaComplete.Lib.Logging;
-using MSOE.MediaComplete.Lib.Metadata;
-using MSOE.MediaComplete.Lib.Playing;
-using MSOE.MediaComplete.Lib.Playlists;
-using MSOE.MediaComplete.Lib.Sorting;
+using MediaComplete.CustomControls;
+using MediaComplete.Lib;
+using MediaComplete.Lib.Import;
+using MediaComplete.Lib.Library;
+using MediaComplete.Lib.Logging;
+using MediaComplete.Lib.Metadata;
+using MediaComplete.Lib.Playing;
+using MediaComplete.Lib.Playlists;
+using MediaComplete.Lib.Sorting;
 using NAudio.Wave;
 using Action = System.Action;
 using WinForms = System.Windows.Forms;
-using MSOE.MediaComplete.Lib.Background;
-using MSOE.MediaComplete.Lib.Library.DataSource;
+using MediaComplete.Lib.Background;
+using MediaComplete.Lib.Library.DataSource;
 
-namespace MSOE.MediaComplete
+namespace MediaComplete
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

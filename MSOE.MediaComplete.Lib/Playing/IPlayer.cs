@@ -1,7 +1,7 @@
 ﻿using System;
 using NAudio.Wave;
 
-namespace MSOE.MediaComplete.Lib.Playing
+namespace MediaComplete.Lib.Playing
 {
     /// <summary>
     /// interface to define the requirements of the player object

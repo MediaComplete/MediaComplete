@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
-using MSOE.MediaComplete.Lib.Logging;
-using MSOE.MediaComplete.Lib.Library.DataSource;
-using MSOE.MediaComplete.Lib.Metadata;
-using MSOE.MediaComplete.Lib.Properties;
+using MediaComplete.Lib.Logging;
+using MediaComplete.Lib.Library.DataSource;
+using MediaComplete.Lib.Metadata;
+using MediaComplete.Lib.Properties;
 
-namespace MSOE.MediaComplete.Lib
+namespace MediaComplete.Lib
 {
     /// <summary>
     /// Used to wrap the settings object and encapsulate its use, while allowing access in both the Lib project and the UI project

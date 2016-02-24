@@ -1,13 +1,13 @@
 ﻿using M3U.NET;
 using Moq;
-using MSOE.MediaComplete.Lib.Playlists;
+using MediaComplete.Lib.Playlists;
 using NUnit.Framework;
 using System.Collections.Generic;
-using MSOE.MediaComplete.Lib.Library;
-using MSOE.MediaComplete.Lib.Library.DataSource;
-using MSOE.MediaComplete.Test.Util;
+using MediaComplete.Lib.Library;
+using MediaComplete.Lib.Library.DataSource;
+using MediaComplete.Test.Util;
 
-namespace MSOE.MediaComplete.Test.Playlists
+namespace MediaComplete.Test.Playlists
 {
     [TestFixture]
     public class PlaylistTest

@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-namespace MSOE.MediaComplete.Lib.Util
+namespace MediaComplete.Lib.Util
 {
     static class HttpUtil
     {

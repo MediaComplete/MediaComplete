@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using Moq;
-using MSOE.MediaComplete.Lib.Background;
-using MSOE.MediaComplete.Lib.Import;
-using MSOE.MediaComplete.Lib.Library.DataSource;
-using MSOE.MediaComplete.Lib.Metadata;
-using MSOE.MediaComplete.Lib.Sorting;
+using MediaComplete.Lib.Background;
+using MediaComplete.Lib.Import;
+using MediaComplete.Lib.Library.DataSource;
+using MediaComplete.Lib.Metadata;
+using MediaComplete.Lib.Sorting;
 using NUnit.Framework;
 
-namespace MSOE.MediaComplete.Test.Background
+namespace MediaComplete.Test.Background
 {
     /// <summary>
     /// Tests for Sorter. Note that these tests focus on the behavior of 

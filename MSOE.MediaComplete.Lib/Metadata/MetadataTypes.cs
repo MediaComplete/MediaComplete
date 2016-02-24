@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MSOE.MediaComplete.Lib.Library.DataSource;
+using MediaComplete.Lib.Library.DataSource;
 using TagLib;
 
-namespace MSOE.MediaComplete.Lib.Metadata
+namespace MediaComplete.Lib.Metadata
 {
     /// <summary>
     /// Represents an error in the identification process

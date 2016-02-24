@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MSOE.MediaComplete.Lib.Library.DataSource
+namespace MediaComplete.Lib.Library.DataSource
 {
     /// <summary>
     /// Interface for any datasource

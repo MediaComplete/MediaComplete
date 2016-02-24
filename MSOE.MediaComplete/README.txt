@@ -1,1 +1,1 @@
-﻿This project contains the front-end of the application. Code should be kept to a minimum here, and hook back to MSOE.MediaComplete.Lib for actual operations.
+﻿This project contains the front-end of the application. Code should be kept to a minimum here, and hook back to MediaComplete.Lib for actual operations.

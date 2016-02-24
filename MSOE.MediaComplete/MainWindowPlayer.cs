@@ -9,15 +9,15 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Threading;
-using MSOE.MediaComplete.CustomControls;
-using MSOE.MediaComplete.Lib;
-using MSOE.MediaComplete.Lib.Logging;
-using MSOE.MediaComplete.Lib.Playing;
+using MediaComplete.CustomControls;
+using MediaComplete.Lib;
+using MediaComplete.Lib.Logging;
+using MediaComplete.Lib.Playing;
 using NAudio.Wave;
 using TagLib;
 using Timer = System.Timers.Timer;
 
-namespace MSOE.MediaComplete
+namespace MediaComplete
 {
     partial class MainWindow
     {

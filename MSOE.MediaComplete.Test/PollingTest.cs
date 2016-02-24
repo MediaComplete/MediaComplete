@@ -1,11 +1,11 @@
 ﻿using System.IO;
 using System.Threading;
-using MSOE.MediaComplete.Lib;
-using MSOE.MediaComplete.Test.Util;
+using MediaComplete.Lib;
+using MediaComplete.Test.Util;
 using NUnit.Framework;
-using Constants = MSOE.MediaComplete.Test.Util.Constants;
+using Constants = MediaComplete.Test.Util.Constants;
 
-namespace MSOE.MediaComplete.Test
+namespace MediaComplete.Test
 {
     [TestFixture]
     public class PollingTest

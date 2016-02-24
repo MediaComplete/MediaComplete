@@ -2,14 +2,14 @@
 using System.IO;
 using System.Linq;
 using Moq;
-using MSOE.MediaComplete.Lib;
-using MSOE.MediaComplete.Lib.Library;
-using MSOE.MediaComplete.Lib.Library.DataSource;
-using MSOE.MediaComplete.Lib.Metadata;
-using MSOE.MediaComplete.Lib.Sorting;
+using MediaComplete.Lib;
+using MediaComplete.Lib.Library;
+using MediaComplete.Lib.Library.DataSource;
+using MediaComplete.Lib.Metadata;
+using MediaComplete.Lib.Sorting;
 using NUnit.Framework;
 
-namespace MSOE.MediaComplete.Test
+namespace MediaComplete.Test
 {
     [TestFixture]
     [Ignore]

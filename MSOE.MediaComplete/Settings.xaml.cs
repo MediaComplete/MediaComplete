@@ -6,14 +6,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
-using MSOE.MediaComplete.Lib;
-using MSOE.MediaComplete.Lib.Logging;
-using MSOE.MediaComplete.Lib.Library;
-using MSOE.MediaComplete.Lib.Library.DataSource;
-using MSOE.MediaComplete.Lib.Sorting;
+using MediaComplete.Lib;
+using MediaComplete.Lib.Logging;
+using MediaComplete.Lib.Library;
+using MediaComplete.Lib.Library.DataSource;
+using MediaComplete.Lib.Sorting;
 using ComboBox = System.Windows.Controls.ComboBox;
 
-namespace MSOE.MediaComplete
+namespace MediaComplete
 {
     /// <summary>
     /// Interaction logic for Settings.xaml

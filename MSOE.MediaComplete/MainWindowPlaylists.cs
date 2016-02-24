@@ -3,11 +3,11 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using MSOE.MediaComplete.CustomControls;
-using MSOE.MediaComplete.Lib.Playing;
-using MSOE.MediaComplete.Lib.Playlists;
+using MediaComplete.CustomControls;
+using MediaComplete.Lib.Playing;
+using MediaComplete.Lib.Playlists;
 
-namespace MSOE.MediaComplete
+namespace MediaComplete
 {
     /// <summary>
     /// Handles logic in the Playlists treeview tab.

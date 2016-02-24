@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using MSOE.MediaComplete.Lib.Library;
-using MSOE.MediaComplete.Lib.Playing;
-using MSOE.MediaComplete.Lib.Library.DataSource;
+using MediaComplete.Lib.Library;
+using MediaComplete.Lib.Playing;
+using MediaComplete.Lib.Library.DataSource;
 using NUnit.Framework;
 
-namespace MSOE.MediaComplete.Test.Playing
+namespace MediaComplete.Test.Playing
 {
     [TestFixture]
     [Ignore]

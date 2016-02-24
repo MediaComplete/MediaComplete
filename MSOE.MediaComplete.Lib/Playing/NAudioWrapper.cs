@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
-using MSOE.MediaComplete.Lib.Library.DataSource;
+using MediaComplete.Lib.Library.DataSource;
 using NAudio.Wave;
 using TagLib;
 
-namespace MSOE.MediaComplete.Lib.Playing
+namespace MediaComplete.Lib.Playing
 {
     /// <summary>
     /// concrete implementation of the wavestream factory

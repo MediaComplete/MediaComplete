@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace MSOE.MediaComplete.Lib.Library.DataSource
+namespace MediaComplete.Lib.Library.DataSource
 {
     /// <summary>
     /// Manages a file path to a song file

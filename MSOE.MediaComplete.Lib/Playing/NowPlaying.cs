@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using M3U.NET;
-using MSOE.MediaComplete.Lib.Library;
-using MSOE.MediaComplete.Lib.Playlists;
+using MediaComplete.Lib.Library;
+using MediaComplete.Lib.Playlists;
 
-namespace MSOE.MediaComplete.Lib.Playing
+namespace MediaComplete.Lib.Playing
 {
     /// <summary>
     /// Represents the Now Playing queue of the application. The Player draws on this for songs, 

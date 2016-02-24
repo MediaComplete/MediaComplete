@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MSOE.MediaComplete.Lib.Import;
-using MSOE.MediaComplete.Lib.Library.DataSource;
-using MSOE.MediaComplete.Lib.Sorting;
-using MSOE.MediaComplete.Lib.Logging;
+using MediaComplete.Lib.Import;
+using MediaComplete.Lib.Library.DataSource;
+using MediaComplete.Lib.Sorting;
+using MediaComplete.Lib.Logging;
 
-namespace MSOE.MediaComplete.Lib.Metadata
+namespace MediaComplete.Lib.Metadata
 {
     /// <summary>
     /// Provides functions for identifying a song
@@ -183,7 +183,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
 
         /// <summary>
         /// Contains any subclass types that cannot appear before this task in the execution queue.
-        /// Used by <see cref="MSOE.MediaComplete.Lib.Background.TaskAdder.ResolveConflicts" /> to re-order the queue after adding this task.
+        /// Used by <see cref="MediaComplete.Lib.Background.TaskAdder.ResolveConflicts" /> to re-order the queue after adding this task.
         /// </summary>
         public override IReadOnlyCollection<Type> InvalidBeforeTypes
         {
@@ -192,7 +192,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
 
         /// <summary>
         /// Contains any subclass types that cannot appear after this task in the execution queue.
-        /// Used by <see cref="MSOE.MediaComplete.Lib.Background.TaskAdder.ResolveConflicts" /> to re-order the queue after adding this task.
+        /// Used by <see cref="MediaComplete.Lib.Background.TaskAdder.ResolveConflicts" /> to re-order the queue after adding this task.
         /// </summary>
         public override IReadOnlyCollection<Type> InvalidAfterTypes
         {
@@ -201,7 +201,7 @@ namespace MSOE.MediaComplete.Lib.Metadata
 
         /// <summary>
         /// Contains any subclass types that cannot appear in the same parallel block in the execution queue.
-        /// Used by <see cref="MSOE.MediaComplete.Lib.Background.TaskAdder.ResolveConflicts" /> to re-order the queue after adding this task.
+        /// Used by <see cref="MediaComplete.Lib.Background.TaskAdder.ResolveConflicts" /> to re-order the queue after adding this task.
         /// </summary>
         public override IReadOnlyCollection<Type> InvalidDuringTypes
         {

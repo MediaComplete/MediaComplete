@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace MSOE.MediaComplete.layout
+namespace MediaComplete.layout
 {
     /// <summary>
     /// Contains high-level event handlers

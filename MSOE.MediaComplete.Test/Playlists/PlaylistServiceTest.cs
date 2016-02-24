@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace MSOE.MediaComplete.Test.Playlists
+namespace MediaComplete.Test.Playlists
 {
     [TestFixture]
     [Ignore]

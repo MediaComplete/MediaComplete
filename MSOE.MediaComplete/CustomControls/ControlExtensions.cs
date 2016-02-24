@@ -1,4 +1,4 @@
-﻿namespace MSOE.MediaComplete.CustomControls
+﻿namespace MediaComplete.CustomControls
 {
     public static class ControlExtensions
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MSOE.MediaComplete.Lib.Background
+namespace MediaComplete.Lib.Background
 {
     /// <summary>
     /// Thrown when the Queue is given a task that cannot be safely added anywhere 

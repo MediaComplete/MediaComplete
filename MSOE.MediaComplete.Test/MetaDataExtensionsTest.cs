@@ -1,11 +1,11 @@
 ﻿using System.IO;
-using MSOE.MediaComplete.Lib.Metadata;
-using MSOE.MediaComplete.Test.Util;
+using MediaComplete.Lib.Metadata;
+using MediaComplete.Test.Util;
 using NUnit.Framework;
-using Constants = MSOE.MediaComplete.Test.Util.Constants;
+using Constants = MediaComplete.Test.Util.Constants;
 using File = TagLib.File;
 
-namespace MSOE.MediaComplete.Test
+namespace MediaComplete.Test
 {
     [TestFixture]
     public class MetadataExtensionsTest
