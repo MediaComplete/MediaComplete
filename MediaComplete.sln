@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaComplete", "MSOE.MediaComplete\MediaComplete.csproj", "{A0884657-5FDE-459B-BACC-94B19AF58401}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaComplete", "MediaComplete\MediaComplete.csproj", "{A0884657-5FDE-459B-BACC-94B19AF58401}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaComplete.Lib", "MSOE.MediaComplete.Lib\MediaComplete.Lib.csproj", "{9FC3A1A0-F81A-45BA-A8EB-1F4A10F0D3F1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaComplete.Lib", "MediaComplete.Lib\MediaComplete.Lib.csproj", "{9FC3A1A0-F81A-45BA-A8EB-1F4A10F0D3F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaComplete.Test", "MSOE.MediaComplete.Test\MediaComplete.Test.csproj", "{EA95E81C-E2DB-4E00-80A5-219653E9411E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaComplete.Test", "MediaComplete.Test\MediaComplete.Test.csproj", "{EA95E81C-E2DB-4E00-80A5-219653E9411E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{B5402507-5D79-4E10-9636-B72ABDCEF95F}"
 	ProjectSection(SolutionItems) = preProject

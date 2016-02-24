@@ -143,7 +143,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MSOE.MediaComplete.Lib\MediaComplete.Lib.csproj">
+    <ProjectReference Include="..\MediaComplete.Lib\MediaComplete.Lib.csproj">
       <Project>{9fc3a1a0-f81a-45ba-a8eb-1f4a10f0d3f1}</Project>
       <Name>MediaComplete.Lib</Name>
     </ProjectReference>
