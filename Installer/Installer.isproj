@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Project ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
 		<!-- Select a Product Configuration -->
 		<InstallShieldProductConfiguration>Express</InstallShieldProductConfiguration>
@@ -27,15 +27,15 @@
 			<TargetPath>My Test Exe.exe</TargetPath>
 		</TaggedOutputs> -->
 	</ItemGroup>
-	<Import Project="$(MSBuildExtensionsPath32)\InstallShield\2013Limited\InstallShield.targets"/>
+	<Import Project="$(MSBuildExtensionsPath32)\InstallShield\2015Limited\InstallShield.targets"/>
 	<ItemGroup>
-		<ProjectReference Include="..\MSOE.MediaComplete\MSOE.MediaComplete.csproj">
-			<Name>MSOE.MediaComplete</Name>
+		<ProjectReference Include="..\MediaComplete\MediaComplete.csproj">
+			<Name>MediaComplete</Name>
 			<Project>{A0884657-5FDE-459B-BACC-94B19AF58401}</Project>
 		</ProjectReference>
-		<ProjectReference Include="..\MSOE.MediaComplete.Lib\MSOE.MediaComplete.Lib.csproj">
-			<Name>MSOE.MediaComplete.Lib</Name>
-			<Project>{9FC3A1A0-F81A-45BA-A8EB-1F4A10F0D3F1}</Project>
+		<ProjectReference Include="..\..\MediaComplete.Lib\MediaComplete.Lib\MediaComplete.Lib.csproj">
+			<Name>MediaComplete.Lib</Name>
+			<Project>{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}</Project>
 		</ProjectReference>
 	</ItemGroup>
 </Project>

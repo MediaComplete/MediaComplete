@@ -60,8 +60,8 @@
 		<lastauthor>Administrator</lastauthor>
 		<revnumber>{9157C80F-7329-4082-A587-8D7F39AF1C06}</revnumber>
 		<lastprinted/>
-		<createdtm>06/21/1999 08:00</createdtm>
-		<lastsavedtm>07/14/2000 11:50</lastsavedtm>
+		<createdtm>06/21/1999 07:00</createdtm>
+		<lastsavedtm>07/14/2000 10:50</lastsavedtm>
 		<pagecount>200</pagecount>
 		<wordcount>0</wordcount>
 		<charcount/>
@@ -342,10 +342,11 @@
 		<col def="S0">ISDotNetInstallerArgsUninstall</col>
 		<col def="S0">ISDotNetInstallerArgsRollback</col>
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td>{250FA597-5C51-4DCC-868B-555DA10684D3}</td><td>INSTALLDIR</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>MSOE.MediaComplete.Content_Files</td><td>{3F6866E8-8839-46F4-B582-25A134A832CB}</td><td>INSTALLDIR</td><td>2</td><td/><td>msoe.mediacomplete.content_f</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>MSOE.MediaComplete.Lib.Content_Files</td><td>{E2362930-FD4D-44C8-A01E-1FD6CA6B175F}</td><td>INSTALLDIR</td><td>2</td><td/><td>msoe.mediacomplete.lib.conte</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>MSOE.MediaComplete.Lib.Primary_output</td><td>{1C855621-0992-4F88-B2CC-CC18D78FB4EF}</td><td>INSTALLDIR</td><td>2</td><td/><td>msoe.mediacomplete.lib.prima</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>MSOE.MediaComplete.Primary_output</td><td>{FEDC328A-F75C-4EF9-BDD6-FF9BA9DACF45}</td><td>INSTALLDIR</td><td>2</td><td/><td>msoe.mediacomplete.primary_o</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>IS_ININSTALL_SHORTCUT</td><td>{DEF8624D-6D39-4DF1-ADE4-FB136C14B980}</td><td>INSTALLDIR</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>MediaComplete.Content_Files</td><td>{12882186-8023-4DB9-8F94-C35AFECDDAFF}</td><td>INSTALLDIR</td><td>2</td><td/><td>mediacomplete.content_files</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>MediaComplete.Lib.Content_Files</td><td>{44238EB0-38E7-4A1E-952F-6E3E0CE55343}</td><td>INSTALLDIR</td><td>2</td><td/><td>mediacomplete.lib.content_fi</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>MediaComplete.Lib.Primary_output</td><td>{2D9D2BED-7580-494F-8290-FE13A86E1D40}</td><td>INSTALLDIR</td><td>2</td><td/><td>mediacomplete.lib.primary_ou</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>MediaComplete.Primary_output</td><td>{B8E9DA29-B33F-46AB-8D89-8AAABD4501C5}</td><td>INSTALLDIR</td><td>2</td><td/><td>mediacomplete.primary_output</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>NewComponent1</td><td>{A31A0B33-FC0C-4AE4-AD75-6652B8692787}</td><td>INSTALLDIR</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 	</table>
 
@@ -1057,6 +1058,11 @@
 		<col key="yes" def="s72">Directory_</col>
 		<col key="yes" def="s72">Component_</col>
 		<row><td>INSTALLDIR</td><td>ISX_DEFAULTCOMPONENT1</td></row>
+		<row><td>INSTALLDIR</td><td>IS_ININSTALL_SHORTCUT</td></row>
+		<row><td>INSTALLDIR</td><td>MediaComplete.Content_Files</td></row>
+		<row><td>INSTALLDIR</td><td>MediaComplete.Lib.Content_Files</td></row>
+		<row><td>INSTALLDIR</td><td>MediaComplete.Lib.Primary_output</td></row>
+		<row><td>INSTALLDIR</td><td>MediaComplete.Primary_output</td></row>
 		<row><td>INSTALLDIR</td><td>NewComponent1</td></row>
 	</table>
 
@@ -1148,7 +1154,7 @@
 		<row><td>FavoritesFolder</td><td>TARGETDIR</td><td>.:FAVORI~1|Favorites</td><td/><td>0</td><td/></row>
 		<row><td>FontsFolder</td><td>TARGETDIR</td><td>.:Fonts</td><td/><td>0</td><td/></row>
 		<row><td>GlobalAssemblyCache</td><td>TARGETDIR</td><td>.:Global~1|GlobalAssemblyCache</td><td/><td>0</td><td/></row>
-		<row><td>INSTALLDIR</td><td>MEDIA_COMPLETE1</td><td>.</td><td/><td>0</td><td/></row>
+		<row><td>INSTALLDIR</td><td>MEDIA_COMPLETE2</td><td>.</td><td/><td>0</td><td/></row>
 		<row><td>ISCommonFilesFolder</td><td>CommonFilesFolder</td><td>Instal~1|InstallShield</td><td/><td>0</td><td/></row>
 		<row><td>ISMyCompanyDir</td><td>ProgramFilesFolder</td><td>MYCOMP~1|My Company Name</td><td/><td>0</td><td/></row>
 		<row><td>ISMyProductDir</td><td>ISMyCompanyDir</td><td>MYPROD~1|My Product Name</td><td/><td>0</td><td/></row>
@@ -1156,6 +1162,7 @@
 		<row><td>LocalAppDataFolder</td><td>TARGETDIR</td><td>.:LocalA~1|LocalAppData</td><td/><td>0</td><td/></row>
 		<row><td>MEDIA_COMPLETE</td><td>ProgramFilesFolder</td><td>MEDIAC~1|Media Complete</td><td/><td>0</td><td/></row>
 		<row><td>MEDIA_COMPLETE1</td><td>MEDIA_COMPLETE</td><td>MEDIAC~1|Media Complete</td><td/><td>0</td><td/></row>
+		<row><td>MEDIA_COMPLETE2</td><td>VOID_POINTERS</td><td>MEDIAC~1|Media Complete</td><td/><td>0</td><td/></row>
 		<row><td>MY_PRODUCT_NAME</td><td>MEDIA_COMPLETE</td><td>MYPROD~1|My Product Name</td><td/><td>0</td><td/></row>
 		<row><td>MyPicturesFolder</td><td>TARGETDIR</td><td>.:MyPict~1|MyPictures</td><td/><td>0</td><td/></row>
 		<row><td>NetHoodFolder</td><td>TARGETDIR</td><td>.:NetHood</td><td/><td>0</td><td/></row>
@@ -1176,10 +1183,13 @@
 		<row><td>TempFolder</td><td>TARGETDIR</td><td>.:Temp</td><td/><td>0</td><td/></row>
 		<row><td>TemplateFolder</td><td>TARGETDIR</td><td>.:ShellNew</td><td/><td>0</td><td/></row>
 		<row><td>USERPROFILE</td><td>TARGETDIR</td><td>.:USERPR~1|UserProfile</td><td/><td>0</td><td/></row>
+		<row><td>VOID_POINTERS</td><td>ProgramFilesFolder</td><td>VOIDPO~1|Void Pointers</td><td/><td>0</td><td/></row>
 		<row><td>WindowsFolder</td><td>TARGETDIR</td><td>.:Windows</td><td/><td>0</td><td/></row>
 		<row><td>WindowsVolume</td><td>TARGETDIR</td><td>.:WinRoot</td><td/><td>0</td><td/></row>
 		<row><td>mediac_1_media_complete</td><td>ProgramMenuFolder</td><td>MEDIAC~1|Media Complete</td><td/><td>1</td><td/></row>
 		<row><td>mediac_1_media_complete1</td><td>mediac_1_media_complete</td><td>MEDIAC~1|Media Complete</td><td/><td>1</td><td/></row>
+		<row><td>mediac_1_media_complete2</td><td>voidpo_1_void_pointers</td><td>MEDIAC~1|Media Complete</td><td/><td>1</td><td/></row>
+		<row><td>voidpo_1_void_pointers</td><td>ProgramMenuFolder</td><td>VOIDPO~1|Void Pointers</td><td/><td>1</td><td/></row>
 	</table>
 
 	<table name="DrLocator">
@@ -1872,10 +1882,11 @@
 		<col key="yes" def="s38">Feature_</col>
 		<col key="yes" def="s72">Component_</col>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT1</td></row>
-		<row><td>AlwaysInstall</td><td>MSOE.MediaComplete.Content_Files</td></row>
-		<row><td>AlwaysInstall</td><td>MSOE.MediaComplete.Lib.Content_Files</td></row>
-		<row><td>AlwaysInstall</td><td>MSOE.MediaComplete.Lib.Primary_output</td></row>
-		<row><td>AlwaysInstall</td><td>MSOE.MediaComplete.Primary_output</td></row>
+		<row><td>AlwaysInstall</td><td>IS_ININSTALL_SHORTCUT</td></row>
+		<row><td>AlwaysInstall</td><td>MediaComplete.Content_Files</td></row>
+		<row><td>AlwaysInstall</td><td>MediaComplete.Lib.Content_Files</td></row>
+		<row><td>AlwaysInstall</td><td>MediaComplete.Lib.Primary_output</td></row>
+		<row><td>AlwaysInstall</td><td>MediaComplete.Primary_output</td></row>
 		<row><td>AlwaysInstall</td><td>NewComponent1</td></row>
 	</table>
 
@@ -1891,10 +1902,10 @@
 		<col def="S255">ISBuildSourcePath</col>
 		<col def="I4">ISAttributes</col>
 		<col def="S72">ISComponentSubFolder_</col>
-		<row><td>msoe.mediacomplete.content_f</td><td>MSOE.MediaComplete.Content_Files</td><td>MSOE.MediaComplete.Content Files</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;MSOE.MediaComplete&gt;|ContentFiles</td><td>3</td><td/></row>
-		<row><td>msoe.mediacomplete.lib.conte</td><td>MSOE.MediaComplete.Lib.Content_Files</td><td>MSOE.MediaComplete.Lib.Content Files</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;MSOE.MediaComplete.Lib&gt;|ContentFiles</td><td>3</td><td/></row>
-		<row><td>msoe.mediacomplete.lib.prima</td><td>MSOE.MediaComplete.Lib.Primary_output</td><td>MSOE.MediaComplete.Lib.Primary output</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;MSOE.MediaComplete.Lib&gt;|Built</td><td>3</td><td/></row>
-		<row><td>msoe.mediacomplete.primary_o</td><td>MSOE.MediaComplete.Primary_output</td><td>MSOE.MediaComplete.Primary output</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;MSOE.MediaComplete&gt;|Built</td><td>3</td><td/></row>
+		<row><td>mediacomplete.content_files</td><td>MediaComplete.Content_Files</td><td>MediaComplete.Content Files</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;MediaComplete&gt;|ContentFiles</td><td>3</td><td/></row>
+		<row><td>mediacomplete.lib.content_fi</td><td>MediaComplete.Lib.Content_Files</td><td>MediaComplete.Lib.Content Files</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;MediaComplete.Lib&gt;|ContentFiles</td><td>3</td><td/></row>
+		<row><td>mediacomplete.lib.primary_ou</td><td>MediaComplete.Lib.Primary_output</td><td>MediaComplete.Lib.Primary output</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;MediaComplete.Lib&gt;|Built</td><td>3</td><td/></row>
+		<row><td>mediacomplete.primary_output</td><td>MediaComplete.Primary_output</td><td>MediaComplete.Primary output</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;MediaComplete&gt;|Built</td><td>3</td><td/></row>
 	</table>
 
 	<table name="FileSFPCatalog">
@@ -2039,10 +2050,11 @@
 		<col def="S0">HTTPLocation</col>
 		<col def="S0">Miscellaneous</col>
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td/><td/><td>_4A9D3242_0DB3_4B68_AE53_23DF4E83C4E9_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>MSOE.MediaComplete.Content_Files</td><td/><td/><td>_DB5B65B1_D40F_4C5B_BEF6_67674B10D483_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>MSOE.MediaComplete.Lib.Content_Files</td><td/><td/><td>_6FFD7A99_7D01_4853_97D9_87611C6724BE_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>MSOE.MediaComplete.Lib.Primary_output</td><td/><td/><td>_9D788229_BBEE_4DA1_AD0D_80BFF62F436A_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>MSOE.MediaComplete.Primary_output</td><td/><td/><td>_D27FF2A2_63C8_465A_898F_BF05399F0AC9_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>IS_ININSTALL_SHORTCUT</td><td/><td/><td>_318B1755_99F7_473D_801A_52245249FB5F_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>MediaComplete.Content_Files</td><td/><td/><td>_8FCB0F20_61F6_44F9_9564_B1F3370B29EE_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>MediaComplete.Lib.Content_Files</td><td/><td/><td>_2EC3C105_3D91_4F7A_BC08_0AC85F2F0825_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>MediaComplete.Lib.Primary_output</td><td/><td/><td>_758DA3C9_673A_4D7C_BBD8_DAA9B9B54E16_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>MediaComplete.Primary_output</td><td/><td/><td>_0D93B969_D47D_45AD_9EB1_BD1CFA92C38B_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>NewComponent1</td><td/><td/><td>_8F7BC2FF_775D_462F_9197_E9D245E2071B_FILTER</td><td/><td/><td/><td/></row>
 	</table>
 
@@ -2351,15 +2363,11 @@
 		<row><td>ISProjectFolder</td><td/><td/><td>1</td></row>
 		<row><td>MSOE.MediaComplete</td><td>MSOE.MediaComplete\MSOE.MediaComplete.csproj</td><td/><td>2</td></row>
 		<row><td>MSOE.MediaComplete.Lib</td><td>MSOE.MediaComplete.Lib\MSOE.MediaComplete.Lib.csproj</td><td/><td>2</td></row>
+		<row><td>MediaComplete</td><td>MediaComplete\MediaComplete.csproj</td><td/><td>2</td></row>
+		<row><td>MediaComplete.Lib</td><td>..\MediaComplete.Lib\MediaComplete.Lib\MediaComplete.Lib.csproj</td><td/><td>2</td></row>
 		<row><td>ProgramFilesFolder</td><td/><td/><td>1</td></row>
 		<row><td>SystemFolder</td><td/><td/><td>1</td></row>
 		<row><td>WindowsFolder</td><td/><td/><td>1</td></row>
-	</table>
-
-	<table name="ISPowerShellWrap">
-		<col key="yes" def="s72">Action_</col>
-		<col key="yes" def="s72">Name</col>
-		<col def="S0">Value</col>
 	</table>
 
 	<table name="ISProductConfiguration">
@@ -2662,7 +2670,7 @@
 		<col def="I2">Encoded</col>
 		<col def="S0">Comment</col>
 		<col def="I4">TimeStamp</col>
-		<row><td>COMPANY_NAME</td><td>1033</td><td>Media Complete</td><td>0</td><td/><td>446944879</td></row>
+		<row><td>COMPANY_NAME</td><td>1033</td><td>Void Pointers</td><td>0</td><td/><td>161758101</td></row>
 		<row><td>DN_AlwaysInstall</td><td>1033</td><td>Always Install</td><td>0</td><td/><td>1512249743</td></row>
 		<row><td>IDPROP_EXPRESS_LAUNCH_CONDITION_COLOR</td><td>1033</td><td>The color settings of your system are not adequate for running [ProductName].</td><td>0</td><td/><td>1512249743</td></row>
 		<row><td>IDPROP_EXPRESS_LAUNCH_CONDITION_DOTNETVERSION45FULL</td><td>1033</td><td>Microsoft .NET Framework 4.5 Full package or greater needs to be installed for this installation to continue.</td><td>0</td><td/><td>1512253903</td></row>
@@ -3478,6 +3486,10 @@
 		<row><td>IDS_SHORTCUT_DISPLAY_NAME1</td><td>1033</td><td>Media Complete</td><td>0</td><td/><td>1512249967</td></row>
 		<row><td>IDS_SHORTCUT_DISPLAY_NAME2</td><td>1033</td><td>MSOE.MediaComplete</td><td>0</td><td/><td>1512268431</td></row>
 		<row><td>IDS_SHORTCUT_DISPLAY_NAME3</td><td>1033</td><td>Media Complete</td><td>0</td><td/><td>1512264623</td></row>
+		<row><td>IDS_SHORTCUT_DISPLAY_NAME4</td><td>1033</td><td>Launch |Built</td><td>0</td><td/><td>161790933</td></row>
+		<row><td>IDS_SHORTCUT_DISPLAY_NAME5</td><td>1033</td><td>Launch |Built</td><td>0</td><td/><td>161756149</td></row>
+		<row><td>IDS_SHORTCUT_DISPLAY_NAME6</td><td>1033</td><td>Launch |ContentFiles</td><td>0</td><td/><td>161764341</td></row>
+		<row><td>IDS_SHORTCUT_DISPLAY_NAME7</td><td>1033</td><td>Media Complete</td><td>0</td><td/><td>161774677</td></row>
 		<row><td>IDS_SQLBROWSE_INTRO</td><td>1033</td><td>From the list of servers below, select the database server you would like to target.</td><td>0</td><td/><td>1512249743</td></row>
 		<row><td>IDS_SQLBROWSE_INTRO_DB</td><td>1033</td><td>From the list of catalog names below, select the database catalog you would like to target.</td><td>0</td><td/><td>1512249743</td></row>
 		<row><td>IDS_SQLBROWSE_INTRO_TEMPLATE</td><td>1033</td><td>[IS_SQLBROWSE_INTRO]</td><td>0</td><td/><td>1512249743</td></row>
@@ -3767,8 +3779,8 @@
 		<row><td>IDS__TargetReq_DESC_RAM</td><td>1033</td><td>The amount of RAM is not adequate for running [ProductName].</td><td>0</td><td/><td>1512249743</td></row>
 		<row><td>IDS__TargetReq_DESC_RESOLUTION</td><td>1033</td><td>The screen resolution is not adequate for running [ProductName].</td><td>0</td><td/><td>1512249743</td></row>
 		<row><td>ID_STRING1</td><td>1033</td><td/><td>0</td><td/><td>1512251791</td></row>
-		<row><td>ID_STRING2</td><td>1033</td><td>http://www.MediaComplete.com</td><td>0</td><td/><td>446944879</td></row>
-		<row><td>ID_STRING3</td><td>1033</td><td>Media Complete</td><td>0</td><td/><td>446944879</td></row>
+		<row><td>ID_STRING2</td><td>1033</td><td>http://www.VoidPointers.com</td><td>0</td><td/><td>161758101</td></row>
+		<row><td>ID_STRING3</td><td>1033</td><td>Void Pointers</td><td>0</td><td/><td>161758101</td></row>
 		<row><td>IIDS_UITEXT_FeatureUninstalled</td><td>1033</td><td>This feature will remain uninstalled.</td><td>0</td><td/><td>1512249743</td></row>
 	</table>
 
@@ -3836,6 +3848,12 @@
 		<col def="s255">Value</col>
 	</table>
 
+	<table name="ISWSEWrap">
+		<col key="yes" def="s72">Action_</col>
+		<col key="yes" def="s72">Name</col>
+		<col def="S0">Value</col>
+	</table>
+
 	<table name="ISXmlElement">
 		<col key="yes" def="s72">ISXmlElement</col>
 		<col def="s72">ISXmlFile_</col>
@@ -3876,8 +3894,8 @@
 		<col def="V0">Data</col>
 		<col def="S255">ISBuildSourcePath</col>
 		<col def="I2">ISIconIndex</col>
-		<row><td>ARPPRODUCTICON.exe</td><td/><td>&lt;VSSolutionFolder&gt;\MSOE.MediaComplete\Resources\logo_small.ico</td><td>0</td></row>
-		<row><td>UNINST_Uninstall_M_0CEDD94A914A4DD28288AF0030E4265C.exe</td><td/><td>C:\Program Files (x86)\InstallShield\2013LE\Redist\Language Independent\OS Independent\uninstall.ico</td><td>0</td></row>
+		<row><td>ARPPRODUCTICON.exe</td><td/><td>&lt;VSSolutionFolder&gt;\MediaComplete\Resources\logo_small.ico</td><td>0</td></row>
+		<row><td>UNINST_Uninstall_M_9697D8E3CDD745EBA1B5093D5AFC67F0.exe</td><td/><td>C:\Program Files (x86)\InstallShield\2015LE\Redist\Language Independent\OS Independent\uninstall.ico</td><td>0</td></row>
 	</table>
 
 	<table name="IniFile">
@@ -4010,7 +4028,7 @@ RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>ISTheme</td><td>InstallShield Blue.theme</td></row>
 		<row><td>ISUSLock</td><td>{4758A928-47E8-4006-B370-800C9D409E4A}</td></row>
 		<row><td>ISUSSignature</td><td>{2C09852F-877C-4A1D-B699-956FB0DEB5FF}</td></row>
-		<row><td>ISVisitedViews</td><td>viewAssistant,viewShortcuts,viewISToday,viewProject,viewRealSetupDesign,viewRelease,viewInstallScriptStd,viewAppFiles,viewFeatureFiles,viewObjects,viewDependencies,viewEnvironmentVariables,viewRegistry,viewServices,viewSystemSearch,viewCustomActions,viewAppV</td></row>
+		<row><td>ISVisitedViews</td><td>viewAssistant,viewShortcuts,viewISToday,viewProject,viewRealSetupDesign,viewRelease,viewInstallScriptStd,viewAppFiles,viewFeatureFiles,viewObjects,viewDependencies,viewEnvironmentVariables,viewRegistry,viewServices,viewSystemSearch,viewCustomActions,viewAppV,viewLearnMore</td></row>
 		<row><td>Limited</td><td>1</td></row>
 		<row><td>LockPermissionMode</td><td>1</td></row>
 		<row><td>MsiExecCmdLineOptions</td><td/></row>
@@ -4022,7 +4040,7 @@ RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>SaveAsSchema</td><td/></row>
 		<row><td>SccEnabled</td><td>0</td></row>
 		<row><td>SccPath</td><td/></row>
-		<row><td>SchemaVersion</td><td>774</td></row>
+		<row><td>SchemaVersion</td><td>776</td></row>
 		<row><td>Type</td><td>MSIE</td></row>
 	</table>
 
@@ -4356,8 +4374,9 @@ RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>IS_SQLSERVER_SERVER</td><td/><td/></row>
 		<row><td>IS_SQLSERVER_USERNAME</td><td>sa</td><td/></row>
 		<row><td>InstallChoice</td><td>AR</td><td/></row>
-		<row><td>LAUNCHPROGRAMCOMPCODE</td><td>{7C7CC86C-2048-427C-A806-D28A371F3680}</td><td/></row>
-		<row><td>LAUNCHPROGRAMFILEKEY</td><td>msoe.mediacomplete.primary_o</td><td/></row>
+		<row><td>LAUNCHPROGRAM</td><td>1</td><td/></row>
+		<row><td>LAUNCHPROGRAMCOMPCODE</td><td>{B8E9DA29-B33F-46AB-8D89-8AAABD4501C5}</td><td/></row>
+		<row><td>LAUNCHPROGRAMFILEKEY</td><td>mediacomplete.primary_output</td><td/></row>
 		<row><td>LAUNCHREADME</td><td>1</td><td/></row>
 		<row><td>Manufacturer</td><td>##COMPANY_NAME##</td><td/></row>
 		<row><td>PIDKEY</td><td/><td/></row>
@@ -4385,10 +4404,10 @@ RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKAPPPOOLS</td><td>##IDS_PROGMSG_IIS_ROLLBACKAPPPOOLS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKVROOTS</td><td>##IDS_PROGMSG_IIS_ROLLBACKVROOTS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
-		<row><td>PROGRAMFILETOLAUNCHATEND</td><td>[INSTALLDIR]MSOE.MediaComplete.Primary output</td><td/></row>
+		<row><td>PROGRAMFILETOLAUNCHATEND</td><td>[INSTALLDIR]MediaComplete.Primary output</td><td/></row>
 		<row><td>ProductCode</td><td>{099B5D05-7DBA-48B3-A42A-E4F80B8D6BD4}</td><td/></row>
 		<row><td>ProductName</td><td>Media Complete</td><td/></row>
-		<row><td>ProductVersion</td><td>0.01.0000</td><td/></row>
+		<row><td>ProductVersion</td><td>0.1.2</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
 		<row><td>ProgressType1</td><td>Installing</td><td/></row>
 		<row><td>ProgressType2</td><td>installed</td><td/></row>
@@ -4400,7 +4419,7 @@ RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>RestartManagerOption</td><td>CloseRestart</td><td/></row>
 		<row><td>SERIALNUMBER</td><td/><td/></row>
 		<row><td>SERIALNUMVALSUCCESSRETVAL</td><td>1</td><td/></row>
-		<row><td>SHOWLAUNCHPROGRAM</td><td>0</td><td/></row>
+		<row><td>SHOWLAUNCHPROGRAM</td><td>-1</td><td/></row>
 		<row><td>SecureCustomProperties</td><td>ISFOUNDNEWERPRODUCTVERSION;USERNAME;COMPANYNAME;ISX_SERIALNUM;SUPPORTDIR;DOTNETVERSION45FULL</td><td/></row>
 		<row><td>SelectedSetupType</td><td>##IDS__DisplayName_Typical##</td><td/></row>
 		<row><td>SetupType</td><td>Typical</td><td/></row>
@@ -4465,8 +4484,10 @@ RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
 		<col def="L255">FileName</col>
 		<col def="s72">DirProperty</col>
 		<col def="i2">InstallMode</col>
-		<row><td>UNINST_Uninstall_Media_Complete</td><td>NewComponent1</td><td/><td>mediac_1_media_complete1</td><td>2</td></row>
-		<row><td>_Built</td><td>MSOE.MediaComplete.Primary_output</td><td/><td>mediac_1_media_complete1</td><td>2</td></row>
+		<row><td>FileKey1</td><td>MediaComplete.Primary_output</td><td/><td>voidpo_1_void_pointers</td><td>2</td></row>
+		<row><td>FileKey2</td><td>MediaComplete.Primary_output</td><td/><td>mediac_1_media_complete2</td><td>2</td></row>
+		<row><td>UNINST_Uninstall_Media_Complete</td><td>IS_ININSTALL_SHORTCUT</td><td/><td>mediac_1_media_complete2</td><td>2</td></row>
+		<row><td>_Built</td><td>MediaComplete.Primary_output</td><td/><td>mediac_1_media_complete2</td><td>2</td></row>
 	</table>
 
 	<table name="RemoveIniFile">
@@ -4552,8 +4573,8 @@ RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
 		<col def="S255">ISComments</col>
 		<col def="S255">ISShortcutName</col>
 		<col def="I4">ISAttributes</col>
-		<row><td>UNINST_Uninstall_Media_Complete</td><td>mediac_1_media_complete1</td><td>UNINST|Uninstall Media Complete</td><td>NewComponent1</td><td>[SystemFolder]msiexec.exe</td><td>/x {099B5D05-7DBA-48B3-A42A-E4F80B8D6BD4}</td><td/><td/><td>UNINST_Uninstall_M_0CEDD94A914A4DD28288AF0030E4265C.exe</td><td>0</td><td>1</td><td/><td/><td/><td/><td/><td/><td/><td/></row>
-		<row><td>_Built</td><td>mediac_1_media_complete1</td><td>##IDS_SHORTCUT_DISPLAY_NAME3##</td><td>MSOE.MediaComplete.Primary_output</td><td>AlwaysInstall</td><td/><td/><td/><td/><td/><td>1</td><td>INSTALLDIR</td><td/><td/><td/><td/><td/><td/><td/></row>
+		<row><td>UNINST_Uninstall_Media_Complete</td><td>mediac_1_media_complete2</td><td>UNINST|Uninstall Media Complete</td><td>IS_ININSTALL_SHORTCUT</td><td>[SystemFolder]msiexec.exe</td><td>/x {099B5D05-7DBA-48B3-A42A-E4F80B8D6BD4}</td><td/><td/><td>UNINST_Uninstall_M_9697D8E3CDD745EBA1B5093D5AFC67F0.exe</td><td>0</td><td>1</td><td/><td/><td/><td/><td/><td/><td/><td/></row>
+		<row><td>_Built</td><td>mediac_1_media_complete2</td><td>##IDS_SHORTCUT_DISPLAY_NAME7##</td><td>MediaComplete.Primary_output</td><td>AlwaysInstall</td><td/><td/><td/><td/><td/><td>1</td><td/><td/><td/><td/><td/><td/><td/><td/></row>
 	</table>
 
 	<table name="Signature">
@@ -5159,9 +5180,6 @@ RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>ISPathVariable</td><td>TestValue</td><td>Y</td><td/><td/><td/><td/><td>Text</td><td/><td>The test value of the path variable.</td></row>
 		<row><td>ISPathVariable</td><td>Type</td><td>N</td><td/><td/><td/><td/><td/><td>1;2;4;8</td><td>The type of the path variable.</td></row>
 		<row><td>ISPathVariable</td><td>Value</td><td>Y</td><td/><td/><td/><td/><td>Text</td><td/><td>The value of the path variable.</td></row>
-		<row><td>ISPowerShellWrap</td><td>Action_</td><td>N</td><td/><td/><td>CustomAction</td><td>1</td><td>Identifier</td><td/><td>Foreign key into CustomAction table</td></row>
-		<row><td>ISPowerShellWrap</td><td>Name</td><td>N</td><td/><td/><td/><td/><td>Text</td><td/><td>Property associated with this Action</td></row>
-		<row><td>ISPowerShellWrap</td><td>Value</td><td>Y</td><td/><td/><td/><td/><td>Text</td><td/><td>Value associated with this Property</td></row>
 		<row><td>ISProductConfiguration</td><td>GeneratePackageCode</td><td>Y</td><td/><td/><td/><td/><td>Number</td><td>0;1</td><td>Indicates whether or not to generate a package code.</td></row>
 		<row><td>ISProductConfiguration</td><td>ISProductConfiguration</td><td>N</td><td/><td/><td/><td/><td>Text</td><td/><td>The name of the product configuration.</td></row>
 		<row><td>ISProductConfiguration</td><td>ProductConfigurationFlags</td><td>Y</td><td/><td/><td/><td/><td>Text</td><td/><td>Product configuration (release) flags.</td></row>
@@ -5399,6 +5417,9 @@ RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>ISVirtualShortcut</td><td>Name</td><td>N</td><td/><td/><td/><td/><td>Identifier</td><td/><td>Property name</td></row>
 		<row><td>ISVirtualShortcut</td><td>Shortcut_</td><td>N</td><td/><td/><td>Shortcut</td><td>1</td><td>Identifier</td><td/><td>Foreign key into Shortcut table.</td></row>
 		<row><td>ISVirtualShortcut</td><td>Value</td><td>N</td><td/><td/><td/><td/><td/><td/><td>Property value</td></row>
+		<row><td>ISWSEWrap</td><td>Action_</td><td>N</td><td/><td/><td>CustomAction</td><td>1</td><td>Identifier</td><td/><td>Foreign key into CustomAction table</td></row>
+		<row><td>ISWSEWrap</td><td>Name</td><td>N</td><td/><td/><td/><td/><td>Text</td><td/><td>Property associated with this Action</td></row>
+		<row><td>ISWSEWrap</td><td>Value</td><td>Y</td><td/><td/><td/><td/><td>Text</td><td/><td>Value associated with this Property</td></row>
 		<row><td>ISXmlElement</td><td>Content</td><td>Y</td><td/><td/><td/><td/><td>Text</td><td/><td>Element contents</td></row>
 		<row><td>ISXmlElement</td><td>ISAttributes</td><td>Y</td><td/><td/><td/><td/><td>Number</td><td/><td>Internal XML element attributes</td></row>
 		<row><td>ISXmlElement</td><td>ISXmlElement</td><td>N</td><td/><td/><td/><td/><td>Identifier</td><td/><td>Primary key, non-localized, internal token for Xml element</td></row>
