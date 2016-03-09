@@ -166,9 +166,9 @@
                 <DockPanel Grid.Row="0" LastChildFill="True">
                     <Label Margin="-4" FontSize="15" FontWeight="ExtraBlack"
                            Content="{Binding ElementName=PlaylistTree, Path=SelectedItem.Header}"
-                           Visibility="{Binding IsSelected, ElementName=NowPlayingItem, Converter={StaticResource BoolToVis}}" />
+                           Visibility="{Binding IsSelected, ElementName=NowPlayingList, Converter={StaticResource BoolToVis}}" />
                     <Button Click="SaveAsPlaylist_OnClick" ToolTip="{StaticResource SaveNowPlaying-Tooltip}"
-                            Visibility="{Binding ElementName=NowPlayingItem, Path=IsSelected, Converter={StaticResource BoolToVis}}"
+                            Visibility="{Binding ElementName=NowPlayingList, Path=IsSelected, Converter={StaticResource BoolToVis}}"
                             Style="{StaticResource SaveButtonStyle}"
                             IsEnabled="{Binding NowPlayingDirty.Value}"
                             DockPanel.Dock="Right"
@@ -176,7 +176,7 @@
                     <TextBox VerticalAlignment="Center" DockPanel.Dock="Left" FontSize="14" FontWeight="ExtraBlack"
                              Text="{Binding ElementName=PlaylistTree, Path=SelectedItem.Title}"
                              Style="{StaticResource PlaylistNameTextbox}"
-                             Visibility="{Binding IsSelected, ElementName=NowPlayingItem, Converter={StaticResource NotBoolToVis}}" />
+                             Visibility="{Binding IsSelected, ElementName=NowPlayingList, Converter={StaticResource NotBoolToVis}}" />
                 </DockPanel>
                 <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <ListView Name="PlaylistSongList" BorderThickness="1,0,0,0" Style="{StaticResource ExternalScrollView}"
