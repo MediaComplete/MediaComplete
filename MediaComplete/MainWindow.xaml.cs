@@ -73,7 +73,6 @@ namespace MediaComplete
         /// </summary>
         public MainWindow()
         {
-            Dependency.BuildAsync();
             _fileSystem = Dependency.Resolve<IFileSystem>();
             _polling = Dependency.Resolve<IPolling>();
             _queue = Dependency.Resolve<IQueue>();

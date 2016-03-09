@@ -4,9 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaComplete", "MediaComplete\MediaComplete.csproj", "{A0884657-5FDE-459B-BACC-94B19AF58401}"
-	ProjectSection(ProjectDependencies) = postProject
-		{83B74C78-49C1-4D33-B9CE-AA5535E40ABB} = {83B74C78-49C1-4D33-B9CE-AA5535E40ABB}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{B5402507-5D79-4E10-9636-B72ABDCEF95F}"
 	ProjectSection(SolutionItems) = preProject
@@ -15,12 +12,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{B54025
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaComplete.Lib", "..\MediaComplete.Lib\MediaComplete.Lib\MediaComplete.Lib.csproj", "{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}"
-EndProject
 Project("{6141683F-8A12-4E36-9623-2EB02B2C2303}") = "Installer", "Installer\Installer.isproj", "{02450366-DCA8-44BF-AEEF-BF4080D9D4C0}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A0884657-5FDE-459B-BACC-94B19AF58401} = {A0884657-5FDE-459B-BACC-94B19AF58401}
-		{83B74C78-49C1-4D33-B9CE-AA5535E40ABB} = {83B74C78-49C1-4D33-B9CE-AA5535E40ABB}
 	EndProjectSection
 EndProject
 Global
@@ -69,31 +63,6 @@ Global
 		{A0884657-5FDE-459B-BACC-94B19AF58401}.SingleImage|Mixed Platforms.Build.0 = Release|x86
 		{A0884657-5FDE-459B-BACC-94B19AF58401}.SingleImage|x86.ActiveCfg = Release|x86
 		{A0884657-5FDE-459B-BACC-94B19AF58401}.SingleImage|x86.Build.0 = Release|x86
-		{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}.CD_ROM|Any CPU.ActiveCfg = Release|x86
-		{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}.CD_ROM|Mixed Platforms.ActiveCfg = Release|x86
-		{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}.CD_ROM|Mixed Platforms.Build.0 = Release|x86
-		{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}.CD_ROM|x86.ActiveCfg = Release|x86
-		{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}.CD_ROM|x86.Build.0 = Release|x86
-		{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}.Debug|x86.ActiveCfg = Debug|x86
-		{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}.Debug|x86.Build.0 = Debug|x86
-		{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}.DVD-5|Any CPU.ActiveCfg = Debug|x86
-		{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}.DVD-5|Mixed Platforms.ActiveCfg = Debug|x86
-		{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}.DVD-5|Mixed Platforms.Build.0 = Debug|x86
-		{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}.DVD-5|x86.ActiveCfg = Debug|x86
-		{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}.DVD-5|x86.Build.0 = Debug|x86
-		{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}.Release|Any CPU.ActiveCfg = Release|x86
-		{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}.Release|Mixed Platforms.Build.0 = Release|x86
-		{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}.Release|x86.ActiveCfg = Release|x86
-		{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}.Release|x86.Build.0 = Release|x86
-		{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}.SingleImage|Any CPU.ActiveCfg = Release|x86
-		{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}.SingleImage|Mixed Platforms.ActiveCfg = Release|x86
-		{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}.SingleImage|Mixed Platforms.Build.0 = Release|x86
-		{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}.SingleImage|x86.ActiveCfg = Release|x86
-		{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}.SingleImage|x86.Build.0 = Release|x86
 		{02450366-DCA8-44BF-AEEF-BF4080D9D4C0}.CD_ROM|Any CPU.ActiveCfg = CD_ROM
 		{02450366-DCA8-44BF-AEEF-BF4080D9D4C0}.CD_ROM|Any CPU.Build.0 = CD_ROM
 		{02450366-DCA8-44BF-AEEF-BF4080D9D4C0}.CD_ROM|Mixed Platforms.ActiveCfg = CD_ROM

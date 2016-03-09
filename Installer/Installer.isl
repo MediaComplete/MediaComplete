@@ -344,8 +344,6 @@
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td>{250FA597-5C51-4DCC-868B-555DA10684D3}</td><td>INSTALLDIR</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>IS_ININSTALL_SHORTCUT</td><td>{DEF8624D-6D39-4DF1-ADE4-FB136C14B980}</td><td>INSTALLDIR</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>MediaComplete.Content_Files</td><td>{12882186-8023-4DB9-8F94-C35AFECDDAFF}</td><td>INSTALLDIR</td><td>2</td><td/><td>mediacomplete.content_files</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>MediaComplete.Lib.Content_Files</td><td>{44238EB0-38E7-4A1E-952F-6E3E0CE55343}</td><td>INSTALLDIR</td><td>2</td><td/><td>mediacomplete.lib.content_fi</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>MediaComplete.Lib.Primary_output</td><td>{2D9D2BED-7580-494F-8290-FE13A86E1D40}</td><td>INSTALLDIR</td><td>2</td><td/><td>mediacomplete.lib.primary_ou</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>MediaComplete.Primary_output</td><td>{B8E9DA29-B33F-46AB-8D89-8AAABD4501C5}</td><td>INSTALLDIR</td><td>2</td><td/><td>mediacomplete.primary_output</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>NewComponent1</td><td>{A31A0B33-FC0C-4AE4-AD75-6652B8692787}</td><td>INSTALLDIR</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 	</table>
@@ -1060,8 +1058,6 @@
 		<row><td>INSTALLDIR</td><td>ISX_DEFAULTCOMPONENT1</td></row>
 		<row><td>INSTALLDIR</td><td>IS_ININSTALL_SHORTCUT</td></row>
 		<row><td>INSTALLDIR</td><td>MediaComplete.Content_Files</td></row>
-		<row><td>INSTALLDIR</td><td>MediaComplete.Lib.Content_Files</td></row>
-		<row><td>INSTALLDIR</td><td>MediaComplete.Lib.Primary_output</td></row>
 		<row><td>INSTALLDIR</td><td>MediaComplete.Primary_output</td></row>
 		<row><td>INSTALLDIR</td><td>NewComponent1</td></row>
 	</table>
@@ -1884,8 +1880,6 @@
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT1</td></row>
 		<row><td>AlwaysInstall</td><td>IS_ININSTALL_SHORTCUT</td></row>
 		<row><td>AlwaysInstall</td><td>MediaComplete.Content_Files</td></row>
-		<row><td>AlwaysInstall</td><td>MediaComplete.Lib.Content_Files</td></row>
-		<row><td>AlwaysInstall</td><td>MediaComplete.Lib.Primary_output</td></row>
 		<row><td>AlwaysInstall</td><td>MediaComplete.Primary_output</td></row>
 		<row><td>AlwaysInstall</td><td>NewComponent1</td></row>
 	</table>
@@ -1903,8 +1897,6 @@
 		<col def="I4">ISAttributes</col>
 		<col def="S72">ISComponentSubFolder_</col>
 		<row><td>mediacomplete.content_files</td><td>MediaComplete.Content_Files</td><td>MediaComplete.Content Files</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;MediaComplete&gt;|ContentFiles</td><td>3</td><td/></row>
-		<row><td>mediacomplete.lib.content_fi</td><td>MediaComplete.Lib.Content_Files</td><td>MediaComplete.Lib.Content Files</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;MediaComplete.Lib&gt;|ContentFiles</td><td>3</td><td/></row>
-		<row><td>mediacomplete.lib.primary_ou</td><td>MediaComplete.Lib.Primary_output</td><td>MediaComplete.Lib.Primary output</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;MediaComplete.Lib&gt;|Built</td><td>3</td><td/></row>
 		<row><td>mediacomplete.primary_output</td><td>MediaComplete.Primary_output</td><td>MediaComplete.Primary output</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;MediaComplete&gt;|Built</td><td>3</td><td/></row>
 	</table>
 
@@ -2052,8 +2044,6 @@
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td/><td/><td>_4A9D3242_0DB3_4B68_AE53_23DF4E83C4E9_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>IS_ININSTALL_SHORTCUT</td><td/><td/><td>_318B1755_99F7_473D_801A_52245249FB5F_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>MediaComplete.Content_Files</td><td/><td/><td>_8FCB0F20_61F6_44F9_9564_B1F3370B29EE_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>MediaComplete.Lib.Content_Files</td><td/><td/><td>_2EC3C105_3D91_4F7A_BC08_0AC85F2F0825_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>MediaComplete.Lib.Primary_output</td><td/><td/><td>_758DA3C9_673A_4D7C_BBD8_DAA9B9B54E16_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>MediaComplete.Primary_output</td><td/><td/><td>_0D93B969_D47D_45AD_9EB1_BD1CFA92C38B_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>NewComponent1</td><td/><td/><td>_8F7BC2FF_775D_462F_9197_E9D245E2071B_FILTER</td><td/><td/><td/><td/></row>
 	</table>

@@ -33,9 +33,5 @@
 			<Name>MediaComplete</Name>
 			<Project>{A0884657-5FDE-459B-BACC-94B19AF58401}</Project>
 		</ProjectReference>
-		<ProjectReference Include="..\..\MediaComplete.Lib\MediaComplete.Lib\MediaComplete.Lib.csproj">
-			<Name>MediaComplete.Lib</Name>
-			<Project>{83B74C78-49C1-4D33-B9CE-AA5535E40ABB}</Project>
-		</ProjectReference>
 	</ItemGroup>
 </Project>
