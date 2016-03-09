@@ -42,6 +42,8 @@
                         Style="{DynamicResource ToolbarPopulateMetadata}" Click="Toolbar_AutoIDMusic_ClickAsync" />
                 <Button ToolTip="{StaticResource Toolbar-SortMusic-Tooltip}" DockPanel.Dock="Left"
 					    Style="{StaticResource ToolbarSort}" Click="Toolbar_SortMusic_ClickAsync"/>
+                <Button DockPanel.Dock="Left" Click="RefreshLibrary_Click"
+					    Style="{StaticResource ToolbarSettings}" />
                 <Button DockPanel.Dock="Left" Click="ToolbarSettings_Click"
 					    Style="{StaticResource ToolbarSettings}" />
             </DockPanel>
