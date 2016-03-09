@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using MediaComplete.Lib;
+using MediaComplete.Lib.Library;
 using MediaComplete.Lib.Library.DataSource;
 using MediaComplete.Lib.Metadata;
 using TagLib;
@@ -263,6 +264,11 @@ namespace MediaComplete
             Year.IsReadOnly = toggle;
             Rating.IsReadOnly = toggle;
             Track.IsReadOnly = toggle;
+        }
+
+        private void RefreshLibrary_Click(object sender, RoutedEventArgs e)
+        {
+            SettingWrapper.Save();
         }
     }
 }
