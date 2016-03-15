@@ -268,7 +268,7 @@ namespace MediaComplete
 
         private void RefreshLibrary_Click(object sender, RoutedEventArgs e)
         {
-            SettingWrapper.Save();
+            Library.RefreshLibrary();
         }
     }
 }

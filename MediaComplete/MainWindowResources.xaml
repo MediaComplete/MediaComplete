@@ -7,8 +7,9 @@
     <system:String x:Key="Toolbar-AddFile-Tooltip">Add File(s)</system:String>
     <system:String x:Key="Toolbar-AddFolder-Tooltip">Add Folder</system:String>
     <system:String x:Key="Toolbar-AutoIdMusic-Tooltip">Restore Metadata</system:String>
-    <system:String x:Key="Toolbar-SortMusic-Tooltip">Refresh the sorting of your library</system:String>
+    <system:String x:Key="Toolbar-SortMusic-Tooltip">Re-sort your library</system:String>
     <system:String x:Key="Toolbar-SortMusicDisabled-Tooltip">Sorting is disabled in Settings Menu</system:String>
+    <system:String x:Key="Toolbar-RefreshLibrary-Tooltip">Check and Refresh your Library</system:String>
     <system:String x:Key="Toolbar-HideDetails-Content">Hide Details</system:String>
     <system:String x:Key="Toolbar-ShowDetails-Content">Show Details</system:String>
     

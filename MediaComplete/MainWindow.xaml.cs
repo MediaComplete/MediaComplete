@@ -107,10 +107,16 @@ namespace MediaComplete
             Polling.InboxFilesDetected += ImportFromInboxAsync;
             // ReSharper disable once UnusedVariable
             var tmp = _polling;  // Run singleton constructor
-            SettingWrapper.RaiseSettingEvent += Resort;
-            SettingWrapper.RaiseSettingEvent += InitTreeView;
+            Library.RefreshLibraryEvent += RefreshViews;
+            SettingWrapper.RaiseSettingEvent += RefreshViews;
             Importer.ImportFinished += SortImports;
             Importer.ImportFinished += FailedImport;
+        }
+
+        private void RefreshViews()
+        {
+            Application.Current.Dispatcher.Invoke(Resort);
+            Application.Current.Dispatcher.Invoke(InitTreeView);
         }
         private void InitFolderView()
         {
@@ -464,7 +470,7 @@ namespace MediaComplete
             if (PlaylistTab.IsSelected)
             {
                 NowPlayingList.IsSelected = true;
-                // Manually fire this, NowPlayingItem.IsSelected won't do the job if that's already selected
+                // Manually fire this, NowPlayingList.IsSelected won't do the job if that's already selected
                 PlaylistTree_SelectionChanged(null, null);
             }
             ClearDetailPane();
