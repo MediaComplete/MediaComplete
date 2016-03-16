@@ -79,7 +79,7 @@ namespace MediaComplete
                 }
                 catch (CorruptFileException)
                 {
-                    StatusBarHandler.Instance.ChangeStatusBarMessage("CorruptFile-Error", StatusBarHandler.StatusIcon.Error);
+                    StatusBarHandler.Instance.ChangeStatusBarMessage("CorruptFile-Error", Lib.StatusIcon.Error);
                 }
             }
             foreach (var attribute in initalAttributes.Where(attribute => !finalAttributes.ContainsKey(attribute.Key)))

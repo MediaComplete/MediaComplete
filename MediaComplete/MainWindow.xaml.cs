@@ -73,7 +73,7 @@ namespace MediaComplete
         /// </summary>
         public MainWindow()
         {
-            Dependency.BuildAsync();
+            Dependency.Build();
             _fileSystem = Dependency.Resolve<IFileSystem>();
             _polling = Dependency.Resolve<IPolling>();
             _queue = Dependency.Resolve<IQueue>();
@@ -207,7 +207,7 @@ namespace MediaComplete
                 }
                 catch (NullReferenceException)
                 {
-                    StatusBarHandler.Instance.ChangeStatusBarMessage("FailedImport-Error", StatusBarHandler.StatusIcon.Error);
+                    StatusBarHandler.Instance.ChangeStatusBarMessage("FailedImport-Error", Lib.StatusIcon.Error);
                 }
             }
         }
@@ -580,7 +580,7 @@ namespace MediaComplete
         /// <param name="message"></param>
         /// <param name="icon"></param>
         /// <param name="extraArgs"></param>
-        private void HandleStatusBarChangeEvent(string format, string message, StatusBarHandler.StatusIcon icon, params object[] extraArgs)
+        private void HandleStatusBarChangeEvent(string format, string message, StatusIcon icon, params object[] extraArgs)
         {
             Dispatcher.Invoke(() =>
             {
