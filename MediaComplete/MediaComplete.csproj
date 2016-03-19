@@ -90,8 +90,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\M3U.NET.1.0.0.3\lib\net45\M3U.NET.dll</HintPath>
     </Reference>
-    <Reference Include="MediaComplete.Lib, Version=1.0.12.0, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\packages\MediaComplete.Lib.1.0.12.0\lib\net45\MediaComplete.Lib.dll</HintPath>
+    <Reference Include="MediaComplete.Lib, Version=1.0.16.0, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\packages\MediaComplete.Lib.1.0.16.0\lib\net45\MediaComplete.Lib.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="MultiSelectTreeView, Version=1.0.7.0, Culture=neutral, processorArchitecture=MSIL">
@@ -271,6 +271,7 @@
     <Content Include="CustomControls\BackgroundYoutubePlayer.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="ReadMe.txt" />
     <Resource Include="Resources\logo_small.png" />
     <Resource Include="Resources\logo_large.png" />
   </ItemGroup>

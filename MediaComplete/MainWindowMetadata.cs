@@ -79,7 +79,7 @@ namespace MediaComplete
                 }
                 catch (CorruptFileException)
                 {
-                    StatusBarHandler.Instance.ChangeStatusBarMessage("CorruptFile-Error", StatusBarHandler.StatusIcon.Error);
+                    StatusBarHandler.Instance.ChangeStatusBarMessage("CorruptFile-Error", Lib.StatusIcon.Error);
                 }
             }
             foreach (var attribute in initalAttributes.Where(attribute => !finalAttributes.ContainsKey(attribute.Key)))
@@ -258,7 +258,7 @@ namespace MediaComplete
                     StatusBarHandler.Instance.ChangeStatusBarMessage(
                         "{0} {1}: {2}",
                         "Save-Metadata-Error",
-                        StatusBarHandler.StatusIcon.Error,
+                        Lib.StatusIcon.Error,
                         song.Name,
                         ex.Message);
                 }
@@ -281,7 +281,7 @@ namespace MediaComplete
 
         private void RefreshLibrary_Click(object sender, RoutedEventArgs e)
         {
-            SettingWrapper.Save();
+            Library.RefreshLibrary();
         }
     }
 }

@@ -106,10 +106,16 @@ namespace MediaComplete
             Polling.InboxFilesDetected += ImportFromInboxAsync;
             // ReSharper disable once UnusedVariable
             var tmp = _polling;  // Run singleton constructor
-            SettingWrapper.RaiseSettingEvent += Resort;
-            SettingWrapper.RaiseSettingEvent += InitTreeView;
+            Library.RefreshLibraryEvent += RefreshViews;
+            SettingWrapper.RaiseSettingEvent += RefreshViews;
             Importer.ImportFinished += SortImports;
             Importer.ImportFinished += FailedImport;
+        }
+
+        private void RefreshViews()
+        {
+            Application.Current.Dispatcher.Invoke(Resort);
+            Application.Current.Dispatcher.Invoke(InitTreeView);
         }
         private void InitFolderView()
         {
@@ -200,7 +206,7 @@ namespace MediaComplete
                 }
                 catch (NullReferenceException)
                 {
-                    StatusBarHandler.Instance.ChangeStatusBarMessage("FailedImport-Error", StatusBarHandler.StatusIcon.Error);
+                    StatusBarHandler.Instance.ChangeStatusBarMessage("FailedImport-Error", Lib.StatusIcon.Error);
                 }
             }
         }
@@ -463,7 +469,7 @@ namespace MediaComplete
             if (PlaylistTab.IsSelected)
             {
                 NowPlayingList.IsSelected = true;
-                // Manually fire this, NowPlayingItem.IsSelected won't do the job if that's already selected
+                // Manually fire this, NowPlayingList.IsSelected won't do the job if that's already selected
                 PlaylistTree_SelectionChanged(null, null);
             }
             ClearDetailPane();
@@ -573,7 +579,7 @@ namespace MediaComplete
         /// <param name="message"></param>
         /// <param name="icon"></param>
         /// <param name="extraArgs"></param>
-        private void HandleStatusBarChangeEvent(string format, string message, StatusBarHandler.StatusIcon icon, params object[] extraArgs)
+        private void HandleStatusBarChangeEvent(string format, string message, StatusIcon icon, params object[] extraArgs)
         {
             Dispatcher.Invoke(() =>
             {

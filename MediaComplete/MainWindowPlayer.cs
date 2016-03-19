@@ -489,17 +489,17 @@ namespace MediaComplete
             {
                 _player.Play();
                 ResetTrackBar();
-                StatusBarHandler.Instance.ChangeStatusBarMessage(null, StatusBarHandler.StatusIcon.None);
+                StatusBarHandler.Instance.ChangeStatusBarMessage(null, Lib.StatusIcon.None);
             }
             catch (CorruptFileException)
             {
-                StatusBarHandler.Instance.ChangeStatusBarMessage("CorruptFile-Error", StatusBarHandler.StatusIcon.Error);
+                StatusBarHandler.Instance.ChangeStatusBarMessage("CorruptFile-Error", Lib.StatusIcon.Error);
                 PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
                 return;
             }
             catch (FileNotFoundException)
             {
-                StatusBarHandler.Instance.ChangeStatusBarMessage("FileNotFound-Error", StatusBarHandler.StatusIcon.Error);
+                StatusBarHandler.Instance.ChangeStatusBarMessage("FileNotFound-Error", Lib.StatusIcon.Error);
                 PlayPauseButton.SetResourceReference(StyleProperty, "PlayButton");
                 return;
             }
