@@ -44,7 +44,7 @@
     <system:String x:Key="Sorting-Started">Sorting Started</system:String>
     <system:String x:Key="Sorting-InProgress">Sorting....</system:String>
     <system:String x:Key="Sorting-Success">Sorting Finished</system:String>
-    <system:String x:Key="Sorting-HadError">Encountered an error while sorting files: {0}</system:String>
+    <system:String x:Key="Sorting-HadError">Encountered an error while sorting files. Please refresh and try again later.</system:String>
     <system:String x:Key="MusicIdentification-Started">Music Identification Started</system:String>
     <system:String x:Key="MusicIdentification-Success">Music Identification Finished</system:String>
     <system:String x:Key="MusicIdentification-Error">Music Identification Error</system:String>
@@ -54,6 +54,7 @@
     <system:String x:Key="CorruptFile-Error">A selected file was corrupted</system:String>
     <system:String x:Key="FileNotFound-Error">A selected file could not be found</system:String>
     <system:String x:Key="Save-Error">One or More Files Could Not Be Saved</system:String>
+    <system:String x:Key="Save-Metadata-Error">Error while attempting to save metadata on song</system:String>
 
     <system:String x:Key="InvalidTrackNumber">Invalid Track Number Entered</system:String>
     <system:String x:Key="UnauthorizedAccess-Error">A system protected file could not be imported</system:String>

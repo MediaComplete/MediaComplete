@@ -248,7 +248,20 @@ namespace MediaComplete
                         }
                     }
                 }
-                _library.SaveSong(song as LocalSong);
+
+                try
+                {
+                    _library.SaveSong(song as LocalSong);
+                }
+                catch (Exception ex)
+                {
+                    StatusBarHandler.Instance.ChangeStatusBarMessage(
+                        "{0} {1}: {2}",
+                        "Save-Metadata-Error",
+                        StatusBarHandler.StatusIcon.Error,
+                        song.Name,
+                        ex.Message);
+                }
             }
             _changedBoxes.Clear();
             PopulateMetadataForm();
